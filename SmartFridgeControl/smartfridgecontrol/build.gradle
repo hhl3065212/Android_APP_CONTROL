@@ -1,0 +1,42 @@
+apply plugin: 'com.android.application'
+
+android {
+
+    compileSdkVersion 23
+    buildToolsVersion '23.0.2'
+    defaultConfig {
+        applicationId "com.haiersmart.sfcontrol"
+        minSdkVersion 18
+        targetSdkVersion 23
+        versionCode 1
+        versionName 'BXC_0043_0000'
+
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            zipAlignEnabled true
+        }
+    }
+    productFlavors {
+    }
+    sourceSets {
+        main {
+            jni.srcDirs = ['libs']
+            jniLibs.srcDirs = ['src/main/libs']
+        }
+    }
+}
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'com.android.support:design:23.4.0'
+    testCompile 'junit:junit:4.12'
+    compile 'com.h6ah4i.android.widget.verticalseekbar:verticalseekbar:0.7.0'
+//    compile 'com.google.android.gms:play-services-appindexing:8.4.0'
+//    compile project(path: ':smartfridgenation')
+}
+
+repositories {
+}

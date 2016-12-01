@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="@dimen/x700"
+        android:layout_height="@dimen/y400"
+        android:background="@drawable/btn_warn_popwin"
+        android:gravity="center"
+        android:orientation="vertical">
+            <ImageView
+                android:layout_width="@dimen/x109"
+                android:layout_height="@dimen/y102"
+                android:src="@drawable/warn"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_marginTop="@dimen/y20"
+                android:layout_height="wrap_content"
+                android:text="@string/cold_door_warn"
+                android:textSize="@dimen/text_size_40"
+                android:textColor="@color/warn_green_text"/>
+
+
+    </LinearLayout>
+
+</LinearLayout>

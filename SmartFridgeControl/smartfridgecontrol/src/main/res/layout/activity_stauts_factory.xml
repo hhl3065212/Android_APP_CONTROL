@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:layout_margin="@dimen/tab_margin"
+              android:id="@+id/activity_test_factory_linear"
+              android:orientation="vertical">
+    <LinearLayout
+        android:id="@+id/factory_header_linear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+        <LinearLayout
+            android:id="@+id/factory_fridge_model_linear"
+            android:layout_width="@dimen/auto_width"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="5">
+        <TextView
+            android:id="@+id/title_fridge_model"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/title_fridge_model"
+            android:textSize="@dimen/text_size_40"/>
+        <TextView
+            android:id="@+id/text_fridge_model"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/tab_margin"
+            android:text="BCD-251WDICU1"
+            android:textSize="@dimen/text_size_40"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/factory_return_linear"
+            android:layout_width="@dimen/auto_width"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="1">
+            <Button
+                android:id="@+id/btn_factory_return"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:text="@string/return_title"
+                android:textSize="@dimen/text_size_40"/>
+
+            </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

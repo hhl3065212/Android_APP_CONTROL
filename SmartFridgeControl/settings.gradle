@@ -1,0 +1,2 @@
+include ':smartfridgecontrol',':haier-wifiModule-new'
+//':mobile', ':tv',

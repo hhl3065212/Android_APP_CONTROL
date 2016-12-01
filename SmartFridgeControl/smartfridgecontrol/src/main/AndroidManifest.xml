@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.haiersmart.sfcontrol">
+
+    <!--
+     <application
+        android:name=".application.ControlApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+    </application>
+    -->
+    <application
+        android:name=".application.ControlApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme.NoActionBar">
+        <service
+            android:name=".service.ControlMainBoardService"
+            android:enabled="true"
+            android:exported="true"/>
+
+        <activity
+            android:name=".ui.TestMainActivity"
+            android:label="@string/title_activity_test_main"
+            android:theme="@style/AppTheme.NoActionBar">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN"/>-->
+                <!--<category android:name="android.intent.category.LAUNCHER"/>-->
+            <!--</intent-filter>-->
+        </activity>
+        <activity
+            android:name=".ui.DoorAlarmActivity"
+            android:launchMode="singleTask"
+            android:theme="@style/myTransparent">
+        </activity>
+        <activity android:name=".ui.FactoryStatusActivity">
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
+        </activity>
+        <activity android:name=".ui.DebugActivity">
+             <intent-filter>
+             <action android:name="android.intent.action.MAIN" />
+             <category android:name="android.intent.category.LAUNCHER" />
+             </intent-filter>
+        </activity>
+
+        <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
+        <receiver android:name=".service.BootCompletedReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".service.alarm.DoorAlarmReceiver">
+            <intent-filter>
+                <action android:name="com.haiersmart.sfcontrol.alarm"/>
+            </intent-filter>
+        </receiver>
+
+    </application>
+
+</manifest>

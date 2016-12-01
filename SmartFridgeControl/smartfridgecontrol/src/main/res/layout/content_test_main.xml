@@ -1,0 +1,488 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/content_test_main"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@drawable/white_bg_corner_10"
+              android:orientation="vertical"
+              android:paddingBottom="@dimen/activity_vertical_margin"
+              android:paddingLeft="@dimen/activity_horizontal_margin"
+              android:paddingRight="@dimen/activity_horizontal_margin"
+              android:paddingTop="@dimen/activity_vertical_margin"
+              app:layout_behavior="@string/appbar_scrolling_view_behavior"
+              tools:context="com.haiersmart.sfcontrol.ui.TestMainActivity"
+              tools:showIn="@layout/activity_test_main">
+
+    <!--状态码显示-->
+    <LinearLayout
+        android:id="@+id/status_code_linear"
+        android:layout_width="match_parent"
+        android:layout_height="35pt"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/status_code_title"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="@dimen/x15"
+            android:text="@string/status_code_title"
+            android:textSize="26sp"
+            android:gravity="center"/>
+
+        <TextView
+            android:id="@+id/text_status_code"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text=""
+            android:textSize="26sp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/fridge_pic"
+            android:layout_width="280.00px"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/fridge252_layout"
+                android:layout_width="@dimen/x200"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bingxiangpic251"
+                android:orientation="vertical"
+                android:visibility="visible">
+                <!--环境温度-->
+                <LinearLayout
+                    android:id="@+id/env_temp_linear"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/x15"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/env_temp_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/env_temp_title"
+                        android:textSize="26sp"/>
+
+                    <TextView
+                        android:id="@+id/text_env_temp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textSize="26sp"/>
+                </LinearLayout>
+                <!--环境湿度-->
+                <LinearLayout
+                    android:id="@+id/env_hum_linear"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/x15"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/env_hum_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/env_hum_title"
+                        android:textSize="26sp"/>
+
+                    <TextView
+                        android:id="@+id/text_env_hum"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textSize="26sp"/>
+                </LinearLayout>
+                <!--冷藏室温度-->
+                <LinearLayout
+                    android:id="@+id/fridge_temp_linear"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/x15"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/fridge_temp_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/fridge_temp_title"
+                        android:textSize="26sp"/>
+
+                    <TextView
+                        android:id="@+id/text_fridge_temp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textSize="26sp"/>
+                </LinearLayout>
+                <!--冷冻室温度-->
+                <LinearLayout
+                    android:id="@+id/freeze_temp_linear"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/x15"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/freeze_temp_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/freeze_temp_title"
+                        android:textSize="26sp"/>
+
+                    <TextView
+                        android:id="@+id/text_freeze_temp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textSize="26sp"/>
+                </LinearLayout>
+                <!--变温室温度-->
+                <LinearLayout
+                    android:id="@+id/change_temp_linear"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/x15"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/change_temp_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/change_temp_title"
+                        android:textSize="26sp"/>
+
+                    <TextView
+                        android:id="@+id/text_change_temp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textSize="26sp"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+        //设置冰箱图像
+
+        <LinearLayout
+            android:id="@+id/relativeLayoutSetting"
+            android:layout_width="@dimen/x500"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/x10"
+            android:layout_marginTop="@dimen/x60"
+            android:layout_toEndOf="@id/fridge_pic"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="@dimen/x150"
+                android:layout_height="@dimen/y460"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/settingColdLayout"
+                    android:layout_width="@dimen/x150"
+                    android:layout_height="@dimen/y400"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center">
+
+                        <TextView
+                            android:id="@+id/tVColdSettingTemp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="5℃"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:textColor="@color/mine_textcolor"
+                            android:textSize="@dimen/text_size_22"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/cold_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="8"
+                        android:gravity="center">
+
+                        <!-- Clock wise - 90 -->
+                        <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper
+                            android:id="@+id/seekBarContainer1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/y330">
+
+                            <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
+                                android:id="@+id/seekBarCold"
+                                android:layout_width="0dp"
+                                android:layout_height="0dp"
+                                android:indeterminate="false"
+                                android:maxHeight="@dimen/x15"
+                                android:minHeight="@dimen/x10"
+                                android:progressDrawable="@drawable/temper_bar"
+                                android:thumb="@drawable/temper_green_dian"
+                                android:thumbOffset="10dip"
+                                app:seekBarRotation="CW270"/>
+                        </com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center">
+
+                        <TextView
+                            android:id="@+id/tVColdSettingContent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="冷藏室"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:textColor="@color/mine_textcolor"
+                            android:textSize="@dimen/text_size_22"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/y60">
+
+                    <ToggleButton
+                        android:id="@+id/toggle_colding"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="@dimen/x60"
+                        android:background="@null"
+                        android:button="@drawable/toggle_button_switch"
+                        android:checked="true"
+                        android:textOff=""
+                        android:textOn=""
+                        android:visibility="visible"/>
+                </RelativeLayout>
+                //冷藏开关
+
+            </LinearLayout>
+            //设置冷藏室
+
+            <LinearLayout
+                android:id="@+id/bianwenshi_layout"
+                android:layout_width="@dimen/x150"
+                android:layout_height="@dimen/y400"
+                android:layout_marginStart="@dimen/x30"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/tVVariableSettingTemp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0℃"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/mine_textcolor"
+                        android:textSize="@dimen/text_size_22"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/change_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="8"
+                    android:gravity="center">
+
+                    <!-- Clock wise - 270 -->
+                    <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper
+                        android:id="@+id/seekBarContainerVariable"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/y330">
+
+                        <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
+                            android:id="@+id/seekBarVariable"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:indeterminate="false"
+                            android:maxHeight="@dimen/x15"
+                            android:minHeight="@dimen/x10"
+                            android:progressDrawable="@drawable/temper_bar"
+                            android:thumb="@drawable/temper_green_dian"
+                            android:thumbOffset="10dip"
+                            app:seekBarRotation="CW270"/>
+                    </com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/tvSettingVariableContent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="变温室"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/mine_textcolor"
+                        android:textSize="@dimen/text_size_22"/>
+                </LinearLayout>
+            </LinearLayout>
+            //设置变温室
+
+            <LinearLayout
+                android:id="@+id/freezeLayout"
+                android:layout_width="@dimen/x150"
+                android:layout_height="@dimen/y400"
+                android:layout_marginStart="@dimen/x30"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/tvFreezeSettingTemp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="-18℃"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/mine_textcolor"
+                        android:textSize="@dimen/text_size_22"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/freeze_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="8"
+                    android:gravity="center">
+                    <!-- Clock wise - 270 -->
+                    <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper
+                        android:id="@+id/seekBarContainerFreeze"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/y330">
+
+                        <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
+                            android:id="@+id/seekBarFreeze"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:maxHeight="@dimen/x15"
+                            android:minHeight="@dimen/x10"
+                            android:progressDrawable="@drawable/temper_bar"
+                            android:thumb="@drawable/temper_green_dian"
+                            android:thumbOffset="10dip"
+                            app:seekBarRotation="CW270"/>
+                    </com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/textView85"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="冷冻室"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/mine_textcolor"
+                        android:textSize="@dimen/text_size_22"/>
+                </LinearLayout>
+
+            </LinearLayout>
+            //设置冷冻室
+
+        </LinearLayout>
+        //档位设置
+
+        <LinearLayout
+            android:id="@+id/moshi_layout"
+            android:layout_width="@dimen/x270"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_marginLeft="@dimen/x60"
+            android:layout_marginTop="@dimen/y122"
+            android:visibility="visible">
+
+            <RelativeLayout
+                android:id="@+id/mode_layout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y260">
+
+                <Button
+                    android:id="@+id/btnSmart"
+                    android:layout_width="@dimen/x110"
+                    android:layout_height="@dimen/y110"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:background="@drawable/bt_mode_control"
+                    android:text="智能"
+                    android:textColor="@drawable/btn_myfamily_font_pop_sure"
+                    android:textSize="@dimen/text_size_28"/>
+
+                <Button
+                    android:id="@+id/btnHoliday"
+                    android:layout_width="@dimen/x110"
+                    android:layout_height="@dimen/y110"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:background="@drawable/btn_myfamily_sure"
+                    android:text="假日"
+                    android:textColor="@drawable/btn_myfamily_font_pop_sure"
+                    android:textSize="@dimen/text_size_28"/>
+
+                <Button
+                    android:id="@+id/btnQuickFreeze"
+                    android:layout_width="@dimen/x110"
+                    android:layout_height="@dimen/y110"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentStart="true"
+                    android:background="@drawable/btn_myfamily_sure"
+                    android:text="速冻"
+                    android:textColor="@drawable/btn_myfamily_font_pop_sure"
+                    android:textSize="@dimen/text_size_28"/>
+
+                <Button
+                    android:id="@+id/btnQuickCold"
+                    android:layout_width="@dimen/x110"
+                    android:layout_height="@dimen/y110"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignTop="@+id/btnQuickFreeze"
+                    android:background="@drawable/btn_myfamily_sure"
+                    android:text="速冷"
+                    android:textColor="@drawable/btn_myfamily_font_pop_sure"
+                    android:textSize="@dimen/text_size_28"/>
+            </RelativeLayout>
+
+        </LinearLayout>
+        //模式设置
+    </LinearLayout>
+
+</LinearLayout>

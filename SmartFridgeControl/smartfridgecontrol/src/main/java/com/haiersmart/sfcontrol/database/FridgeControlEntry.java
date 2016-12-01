@@ -9,9 +9,9 @@ public class FridgeControlEntry implements Serializable {
     public int id;
     public String name;
     public int value;
-    public int disable;
+    public String disable;
 
-    public  FridgeControlEntry(String name, int value, int disable) {
+    public  FridgeControlEntry(String name, int value, String disable) {
         this.name = name;
         this.value = value;
         this.disable = disable;

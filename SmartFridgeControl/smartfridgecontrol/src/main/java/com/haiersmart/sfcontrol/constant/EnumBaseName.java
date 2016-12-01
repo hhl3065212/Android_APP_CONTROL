@@ -18,6 +18,7 @@ public enum EnumBaseName {
     quickFreezeMode("quickFreezeMode"),//
     tidbitMode("tidbitMode"),//
     marketDemo("marketDemo"),//
+    fridgeCloseMode("fridgeCloseMode"),
     strongPurifyMode("strongPurifyMode"),//
     fridgeTargetTemp("fridgeTargetTemp"),//
     freezeTargetTemp("freezeTargetTemp"),//

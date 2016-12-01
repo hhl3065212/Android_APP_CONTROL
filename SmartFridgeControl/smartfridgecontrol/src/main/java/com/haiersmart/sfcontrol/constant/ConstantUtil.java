@@ -158,12 +158,14 @@ public class ConstantUtil {
     public static final String FRIDGETYPE = "fridge_type";//冰箱硬件型号 海尔注册的冰箱型号
 
     //toast info
+    public static final String NO_WARNING = "none";
     public static final String HOLIDAY_ON_REFRIGERATOR_CLOSE_WARNING = "假日模式已开启，如要关闭冷藏室请先退出假日模式";
     public static final String SMART_ON_REFRIGERATOR_CLOSE_WARNING = "智能模式已开启，如要关闭冷藏室请先退出智能模式";
     public static final String SMART_ON_SET_TEMPER_WARNING = "智能模式已开启，如要调节温度请先退出智能模式";
     public static final String HOLIDAY_ON_SET_TEMPER_WARNING = "假日模式已开启，如要调节温度请先退出假日模式";
     public static final String FREEZE_ON_SET_TEMPER_WARNING = "速冻模式已开启，如要调节温度请先退出速冻模式";
     public static final String CLOD_ON_SET_TEMPER_WARNING = "速冷模式已开启，如要调节温度请先退出速冷模式";
+    public static final String REFRIGERATOR_CLOSE_ON_SET_TEMPER_WARNING = "冷藏室已关闭，如要调节温度请先开启冷藏室";
 
     //年月日
     public static final String pop_year = "年";//y

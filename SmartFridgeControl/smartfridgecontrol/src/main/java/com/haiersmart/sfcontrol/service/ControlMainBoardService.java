@@ -171,7 +171,7 @@ public class ControlMainBoardService extends Service {
                 handleQueryData();
                 break;
             case ConstantUtil.BROADCAST_ACTION_STATUS_BACK:
-//                MyLogUtil.i(TAG, "handleActions status back");
+                MyLogUtil.d(TAG, "handleActions status back");
                 mModel.handleStatusDataResponse();
                 break;
             case ConstantUtil.MODE_SMART_ON://智能开

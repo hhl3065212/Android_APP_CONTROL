@@ -132,21 +132,27 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
         mFreezeTempSeekbar.setOnSeekBarChangeListener(new SettingSeekBarChangeListener());
         // 冷藏开关
         mTbColdSwitch = (ToggleButton) findViewById(R.id.toggle_colding);
-        mTbColdSwitch.setOnClickListener(this);
         mTbColdSwitch.setOnTouchListener(new SettingOnTouchListener());
         //冷藏开关默认值为0
         mTbColdSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            if(mTbColdSwitch.isChecked()) {
-                mServiceIntent.setAction(ConstantUtil.REFRIGERATOR_CLOSE);
-            } else {
-                mServiceIntent.setAction(ConstantUtil.REFRIGERATOR_OPEN);
-            }
-            startService(mServiceIntent);
+                if(buttonView.getId()==R.id.toggle_colding) {
+                    MyLogUtil.d(TAG,"onCheckedChanged modedebug toggle_colding");
+                }
+
+                if(mTbColdSwitchWarn.equals(ConstantUtil.NO_WARNING)) {
+                    if(mTbColdSwitch.isChecked()) {
+                        mServiceIntent.setAction(ConstantUtil.REFRIGERATOR_CLOSE);
+                        MyLogUtil.d(TAG,"onCheckedChanged modedebug set fridge close");
+                    } else {
+                        mServiceIntent.setAction(ConstantUtil.REFRIGERATOR_OPEN);
+                        MyLogUtil.d(TAG,"onCheckedChanged modedebug set fridge open");
+                    }
+                    startService(mServiceIntent);
                 }
             }
-        );
+        } );
         MyLogUtil.v(TAG, "initViews finished");
     }
 
@@ -413,16 +419,21 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
         }
     }
 
+
+
     private void updateTempLevelSettingUI(List<FridgeControlEntry> controlList) {
-        FridgeControlEntry coldLevelEntry = controlList.get(4);//冷藏档位值
-        FridgeControlEntry freezeLevelEntry = controlList.get(5);//冷冻档位模式
-        FridgeControlEntry changeLevelEntry = controlList.get(6);// 变温档位模式
-        FridgeControlEntry coldSwitchEntry = controlList.get(7);//冷藏开关
+//        FridgeControlEntry coldLevelEntry = controlList.get(4);//冷藏档位值
+//        FridgeControlEntry freezeLevelEntry = controlList.get(5);//冷冻档位模式
+//        FridgeControlEntry changeLevelEntry = controlList.get(6);// 变温档位模式
+//        FridgeControlEntry coldSwitchEntry = controlList.get(7);//冷藏开关
+        FridgeControlEntry coldLevelEntry = mService.getEntryByName(EnumBaseName.fridgeTargetTemp);//冷藏档位值
+        FridgeControlEntry freezeLevelEntry = mService.getEntryByName(EnumBaseName.freezeTargetTemp);
+        FridgeControlEntry changeLevelEntry = mService.getEntryByName(EnumBaseName.changeTargetTemp);
+        FridgeControlEntry coldSwitchEntry = mService.getEntryByName(EnumBaseName.fridgeCloseMode);
 
         int coldLevel = coldLevelEntry.value;
         int freezeLevel = freezeLevelEntry.value;
         int changeLevel = changeLevelEntry.value;
-
         if (mIsSmart) {
             mTvSettingCold.setText("智能运行中");
             mTvSettingFreeze.setText("智能运行中");
@@ -446,8 +457,9 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
         }
 
         boolean isClose = (coldSwitchEntry.value == 1 ? true : false);//默认0
-        mTbColdSwitch.setChecked(!isClose);
         mTbColdSwitchWarn = coldSwitchEntry.disable;
+        mTbColdSwitch.setChecked(!isClose);
+        MyLogUtil.d(TAG,"modedebug updateTempLevelSettingUI mTbColdSwitchWarn=" + mTbColdSwitchWarn);
 
         if (isClose) {
             mTvSettingCold.setTextColor(getResources().getColor(R.color.grey_food_weight));
@@ -458,6 +470,7 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
             mTvSettingColdContent.setTextColor(getResources().getColor(R.color.black2));
         }
 
+
         mColdTempSeekbar.setProgress(coldLevel - mFridgeMinValue);
         if(coldLevelEntry.disable.equals(ConstantUtil.NO_WARNING)) {
             mColdTempSeekbar.setEnabled(true);
@@ -465,6 +478,7 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
             mColdTempSeekbar.setEnabled(false);
         }
         mSettingColdWarn = coldLevelEntry.disable;
+        MyLogUtil.d(TAG,"modedebug updateTempLevelSettingUI mSettingColdWarn=" + mSettingColdWarn);
 
         mVarialableTempSeekbar.setProgress(changeLevel - mChangeMinValue);
         if(changeLevelEntry.disable.equals(ConstantUtil.NO_WARNING)) {
@@ -473,6 +487,8 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
             mVarialableTempSeekbar.setEnabled(false);
         }
         mSettingVariableWarn = changeLevelEntry.disable;
+
+
 
         mFreezeTempSeekbar.setProgress(freezeLevel - mFreezeMinValue);
         if(freezeLevelEntry.disable.equals(ConstantUtil.NO_WARNING)) {
@@ -569,9 +585,10 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
                 case R.id.toggle_colding: {
                     if (mTbColdSwitch.isChecked()) {
                         if(mTbColdSwitchWarn.equals(ConstantUtil.NO_WARNING)) {
-
+                            MyLogUtil.d(TAG,"toggle_colding modedebug no warning");
                         } else {
                             ToastUtil.showToastLong(mTbColdSwitchWarn);
+                            MyLogUtil.d(TAG,"toggle_colding modedebug mTbColdSwitchWarn="+mTbColdSwitchWarn);
                             res = true;
                         }
                     }

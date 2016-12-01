@@ -9,6 +9,7 @@ import android.text.TextUtils;
 
 import com.haiersmart.sfcontrol.application.ControlApplication;
 import com.haiersmart.sfcontrol.constant.ConstantUtil;
+import com.haiersmart.sfcontrol.constant.EnumBaseName;
 import com.haiersmart.sfcontrol.database.DBOperation;
 import com.haiersmart.sfcontrol.database.FridgeControlDbMgr;
 import com.haiersmart.sfcontrol.database.FridgeControlEntry;
@@ -333,6 +334,10 @@ public class ControlMainBoardService extends Service {
 
     public String getFrameDataString(){
         return mMBParams.getFrameDataString();
+    }
+
+    public FridgeControlEntry getEntryByName(EnumBaseName name) {
+        return mModel.getControlEntryByName(name);
     }
 
     //public static final long COLDTIME = 60 * 60 * 3;

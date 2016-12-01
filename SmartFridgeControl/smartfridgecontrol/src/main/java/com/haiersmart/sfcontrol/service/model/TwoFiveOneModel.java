@@ -208,6 +208,7 @@ public class TwoFiveOneModel extends ModelBase {
             //设置冷藏档位不可调节
             setControlDisableByName(EnumBaseName.fridgeTargetTemp, ConstantUtil.HOLIDAY_ON_SET_TEMPER_WARNING);
             getControlDbMgr().updateDisableByName(EnumBaseName.fridgeTargetTemp, ConstantUtil.HOLIDAY_ON_SET_TEMPER_WARNING);
+            MyLogUtil.d(TAG, "holidayOn modedebug  fridgeTargetTemp disable=" + getControlEntryByName(EnumBaseName.fridgeTargetTemp).disable);
 
             //设置冷藏开关不可调节
             FridgeControlEntry fridgeCloseEntry = getControlEntryByName(EnumBaseName.fridgeCloseMode);
@@ -218,6 +219,7 @@ public class TwoFiveOneModel extends ModelBase {
             fridgeCloseEntry.disable = ConstantUtil.HOLIDAY_ON_REFRIGERATOR_CLOSE_WARNING;
             updateControlByEntry(fridgeCloseEntry);
             getControlDbMgr().updateEntry(fridgeCloseEntry);
+            MyLogUtil.d(TAG,"holidayOn modedebug fridgeCloseMode disable="+getControlEntryByName(EnumBaseName.fridgeCloseMode).disable);
 
             //进假日
             holidayEntry.value = 1;
@@ -236,16 +238,19 @@ public class TwoFiveOneModel extends ModelBase {
             //退假日
             holidayEntry.value = 0;
             holidayEntry.disable = ConstantUtil.NO_WARNING;
+            updateControlByEntry(holidayEntry);
             getControlDbMgr().updateEntry(holidayEntry);
 
             //恢复冷藏档位设置
             setControlDisableByName(EnumBaseName.fridgeTargetTemp, ConstantUtil.NO_WARNING);
             getControlDbMgr().updateDisableByName(EnumBaseName.fridgeTargetTemp, ConstantUtil.NO_WARNING);
+            MyLogUtil.d(TAG,"holidayOff modedebug fridgeTargetTemp disable="+getControlEntryByName(EnumBaseName.fridgeTargetTemp).disable);
 
             FridgeControlEntry fridgeCloseEntry = getControlEntryByName(EnumBaseName.fridgeCloseMode);
             fridgeCloseEntry.value = 0;
             fridgeCloseEntry.disable = ConstantUtil.NO_WARNING;
             updateControlByEntry(fridgeCloseEntry);
+            MyLogUtil.d(TAG,"holidayOff modedebug fridgeCloseMode disable="+getControlEntryByName(EnumBaseName.fridgeCloseMode).disable);
             getControlDbMgr().updateEntry(fridgeCloseEntry);
         }
         //广播档位和模式信息给上层
@@ -293,11 +298,13 @@ public class TwoFiveOneModel extends ModelBase {
         //冷藏关
         fridgeCloseEntry.value = 1;
         fridgeCloseEntry.disable = ConstantUtil.NO_WARNING;
+        updateControlByEntry(fridgeCloseEntry);
         getControlDbMgr().updateValue(fridgeCloseEntry);
+        MyLogUtil.d(TAG,"refrigeratorOpen modedebug fridgeCloseMode disable="+getControlEntryByName(EnumBaseName.fridgeCloseMode).disable);
         //冷藏档位不可调节
         setControlDisableByName(EnumBaseName.fridgeTargetTemp, ConstantUtil.REFRIGERATOR_CLOSE_ON_SET_TEMPER_WARNING);
         getControlDbMgr().updateDisableByName(EnumBaseName.fridgeTargetTemp, ConstantUtil.REFRIGERATOR_CLOSE_ON_SET_TEMPER_WARNING);
-
+        MyLogUtil.d(TAG,"refrigeratorOpen modedebug fridgeTargetTemp disable="+getControlEntryByName(EnumBaseName.fridgeTargetTemp).disable);
         //广播档位和模式信息给上层
         mService.sendControlCmdResponse();
 
@@ -307,10 +314,13 @@ public class TwoFiveOneModel extends ModelBase {
         FridgeControlEntry fridgeCloseEntry = getControlEntryByName(EnumBaseName.fridgeCloseMode);
         fridgeCloseEntry.value = 0;
         fridgeCloseEntry.disable = ConstantUtil.NO_WARNING;
+        updateControlByEntry(fridgeCloseEntry);
         getControlDbMgr().updateValue(fridgeCloseEntry);
+        MyLogUtil.d(TAG,"refrigeratorClose modedebug fridgeCloseMode disable="+getControlEntryByName(EnumBaseName.fridgeCloseMode).disable);
         //冷藏档位可调节
         setControlDisableByName(EnumBaseName.fridgeTargetTemp, ConstantUtil.NO_WARNING);
         getControlDbMgr().updateDisableByName(EnumBaseName.fridgeTargetTemp, ConstantUtil.NO_WARNING);
+        MyLogUtil.d(TAG,"refrigeratorClose modedebug fridgeTargetTemp disable="+getControlEntryByName(EnumBaseName.fridgeTargetTemp).disable);
         //广播档位和模式信息给上层
         mService.sendControlCmdResponse();
     }

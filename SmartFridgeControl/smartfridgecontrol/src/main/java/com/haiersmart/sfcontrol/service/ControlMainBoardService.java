@@ -42,9 +42,13 @@ public class ControlMainBoardService extends Service {
     private Boolean mIsModeInitAvialbe = false;
     static final String TAG = "ControlMainBoardService";
     private String mBindData;
+//    private static ControlMainBoardService Instance = new ControlMainBoardService();
 
+//    public static ControlMainBoardService getInstance() {
+//        return Instance;
+//    }
 
-    public ControlMainBoardService() {
+    public  ControlMainBoardService() {
     }
 
     @Override

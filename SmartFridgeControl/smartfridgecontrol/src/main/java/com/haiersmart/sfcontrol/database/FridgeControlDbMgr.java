@@ -5,6 +5,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.haiersmart.sfcontrol.constant.ConstantUtil;
+import com.haiersmart.sfcontrol.constant.EnumBaseName;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +23,7 @@ public class FridgeControlDbMgr {
                     "id " + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     "name " + TEXT_TYPE + COMMA_SEP +
                     "value " + "INTEGER" + COMMA_SEP +
-                    "disable " + "INTEGER" +
+                    "disable " + TEXT_TYPE +
             " )";
 
     private static SQLiteDatabase sdb;
@@ -45,30 +48,30 @@ public class FridgeControlDbMgr {
 
     public void init() {
         List<FridgeControlEntry> checkList = query();
-        if (checkList.size() == 17) {
-            return;
-        }
+//        if (checkList.size() == 17) {
+//            return;
+//        }
         for (FridgeControlEntry entry : checkList) {
             deleteEntry(entry);
         }
         ArrayList<FridgeControlEntry> entries = new ArrayList<FridgeControlEntry>();
-        entries.add(new FridgeControlEntry("smartMode", 1, 0));//0 智能模式
-        entries.add(new FridgeControlEntry("holidayMode", 0, 0));//1 假日模式
-        entries.add(new FridgeControlEntry("purifyMode", 0, 0));//2 净化模式
-        entries.add(new FridgeControlEntry("quickColdMode", 0, 0));//3 速冷模式
-        entries.add(new FridgeControlEntry("quickFreezeMode", 0, 0));//4 速冻模式
-        entries.add(new FridgeControlEntry("tidbitMode", 0, 0));//5 珍品模式
-        entries.add(new FridgeControlEntry("marketDemo", 0, 0));//6
-        entries.add(new FridgeControlEntry("freshLight", 0, 0));//7
-        entries.add(new FridgeControlEntry("strongPurifyMode", 0, 0));//8 强效净化模式
-        entries.add(new FridgeControlEntry("fridgeTargetTemp", 5, 1));//9 冷藏目标温度
-        entries.add(new FridgeControlEntry("freezeTargetTemp", -18, 1));//10 冷冻目标温度
-        entries.add(new FridgeControlEntry("changeTargetTemp", 0, 0));//11 变温目标温度
-        entries.add(new FridgeControlEntry("camera", 0, 0));//12
-        entries.add(new FridgeControlEntry("fridgeCloseMode", 0, 1));//13 冷藏关闭 冷藏档位设置为0
-        entries.add(new FridgeControlEntry("variableOffMode", 0, 0));//14
-        entries.add(new FridgeControlEntry("shutDown", 0, 0));//15
-        entries.add(new FridgeControlEntry("TestMode", 0, 0));//16
+        entries.add(new FridgeControlEntry("smartMode", 1, ConstantUtil.NO_WARNING));//0 智能模式
+        entries.add(new FridgeControlEntry("holidayMode", 0, ConstantUtil.NO_WARNING));//1 假日模式
+        entries.add(new FridgeControlEntry("purifyMode", 0, ConstantUtil.NO_WARNING));//2 净化模式
+        entries.add(new FridgeControlEntry("quickColdMode", 0, ConstantUtil.NO_WARNING));//3 速冷模式
+        entries.add(new FridgeControlEntry("quickFreezeMode", 0, ConstantUtil.NO_WARNING));//4 速冻模式
+        entries.add(new FridgeControlEntry("tidbitMode", 0, ConstantUtil.NO_WARNING));//5 珍品模式
+        entries.add(new FridgeControlEntry("marketDemo", 0, ConstantUtil.NO_WARNING));//6
+        entries.add(new FridgeControlEntry("freshLight", 0, ConstantUtil.NO_WARNING));//7
+        entries.add(new FridgeControlEntry("strongPurifyMode", 0, ConstantUtil.NO_WARNING));//8 强效净化模式
+        entries.add(new FridgeControlEntry("fridgeTargetTemp", 5, ConstantUtil.SMART_ON_SET_TEMPER_WARNING));//9 冷藏目标温度
+        entries.add(new FridgeControlEntry("freezeTargetTemp", -18, ConstantUtil.SMART_ON_SET_TEMPER_WARNING));//10 冷冻目标温度
+        entries.add(new FridgeControlEntry("changeTargetTemp", 0, ConstantUtil.NO_WARNING));//11 变温目标温度
+        entries.add(new FridgeControlEntry("camera", 0, ConstantUtil.NO_WARNING));//12
+        entries.add(new FridgeControlEntry("fridgeCloseMode", 0, ConstantUtil.SMART_ON_REFRIGERATOR_CLOSE_WARNING));//13 冷藏关闭 冷藏档位设置为0
+        entries.add(new FridgeControlEntry("variableOffMode", 0, ConstantUtil.NO_WARNING));//14
+        entries.add(new FridgeControlEntry("shutDown", 0, ConstantUtil.NO_WARNING));//15
+        entries.add(new FridgeControlEntry("TestMode", 0, ConstantUtil.NO_WARNING));//16
         add(entries);
     }
 
@@ -119,7 +122,28 @@ public class FridgeControlDbMgr {
             values.put("value", entry.value);
             sdb.update(TABLE_NAME, values, "name = ?", new String[]{entry.name});
         }
+    }
 
+    public void updateValueByName(EnumBaseName entryName, int entryValue) {
+        synchronized (mDBLock) {
+            if(entryName == null) return;
+            FridgeControlEntry entry = new FridgeControlEntry(entryName.toString());
+            entry.value = entryValue;
+            ContentValues values = new ContentValues();
+            values.put("value", entry.value);
+            sdb.update(TABLE_NAME, values, "name = ?", new String[]{entry.name});
+        }
+    }
+
+    public void updateDisableByName(EnumBaseName entryName, String entryDisable) {
+        synchronized (mDBLock) {
+            if (entryName == null) return;
+            FridgeControlEntry entry = new FridgeControlEntry(entryName.toString());
+            entry.disable = entryDisable;
+            ContentValues values = new ContentValues();
+            values.put("disable", entry.disable);
+            sdb.update(TABLE_NAME, values, "name = ?", new String[]{entry.name});
+        }
     }
 
     public void updateDisable(FridgeControlEntry entry) {
@@ -168,7 +192,7 @@ public class FridgeControlDbMgr {
                 entry.id = c.getInt(c.getColumnIndex("id"));
                 entry.name = c.getString(c.getColumnIndex("name"));
                 entry.value = c.getInt(c.getColumnIndex("value"));
-                entry.disable = c.getInt(c.getColumnIndex("disable"));
+                entry.disable = c.getString(c.getColumnIndex("disable"));
                 entries.add(entry);
             }
             c.close();
@@ -185,7 +209,7 @@ public class FridgeControlDbMgr {
                 if(entry.name.equals(c.getString(c.getColumnIndex("name")))) {
                     entry.id = c.getInt(c.getColumnIndex("id"));
                     entry.value = c.getInt(c.getColumnIndex("value"));
-                    entry.disable = c.getInt(c.getColumnIndex("disable"));
+                    entry.disable = c.getString(c.getColumnIndex("disable"));
                     break;
                 }
             }

@@ -1,5 +1,6 @@
 package com.haiersmart.sfcontrol.service.model;
 
+import com.haiersmart.sfcontrol.constant.EnumBaseName;
 import com.haiersmart.sfcontrol.database.FridgeControlDbMgr;
 import com.haiersmart.sfcontrol.database.FridgeControlEntry;
 import com.haiersmart.sfcontrol.database.FridgeStatusDbMgr;
@@ -40,6 +41,65 @@ public abstract class ModelBase {
 
     public void setUIInitDone(Boolean isDone) {
         mIsUIInitDone = isDone;
+    }
+
+    public int getControlValueByName(EnumBaseName entryName) {
+        int res = -1;
+        String nameString = entryName.toString();
+        for (FridgeControlEntry tempEntry: mControlEntries ){
+            if(tempEntry.name.equals(nameString)) {
+                res = tempEntry.value;
+                break;
+            }
+        }
+        return res;
+    }
+
+    public FridgeControlEntry getControlEntryByName(EnumBaseName entryName) {
+        String nameString = entryName.toString();
+        int listSize = mControlEntries.size();
+        for (int i=0; i<listSize;i++ ){
+            if(mControlEntries.get(i).name.equals(nameString)) {
+                return mControlEntries.get(i);
+            }
+        }
+        FridgeControlEntry entry = new FridgeControlEntry(nameString);
+        entry.value = -1;
+        return entry;
+    }
+
+    public void setControlValueByName(EnumBaseName entryName, int entryValue) {
+        int listSize = mControlEntries.size();
+        String nameString = entryName.toString();
+        for (int i=0; i<listSize;i++ ){
+            if(mControlEntries.get(i).name.equals(nameString)) {
+                mControlEntries.get(i).value = entryValue;
+                break;
+            }
+        }
+    }
+
+    public void setControlDisableByName(EnumBaseName entryName, String entryDisable) {
+        int listSize = mControlEntries.size();
+        String nameString = entryName.toString();
+        for (int i=0; i<listSize;i++ ){
+            if(mControlEntries.get(i).name.equals(nameString)) {
+                mControlEntries.get(i).disable = entryDisable;
+                break;
+            }
+        }
+    }
+
+    public void updateControlByEntry(FridgeControlEntry entry) {
+        int listSize = mControlEntries.size();
+        String nameString = entry.name;
+        for (int i=0; i<listSize;i++ ){
+            if(mControlEntries.get(i).name.equals(nameString)) {
+                mControlEntries.get(i).value = entry.value;
+                mControlEntries.get(i).disable = entry.disable;
+                break;
+            }
+        }
     }
 
     public abstract void init();

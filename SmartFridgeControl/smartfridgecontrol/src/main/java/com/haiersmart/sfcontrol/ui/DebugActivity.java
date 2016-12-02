@@ -13,9 +13,12 @@ import android.widget.TextView;
 import com.haiersmart.sfcontrol.R;
 import com.haiersmart.sfcontrol.constant.EnumBaseName;
 import com.haiersmart.sfcontrol.service.MainBoardParameters;
+import com.haiersmart.sfcontrol.service.configtable.TargetTempRange;
+import com.haiersmart.sfcontrol.service.powerctl.PowerSerialOpt;
 import com.haiersmart.sfcontrol.service.powerctl.SerialData;
 import com.haiersmart.sfcontrol.utilslib.MyLogUtil;
 
+import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -25,13 +28,17 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
     private static final String TAG = "DebugActivity";
     private SerialData mSerialData;
     private MainBoardParameters mMainBoardParameters;
+    private PowerSerialOpt mPowerSerialOpt;
     private String mModel;
+    private TargetTempRange mTargetTempRange;
+    private int mFridgeMin,mFridgeMax,mFreezeMin,mFreezeMax,mChangeMin,mChangeMax;
 
     private Timer mTimer;
 
     private LinearLayout lineEnvTemp,lineEnvHum,lineFridgeTemp,lineFreezeTemp,lineChangeTemp,
             lineFridgeTarget,lineFreezeTarget,lineChangeTarger;
-    private TextView tvFridgeModel,tvStatusCode,tvEnvTemp,tvEnvHum,tvFridgeTemp,tvFreezeTemp,tvChangeTemp;
+    private TextView tvFridgeModel,tvStatusCode,tvEnvTemp,tvEnvHum,tvFridgeTemp,tvFreezeTemp,tvChangeTemp,
+    tvFridgeTarget,tvFreezeTarget,tvChangeTarget;
     private Button btnReturn;
     private SeekBar skbFridge,skbFreeze,skbChange;
 
@@ -41,6 +48,11 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_debug);
         mSerialData = SerialData.getInstance();
         mMainBoardParameters = MainBoardParameters.getInstance();
+        try {
+            mPowerSerialOpt = PowerSerialOpt.getInstance();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         findView();
         mTimer = new Timer();
         mTimer.schedule(mWaitTask,0,1000);
@@ -62,6 +74,9 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
         tvFridgeTemp = (TextView)findViewById(R.id.text_debug_fridge_temp);
         tvFreezeTemp = (TextView)findViewById(R.id.text_debug_freeze_temp);
         tvChangeTemp = (TextView)findViewById(R.id.text_debug_change_temp);
+        tvFridgeTarget = (TextView)findViewById(R.id.text_debug_fridge_target);
+        tvFreezeTarget = (TextView)findViewById(R.id.text_debug_freeze_target);
+        tvChangeTarget = (TextView)findViewById(R.id.text_debug_change_target);
 
         btnReturn = (Button)findViewById(R.id.btn_debug_return);
         btnReturn.setOnClickListener(this);
@@ -69,8 +84,11 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
         skbFridge = (SeekBar)findViewById(R.id.skb_debug_fridge);
         skbFreeze = (SeekBar)findViewById(R.id.skb_debug_freeze);
         skbChange = (SeekBar)findViewById(R.id.skb_debug_change);
+        listenerSeekBar();
+
     }
     private void setView(){
+        initSeekBar();
         switch (mModel){
             case BCD251_MODEL:
                 lineEnvTemp.setVisibility(View.VISIBLE);
@@ -82,6 +100,24 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                 lineChangeTarger.setVisibility(View.VISIBLE);
                 break;
         }
+    }
+    private void initSeekBar(){
+        mTargetTempRange = mMainBoardParameters.getTargetTempRange();
+        mFridgeMin = mTargetTempRange.getFridgeMinValue();
+        mFreezeMin = mTargetTempRange.getFreezeMinValue();
+        mChangeMin = mTargetTempRange.getChangeMinValue();
+        mFridgeMax = mTargetTempRange.getFridgeMaxValue();
+        mFreezeMax = mTargetTempRange.getFreezeMaxValue();
+        mChangeMax = mTargetTempRange.getChangeMaxValue();
+        skbFridge.setMax(mFridgeMax-mFridgeMin);
+        skbFreeze.setMax(mFreezeMax-mFreezeMin);
+        skbChange.setMax(mChangeMax-mChangeMin);
+        skbFridge.setProgress(getControlValueByName(EnumBaseName.fridgeTargetTemp)-mFridgeMin);
+        skbFreeze.setProgress(getControlValueByName(EnumBaseName.freezeTargetTemp)-mFreezeMin);
+        skbChange.setProgress(getControlValueByName(EnumBaseName.changeTargetTemp)-mChangeMin);
+        tvFridgeTarget.setText(Integer.toString(getControlValueByName(EnumBaseName.fridgeTargetTemp))+" ℃");
+        tvFreezeTarget.setText(Integer.toString(getControlValueByName(EnumBaseName.freezeTargetTemp))+" ℃");
+        tvChangeTarget.setText(Integer.toString(getControlValueByName(EnumBaseName.changeTargetTemp))+" ℃");
     }
     private void setModel(){
         mModel = mSerialData.getCurrentModel();
@@ -136,6 +172,12 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
     private String getStatusValueByName(EnumBaseName enumBaseName){
         return Integer.toString(mMainBoardParameters.getMbsValueByName(enumBaseName.toString()));
     }
+    /*private String getControlValueByName(EnumBaseName enumBaseName){
+        return Integer.toString(mMainBoardParameters.getMbcValueByName(enumBaseName.toString()));
+    }*/
+    private int getControlValueByName(EnumBaseName enumBaseName){
+        return mMainBoardParameters.getMbcValueByName(enumBaseName.toString());
+    }
 
     @Override
     public void onClick(View v) {
@@ -144,6 +186,60 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                 finish();
                 break;
         }
+    }
+
+    private void listenerSeekBar(){
+        skbFridge.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                tvFridgeTarget.setText(Integer.toString(progress+mFridgeMin)+" ℃");
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                int progress = seekBar.getProgress();
+                mPowerSerialOpt.sendCmdByName(EnumBaseName.fridgeTargetTemp.toString(),progress+mFridgeMin);
+            }
+        });
+        skbFreeze.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                tvFreezeTarget.setText(Integer.toString(progress+mFreezeMin)+" ℃");
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                int progress = seekBar.getProgress();
+                mPowerSerialOpt.sendCmdByName(EnumBaseName.freezeTargetTemp.toString(),progress+mFreezeMin);
+            }
+        });
+        skbChange.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                tvChangeTarget.setText(Integer.toString(progress+mChangeMin)+" ℃");
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                int progress = seekBar.getProgress();
+                mPowerSerialOpt.sendCmdByName(EnumBaseName.changeTargetTemp.toString(),progress+mChangeMin);
+            }
+        });
     }
 
 

@@ -181,6 +181,10 @@ public class PowerSerialOpt {
         byte[] cmd = mProtocolCommand.PackCmdFrame(EnumBaseName.valueOf(string));
         byteSendList.add(cmd);
     }
+    public void sendCmdByName(String string,int value){
+        byte[] cmd = mProtocolCommand.PackCmdFrame(EnumBaseName.valueOf(string),(byte)value);
+        byteSendList.add(cmd);
+    }
     public void sendCmdById(EnumBaseName mEnumBaseName){
         byte[] cmd = mProtocolCommand.PackCmdFrame(mEnumBaseName);
         byteSendList.add(cmd);

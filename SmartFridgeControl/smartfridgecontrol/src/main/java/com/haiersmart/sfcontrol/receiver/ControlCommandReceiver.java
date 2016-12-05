@@ -54,7 +54,7 @@ public class ControlCommandReceiver extends BroadcastReceiver {
             }else if(contentAction.equals(ConstantUtil.TEMPER_SETCOLD)) {
                 //冷藏档位温度调节
                 int tempValue = intent.getIntExtra(ConstantUtil.KEY_SET_FRIDGE_LEVEL, 0);
-                MyLogUtil.i(TAG, "fridge tempValue="+tempValue);
+                MyLogUtil.i(TAG, "fridge Range tempValue="+tempValue);
                 sendTemperCmdToService(context,ConstantUtil.TEMPER_SETCOLD,ConstantUtil.KEY_SET_FRIDGE_LEVEL,tempValue);
             }else if(contentAction.equals(ConstantUtil.TEMPER_SETCUSTOMAREA)) {
                 //变温档位温度调节

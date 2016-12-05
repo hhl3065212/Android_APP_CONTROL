@@ -59,7 +59,7 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
     private ToggleButton mTbColdSwitch;
     private LinearLayout mLlColdLevel, mLlVariableLevel, mLlFreezeLevel;
     private String mSettingColdWarn,mSettingVariableWarn,mSettingFreezeWarn,mTbColdSwitchWarn;
-    private ControlCommandReceiver mCommandReceiver;
+//    private ControlCommandReceiver mCommandReceiver;
 
 
     @Override
@@ -79,8 +79,8 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
             }
         });
         registerBroadcast();
-        mCommandReceiver = new ControlCommandReceiver();
-        registerCommandBroadcast();
+//        mCommandReceiver = new ControlCommandReceiver();
+//        registerCommandBroadcast();
 
         initService();
         initViews();
@@ -184,9 +184,12 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
         super.onResume();
         if(!mIsBound) {
             initService();
+            MyLogUtil.i(TAG,"onResume Range QUERY_FRIDGE_TEMP_RANGE");
             sendBroadcastToService(ConstantUtil.QUERY_FRIDGE_TEMP_RANGE);
             sendBroadcastToService(ConstantUtil.QUERY_CHANGE_TEMP_RANGE);
             sendBroadcastToService(ConstantUtil.QUERY_FREEZE_TEMP_RANGE);
+            sendBroadcastToService(ConstantUtil.QUERY_CONTROL_INFO);
+            sendBroadcastToService(ConstantUtil.BROADCAST_ACTION_TEMPER);
         } else {
             if(mIsInitDone) {
 //                updateShowTemps();
@@ -194,13 +197,13 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
                 sendBroadcastToService(ConstantUtil.BROADCAST_ACTION_TEMPER);
             }
         }
-        registerBroadcast();
+//        registerBroadcast();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(receiveUpdateUI);
+//        unregisterReceiver(receiveUpdateUI);
     }
 
     @Override
@@ -208,7 +211,7 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
         unbindService(conn);
         stopService(mServiceIntent);
         unregisterReceiver(receiveUpdateUI);
-        unregisterReceiver(mCommandReceiver);
+//        unregisterReceiver(mCommandReceiver);
         super.onDestroy();
     }
 
@@ -304,21 +307,22 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
         intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_FRIDGE_RANGE);
         intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_CHANGE_RANGE);
         intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_FREEZE_RANGE);
+        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_FRIGEID_INFO);
         //intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_ALARM);//报警信息广播
         registerReceiver(receiveUpdateUI, intentFilter);
     }
 
-    private void registerCommandBroadcast() {
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(ConstantUtil.COMMAND_TO_SERVICE);//用户命令模式和档位控制给Service广播
-        registerReceiver(mCommandReceiver, intentFilter);
-    }
+//    private void registerCommandBroadcast() {
+//        IntentFilter intentFilter = new IntentFilter();
+//        intentFilter.addAction(ConstantUtil.COMMAND_TO_SERVICE);//用户命令模式和档位控制给Service广播
+//        registerReceiver(mCommandReceiver, intentFilter);
+//    }
 
     private BroadcastReceiver receiveUpdateUI = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            MyLogUtil.i(TAG, "BroadcastReceiver onReceive action="+ action);
+            MyLogUtil.i(TAG, "BroadcastReceiver onReceive Range action="+ action);
             if (action.equals(ConstantUtil.BROADCAST_ACTION_CONTROL)) {
                 ArrayList<FridgeControlEntry> controlList =
                         (ArrayList<FridgeControlEntry>) intent.getSerializableExtra(ConstantUtil.KEY_CONTROL_INFO);
@@ -340,16 +344,17 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
             } else if (action.equals(ConstantUtil.BROADCAST_ACTION_ERROR)) {
 
             } else if(action.equals(ConstantUtil.BROADCAST_ACTION_FRIDGE_RANGE)) {
-                mFridgeMinValue = intent.getIntExtra("fridgeMinValue", 0);
-                mFridgeMaxValue = intent.getIntExtra("fridgeMaxValue", 0);
+                mFridgeMinValue = intent.getIntExtra(ConstantUtil.FRIDGE_TEMP_MIN, 0);
+                mFridgeMaxValue = intent.getIntExtra(ConstantUtil.FRIDGE_TEMP_MAX, 0);
+                MyLogUtil.i(TAG,"BroadcastReceiver onReceive Range mFridgeMinValue ="+ mFridgeMinValue + "mFridgeMaxValue="+ mFridgeMaxValue);
                 mColdTempSeekbar.setMax(mFridgeMaxValue - mFridgeMinValue);
             } else if(action.equals(ConstantUtil.BROADCAST_ACTION_CHANGE_RANGE)) {
-                mChangeMinValue = intent.getIntExtra("changeMinValue", 0);
-                mChangeMaxValue = intent.getIntExtra("changeMaxValue", 0);
+                mChangeMinValue = intent.getIntExtra(ConstantUtil.CHANGE_TEMP_MIN, 0);
+                mChangeMaxValue = intent.getIntExtra(ConstantUtil.CHANGE_TEMP_MAX, 0);
                 mVarialableTempSeekbar.setMax(mChangeMaxValue - mChangeMinValue);
             } else if(action.equals(ConstantUtil.BROADCAST_ACTION_FREEZE_RANGE)) {
-                mFreezeMinValue = intent.getIntExtra("freezeMinValue", 0);
-                mFreezeMaxValue = intent.getIntExtra("freezeMaxValue", 0);
+                mFreezeMinValue = intent.getIntExtra(ConstantUtil.FREEZE_TEMP_MIN, 0);
+                mFreezeMaxValue = intent.getIntExtra(ConstantUtil.FREEZE_TEMP_MAX, 0);
                 mFreezeTempSeekbar.setMax(mFreezeMaxValue - mFreezeMinValue);
             }
         }
@@ -400,6 +405,7 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
 
         MyLogUtil.i(TAG, "UpdateTempAndModeUI mIsInitDone=" + mIsInitDone);
         if (mFreezeMinValue>=0) {
+            MyLogUtil.i(TAG,"updateTempAndModeUI Range QUERY_FRIDGE_TEMP_RANGE");
             sendBroadcastToService(ConstantUtil.QUERY_FRIDGE_TEMP_RANGE);
             sendBroadcastToService(ConstantUtil.QUERY_CHANGE_TEMP_RANGE);
             sendBroadcastToService(ConstantUtil.QUERY_FREEZE_TEMP_RANGE);

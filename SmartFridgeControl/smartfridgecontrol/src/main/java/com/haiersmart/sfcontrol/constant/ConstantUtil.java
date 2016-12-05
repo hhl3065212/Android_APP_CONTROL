@@ -133,6 +133,12 @@ public class ConstantUtil {
     public static final String QUERY_FRIDGE_TEMP_RANGE = "queryFridgeTempRange";
     public static final String QUERY_CHANGE_TEMP_RANGE = "queryChangeTempRange";
     public static final String QUERY_FREEZE_TEMP_RANGE = "queryFreezeTempRange";
+    public static final String FRIDGE_TEMP_MAX= "fridgeMaxValue";
+    public static final String FRIDGE_TEMP_MIN= "fridgeMinValue";
+    public static final String CHANGE_TEMP_MAX= "changeMaxValue";
+    public static final String CHANGE_TEMP_MIN= "changeMinValue";
+    public static final String FREEZE_TEMP_MAX= "freezeMaxValue";
+    public static final String FREEZE_TEMP_MIN= "freezeMinValue";
 
 
     public static final String QUERY_MODE = "model";

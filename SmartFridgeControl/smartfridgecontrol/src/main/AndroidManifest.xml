@@ -65,6 +65,11 @@
                 <action android:name="com.haiersmart.sfcontrol.alarm"/>
             </intent-filter>
         </receiver>
+        <receiver android:name=".receiver.ControlCommandReceiver">
+            <intent-filter>
+                <action android:name="com.haiersmart.sfcontrol.command"/>
+            </intent-filter>
+        </receiver>
 
     </application>
 

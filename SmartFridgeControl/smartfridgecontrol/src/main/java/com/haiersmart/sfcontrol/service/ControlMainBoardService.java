@@ -82,12 +82,13 @@ public class ControlMainBoardService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null && !TextUtils.isEmpty(intent.getAction())) {
-//            MyLogUtil.i(TAG,"onStartCommand");
             String action = intent.getAction();
+            MyLogUtil.i(TAG,"onStartCommand action="+action);
             switch (action) {
                 case ConstantUtil.TEMPER_SETCOLD://冷藏区温控
                 {
                     int temperCold = intent.getIntExtra(ConstantUtil.KEY_SET_FRIDGE_LEVEL, 0);
+                    MyLogUtil.i(TAG,"onStartCommand TEMPER_SETCOLD temperCold="+temperCold);
                     mModel.setCold(temperCold);
                 }
                     break;
@@ -180,12 +181,12 @@ public class ControlMainBoardService extends Service {
                 MyLogUtil.d(TAG, "handleActions status back");
                 mModel.handleStatusDataResponse();
                 if(!mIsNotifyUpper) {
+                    mIsNotifyUpper = true;
                     provideFridgeTempRange();
                     provideChangeTempRange();
                     provideFreezeTempRange();
                     sendControlCmdResponse();
                     notifyTemperChanged(mModel.getTempEntries());
-                    mIsNotifyUpper = true;
                 }
                 break;
             case ConstantUtil.MODE_SMART_ON://智能开
@@ -253,10 +254,10 @@ public class ControlMainBoardService extends Service {
        String fridgeId = mBoardInfo.getFridgeId();
        if(mIsModeInitAvialbe && (mModel==null) ) {
            initModel(fridgeId);
+           //broadcast fridgeId to app
+           sendFridgeIdResponse(fridgeId);
        }
 
-       //broadcast fridgeId to app
-       sendFridgeIdResponse(fridgeId);
        //update database if value changed
         List<FridgeInfoEntry> infoEntryList = mDBHandle.getInfoDbMgr().query();
         if(infoEntryList.size() > 0) {
@@ -289,6 +290,9 @@ public class ControlMainBoardService extends Service {
 
     public void sendControlCmdResponse() {
         MyLogUtil.d(TAG, "sendControlCmdResponse in");
+        if(!mIsNotifyUpper) {
+            return;
+        }
         Intent intent = new Intent();
         intent.setAction(ConstantUtil.BROADCAST_ACTION_CONTROL);
         intent.putExtra(ConstantUtil.KEY_CONTROL_INFO,(Serializable)mModel.getControlEntries());
@@ -315,26 +319,40 @@ public class ControlMainBoardService extends Service {
     }
 
     public void provideFridgeTempRange(){
+        MyLogUtil.i(TAG,"provideFridgeTempRange in");
+        if(!mIsNotifyUpper) {
+            MyLogUtil.i(TAG,"provideFridgeTempRange !mIsNotifyUpper  out");
+            return;
+        }
         Intent intent = new Intent();
         intent.setAction(ConstantUtil.BROADCAST_ACTION_FRIDGE_RANGE);
-        intent.putExtra("fridgeMaxValue", mMBParams.getTargetTempRange().getFridgeMaxValue());
-        intent.putExtra("fridgeMinValue", mMBParams.getTargetTempRange().getFridgeMinValue());
+        intent.putExtra(ConstantUtil.FRIDGE_TEMP_MAX, mMBParams.getTargetTempRange().getFridgeMaxValue());
+        intent.putExtra(ConstantUtil.FRIDGE_TEMP_MIN, mMBParams.getTargetTempRange().getFridgeMinValue());
         sendBroadcast(intent);
+        MyLogUtil.i(TAG,"provideFridgeTempRange MaxValue="+mMBParams.getTargetTempRange().getFridgeMaxValue());
+        MyLogUtil.i(TAG,"provideFridgeTempRange MinValue="+mMBParams.getTargetTempRange().getFridgeMinValue());
+        MyLogUtil.i(TAG,"provideFridgeTempRange out");
     }
 
     public void provideChangeTempRange(){
+        if(!mIsNotifyUpper) {
+            return;
+        }
         Intent intent = new Intent();
         intent.setAction(ConstantUtil.BROADCAST_ACTION_CHANGE_RANGE);
-        intent.putExtra("changeMaxValue", mMBParams.getTargetTempRange().getChangeMaxValue());
-        intent.putExtra("changeMinValue", mMBParams.getTargetTempRange().getChangeMinValue());
+        intent.putExtra(ConstantUtil.CHANGE_TEMP_MAX, mMBParams.getTargetTempRange().getChangeMaxValue());
+        intent.putExtra(ConstantUtil.CHANGE_TEMP_MIN, mMBParams.getTargetTempRange().getChangeMinValue());
         sendBroadcast(intent);
     }
 
     public void provideFreezeTempRange(){
+        if(!mIsNotifyUpper) {
+            return;
+        }
         Intent intent = new Intent();
         intent.setAction(ConstantUtil.BROADCAST_ACTION_FREEZE_RANGE);
-        intent.putExtra("freezeMaxValue", mMBParams.getTargetTempRange().getFreezeMaxValue());
-        intent.putExtra("freezeMinValue", mMBParams.getTargetTempRange().getFreezeMinValue());
+        intent.putExtra(ConstantUtil.FREEZE_TEMP_MAX, mMBParams.getTargetTempRange().getFreezeMaxValue());
+        intent.putExtra(ConstantUtil.FREEZE_TEMP_MIN, mMBParams.getTargetTempRange().getFreezeMinValue());
         sendBroadcast(intent);
     }
 

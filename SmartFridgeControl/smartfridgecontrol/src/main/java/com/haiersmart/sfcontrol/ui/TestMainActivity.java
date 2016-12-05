@@ -487,7 +487,7 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
         FridgeControlEntry coldLevelEntry = mService.getEntryByName(EnumBaseName.fridgeTargetTemp);//冷藏档位值
         FridgeControlEntry freezeLevelEntry = mService.getEntryByName(EnumBaseName.freezeTargetTemp);//冷冻档位模式
         FridgeControlEntry changeLevelEntry = mService.getEntryByName(EnumBaseName.changeTargetTemp);// 变温档位模式
-        FridgeControlEntry coldSwitchEntry = mService.getEntryByName(EnumBaseName.fridgeCloseMode);//冷藏开关
+        FridgeControlEntry coldSwitchEntry = mService.getEntryByName(EnumBaseName.fridgeSwitch);//冷藏开关
 
         int coldLevel = coldLevelEntry.value;
         int freezeLevel = freezeLevelEntry.value;
@@ -514,18 +514,19 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
             mTvSettingVariable.setText(Integer.toString(changeLevel) + "℃");
         }
 
-        boolean isClose = (coldSwitchEntry.value == 1 ? true : false);//默认0
+        boolean isOpen = (coldSwitchEntry.value == 1 ? true : false);//默认0
         mTbColdSwitchWarn = coldSwitchEntry.disable;
-        mTbColdSwitch.setChecked(!isClose);
+        mTbColdSwitch.setChecked(isOpen);
         MyLogUtil.d(TAG,"modedebug updateTempLevelSettingUI mTbColdSwitchWarn=" + mTbColdSwitchWarn);
 
-        if (isClose) {
-            mTvSettingCold.setTextColor(getResources().getColor(R.color.grey_food_weight));
-            mTvSettingColdContent.setTextColor(getResources().getColor(R.color.grey_food_weight));
-        }
-        else {
+        if (isOpen) {
             mTvSettingCold.setTextColor(getResources().getColor(R.color.black2));
             mTvSettingColdContent.setTextColor(getResources().getColor(R.color.black2));
+        }
+        else {
+            mTvSettingCold.setTextColor(getResources().getColor(R.color.grey_food_weight));
+            mTvSettingColdContent.setTextColor(getResources().getColor(R.color.grey_food_weight));
+
         }
 
 

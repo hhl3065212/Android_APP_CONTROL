@@ -216,7 +216,7 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                 }else {
                     btnQuickFreeze.setOff();
                 }
-                fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.fridgeCloseMode);
+                fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.fridgeSwitch);
                 if(fridgeControlEntry.value == 1){
                     btnFridgeClose.setOn();
                 }else {
@@ -318,7 +318,7 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
     }
     private void initFridgeClose(final int idButton){
         btnFridgeClose = (MyTestButton)findViewById(idButton);
-        btnFridgeClose.setText("冷藏关闭");
+        btnFridgeClose.setText("冷藏开关");
         btnFridgeClose.setEnabled(true);
 
         btnFridgeClose.setOnClickListener(new View.OnClickListener() {
@@ -327,10 +327,10 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                 if(v.getId() == idButton){
                     if(btnFridgeClose.isPress()){
 //                        btnFridgeClose.setOff();
-                        mControlService.sendUserCommond(EnumBaseName.fridgeCloseMode,0);
+                        mControlService.sendUserCommond(EnumBaseName.fridgeSwitch,0);
                     }else {
 //                        btnFridgeClose.setOn();
-                        mControlService.sendUserCommond(EnumBaseName.fridgeCloseMode,1);
+                        mControlService.sendUserCommond(EnumBaseName.fridgeSwitch,1);
                     }
                 }
             }

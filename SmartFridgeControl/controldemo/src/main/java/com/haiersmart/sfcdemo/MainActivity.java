@@ -1,12 +1,10 @@
 package com.haiersmart.sfcdemo;
 
-import android.content.ComponentName;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -15,20 +13,34 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.haiersmart.sfcdemo.constant.ConstantUtil;
+import com.haiersmart.sfcdemo.constant.EnumBaseName;
 import com.haiersmart.sfcdemo.draw.MyTestButton;
 import com.haiersmart.sfcdemo.model.FridgeModel;
-import com.haiersmart.sfcdemo.model.ModelTwoFiveOne;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static android.R.attr.key;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.BCD251_MODEL;
+import static com.haiersmart.sfcdemo.constant.ConstantUtil.BROADCAST_ACTION_CONTROL;
+import static com.haiersmart.sfcdemo.constant.ConstantUtil.BROADCAST_ACTION_ERROR;
+import static com.haiersmart.sfcdemo.constant.ConstantUtil.BROADCAST_ACTION_TEMPER;
+import static com.haiersmart.sfcdemo.constant.ConstantUtil.COMMAND_TO_SERVICE;
+import static com.haiersmart.sfcdemo.constant.ConstantUtil.KEY_MODE;
+import static com.haiersmart.sfcdemo.constant.ConstantUtil.MODE_COLD_OFF;
+import static com.haiersmart.sfcdemo.constant.ConstantUtil.MODE_COLD_ON;
+import static com.haiersmart.sfcdemo.constant.ConstantUtil.MODE_FREEZE_OFF;
+import static com.haiersmart.sfcdemo.constant.ConstantUtil.MODE_HOLIDAY_OFF;
+import static com.haiersmart.sfcdemo.constant.ConstantUtil.MODE_HOLIDAY_ON;
+import static com.haiersmart.sfcdemo.constant.ConstantUtil.MODE_SMART_OFF;
+import static com.haiersmart.sfcdemo.constant.ConstantUtil.MODE_SMART_ON;
+import static com.haiersmart.sfcdemo.constant.ConstantUtil.REFRIGERATOR_OPEN;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private static final String TAG = "MainActivity";
     private boolean mIsBound = false;
     private FridgeModel mModel;
-    private int mFridgeMin,mFridgeMax,mFreezeMin,mFreezeMax,mChangeMin,mChangeMax;
 
     private Timer mTimer;
 
@@ -37,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView tvFridgeModel,tvStatusCode,tvEnvTemp,tvEnvHum,tvFridgeTemp,tvFreezeTemp,tvChangeTemp,
             tvFridgeTarget,tvFreezeTarget,tvChangeTarget;
     private Button btnReturn;
-    private MyTestButton btnSmart,btnHoliday,btnQuickCold,btnQuickFreeze,btnFridgeClose;
+    private MyTestButton btnSmart,btnHoliday,btnQuickCold,btnQuickFreeze,btnFridgeOpen;
     private SeekBar skbFridge,skbFreeze,skbChange;
 
     @Override
@@ -47,6 +59,52 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findView();
         mTimer = new Timer();
         mTimer.schedule(mWaitTask,0,1000);
+    }
+    private BroadcastReceiver receiveUpdateUI = new BroadcastReceiver(){
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if(action.equals(BROADCAST_ACTION_CONTROL)){
+
+            }else if(action.equals(BROADCAST_ACTION_TEMPER)){
+
+            }else if (action.equals(BROADCAST_ACTION_ERROR)) {
+
+            } else if(action.equals(ConstantUtil.BROADCAST_ACTION_FRIDGE_RANGE)) {
+                mModel.mFridgeMax = intent.getIntExtra("fridgeMinValue", 0);
+                mModel.mFridgeMin = intent.getIntExtra("fridgeMaxValue", 0);
+                skbFridge.setMax(mModel.mFridgeMax-mModel.mFridgeMin);
+            } else if(action.equals(ConstantUtil.BROADCAST_ACTION_CHANGE_RANGE)) {
+                mModel.mFreezeMin = intent.getIntExtra("changeMinValue", 0);
+                mModel.mFreezeMax = intent.getIntExtra("changeMaxValue", 0);
+                skbFreeze.setMax(mModel.mFreezeMax-mModel.mFreezeMin);
+            } else if(action.equals(ConstantUtil.BROADCAST_ACTION_FREEZE_RANGE)) {
+                mModel.mChangeMax = intent.getIntExtra("freezeMinValue", 0);
+                mModel.mChangeMin = intent.getIntExtra("freezeMaxValue", 0);
+                skbChange.setMax(mModel.mChangeMax-mModel.mChangeMin);
+            }
+        }
+    };
+
+    private void sendUserCommond(String key,String content){
+        Intent intent = new Intent();
+        intent.setAction(COMMAND_TO_SERVICE);
+        intent.putExtra(key,content);
+        sendBroadcast(intent);
+    }
+    private void sendUserCommond(String keyOne,String contentOne,String keyTwo,String contentTwo){
+        Intent intent = new Intent();
+        intent.setAction(COMMAND_TO_SERVICE);
+        intent.putExtra(keyOne,contentOne);
+        intent.putExtra(keyTwo,contentTwo);
+        sendBroadcast(intent);
+    }
+    private void sendUserCommond(String key,int value){
+        Intent intent = new Intent();
+        intent.setAction(COMMAND_TO_SERVICE);
+        intent.putExtra(key,value);
+        sendBroadcast(intent);
     }
 
     private void findView(){
@@ -80,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
     private void setView(){
-        initSeekBar();
+//        initSeekBar();
         switch (mModel.mFridgeModel){
             case BCD251_MODEL:
                 lineFridgeTemp.setVisibility(View.VISIBLE);
@@ -96,14 +154,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 initFridgeClose(R.id.btn_demo_bottom_left);
                 break;
         }
-    }
-    private void initSeekBar(){
-        skbFridge.setMax(mModel.mFridgeMax-mModel.mFridgeMax);
-        skbFreeze.setMax(mModel.mFreezeMax-mModel.mFreezeMin);
-        skbChange.setMax(mModel.mChangeMax-mModel.mChangeMin);
-        skbFridge.setProgress(-mModel.mFridgeMin);
-        skbFreeze.setProgress(-mModel.mFreezeMin);
-        skbChange.setProgress(-mModel.mChangeMin);
     }
     private void setModel(){
         if(mModel != null) {
@@ -181,16 +231,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnSmart = (MyTestButton)findViewById(idButton);
         btnSmart.setText("智能");
         btnSmart.setEnabled(true);
-
-
         btnSmart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(v.getId() == idButton){
                     if(btnSmart.isPress()){
-                        mControlService.sendUserCommond(EnumBaseName.smartMode,0);
+                        sendUserCommond(KEY_MODE,MODE_SMART_OFF);
                     }else {
-                        mControlService.sendUserCommond(EnumBaseName.smartMode,1);
+                        sendUserCommond(KEY_MODE,MODE_SMART_ON);
                     }
                 }
             }
@@ -206,11 +254,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(View v) {
                 if(v.getId() == idButton){
                     if(btnHoliday.isPress()){
-                        //                        btnHoliday.setOff();
-                        mControlService.sendUserCommond(EnumBaseName.holidayMode,0);
+                        sendUserCommond(KEY_MODE,MODE_HOLIDAY_OFF);
                     }else {
-                        //                        btnHoliday.setOn();
-                        mControlService.sendUserCommond(EnumBaseName.holidayMode,1);
+                        sendUserCommond(KEY_MODE,MODE_HOLIDAY_ON);
                     }
                 }
             }
@@ -226,11 +272,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(View v) {
                 if(v.getId() == idButton){
                     if(btnQuickCold.isPress()){
-                        //                        btnQuickCold.setOff();
-                        mControlService.sendUserCommond(EnumBaseName.quickColdMode,0);
+                        sendUserCommond(KEY_MODE,MODE_COLD_OFF);
                     }else {
-                        //                        btnQuickCold.setOn();
-                        mControlService.sendUserCommond(EnumBaseName.quickColdMode,1);
+                        sendUserCommond(KEY_MODE,MODE_COLD_ON);
                     }
                 }
             }
@@ -246,11 +290,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(View v) {
                 if(v.getId() == idButton){
                     if(btnQuickFreeze.isPress()){
-                        //                        btnQuickFreeze.setOff();
-                        mControlService.sendUserCommond(EnumBaseName.quickFreezeMode,0);
+                        sendUserCommond(KEY_MODE,MODE_FREEZE_OFF);
                     }else {
-                        //                        btnQuickFreeze.setOn();
-                        mControlService.sendUserCommond(EnumBaseName.quickFreezeMode,1);
+                        sendUserCommond(KEY_MODE,MODE_COLD_ON);
                     }
                 }
             }
@@ -266,8 +308,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(View v) {
                 if(v.getId() == idButton){
                     if(btnFridgeClose.isPress()){
-                        //                        btnFridgeClose.setOff();
-                        mControlService.sendUserCommond(EnumBaseName.fridgeCloseMode,0);
+                        sendUserCommond(KEY_MODE,REFRIGERATOR_OPEN);
                     }else {
                         //                        btnFridgeClose.setOn();
                         mControlService.sendUserCommond(EnumBaseName.fridgeCloseMode,1);
@@ -345,6 +386,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         });
+    }
+
+    private void sendBroadcastToService(String actionCmd) {
+        Intent intent = new Intent();
+        intent.setAction(ConstantUtil.COMMAND_TO_SERVICE);
+        intent.putExtra(ConstantUtil.KEY_MODE,actionCmd);
+        sendBroadcast(intent);
     }
 
 

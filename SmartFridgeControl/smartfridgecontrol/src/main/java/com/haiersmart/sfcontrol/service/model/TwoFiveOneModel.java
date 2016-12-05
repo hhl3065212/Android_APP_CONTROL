@@ -89,10 +89,10 @@ public class TwoFiveOneModel extends ModelBase {
                 getControlDbMgr().updateValueByName(EnumBaseName.quickFreezeMode, 0);
             }
 
-            //如果冷藏关闭close，设置open
-            FridgeControlEntry fridgeCloseEntry = getControlEntryByName(EnumBaseName.fridgeCloseMode);
-            if(fridgeCloseEntry.value == 1) {
-                fridgeCloseEntry.value = 0;
+            //如果冷藏关闭，设置open
+            FridgeControlEntry fridgeCloseEntry = getControlEntryByName(EnumBaseName.fridgeSwitch);
+            if(fridgeCloseEntry.value == 0) {
+                fridgeCloseEntry.value = 1;
             }
             //设置冷藏开关不可调节
             fridgeCloseEntry.disable = ConstantUtil.SMART_ON_REFRIGERATOR_CLOSE_WARNING;
@@ -134,8 +134,8 @@ public class TwoFiveOneModel extends ModelBase {
             setControlDisableByName(EnumBaseName.freezeTargetTemp, ConstantUtil.NO_WARNING);
             getControlDbMgr().updateDisableByName(EnumBaseName.freezeTargetTemp, ConstantUtil.NO_WARNING);
             //恢复冷藏关闭可调节
-            FridgeControlEntry fridgeCloseEntry = getControlEntryByName(EnumBaseName.fridgeCloseMode);
-            fridgeCloseEntry.value = 0;
+            FridgeControlEntry fridgeCloseEntry = getControlEntryByName(EnumBaseName.fridgeSwitch);
+            fridgeCloseEntry.value = 1;
             fridgeCloseEntry.disable = ConstantUtil.NO_WARNING;
             updateControlByEntry(fridgeCloseEntry);
             getControlDbMgr().updateEntry(fridgeCloseEntry);
@@ -231,15 +231,15 @@ public class TwoFiveOneModel extends ModelBase {
             MyLogUtil.d(TAG, "holidayOn modedebug  fridgeTargetTemp disable=" + getControlEntryByName(EnumBaseName.fridgeTargetTemp).disable);
 
             //设置冷藏开关不可调节
-            FridgeControlEntry fridgeCloseEntry = getControlEntryByName(EnumBaseName.fridgeCloseMode);
-            //如果冷藏关闭close，设置open
-            if(fridgeCloseEntry.value == 1) {
-                fridgeCloseEntry.value = 0;
+            FridgeControlEntry fridgeCloseEntry = getControlEntryByName(EnumBaseName.fridgeSwitch);
+            //如果冷藏关闭，设置open
+            if(fridgeCloseEntry.value == 0) {
+                fridgeCloseEntry.value = 1;
             }
             fridgeCloseEntry.disable = ConstantUtil.HOLIDAY_ON_REFRIGERATOR_CLOSE_WARNING;
             updateControlByEntry(fridgeCloseEntry);
             getControlDbMgr().updateEntry(fridgeCloseEntry);
-            MyLogUtil.d(TAG,"holidayOn modedebug fridgeCloseMode disable="+getControlEntryByName(EnumBaseName.fridgeCloseMode).disable);
+            MyLogUtil.d(TAG,"holidayOn modedebug fridgeCloseMode disable="+getControlEntryByName(EnumBaseName.fridgeSwitch).disable);
 
             //进假日
             holidayEntry.value = 1;
@@ -266,11 +266,11 @@ public class TwoFiveOneModel extends ModelBase {
             getControlDbMgr().updateDisableByName(EnumBaseName.fridgeTargetTemp, ConstantUtil.NO_WARNING);
             MyLogUtil.d(TAG,"holidayOff modedebug fridgeTargetTemp disable="+getControlEntryByName(EnumBaseName.fridgeTargetTemp).disable);
 
-            FridgeControlEntry fridgeCloseEntry = getControlEntryByName(EnumBaseName.fridgeCloseMode);
-            fridgeCloseEntry.value = 0;
+            FridgeControlEntry fridgeCloseEntry = getControlEntryByName(EnumBaseName.fridgeSwitch);
+            fridgeCloseEntry.value = 1;
             fridgeCloseEntry.disable = ConstantUtil.NO_WARNING;
             updateControlByEntry(fridgeCloseEntry);
-            MyLogUtil.d(TAG,"holidayOff modedebug fridgeCloseMode disable="+getControlEntryByName(EnumBaseName.fridgeCloseMode).disable);
+            MyLogUtil.d(TAG,"holidayOff modedebug fridgeCloseMode disable="+getControlEntryByName(EnumBaseName.fridgeSwitch).disable);
             getControlDbMgr().updateEntry(fridgeCloseEntry);
         }
         //广播档位和模式信息给上层
@@ -314,16 +314,18 @@ public class TwoFiveOneModel extends ModelBase {
     }
     @Override
     public void refrigeratorOpen(){
-        FridgeControlEntry fridgeCloseEntry = getControlEntryByName(EnumBaseName.fridgeCloseMode);
-        //冷藏关
+        FridgeControlEntry fridgeCloseEntry = getControlEntryByName(EnumBaseName.fridgeSwitch);
+        //冷藏开
         fridgeCloseEntry.value = 1;
         fridgeCloseEntry.disable = ConstantUtil.NO_WARNING;
         updateControlByEntry(fridgeCloseEntry);
         getControlDbMgr().updateValue(fridgeCloseEntry);
-        MyLogUtil.d(TAG,"refrigeratorOpen modedebug fridgeCloseMode disable="+getControlEntryByName(EnumBaseName.fridgeCloseMode).disable);
-        //冷藏档位不可调节
-        setControlDisableByName(EnumBaseName.fridgeTargetTemp, ConstantUtil.REFRIGERATOR_CLOSE_ON_SET_TEMPER_WARNING);
-        getControlDbMgr().updateDisableByName(EnumBaseName.fridgeTargetTemp, ConstantUtil.REFRIGERATOR_CLOSE_ON_SET_TEMPER_WARNING);
+        MyLogUtil.d(TAG,"refrigeratorOpen modedebug fridgeCloseMode disable="+getControlEntryByName(EnumBaseName.fridgeSwitch).disable);
+        //冷藏档位可调节
+        setControlDisableByName(EnumBaseName.fridgeTargetTemp, ConstantUtil.NO_WARNING);
+        getControlDbMgr().updateDisableByName(EnumBaseName.fridgeTargetTemp, ConstantUtil.NO_WARNING);
+//        setControlDisableByName(EnumBaseName.fridgeTargetTemp, ConstantUtil.REFRIGERATOR_CLOSE_ON_SET_TEMPER_WARNING);
+//        getControlDbMgr().updateDisableByName(EnumBaseName.fridgeTargetTemp, ConstantUtil.REFRIGERATOR_CLOSE_ON_SET_TEMPER_WARNING);
         MyLogUtil.d(TAG,"refrigeratorOpen modedebug fridgeTargetTemp disable="+getControlEntryByName(EnumBaseName.fridgeTargetTemp).disable);
         //广播档位和模式信息给上层
         mService.sendControlCmdResponse();
@@ -331,15 +333,17 @@ public class TwoFiveOneModel extends ModelBase {
     }
     @Override
     public void refrigeratorClose(){
-        FridgeControlEntry fridgeCloseEntry = getControlEntryByName(EnumBaseName.fridgeCloseMode);
+        FridgeControlEntry fridgeCloseEntry = getControlEntryByName(EnumBaseName.fridgeSwitch);
         fridgeCloseEntry.value = 0;
         fridgeCloseEntry.disable = ConstantUtil.NO_WARNING;
         updateControlByEntry(fridgeCloseEntry);
         getControlDbMgr().updateValue(fridgeCloseEntry);
-        MyLogUtil.d(TAG,"refrigeratorClose modedebug fridgeCloseMode disable="+getControlEntryByName(EnumBaseName.fridgeCloseMode).disable);
-        //冷藏档位可调节
-        setControlDisableByName(EnumBaseName.fridgeTargetTemp, ConstantUtil.NO_WARNING);
-        getControlDbMgr().updateDisableByName(EnumBaseName.fridgeTargetTemp, ConstantUtil.NO_WARNING);
+        MyLogUtil.d(TAG,"refrigeratorClose modedebug fridgeCloseMode disable="+getControlEntryByName(EnumBaseName.fridgeSwitch).disable);
+        //冷藏档位不可调节
+//        setControlDisableByName(EnumBaseName.fridgeTargetTemp, ConstantUtil.NO_WARNING);
+//        getControlDbMgr().updateDisableByName(EnumBaseName.fridgeTargetTemp, ConstantUtil.NO_WARNING);
+        setControlDisableByName(EnumBaseName.fridgeTargetTemp, ConstantUtil.REFRIGERATOR_CLOSE_ON_SET_TEMPER_WARNING);
+        getControlDbMgr().updateDisableByName(EnumBaseName.fridgeTargetTemp, ConstantUtil.REFRIGERATOR_CLOSE_ON_SET_TEMPER_WARNING);
         MyLogUtil.d(TAG,"refrigeratorClose modedebug fridgeTargetTemp disable="+getControlEntryByName(EnumBaseName.fridgeTargetTemp).disable);
         //广播档位和模式信息给上层
         mService.sendControlCmdResponse();

@@ -68,7 +68,7 @@ public class FridgeControlDbMgr {
         entries.add(new FridgeControlEntry("freezeTargetTemp", -18, ConstantUtil.SMART_ON_SET_TEMPER_WARNING));//10 冷冻目标温度
         entries.add(new FridgeControlEntry("changeTargetTemp", 0, ConstantUtil.NO_WARNING));//11 变温目标温度
         entries.add(new FridgeControlEntry("camera", 0, ConstantUtil.NO_WARNING));//12
-        entries.add(new FridgeControlEntry("fridgeCloseMode", 0, ConstantUtil.SMART_ON_REFRIGERATOR_CLOSE_WARNING));//13 冷藏关闭 冷藏档位设置为0
+        entries.add(new FridgeControlEntry("fridgeSwitch", 1, ConstantUtil.SMART_ON_REFRIGERATOR_CLOSE_WARNING));//13 冷藏开关 默认为1
         entries.add(new FridgeControlEntry("variableOffMode", 0, ConstantUtil.NO_WARNING));//14
         entries.add(new FridgeControlEntry("shutDown", 0, ConstantUtil.NO_WARNING));//15
         entries.add(new FridgeControlEntry("TestMode", 0, ConstantUtil.NO_WARNING));//16

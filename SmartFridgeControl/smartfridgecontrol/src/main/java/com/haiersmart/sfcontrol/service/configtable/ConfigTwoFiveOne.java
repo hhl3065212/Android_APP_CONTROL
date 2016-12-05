@@ -51,7 +51,7 @@ public class ConfigTwoFiveOne {
         protocolConfig.add(new ProtocolConfigBase("defrostSensorErr", 1, 29, 0));//化霜传感器故障
         protocolConfig.add(new ProtocolConfigBase("freezeDefrostErr", 1, 29, 6));//冷冻化霜故障
 
-        protocolConfig.add(new ProtocolConfigBase("fridgeCloseMode",0,13,9));//冷藏关闭 冷藏档位设置为0
+        protocolConfig.add(new ProtocolConfigBase("fridgeSwitch",0,13,9));//冷藏关闭 冷藏档位设置为0
 
         //以下不是从主控板获取
         protocolConfig.add(new ProtocolConfigBase("communicationErr",1,1,10));//通信错误

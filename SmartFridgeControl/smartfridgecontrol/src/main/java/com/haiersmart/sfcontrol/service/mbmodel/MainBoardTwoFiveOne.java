@@ -71,8 +71,6 @@ public class MainBoardTwoFiveOne extends MainBoardBase {
                 freezeCmdEn = false;//速冻 不比较冷冻档位
             }else if(fridgeControlEntry.name.equals("quickColdMode")){
                 changeCmdEn = false;//速冷 不比较变温档位
-            }else if(fridgeControlEntry.name.equals("fridgeCloseMode")){
-                fridgeCmdEn = false;//冷藏关闭 不比较冷藏档位
             }
         }
         if(fridgeCmdEn == true){

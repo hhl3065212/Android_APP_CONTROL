@@ -22,7 +22,7 @@ public abstract class FridgeModel {
     public int mFridgeTarget,mFreezeTarget,mChangeTarget;
     public int mFridgeShow,mFreezeShow,mChangeShow;
     public boolean isSmart,isHoliday,isQuickCold,isQuickFreeze,isFridgeClose;
-    public String mFridgeModel;
+    public String mFridgeModel,mFridgeId;
     public String mDisableFridge,mDisableFreeze,mDisableChange,mDisableSmart,mDisableHoliday,mDisableQuickCold,
             mDisableQuickFreeze,mDisableFridgeClose;
 

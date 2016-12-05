@@ -1,4 +1,4 @@
-package com.haiersmart.sfcontrol.constant;
+package com.haiersmart.sfcdemo.constant;
 
 /**
  * Copyright 2016, Smart Haier. All rights reserved.
@@ -18,7 +18,7 @@ public enum EnumBaseName {
     quickFreezeMode("quickFreezeMode"),//
     tidbitMode("tidbitMode"),//
     marketDemo("marketDemo"),//
-    fridgeSwitch("fridgeSwitch"),
+    fridgeCloseMode("fridgeCloseMode"),
     strongPurifyMode("strongPurifyMode"),//
     fridgeTargetTemp("fridgeTargetTemp"),//
     freezeTargetTemp("freezeTargetTemp"),//

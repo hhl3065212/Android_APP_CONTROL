@@ -210,9 +210,9 @@ public abstract class MainBoardBase {
                 mainBoardEntry.setValue(tmpint);
             } else if (mainBoardEntry.getByteShift() == 9) {
                 if ((frame[mainBoardEntry.getStartByte() - 1] & 0x00ff) == 0) {
-                    mainBoardEntry.setValue(1);
-                } else {
                     mainBoardEntry.setValue(0);
+                } else {
+                    mainBoardEntry.setValue(1);
                 }
             }
         }
@@ -372,7 +372,7 @@ public abstract class MainBoardBase {
      *
      * @return 冷藏关闭命令帧
      */
-    protected byte[] packColdClose() {
+    protected byte[] packFridgeClose() {
         return mProtocolCommand.PackCmdFrame(EnumBaseName.fridgeTargetTemp, (byte) 0);
     }
 
@@ -381,7 +381,7 @@ public abstract class MainBoardBase {
      *
      * @return 冷藏打开命令帧
      */
-    protected byte[] packColdOpen() {
+    protected byte[] packFridgeOpen() {
         FridgeControlEntry mFridgeControlEntry = new FridgeControlEntry("fridgeTargetTemp");
         mFridgeControlDbMgr.queryByName(mFridgeControlEntry);
         return packFridgeTargetTemp(mFridgeControlEntry.value);
@@ -406,13 +406,13 @@ public abstract class MainBoardBase {
         byte[] tmp;
         if(b == true) {
             if(string.equals("fridgeCloseMode")){
-                tmp = packColdClose();
+                tmp = packFridgeClose();
             }else {
                 tmp = mProtocolCommand.PackCmdFrame(EnumBaseName.valueOf(string), (byte) 1);
             }
         }else{
             if(string.equals("fridgeCloseMode")){
-                tmp = packColdOpen();
+                tmp = packFridgeOpen();
             }else {
                 tmp = mProtocolCommand.PackCmdFrame(EnumBaseName.valueOf(string), (byte) 0);
             }

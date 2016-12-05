@@ -14,7 +14,6 @@ import com.haiersmart.sfcontrol.database.DBOperation;
 import com.haiersmart.sfcontrol.database.FridgeControlDbMgr;
 import com.haiersmart.sfcontrol.database.FridgeControlEntry;
 import com.haiersmart.sfcontrol.database.FridgeInfoEntry;
-import com.haiersmart.sfcontrol.database.FridgeStatusDbMgr;
 import com.haiersmart.sfcontrol.database.FridgeStatusEntry;
 import com.haiersmart.sfcontrol.service.model.ModelBase;
 import com.haiersmart.sfcontrol.service.model.ModelFactory;
@@ -547,7 +546,7 @@ public class ControlMainBoardService extends Service {
                     stopFreezeOnTime();
                 }
                 break;
-            case fridgeCloseMode:
+            case fridgeSwitch:
                 if(value == 1) {
                     mModel.refrigeratorOpen();
                 }else {

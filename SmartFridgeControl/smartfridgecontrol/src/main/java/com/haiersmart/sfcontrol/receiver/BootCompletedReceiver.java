@@ -1,4 +1,4 @@
-package com.haiersmart.sfcontrol.service;
+package com.haiersmart.sfcontrol.receiver;
 
 
 import android.content.BroadcastReceiver;
@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.haiersmart.sfcontrol.constant.ConstantUtil;
+import com.haiersmart.sfcontrol.service.ControlMainBoardService;
 import com.haiersmart.sfcontrol.utilslib.MyLogUtil;
 
 /**

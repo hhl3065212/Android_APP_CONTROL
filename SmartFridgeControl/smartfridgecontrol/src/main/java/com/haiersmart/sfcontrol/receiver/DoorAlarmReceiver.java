@@ -1,4 +1,4 @@
-package com.haiersmart.sfcontrol.service.alarm;
+package com.haiersmart.sfcontrol.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

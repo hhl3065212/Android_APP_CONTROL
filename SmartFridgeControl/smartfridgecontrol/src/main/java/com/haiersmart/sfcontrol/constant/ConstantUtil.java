@@ -68,18 +68,22 @@ public class ConstantUtil {
     /**
      * broadcast
      */
+    //broadcast from mainboard to service, internal
     public static final String BROADCAST_ACTION_QUERY_BACK = "com.com.haiersmart.sfcontrol.queryback";//冰箱档设备查询码从电控板返回广播
     public static final String BROADCAST_ACTION_STATUS_BACK = "com.haiersmart.sfcontrol.statusback";//冰箱控制和温度等状态从电控板返回广播
     public static final String BROADCAST_ACTION_FRIGEID_INFO = "com.haiersmart.sfcontrol.infochange";//设备fridge id发生变化广播
+    //broadcast to user , external
     public static final String BROADCAST_ACTION_CONTROL = "com.haiersmart.sfcontrol.control";//通知模式和档位信息广播
     public static final String BROADCAST_ACTION_TEMPER = "com.haiersmart.sfcontrol.temper";//通知温度广播
     public static final String BROADCAST_ACTION_ERROR = "com.haiersmart.sfcontrol.error";//通知错误或故障信息广播
     public static final String BROADCAST_ACTION_ALARM = "com.haiersmart.sfcontrol.alarm";//通知报警信息广播
-    public static final String BROADCAST_ACTION_WARNING= "com.haiersmart.sfcontrol.warning";//通知提示信息广播
-
+    public static final String COMMAND_TO_SERVICE = "com.haiersmart.sfcontrol.command";//用户命令给service广播
+    public static final String BROADCAST_ACTION_FRIDGE_RANGE = "com.haiersmart.sfcontrol.fridge.range";//通知冷藏档位大小范围
+    public static final String BROADCAST_ACTION_CHANGE_RANGE = "com.haiersmart.sfcontrol.change.range";//通知变温档位大小范围
+    public static final String BROADCAST_ACTION_FREEZE_RANGE = "com.haiersmart.sfcontrol.freeze.range";//通知冷冻档位大小范围
 
     /**
-     * user command request broadcast
+     * user command request actions
      */
     public static final String MODE_SMART_ON = "openSmartModel";//智能模式
     public static final String MODE_SMART_OFF = "closeSmartModel";//
@@ -117,7 +121,7 @@ public class ConstantUtil {
     public static final String KEY_ERROR = "error";//错误命令key
     public static final String KEY_ALARM = "alarm";//报警key
     public static final String KEY_TEMPER = "temper";
-    public static final String KEY_WARNING = "warning";
+    public static final String KEY_MODE= "commandMode";
 
     public static final String KEY_SET_COLD_LEVEL= "coldlevel";
     public static final String KEY_SET_FRIDGE_LEVEL= "fridgelevel";
@@ -126,6 +130,9 @@ public class ConstantUtil {
     public static final String QUERY_CONTROL_INFO = "queryControlInfo";
     public static final String QUERY_TEMPER_INFO = "queryTemperInfo";
     public static final String QUERY_ERROR_INFO = "queryErrorInfo";
+    public static final String QUERY_FRIDGE_TEMP_RANGE = "queryFridgeTempRange";
+    public static final String QUERY_CHANGE_TEMP_RANGE = "queryChangeTempRange";
+    public static final String QUERY_FREEZE_TEMP_RANGE = "queryFreezeTempRange";
 
 
     public static final String QUERY_MODE = "model";

@@ -215,7 +215,7 @@
         </LinearLayout>
         <!--控制显示-->
         <LinearLayout
-            android:id="@+id/linear_debug_mode"
+            android:id="@+id/linear_debug_control"
             android:layout_width="@dimen/auto_width"
             android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/fab_margin"
@@ -353,11 +353,75 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/linear_debug_mode_button"
+                android:id="@+id/linear_debug_mode"
                 android:layout_width="@dimen/auto_width"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="horizontal">
+                android:padding="@dimen/fab_margin"
+                android:orientation="vertical"
+                android:layout_weight="1">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/auto_height"
+                    android:orientation="horizontal"
+                    android:layout_weight="1">
+                    <com.haiersmart.sfcontrol.draw.MyTestButton
+                        android:id="@+id/btn_debug_top_left"
+                        android:layout_width="@dimen/auto_width"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:textSize="@dimen/text_size_50"
+                        android:enabled="false"/>
+                    <com.haiersmart.sfcontrol.draw.MyTestButton
+                        android:id="@+id/btn_debug_top_right"
+                        android:layout_width="@dimen/auto_width"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="@dimen/fab_margin"
+                        android:layout_weight="1"
+                        android:textSize="@dimen/text_size_50"
+                        android:enabled="false"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/auto_height"
+                    android:layout_marginTop="@dimen/fab_margin"
+                    android:layout_weight="1">
+                    <com.haiersmart.sfcontrol.draw.MyTestButton
+                        android:id="@+id/btn_debug_center_left"
+                        android:layout_width="@dimen/auto_width"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:textSize="@dimen/text_size_50"
+                        android:enabled="false"/>
+                    <com.haiersmart.sfcontrol.draw.MyTestButton
+                        android:id="@+id/btn_debug_center_right"
+                        android:layout_width="@dimen/auto_width"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="@dimen/fab_margin"
+                        android:layout_weight="1"
+                        android:textSize="@dimen/text_size_50"
+                        android:enabled="false"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/auto_height"
+                    android:layout_marginTop="@dimen/fab_margin"
+                    android:layout_weight="1">
+                    <com.haiersmart.sfcontrol.draw.MyTestButton
+                        android:id="@+id/btn_debug_bottom_left"
+                        android:layout_width="@dimen/auto_width"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:textSize="@dimen/text_size_50"
+                        android:enabled="false"/>
+                    <com.haiersmart.sfcontrol.draw.MyTestButton
+                        android:id="@+id/btn_debug_bottom_right"
+                        android:layout_width="@dimen/auto_width"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="@dimen/fab_margin"
+                        android:layout_weight="1"
+                        android:textSize="@dimen/text_size_50"
+                        android:enabled="false"/>
+                </LinearLayout>
 
 
             </LinearLayout>

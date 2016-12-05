@@ -5,6 +5,7 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="tab_margin">20dp</dimen>
     <dimen name="auto_width">0dp</dimen>
+    <dimen name="auto_height">0dp</dimen>
 
     <dimen name="text_size_22">18sp</dimen>
     <dimen name="text_size_24">20sp</dimen>
@@ -12,4 +13,5 @@
     <dimen name="text_size_32">28sp</dimen>
     <dimen name="text_size_36">32sp</dimen>
     <dimen name="text_size_40">36sp</dimen>
+    <dimen name="text_size_50">46sp</dimen>
 </resources>

@@ -29,10 +29,10 @@
             android:name=".ui.TestMainActivity"
             android:label="@string/title_activity_test_main"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN"/>-->
+                <!--<category android:name="android.intent.category.LAUNCHER"/>-->
+            <!--</intent-filter>-->
         </activity>
         <activity
             android:name=".ui.DoorAlarmActivity"
@@ -47,10 +47,10 @@
             <!-- </intent-filter> -->
         </activity>
         <activity android:name=".ui.DebugActivity">
-             <!--<intent-filter>-->
-             <!--<action android:name="android.intent.action.MAIN" />-->
-             <!--<category android:name="android.intent.category.LAUNCHER" />-->
-             <!--</intent-filter>-->
+             <intent-filter>
+             <action android:name="android.intent.action.MAIN" />
+             <category android:name="android.intent.category.LAUNCHER" />
+             </intent-filter>
         </activity>
 
         <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>

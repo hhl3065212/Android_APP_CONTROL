@@ -479,4 +479,59 @@ public class ControlMainBoardService extends Service {
         }
     }
 
+    public void sendUserCommond(EnumBaseName enumBaseName,int value){
+        switch (enumBaseName){
+            case smartMode:
+                if(value == 1) {
+                    mModel.smartOn();
+                }else {
+                    mModel.smartOff();
+                }
+                break;
+            case holidayMode:
+                if(value == 1) {
+                    mModel.holidayOn();
+                }else {
+                    mModel.holidayOff();
+                }
+                break;
+            case quickColdMode:
+                if(value == 1) {
+                    mModel.coldOn();
+                    startColdOnTime();
+                }else {
+                    mModel.coldOff();
+                    stopColdOnTime();
+                }
+                break;
+            case quickFreezeMode:
+                if(value == 1) {
+                    mModel.freezeOn();
+                    startFreezeOnTime();
+                }else {
+                    mModel.freezeOff();
+                    stopFreezeOnTime();
+                }
+                break;
+            case fridgeCloseMode:
+                if(value == 1) {
+                    mModel.refrigeratorOpen();
+                }else {
+                    mModel.refrigeratorClose();
+                }
+                break;
+            case fridgeTargetTemp:
+                mModel.setCold(value);
+                break;
+            case freezeTargetTemp:
+                mModel.setFreeze(value);
+                break;
+            case changeTargetTemp:
+                mModel.setCustomArea(value);
+            default:
+                mModel.getControlEntries();
+        }
+
+    }
+
 } //End of class

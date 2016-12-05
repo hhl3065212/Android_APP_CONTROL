@@ -1,6 +1,7 @@
 package com.haiersmart.sfcdemo;
 
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -14,7 +15,6 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.haiersmart.sfcdemo.constant.ConstantUtil;
 import com.haiersmart.sfcdemo.draw.MyTestButton;
 import com.haiersmart.sfcdemo.model.FridgeModel;
 
@@ -23,8 +23,11 @@ import java.util.TimerTask;
 
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.BCD251_MODEL;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.BROADCAST_ACTION_ALARM;
+import static com.haiersmart.sfcdemo.constant.ConstantUtil.BROADCAST_ACTION_CHANGE_RANGE;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.BROADCAST_ACTION_CONTROL;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.BROADCAST_ACTION_ERROR;
+import static com.haiersmart.sfcdemo.constant.ConstantUtil.BROADCAST_ACTION_FREEZE_RANGE;
+import static com.haiersmart.sfcdemo.constant.ConstantUtil.BROADCAST_ACTION_FRIDGE_RANGE;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.BROADCAST_ACTION_INFO;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.BROADCAST_ACTION_TEMPER;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.COMMAND_TO_SERVICE;
@@ -40,6 +43,9 @@ import static com.haiersmart.sfcdemo.constant.ConstantUtil.MODE_HOLIDAY_OFF;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.MODE_HOLIDAY_ON;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.MODE_SMART_OFF;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.MODE_SMART_ON;
+import static com.haiersmart.sfcdemo.constant.ConstantUtil.QUERY_CHANGE_TEMP_RANGE;
+import static com.haiersmart.sfcdemo.constant.ConstantUtil.QUERY_FREEZE_TEMP_RANGE;
+import static com.haiersmart.sfcdemo.constant.ConstantUtil.QUERY_FRIDGE_TEMP_RANGE;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.REFRIGERATOR_CLOSE;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.REFRIGERATOR_OPEN;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.TEMPER_SETCOLD;
@@ -65,9 +71,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Intent intent
+        Intent intent = new Intent();
+        intent.setComponent(new ComponentName("com.haiersmart.sfcontrol","com.haiersmart.sfcontrol.service.ControlMainBoardService"));
+        startService(intent);
         registerBroadcast();
-        sendGetFridgeType();
+        sendUserCommond(KEY_MODE,FRIDGETYPE);
+        sendUserCommond(KEY_MODE,QUERY_FRIDGE_TEMP_RANGE);
+        sendUserCommond(KEY_MODE,QUERY_FREEZE_TEMP_RANGE);
+        sendUserCommond(KEY_MODE,QUERY_CHANGE_TEMP_RANGE);
         findView();
         mTimer = new Timer();
         mTimer.schedule(mWaitTask,0,1000);
@@ -93,13 +104,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void registerBroadcast() {
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_CONTROL);//模式和档位信息广播
-        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_TEMPER);//温度广播
-        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_ERROR);//错误或故障信息广播
+        intentFilter.addAction(BROADCAST_ACTION_CONTROL);//模式和档位信息广播
+        intentFilter.addAction(BROADCAST_ACTION_TEMPER);//温度广播
+        intentFilter.addAction(BROADCAST_ACTION_ERROR);//错误或故障信息广播
         intentFilter.addAction(BROADCAST_ACTION_ALARM);
-        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_FRIDGE_RANGE);
-        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_CHANGE_RANGE);
-        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_FREEZE_RANGE);
+        intentFilter.addAction(BROADCAST_ACTION_FRIDGE_RANGE);
+        intentFilter.addAction(BROADCAST_ACTION_CHANGE_RANGE);
+        intentFilter.addAction(BROADCAST_ACTION_FREEZE_RANGE);
         registerReceiver(receiveUpdateUI, intentFilter);
     }
     private BroadcastReceiver receiveUpdateUI = new BroadcastReceiver(){
@@ -115,18 +126,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             } else if (action.equals(BROADCAST_ACTION_ALARM)) {
 
-            }else if(action.equals(ConstantUtil.BROADCAST_ACTION_FRIDGE_RANGE)) {
-                mModel.mFridgeMax = intent.getIntExtra("fridgeMinValue", 0);
-                mModel.mFridgeMin = intent.getIntExtra("fridgeMaxValue", 0);
+            }else if(action.equals(BROADCAST_ACTION_FRIDGE_RANGE)) {
+                mModel.mFridgeMin = intent.getIntExtra("fridgeMinValue", 0);
+                mModel.mFridgeMax = intent.getIntExtra("fridgeMaxValue", 0);
                 skbFridge.setMax(mModel.mFridgeMax-mModel.mFridgeMin);
-            } else if(action.equals(ConstantUtil.BROADCAST_ACTION_CHANGE_RANGE)) {
-                mModel.mFreezeMin = intent.getIntExtra("changeMinValue", 0);
-                mModel.mFreezeMax = intent.getIntExtra("changeMaxValue", 0);
-                skbFreeze.setMax(mModel.mFreezeMax-mModel.mFreezeMin);
-            } else if(action.equals(ConstantUtil.BROADCAST_ACTION_FREEZE_RANGE)) {
-                mModel.mChangeMax = intent.getIntExtra("freezeMinValue", 0);
-                mModel.mChangeMin = intent.getIntExtra("freezeMaxValue", 0);
+            } else if(action.equals(BROADCAST_ACTION_CHANGE_RANGE)) {
+                mModel.mChangeMin = intent.getIntExtra("changeMinValue", 0);
+                mModel.mChangeMax = intent.getIntExtra("changeMaxValue", 0);
                 skbChange.setMax(mModel.mChangeMax-mModel.mChangeMin);
+            } else if(action.equals(BROADCAST_ACTION_FREEZE_RANGE)) {
+                mModel.mFreezeMin = intent.getIntExtra("freezeMinValue", 0);
+                mModel.mFreezeMax = intent.getIntExtra("freezeMaxValue", 0);
+                skbFreeze.setMax(mModel.mFreezeMax-mModel.mFreezeMin);
             }else if(action.equals(FRIDGETYPE)){
                 mModel.mFridgeModel  = intent.getStringExtra(BROADCAST_ACTION_INFO);
             }
@@ -201,14 +212,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
     }
-    private void sendGetFridgeType(){
-        if(mModel.mFridgeModel == null) {
-            sendUserCommond(BROADCAST_ACTION_INFO,FRIDGETYPE);
-        }
-    }
-    private void setModel(){
 
-        if(mModel.mFridgeModel != null) {
+    private void setModel(){
+        if(mModel.mFridgeModel == null) {
+            mModel.mFridgeModel = BCD251_MODEL;
             tvFridgeModel.setText(mModel.mFridgeModel);
             mWaitTask.cancel();
             setView();
@@ -220,6 +227,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void run() {
             mHandler.sendEmptyMessage(0x01);
+//            setModel();
         }
     };
 
@@ -227,6 +235,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void run() {
             mHandler.sendEmptyMessage(0x02);
+//            refreshUI();
         }
     };
     private Handler mHandler = new Handler() {

@@ -61,7 +61,8 @@
         android:layout_height="100dp"
         android:layout_marginTop="@dimen/fab_margin"
         android:background="@drawable/linear_layout"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/title_demo_status_code"

@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:tools="http://schemas.android.com/tools"
-              android:id="@+id/linear_activity_debug"
+              android:id="@+id/linear_activity_demo"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:layout_margin="@dimen/tab_margin"
               android:orientation="vertical">
     <!--标题-->
     <LinearLayout
-        android:id="@+id/linear_debug_header"
+        android:id="@+id/linear_demo_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal">
 
         <LinearLayout
-            android:id="@+id/linear_debug_fridge_model"
+            android:id="@+id/linear_demo_fridge_model"
             android:layout_width="@dimen/auto_width"
             android:layout_height="wrap_content"
             android:layout_weight="5"
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/title_debug_fridge_model"
+                android:id="@+id/title_demo_fridge_model"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="@string/title_fridge_model"
                 android:textSize="@dimen/text_size_40"/>
 
             <TextView
-                android:id="@+id/text_debug_fridge_model"
+                android:id="@+id/text_demo_fridge_model"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="@dimen/tab_margin"
@@ -37,7 +37,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linear_debug_return"
+            android:id="@+id/linear_demo_return"
             android:layout_width="@dimen/auto_width"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -45,7 +45,7 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/btn_debug_return"
+                android:id="@+id/btn_demo_return"
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
                 android:text="@string/return_title"
@@ -56,7 +56,7 @@
     </LinearLayout>
     <!--状态码显示-->
     <LinearLayout
-        android:id="@+id/linear_debug_status_code"
+        android:id="@+id/linear_demo_status_code"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_marginTop="@dimen/fab_margin"
@@ -64,7 +64,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/title_debug_status_code"
+            android:id="@+id/title_demo_status_code"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
@@ -72,7 +72,7 @@
             android:textSize="@dimen/text_size_32"/>
 
         <TextView
-            android:id="@+id/text_debug_status_code"
+            android:id="@+id/text_demo_status_code"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/tab_margin"
@@ -80,7 +80,7 @@
     </LinearLayout>
     <!--主体显示-->
     <LinearLayout
-        android:id="@+id/linear_debug_body"
+        android:id="@+id/linear_demo_body"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/fab_margin"
@@ -88,7 +88,7 @@
         android:orientation="horizontal">
         <!--状态显示-->
         <LinearLayout
-            android:id="@+id/linear_debug_status"
+            android:id="@+id/linear_demo_status"
             android:layout_width="@dimen/auto_width"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -97,7 +97,7 @@
             android:padding="@dimen/fab_margin">
             <!--环境温度-->
             <LinearLayout
-                android:id="@+id/linear_debug_env_temp"
+                android:id="@+id/linear_demo_env_temp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/fab_margin"
@@ -105,14 +105,14 @@
                 android:visibility="gone">
 
                 <TextView
-                    android:id="@+id/title_debug_env_temp"
+                    android:id="@+id/title_demo_env_temp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/title_env_temp"
                     android:textSize="@dimen/text_size_32"/>
 
                 <TextView
-                    android:id="@+id/text_debug_env_temp"
+                    android:id="@+id/text_demo_env_temp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/tab_margin"
@@ -120,7 +120,7 @@
             </LinearLayout>
             <!--环境湿度-->
             <LinearLayout
-                android:id="@+id/linear_debug_env_hum"
+                android:id="@+id/linear_demo_env_hum"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/fab_margin"
@@ -128,14 +128,14 @@
                 android:visibility="gone">
 
                 <TextView
-                    android:id="@+id/title_debug_env_thum"
+                    android:id="@+id/title_demo_env_thum"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/title_env_hum"
                     android:textSize="@dimen/text_size_32"/>
 
                 <TextView
-                    android:id="@+id/text_debug_env_hum"
+                    android:id="@+id/text_demo_env_hum"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/tab_margin"
@@ -143,7 +143,7 @@
             </LinearLayout>
             <!--冷藏温度-->
             <LinearLayout
-                android:id="@+id/linear_debug_fridge_temp"
+                android:id="@+id/linear_demo_fridge_temp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/fab_margin"
@@ -151,14 +151,14 @@
                 android:visibility="gone">
 
                 <TextView
-                    android:id="@+id/title_debug_fridge_temp"
+                    android:id="@+id/title_demo_fridge_temp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/title_fridge_temp"
                     android:textSize="@dimen/text_size_32"/>
 
                 <TextView
-                    android:id="@+id/text_debug_fridge_temp"
+                    android:id="@+id/text_demo_fridge_temp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/tab_margin"
@@ -166,7 +166,7 @@
             </LinearLayout>
             <!--冷冻温度-->
             <LinearLayout
-                android:id="@+id/linear_debug_freeze_temp"
+                android:id="@+id/linear_demo_freeze_temp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/fab_margin"
@@ -174,14 +174,14 @@
                 android:visibility="gone">
 
                 <TextView
-                    android:id="@+id/title_debug_freeze_temp"
+                    android:id="@+id/title_demo_freeze_temp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/title_freeze_temp"
                     android:textSize="@dimen/text_size_32"/>
 
                 <TextView
-                    android:id="@+id/text_debug_freeze_temp"
+                    android:id="@+id/text_demo_freeze_temp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/tab_margin"
@@ -189,7 +189,7 @@
             </LinearLayout>
             <!--变温温度-->
             <LinearLayout
-                android:id="@+id/linear_debug_change_temp"
+                android:id="@+id/linear_demo_change_temp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/fab_margin"
@@ -197,14 +197,14 @@
                 android:visibility="gone">
 
                 <TextView
-                    android:id="@+id/title_debug_change_temp"
+                    android:id="@+id/title_demo_change_temp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/title_change_temp"
                     android:textSize="@dimen/text_size_32"/>
 
                 <TextView
-                    android:id="@+id/text_debug_change_temp"
+                    android:id="@+id/text_demo_change_temp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/tab_margin"
@@ -215,7 +215,7 @@
         </LinearLayout>
         <!--控制显示-->
         <LinearLayout
-            android:id="@+id/linear_debug_control"
+            android:id="@+id/linear_demo_control"
             android:layout_width="@dimen/auto_width"
             android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/fab_margin"
@@ -224,7 +224,7 @@
             android:orientation="horizontal">
             <!--档位控制-->
             <LinearLayout
-                android:id="@+id/linear_debug_temp_gear"
+                android:id="@+id/linear_demo_temp_gear"
                 android:layout_width="@dimen/auto_width"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -232,7 +232,7 @@
                 android:orientation="vertical">
                 <!--冷藏室档位-->
                 <LinearLayout
-                    android:id="@+id/linear_debug_skb_fridge"
+                    android:id="@+id/linear_demo_skb_fridge"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/gray2"
@@ -248,14 +248,14 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/title_debug_fridge_room"
+                            android:id="@+id/title_demo_fridge_room"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/title_fridge_room"
                             android:textSize="@dimen/text_size_32"/>
 
                         <TextView
-                            android:id="@+id/text_debug_fridge_target"
+                            android:id="@+id/text_demo_fridge_target"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/tab_margin"
@@ -264,7 +264,7 @@
                     </LinearLayout>
 
                     <SeekBar
-                        android:id="@+id/skb_debug_fridge"
+                        android:id="@+id/skb_demo_fridge"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/tab_margin"
@@ -272,7 +272,7 @@
                 </LinearLayout>
                 <!--冷冻室档位-->
                 <LinearLayout
-                    android:id="@+id/linear_debug_skb_freeze"
+                    android:id="@+id/linear_demo_skb_freeze"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/fab_margin"
@@ -289,14 +289,14 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/title_debug_freeze_room"
+                            android:id="@+id/title_demo_freeze_room"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/title_freeze_room"
                             android:textSize="@dimen/text_size_32"/>
 
                         <TextView
-                            android:id="@+id/text_debug_freeze_target"
+                            android:id="@+id/text_demo_freeze_target"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/tab_margin"
@@ -305,14 +305,14 @@
                     </LinearLayout>
 
                     <SeekBar
-                        android:id="@+id/skb_debug_freeze"
+                        android:id="@+id/skb_demo_freeze"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/tab_margin"/>
                 </LinearLayout>
                 <!--变温室档位-->
                 <LinearLayout
-                    android:id="@+id/linear_debug_skb_change"
+                    android:id="@+id/linear_demo_skb_change"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/fab_margin"
@@ -329,14 +329,14 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/title_debug_change_room"
+                            android:id="@+id/title_demo_change_room"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/title_change_room"
                             android:textSize="@dimen/text_size_32"/>
 
                         <TextView
-                            android:id="@+id/text_debug_change_target"
+                            android:id="@+id/text_demo_change_target"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/tab_margin"
@@ -345,7 +345,7 @@
                     </LinearLayout>
 
                     <SeekBar
-                        android:id="@+id/skb_debug_change"
+                        android:id="@+id/skb_demo_change"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/tab_margin"/>
@@ -353,7 +353,7 @@
             </LinearLayout>
             <!--模式控制-->
             <LinearLayout
-                android:id="@+id/linear_debug_mode"
+                android:id="@+id/linear_demo_mode"
                 android:layout_width="@dimen/auto_width"
                 android:layout_height="match_parent"
                 android:padding="@dimen/fab_margin"
@@ -365,35 +365,14 @@
                     android:orientation="horizontal"
                     android:layout_weight="1">
                     <com.haiersmart.sfcontrol.draw.MyTestButton
-                        android:id="@+id/btn_debug_top_left"
+                        android:id="@+id/btn_demo_top_left"
                         android:layout_width="@dimen/auto_width"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:textSize="@dimen/text_size_50"
                         android:enabled="false"/>
                     <com.haiersmart.sfcontrol.draw.MyTestButton
-                        android:id="@+id/btn_debug_top_right"
-                        android:layout_width="@dimen/auto_width"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="@dimen/fab_margin"
-                        android:layout_weight="1"
-                        android:textSize="@dimen/text_size_50"
-                        android:enabled="false"/>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/auto_height"
-                    android:layout_marginTop="@dimen/fab_margin"
-                    android:layout_weight="1">
-                    <com.haiersmart.sfcontrol.draw.MyTestButton
-                        android:id="@+id/btn_debug_center_left"
-                        android:layout_width="@dimen/auto_width"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:textSize="@dimen/text_size_50"
-                        android:enabled="false"/>
-                    <com.haiersmart.sfcontrol.draw.MyTestButton
-                        android:id="@+id/btn_debug_center_right"
+                        android:id="@+id/btn_demo_top_right"
                         android:layout_width="@dimen/auto_width"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="@dimen/fab_margin"
@@ -407,14 +386,35 @@
                     android:layout_marginTop="@dimen/fab_margin"
                     android:layout_weight="1">
                     <com.haiersmart.sfcontrol.draw.MyTestButton
-                        android:id="@+id/btn_debug_bottom_left"
+                        android:id="@+id/btn_demo_center_left"
                         android:layout_width="@dimen/auto_width"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:textSize="@dimen/text_size_50"
                         android:enabled="false"/>
                     <com.haiersmart.sfcontrol.draw.MyTestButton
-                        android:id="@+id/btn_debug_bottom_right"
+                        android:id="@+id/btn_demo_center_right"
+                        android:layout_width="@dimen/auto_width"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="@dimen/fab_margin"
+                        android:layout_weight="1"
+                        android:textSize="@dimen/text_size_50"
+                        android:enabled="false"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/auto_height"
+                    android:layout_marginTop="@dimen/fab_margin"
+                    android:layout_weight="1">
+                    <com.haiersmart.sfcontrol.draw.MyTestButton
+                        android:id="@+id/btn_demo_bottom_left"
+                        android:layout_width="@dimen/auto_width"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:textSize="@dimen/text_size_50"
+                        android:enabled="false"/>
+                    <com.haiersmart.sfcontrol.draw.MyTestButton
+                        android:id="@+id/btn_demo_bottom_right"
                         android:layout_width="@dimen/auto_width"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="@dimen/fab_margin"
@@ -432,3 +432,4 @@
     </LinearLayout>
 
 </LinearLayout>
+

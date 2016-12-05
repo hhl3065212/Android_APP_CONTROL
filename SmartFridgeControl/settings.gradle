@@ -1,2 +1,2 @@
-include ':smartfridgecontrol',':haier-wifiModule-new'
+include ':smartfridgecontrol', ':haier-wifiModule-new', ':controldemo'
 //':mobile', ':tv',

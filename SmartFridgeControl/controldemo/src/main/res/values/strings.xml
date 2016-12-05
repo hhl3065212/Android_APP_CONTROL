@@ -1,0 +1,28 @@
+
+<resources>
+<string name="app_name">sfcdemo</string>
+<string name="cold_door_warn">冷藏门开启报警！</string>
+<!--通用-->
+<string name="return_title">返回</string>
+<!--冰箱状态-->
+<string name="status_code_title">状态码</string>
+<string name="env_temp_title">环境温度</string>
+<string name="env_hum_title">环境湿度</string>
+<string name="fridge_temp_title">冷藏室温度</string>
+<string name="freeze_temp_title">冷冻室温度</string>
+<string name="change_temp_title">变温室温度</string>
+
+
+<!--后台测试界面-->
+<string name="title_fridge_model">冰箱型号</string>
+<string name="title_activity_debug">DebugActivity</string>
+<string name="title_status_code">状态码</string>
+<string name="title_env_temp">环境温度</string>
+<string name="title_env_hum">环境湿度</string>
+<string name="title_fridge_room">冷藏室</string>
+<string name="title_freeze_room">冷冻室</string>
+<string name="title_change_room">变温室</string>
+<string name="title_fridge_temp">冷藏温度</string>
+<string name="title_freeze_temp">冷冻温度</string>
+<string name="title_change_temp">变温温度</string>
+</resources>

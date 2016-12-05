@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="mine_textcolor">#333333</color>
+    <color name="gray2">#ededed</color>
+    <color name="orange_red">#FFA000</color>
+    <color name="transparent">#00000000</color>
+    <color name="gray_normal_line">#d2d2d2</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="my_sure">#e3e1dd</color>
+    <color name="mine_others_background">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="grey_food_weight">#cccccc</color>
+    <color name="black2">#333333</color>
+    <color name="warn_green_text">#8bc638</color>
+    <color name="transparent_half_half">#66000000</color>
+</resources>

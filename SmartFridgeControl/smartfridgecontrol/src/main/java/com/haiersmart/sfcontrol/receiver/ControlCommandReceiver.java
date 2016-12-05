@@ -72,6 +72,24 @@ public class ControlCommandReceiver extends BroadcastReceiver {
             }else if(contentAction.equals(ConstantUtil.REFRIGERATOR_OPEN)) {
                 //冷藏关闭开（冷藏室关）
                 sendCommandToService(context, ConstantUtil.REFRIGERATOR_OPEN);
+            }else if(contentAction.equals(ConstantUtil.QUERY_CONTROL_INFO)) {
+                //查询档位模式Info
+                sendCommandToService(context, ConstantUtil.QUERY_CONTROL_INFO);
+            }else if(contentAction.equals(ConstantUtil.QUERY_TEMPER_INFO)) {
+                //查询温度Info
+                sendCommandToService(context, ConstantUtil.QUERY_TEMPER_INFO);
+            }else if(contentAction.equals(ConstantUtil.QUERY_ERROR_INFO)) {
+                //查询故障Info
+                sendCommandToService(context, ConstantUtil.QUERY_ERROR_INFO);
+            }else if(contentAction.equals(ConstantUtil.QUERY_FRIDGE_TEMP_RANGE)) {
+                //查询冷藏室温度档位范围
+                sendCommandToService(context, ConstantUtil.QUERY_FRIDGE_TEMP_RANGE);
+            }else if(contentAction.equals(ConstantUtil.QUERY_CHANGE_TEMP_RANGE)) {
+                //查询变温室温度档位范围
+                sendCommandToService(context, ConstantUtil.QUERY_CHANGE_TEMP_RANGE);
+            }else if(contentAction.equals(ConstantUtil.QUERY_FREEZE_TEMP_RANGE)) {
+                //查询冷冻室温度档位范围
+                sendCommandToService(context, ConstantUtil.QUERY_FREEZE_TEMP_RANGE);
             }
         }
     }

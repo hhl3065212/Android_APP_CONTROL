@@ -4,9 +4,11 @@ import com.haiersmart.sfcontrol.constant.EnumBaseName;
 import com.haiersmart.sfcontrol.database.FridgeControlDbMgr;
 import com.haiersmart.sfcontrol.database.FridgeControlEntry;
 import com.haiersmart.sfcontrol.database.FridgeStatusDbMgr;
+import com.haiersmart.sfcontrol.database.FridgeStatusEntry;
 import com.haiersmart.sfcontrol.service.ControlMainBoardInfo;
 import com.haiersmart.sfcontrol.service.ControlMainBoardService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,8 +18,10 @@ import java.util.List;
 public abstract class ModelBase {
 
     protected static List<FridgeControlEntry> mControlEntries;
+    protected ArrayList<FridgeStatusEntry> mShowTempEntryList;
+    protected ArrayList<FridgeStatusEntry> mErrorEntryList;
+
     protected ControlMainBoardService mService;
-    protected Boolean mIsUIInitDone = false;
 
     ModelBase(ControlMainBoardService service) {
         mService = service;
@@ -27,20 +31,20 @@ public abstract class ModelBase {
         return mControlEntries;
     }
 
+    public ArrayList<FridgeStatusEntry> getTempEntries() {
+        return mShowTempEntryList;
+    }
+
+    public ArrayList<FridgeStatusEntry> getErrorEntries() {
+        return mErrorEntryList;
+    }
+
     public FridgeControlDbMgr getControlDbMgr() {
         return mService.getControlDbMgr();
     }
 
     public ControlMainBoardInfo getMainBoardInfo() {
         return mService.getMainBoardInfo();
-    }
-
-    public FridgeStatusDbMgr getStatusDbMgr() {
-        return mService.getStatusDbMgr();
-    }
-
-    public void setUIInitDone(Boolean isDone) {
-        mIsUIInitDone = isDone;
     }
 
     public int getControlValueByName(EnumBaseName entryName) {

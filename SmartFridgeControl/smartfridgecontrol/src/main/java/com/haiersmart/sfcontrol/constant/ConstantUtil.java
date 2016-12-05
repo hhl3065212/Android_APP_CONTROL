@@ -77,8 +77,10 @@ public class ConstantUtil {
     public static final String BROADCAST_ACTION_TEMPER = "com.haiersmart.sfcontrol.temper";//通知温度广播
     public static final String BROADCAST_ACTION_ERROR = "com.haiersmart.sfcontrol.error";//通知错误或故障信息广播
     public static final String BROADCAST_ACTION_ALARM = "com.haiersmart.sfcontrol.alarm";//通知报警信息广播
-    public static final String BROADCAST_ACTION_WARNING= "com.haiersmart.sfcontrol.warning";//通知提示信息广播
     public static final String COMMAND_TO_SERVICE = "com.haiersmart.sfcontrol.command";//用户命令给service广播
+    public static final String BROADCAST_ACTION_FRIDGE_RANGE = "com.haiersmart.sfcontrol.fridge.range";//通知冷藏档位大小范围
+    public static final String BROADCAST_ACTION_CHANGE_RANGE = "com.haiersmart.sfcontrol.change.range";//通知变温档位大小范围
+    public static final String BROADCAST_ACTION_FREEZE_RANGE = "com.haiersmart.sfcontrol.freeze.range";//通知冷冻档位大小范围
 
     /**
      * user command request actions
@@ -119,7 +121,6 @@ public class ConstantUtil {
     public static final String KEY_ERROR = "error";//错误命令key
     public static final String KEY_ALARM = "alarm";//报警key
     public static final String KEY_TEMPER = "temper";
-    public static final String KEY_WARNING = "warning";
     public static final String KEY_MODE= "commandMode";
 
     public static final String KEY_SET_COLD_LEVEL= "coldlevel";
@@ -129,6 +130,9 @@ public class ConstantUtil {
     public static final String QUERY_CONTROL_INFO = "queryControlInfo";
     public static final String QUERY_TEMPER_INFO = "queryTemperInfo";
     public static final String QUERY_ERROR_INFO = "queryErrorInfo";
+    public static final String QUERY_FRIDGE_TEMP_RANGE = "queryFridgeTempRange";
+    public static final String QUERY_CHANGE_TEMP_RANGE = "queryChangeTempRange";
+    public static final String QUERY_FREEZE_TEMP_RANGE = "queryFreezeTempRange";
 
 
     public static final String QUERY_MODE = "model";

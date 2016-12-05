@@ -42,6 +42,7 @@ public class ControlMainBoardService extends Service {
     private Boolean mIsModeInitAvialbe = false;
     static final String TAG = "ControlMainBoardService";
     private String mBindData;
+    private boolean mIsNotifyUpper = false;
 //    private static ControlMainBoardService Instance = new ControlMainBoardService();
 
 //    public static ControlMainBoardService getInstance() {
@@ -155,9 +156,9 @@ public class ControlMainBoardService extends Service {
         return mDBHandle.getControlDbMgr();
     }
 
-    public FridgeStatusDbMgr getStatusDbMgr() {
-        return mDBHandle.getmStatusDbMgr();
-    }
+//    public FridgeStatusDbMgr getStatusDbMgr() {
+//        return mDBHandle.getmStatusDbMgr();
+//    }
 
     public ControlMainBoardInfo getMainBoardInfo() {
         return mBoardInfo;
@@ -178,6 +179,14 @@ public class ControlMainBoardService extends Service {
             case ConstantUtil.BROADCAST_ACTION_STATUS_BACK:
                 MyLogUtil.d(TAG, "handleActions status back");
                 mModel.handleStatusDataResponse();
+                if(!mIsNotifyUpper) {
+                    provideFridgeTempRange();
+                    provideChangeTempRange();
+                    provideFreezeTempRange();
+                    sendControlCmdResponse();
+                    notifyTemperChanged(mModel.getTempEntries());
+                    mIsNotifyUpper = true;
+                }
                 break;
             case ConstantUtil.MODE_SMART_ON://智能开
                 MyLogUtil.i(TAG, "handleActions smartOn");
@@ -219,10 +228,19 @@ public class ControlMainBoardService extends Service {
                 sendControlCmdResponse();
                 break;
             case ConstantUtil.QUERY_TEMPER_INFO://查询温度值信息
-                //TODO
+                notifyTemperChanged(mModel.getTempEntries());
                 break;
             case ConstantUtil.QUERY_ERROR_INFO://查询故障信息
-                //TODO
+                notifyErrorOccurred(mModel.getErrorEntries());
+                break;
+            case ConstantUtil.QUERY_FRIDGE_TEMP_RANGE://查询冷藏室温度档位范围
+                provideFridgeTempRange();
+                break;
+            case ConstantUtil.QUERY_CHANGE_TEMP_RANGE://查询变温室温度档位范围
+                provideChangeTempRange();
+                break;
+            case ConstantUtil.QUERY_FREEZE_TEMP_RANGE://查询冷冻室温度档位范围
+                provideFreezeTempRange();
                 break;
             default:
                 break;
@@ -270,12 +288,12 @@ public class ControlMainBoardService extends Service {
     }
 
     public void sendControlCmdResponse() {
-//        MyLogUtil.i(TAG, "sendControlCmdResponse in");
+        MyLogUtil.d(TAG, "sendControlCmdResponse in");
         Intent intent = new Intent();
         intent.setAction(ConstantUtil.BROADCAST_ACTION_CONTROL);
         intent.putExtra(ConstantUtil.KEY_CONTROL_INFO,(Serializable)mModel.getControlEntries());
         sendBroadcast(intent);
-//        MyLogUtil.i(TAG, "sendControlCmdResponse out");
+        MyLogUtil.d(TAG, "sendControlCmdResponse out");
     }
 
     public void notifyTemperChanged( ArrayList<FridgeStatusEntry> statusEntries) {
@@ -296,11 +314,27 @@ public class ControlMainBoardService extends Service {
         sendBroadcast(intent);
     }
 
-
-    public void notifyWarningToast(String content) {
+    public void provideFridgeTempRange(){
         Intent intent = new Intent();
-        intent.setAction(ConstantUtil.BROADCAST_ACTION_WARNING);
-        intent.putExtra(ConstantUtil.KEY_WARNING,content);
+        intent.setAction(ConstantUtil.BROADCAST_ACTION_FRIDGE_RANGE);
+        intent.putExtra("fridgeMaxValue", mMBParams.getTargetTempRange().getFridgeMaxValue());
+        intent.putExtra("fridgeMinValue", mMBParams.getTargetTempRange().getFridgeMinValue());
+        sendBroadcast(intent);
+    }
+
+    public void provideChangeTempRange(){
+        Intent intent = new Intent();
+        intent.setAction(ConstantUtil.BROADCAST_ACTION_CHANGE_RANGE);
+        intent.putExtra("changeMaxValue", mMBParams.getTargetTempRange().getChangeMaxValue());
+        intent.putExtra("changeMinValue", mMBParams.getTargetTempRange().getChangeMinValue());
+        sendBroadcast(intent);
+    }
+
+    public void provideFreezeTempRange(){
+        Intent intent = new Intent();
+        intent.setAction(ConstantUtil.BROADCAST_ACTION_FREEZE_RANGE);
+        intent.putExtra("freezeMaxValue", mMBParams.getTargetTempRange().getFreezeMaxValue());
+        intent.putExtra("freezeMinValue", mMBParams.getTargetTempRange().getFreezeMinValue());
         sendBroadcast(intent);
     }
 
@@ -326,10 +360,6 @@ public class ControlMainBoardService extends Service {
 
     public int getChangeMaxValue() {
         return mMBParams.getTargetTempRange().getChangeMaxValue();
-    }
-
-    public void setUIInitDone(Boolean isDone) {
-        mModel.setUIInitDone(isDone);
     }
 
     public List<FridgeControlEntry> getControlEntries() {

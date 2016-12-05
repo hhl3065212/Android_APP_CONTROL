@@ -16,13 +16,13 @@ package com.haiersmart.sfcdemo.model;
  * Author: Holy.Han
  * modification:
  */
-public abstract class FridgeModel {
+public class FridgeModel {
     protected final String TAG = "FridgeModel";
+    public String mFridgeModel;
     public int mFridgeMin,mFridgeMax,mFreezeMin,mFreezeMax,mChangeMin,mChangeMax;
     public int mFridgeTarget,mFreezeTarget,mChangeTarget;
     public int mFridgeShow,mFreezeShow,mChangeShow;
     public boolean isSmart,isHoliday,isQuickCold,isQuickFreeze,isFridgeClose;
-    public String mFridgeModel,mFridgeId;
     public String mDisableFridge,mDisableFreeze,mDisableChange,mDisableSmart,mDisableHoliday,mDisableQuickCold,
             mDisableQuickFreeze,mDisableFridgeClose;
 

@@ -102,6 +102,9 @@ public class MainBoardParameters {
     public String getFridgeSn(){
         return mSerialData.getMainBoardInfo().getFridgeSn();
     }
+    public String getFridgeType(){
+        return mSerialData.getCurrentModel();
+    }
     /**
      * 获得档位温度范围
      * @return TargetTempRange

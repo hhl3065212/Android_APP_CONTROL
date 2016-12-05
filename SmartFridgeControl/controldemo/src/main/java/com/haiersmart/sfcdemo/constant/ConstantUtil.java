@@ -46,12 +46,12 @@ public class ConstantUtil {
     public static final String BCD476_MODE = "BCD476";
 
     /**
-     * fridge full model
+     * fridge type
      */
     public static final String BCD325_MODEL= "BCD-325";
     public static final String BCD251_MODEL = "BCD-251WDICU1";
-    public static final String BCD401_MODEL = "BCD-401WDIAU1";
-    public static final String BCD256_MODEL = "BCD-256WDICU1";
+    public static final String BCD401_MODEL = "BCD-401WDIAU1/BCD-401WDIAU1(S)";
+    public static final String BCD256_MODEL = "BCD-256WDICU1/BCD-256WDICU1(S)";
     public static final String BCD630_MODEL = "BCD-630";
     public static final String BCD476_MODEL = "BCD-476";
 
@@ -73,6 +73,7 @@ public class ConstantUtil {
     public static final String BROADCAST_ACTION_STATUS_BACK = "com.haiersmart.sfcontrol.statusback";//冰箱控制和温度等状态从电控板返回广播
     public static final String BROADCAST_ACTION_FRIGEID_INFO = "com.haiersmart.sfcontrol.infochange";//设备fridge id发生变化广播
     //broadcast to user , external
+    public static final String BROADCAST_ACTION_INFO = "com.haiersmart.sfcontrol.info";//通知冰箱硬件型号
     public static final String BROADCAST_ACTION_CONTROL = "com.haiersmart.sfcontrol.control";//通知模式和档位信息广播
     public static final String BROADCAST_ACTION_TEMPER = "com.haiersmart.sfcontrol.temper";//通知温度广播
     public static final String BROADCAST_ACTION_ERROR = "com.haiersmart.sfcontrol.error";//通知错误或故障信息广播

@@ -16,7 +16,7 @@ package com.haiersmart.sfcdemo.model;
  * Author: Holy.Han
  * modification:
  */
-public class ModelTwoFiveOne extends FridgeModel{
+public class ModelTwoFiveOne {
     protected final String TAG = "Model";
     public int mFridgeMin,mFridgeMax,mFreezeMin,mFreezeMax,mChangeMin,mChangeMax;
     public int mFridgeTarget,mFreezeTarget,mChangeTarget;
@@ -26,8 +26,5 @@ public class ModelTwoFiveOne extends FridgeModel{
     public String mDisableFridge,mDisableFreeze,mDisableChange,mDisableSmart,mDisableHoliday,mDisableQuickCold,
             mDisableQuickFreeze,mDisableFridgeClose;
 
-    @Override
-    public void init() {
 
-    }
 }

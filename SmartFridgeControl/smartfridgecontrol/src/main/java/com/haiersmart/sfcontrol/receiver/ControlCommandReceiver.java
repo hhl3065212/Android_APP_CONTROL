@@ -67,10 +67,10 @@ public class ControlCommandReceiver extends BroadcastReceiver {
                 MyLogUtil.i(TAG, "freeze tempValue="+tempValue);
                 sendTemperCmdToService(context,ConstantUtil.TEMPER_SETFREEZE,ConstantUtil.KEY_SET_FREEZE_LEVEL,tempValue);
             }else if(contentAction.equals(ConstantUtil.REFRIGERATOR_CLOSE)) {
-                //冷藏关闭关（冷藏室风道开，可以控制冷藏室温度档位）
+                //冷藏关闭（冷藏室关）
                 sendCommandToService(context, ConstantUtil.REFRIGERATOR_CLOSE);
             }else if(contentAction.equals(ConstantUtil.REFRIGERATOR_OPEN)) {
-                //冷藏关闭开（冷藏室关）
+                //冷藏开启（冷藏室风道开，可以控制冷藏室温度档位）
                 sendCommandToService(context, ConstantUtil.REFRIGERATOR_OPEN);
             }else if(contentAction.equals(ConstantUtil.QUERY_CONTROL_INFO)) {
                 //查询档位模式Info

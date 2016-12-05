@@ -364,14 +364,14 @@
                     android:layout_height="@dimen/auto_height"
                     android:orientation="horizontal"
                     android:layout_weight="1">
-                    <com.haiersmart.sfcontrol.draw.MyTestButton
+                    <com.haiersmart.sfcdemo.draw.MyTestButton
                         android:id="@+id/btn_demo_top_left"
                         android:layout_width="@dimen/auto_width"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:textSize="@dimen/text_size_50"
                         android:enabled="false"/>
-                    <com.haiersmart.sfcontrol.draw.MyTestButton
+                    <com.haiersmart.sfcdemo.draw.MyTestButton
                         android:id="@+id/btn_demo_top_right"
                         android:layout_width="@dimen/auto_width"
                         android:layout_height="match_parent"
@@ -385,14 +385,14 @@
                     android:layout_height="@dimen/auto_height"
                     android:layout_marginTop="@dimen/fab_margin"
                     android:layout_weight="1">
-                    <com.haiersmart.sfcontrol.draw.MyTestButton
+                    <com.haiersmart.sfcdemo.draw.MyTestButton
                         android:id="@+id/btn_demo_center_left"
                         android:layout_width="@dimen/auto_width"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:textSize="@dimen/text_size_50"
                         android:enabled="false"/>
-                    <com.haiersmart.sfcontrol.draw.MyTestButton
+                    <com.haiersmart.sfcdemo.draw.MyTestButton
                         android:id="@+id/btn_demo_center_right"
                         android:layout_width="@dimen/auto_width"
                         android:layout_height="match_parent"
@@ -406,14 +406,14 @@
                     android:layout_height="@dimen/auto_height"
                     android:layout_marginTop="@dimen/fab_margin"
                     android:layout_weight="1">
-                    <com.haiersmart.sfcontrol.draw.MyTestButton
+                    <com.haiersmart.sfcdemo.draw.MyTestButton
                         android:id="@+id/btn_demo_bottom_left"
                         android:layout_width="@dimen/auto_width"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:textSize="@dimen/text_size_50"
                         android:enabled="false"/>
-                    <com.haiersmart.sfcontrol.draw.MyTestButton
+                    <com.haiersmart.sfcdemo.draw.MyTestButton
                         android:id="@+id/btn_demo_bottom_right"
                         android:layout_width="@dimen/auto_width"
                         android:layout_height="match_parent"

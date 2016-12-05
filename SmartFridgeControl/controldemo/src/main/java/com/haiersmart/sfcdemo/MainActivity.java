@@ -3,6 +3,7 @@ package com.haiersmart.sfcdemo;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -14,20 +15,24 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.haiersmart.sfcdemo.constant.ConstantUtil;
-import com.haiersmart.sfcdemo.constant.EnumBaseName;
 import com.haiersmart.sfcdemo.draw.MyTestButton;
 import com.haiersmart.sfcdemo.model.FridgeModel;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static android.R.attr.key;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.BCD251_MODEL;
+import static com.haiersmart.sfcdemo.constant.ConstantUtil.BROADCAST_ACTION_ALARM;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.BROADCAST_ACTION_CONTROL;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.BROADCAST_ACTION_ERROR;
+import static com.haiersmart.sfcdemo.constant.ConstantUtil.BROADCAST_ACTION_INFO;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.BROADCAST_ACTION_TEMPER;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.COMMAND_TO_SERVICE;
+import static com.haiersmart.sfcdemo.constant.ConstantUtil.FRIDGETYPE;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.KEY_MODE;
+import static com.haiersmart.sfcdemo.constant.ConstantUtil.KEY_SET_COLD_LEVEL;
+import static com.haiersmart.sfcdemo.constant.ConstantUtil.KEY_SET_FREEZE_LEVEL;
+import static com.haiersmart.sfcdemo.constant.ConstantUtil.KEY_SET_FRIDGE_LEVEL;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.MODE_COLD_OFF;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.MODE_COLD_ON;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.MODE_FREEZE_OFF;
@@ -35,12 +40,16 @@ import static com.haiersmart.sfcdemo.constant.ConstantUtil.MODE_HOLIDAY_OFF;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.MODE_HOLIDAY_ON;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.MODE_SMART_OFF;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.MODE_SMART_ON;
+import static com.haiersmart.sfcdemo.constant.ConstantUtil.REFRIGERATOR_CLOSE;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.REFRIGERATOR_OPEN;
+import static com.haiersmart.sfcdemo.constant.ConstantUtil.TEMPER_SETCOLD;
+import static com.haiersmart.sfcdemo.constant.ConstantUtil.TEMPER_SETCUSTOMAREA;
+import static com.haiersmart.sfcdemo.constant.ConstantUtil.TEMPER_SETFREEZE;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private static final String TAG = "MainActivity";
     private boolean mIsBound = false;
-    private FridgeModel mModel;
+    private static FridgeModel mModel = new FridgeModel();
 
     private Timer mTimer;
 
@@ -49,16 +58,49 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView tvFridgeModel,tvStatusCode,tvEnvTemp,tvEnvHum,tvFridgeTemp,tvFreezeTemp,tvChangeTemp,
             tvFridgeTarget,tvFreezeTarget,tvChangeTarget;
     private Button btnReturn;
-    private MyTestButton btnSmart,btnHoliday,btnQuickCold,btnQuickFreeze,btnFridgeOpen;
+    private MyTestButton btnSmart,btnHoliday,btnQuickCold,btnQuickFreeze,btnFridgeSwitch;
     private SeekBar skbFridge,skbFreeze,skbChange;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Intent intent
+        registerBroadcast();
+        sendGetFridgeType();
         findView();
         mTimer = new Timer();
         mTimer.schedule(mWaitTask,0,1000);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerBroadcast();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(receiveUpdateUI);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(receiveUpdateUI);
+    }
+
+    private void registerBroadcast() {
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_CONTROL);//模式和档位信息广播
+        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_TEMPER);//温度广播
+        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_ERROR);//错误或故障信息广播
+        intentFilter.addAction(BROADCAST_ACTION_ALARM);
+        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_FRIDGE_RANGE);
+        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_CHANGE_RANGE);
+        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_FREEZE_RANGE);
+        registerReceiver(receiveUpdateUI, intentFilter);
     }
     private BroadcastReceiver receiveUpdateUI = new BroadcastReceiver(){
 
@@ -71,7 +113,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             }else if (action.equals(BROADCAST_ACTION_ERROR)) {
 
-            } else if(action.equals(ConstantUtil.BROADCAST_ACTION_FRIDGE_RANGE)) {
+            } else if (action.equals(BROADCAST_ACTION_ALARM)) {
+
+            }else if(action.equals(ConstantUtil.BROADCAST_ACTION_FRIDGE_RANGE)) {
                 mModel.mFridgeMax = intent.getIntExtra("fridgeMinValue", 0);
                 mModel.mFridgeMin = intent.getIntExtra("fridgeMaxValue", 0);
                 skbFridge.setMax(mModel.mFridgeMax-mModel.mFridgeMin);
@@ -83,6 +127,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mModel.mChangeMax = intent.getIntExtra("freezeMinValue", 0);
                 mModel.mChangeMin = intent.getIntExtra("freezeMaxValue", 0);
                 skbChange.setMax(mModel.mChangeMax-mModel.mChangeMin);
+            }else if(action.equals(FRIDGETYPE)){
+                mModel.mFridgeModel  = intent.getStringExtra(BROADCAST_ACTION_INFO);
             }
         }
     };
@@ -93,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         intent.putExtra(key,content);
         sendBroadcast(intent);
     }
-    private void sendUserCommond(String keyOne,String contentOne,String keyTwo,String contentTwo){
+    private void sendUserCommond(String keyOne,String contentOne,String keyTwo,int contentTwo){
         Intent intent = new Intent();
         intent.setAction(COMMAND_TO_SERVICE);
         intent.putExtra(keyOne,contentOne);
@@ -155,8 +201,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
     }
+    private void sendGetFridgeType(){
+        if(mModel.mFridgeModel == null) {
+            sendUserCommond(BROADCAST_ACTION_INFO,FRIDGETYPE);
+        }
+    }
     private void setModel(){
-        if(mModel != null) {
+
+        if(mModel.mFridgeModel != null) {
             tvFridgeModel.setText(mModel.mFridgeModel);
             mWaitTask.cancel();
             setView();
@@ -218,9 +270,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     btnQuickFreeze.setOff();
                 }
                 if(mModel.isFridgeClose){
-                    btnFridgeClose.setOn();
+                    btnFridgeSwitch.setOn();
                 }else {
-                    btnFridgeClose.setOff();
+                    btnFridgeSwitch.setOff();
                 }
                 break;
         }
@@ -299,19 +351,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
     private void initFridgeClose(final int idButton){
-        btnFridgeClose = (MyTestButton)findViewById(idButton);
-        btnFridgeClose.setText("冷藏关闭");
-        btnFridgeClose.setEnabled(true);
+        btnFridgeSwitch = (MyTestButton)findViewById(idButton);
+        btnFridgeSwitch.setText("冷藏开关");
+        btnFridgeSwitch.setEnabled(true);
 
-        btnFridgeClose.setOnClickListener(new View.OnClickListener() {
+        btnFridgeSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(v.getId() == idButton){
-                    if(btnFridgeClose.isPress()){
+                    if(btnFridgeSwitch.isPress()){
                         sendUserCommond(KEY_MODE,REFRIGERATOR_OPEN);
                     }else {
-                        //                        btnFridgeClose.setOn();
-                        mControlService.sendUserCommond(EnumBaseName.fridgeCloseMode,1);
+                        sendUserCommond(KEY_MODE,REFRIGERATOR_CLOSE);
                     }
                 }
             }
@@ -331,7 +382,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         skbFridge.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                tvFridgeTarget.setText(Integer.toString(progress+mFridgeMin)+" ℃");
+                tvFridgeTarget.setText(Integer.toString(progress+mModel.mFridgeMin)+" ℃");
             }
 
             @Override
@@ -344,14 +395,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 int progress = seekBar.getProgress();
                 if(mIsBound)
                 {
-                    mControlService.sendUserCommond(EnumBaseName.fridgeTargetTemp,progress+mFridgeMin);
+                    sendUserCommond(KEY_MODE,TEMPER_SETCOLD,KEY_SET_FRIDGE_LEVEL,progress+mModel.mFridgeMin);
                 }
             }
         });
         skbFreeze.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                tvFreezeTarget.setText(Integer.toString(progress+mFreezeMin)+" ℃");
+                tvFreezeTarget.setText(Integer.toString(progress+mModel.mFreezeMin)+" ℃");
             }
 
             @Override
@@ -363,14 +414,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onStopTrackingTouch(SeekBar seekBar) {
                 int progress = seekBar.getProgress();
                 if(mIsBound) {
-                    mControlService.sendUserCommond(EnumBaseName.freezeTargetTemp, progress + mFreezeMin);
+                    sendUserCommond(KEY_MODE,TEMPER_SETFREEZE,KEY_SET_FREEZE_LEVEL, progress + mModel.mFreezeMin);
                 }
             }
         });
         skbChange.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                tvChangeTarget.setText(Integer.toString(progress+mChangeMin)+" ℃");
+                tvChangeTarget.setText(Integer.toString(progress+mModel.mChangeMin)+" ℃");
             }
 
             @Override
@@ -382,17 +433,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onStopTrackingTouch(SeekBar seekBar) {
                 int progress = seekBar.getProgress();
                 if(mIsBound) {
-                    mControlService.sendUserCommond(EnumBaseName.changeTargetTemp, progress + mChangeMin);
+                    sendUserCommond(KEY_MODE,TEMPER_SETCUSTOMAREA,KEY_SET_COLD_LEVEL, progress + mModel.mChangeMin);
                 }
             }
         });
-    }
-
-    private void sendBroadcastToService(String actionCmd) {
-        Intent intent = new Intent();
-        intent.setAction(ConstantUtil.COMMAND_TO_SERVICE);
-        intent.putExtra(ConstantUtil.KEY_MODE,actionCmd);
-        sendBroadcast(intent);
     }
 
 

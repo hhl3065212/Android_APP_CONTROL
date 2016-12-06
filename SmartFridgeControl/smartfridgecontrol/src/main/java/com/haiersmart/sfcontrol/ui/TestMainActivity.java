@@ -432,11 +432,17 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
                 mTbColdSwitchWarn = disable;
             }
         }
-
+        MyLogUtil.d(TAG, "updateSettingAndModeUI mIsSmart=" + mIsSmart + ",mIsHoliday=" +mIsHoliday+",mIsCold="+mIsCold+",mIsFreeze"+mIsFreeze);
         if(mIsSmart) {
             enableButton(mBtnSmart);
             mTvSettingCold.setText("智能运行中");
             mTvSettingFreeze.setText("智能运行中");
+            if(!mIsHoliday) {
+                disableButton(mBtnHoliday);
+            }
+            if(!mIsFreeze) {
+                disableButton(mBtnQuickFreeze);
+            }
         } else {
             disableButton(mBtnSmart);
             if(mIsHoliday) {

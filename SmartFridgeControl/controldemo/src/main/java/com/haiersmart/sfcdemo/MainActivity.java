@@ -9,12 +9,16 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.haiersmart.sfcdemo.constant.EnumBaseName;
 import com.haiersmart.sfcdemo.draw.MyTestButton;
 import com.haiersmart.sfcdemo.model.FridgeModel;
 
@@ -36,6 +40,7 @@ import static com.haiersmart.sfcdemo.constant.ConstantUtil.KEY_MODE;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.KEY_SET_COLD_LEVEL;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.KEY_SET_FREEZE_LEVEL;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.KEY_SET_FRIDGE_LEVEL;
+import static com.haiersmart.sfcdemo.constant.ConstantUtil.KEY_TEMPER;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.MODE_COLD_OFF;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.MODE_COLD_ON;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.MODE_FREEZE_OFF;
@@ -44,8 +49,10 @@ import static com.haiersmart.sfcdemo.constant.ConstantUtil.MODE_HOLIDAY_ON;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.MODE_SMART_OFF;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.MODE_SMART_ON;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.QUERY_CHANGE_TEMP_RANGE;
+import static com.haiersmart.sfcdemo.constant.ConstantUtil.QUERY_CONTROL_INFO;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.QUERY_FREEZE_TEMP_RANGE;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.QUERY_FRIDGE_TEMP_RANGE;
+import static com.haiersmart.sfcdemo.constant.ConstantUtil.QUERY_TEMPER_INFO;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.REFRIGERATOR_CLOSE;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.REFRIGERATOR_OPEN;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.TEMPER_SETCOLD;
@@ -120,26 +127,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String action = intent.getAction();
             if(action.equals(BROADCAST_ACTION_CONTROL)){
 
-            }else if(action.equals(BROADCAST_ACTION_TEMPER)){
+            }else {
+                if (action.equals(BROADCAST_ACTION_TEMPER)) {
+                    String jsonString = intent.getStringExtra(KEY_TEMPER);
+                    JSONArray jsonArray = JSONArray.parseArray(jsonString);
+                    updateShowTemp(jsonArray);
+                } else if (action.equals(BROADCAST_ACTION_ERROR)) {
 
-            }else if (action.equals(BROADCAST_ACTION_ERROR)) {
+                } else if (action.equals(BROADCAST_ACTION_ALARM)) {
 
-            } else if (action.equals(BROADCAST_ACTION_ALARM)) {
-
-            }else if(action.equals(BROADCAST_ACTION_FRIDGE_RANGE)) {
-                mModel.mFridgeMin = intent.getIntExtra("fridgeMinValue", 0);
-                mModel.mFridgeMax = intent.getIntExtra("fridgeMaxValue", 0);
-                skbFridge.setMax(mModel.mFridgeMax-mModel.mFridgeMin);
-            } else if(action.equals(BROADCAST_ACTION_CHANGE_RANGE)) {
-                mModel.mChangeMin = intent.getIntExtra("changeMinValue", 0);
-                mModel.mChangeMax = intent.getIntExtra("changeMaxValue", 0);
-                skbChange.setMax(mModel.mChangeMax-mModel.mChangeMin);
-            } else if(action.equals(BROADCAST_ACTION_FREEZE_RANGE)) {
-                mModel.mFreezeMin = intent.getIntExtra("freezeMinValue", 0);
-                mModel.mFreezeMax = intent.getIntExtra("freezeMaxValue", 0);
-                skbFreeze.setMax(mModel.mFreezeMax-mModel.mFreezeMin);
-            }else if(action.equals(FRIDGETYPE)){
-                mModel.mFridgeModel  = intent.getStringExtra(BROADCAST_ACTION_INFO);
+                } else if (action.equals(BROADCAST_ACTION_FRIDGE_RANGE)) {
+                    mModel.mFridgeMin = intent.getIntExtra("fridgeMinValue", 0);
+                    mModel.mFridgeMax = intent.getIntExtra("fridgeMaxValue", 0);
+                    skbFridge.setMax(mModel.mFridgeMax - mModel.mFridgeMin);
+                } else if (action.equals(BROADCAST_ACTION_CHANGE_RANGE)) {
+                    mModel.mChangeMin = intent.getIntExtra("changeMinValue", 0);
+                    mModel.mChangeMax = intent.getIntExtra("changeMaxValue", 0);
+                    skbChange.setMax(mModel.mChangeMax - mModel.mChangeMin);
+                } else if (action.equals(BROADCAST_ACTION_FREEZE_RANGE)) {
+                    mModel.mFreezeMin = intent.getIntExtra("freezeMinValue", 0);
+                    mModel.mFreezeMax = intent.getIntExtra("freezeMaxValue", 0);
+                    skbFreeze.setMax(mModel.mFreezeMax - mModel.mFreezeMin);
+                } else if (action.equals(FRIDGETYPE)) {
+                    mModel.mFridgeModel = intent.getStringExtra(BROADCAST_ACTION_INFO);
+                }
             }
         }
     };
@@ -196,6 +207,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
     private void setView(){
 //        initSeekBar();
+        sendUserCommond(KEY_MODE,QUERY_TEMPER_INFO);
+        sendUserCommond(KEY_MODE,QUERY_CONTROL_INFO);
         switch (mModel.mFridgeModel){
             case BCD251_MODEL:
                 lineFridgeTemp.setVisibility(View.VISIBLE);
@@ -208,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 initHoliday(R.id.btn_demo_top_right);
                 initQuickCold(R.id.btn_demo_center_left);
                 initQuickFreeze(R.id.btn_demo_center_right);
-                initFridgeClose(R.id.btn_demo_bottom_left);
+                initFridgeOpen(R.id.btn_demo_bottom_left);
                 break;
         }
     }
@@ -253,6 +266,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     };
     private void refreshUI(){
+//        sendUserCommond(KEY_MODE,QUERY_TEMPER_INFO);
         switch (mModel.mFridgeModel){
             case BCD251_MODEL:
                 tvFridgeTemp.setText(mModel.mFridgeShow+" ℃");
@@ -278,10 +292,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }else {
                     btnQuickFreeze.setOff();
                 }
-                if(mModel.isFridgeClose){
+                if(mModel.isFridgeOpen){
                     btnFridgeSwitch.setOn();
+                    btnFridgeSwitch.setText("冷藏开");
                 }else {
                     btnFridgeSwitch.setOff();
+                    btnFridgeSwitch.setText("冷藏关");
                 }
                 break;
         }
@@ -359,9 +375,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
     }
-    private void initFridgeClose(final int idButton){
+    private void initFridgeOpen(final int idButton){
         btnFridgeSwitch = (MyTestButton)findViewById(idButton);
-        btnFridgeSwitch.setText("冷藏开关");
+//        btnFridgeSwitch.setText("冷藏开关");
         btnFridgeSwitch.setEnabled(true);
 
         btnFridgeSwitch.setOnClickListener(new View.OnClickListener() {
@@ -446,6 +462,58 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         });
+    }
+
+    private void updateShowTemp(JSONArray jsonArray){
+        Log.i(TAG,"show temp jsonArray:"+jsonArray);
+        for(int i=0;i<jsonArray.size();i++){
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            String name = (String)jsonObject.get("name");
+            int value = (int)jsonObject.get("value");
+            Log.i(TAG,i+" name:"+name+" value:"+value);
+            if(name.equals(EnumBaseName.fridgeShowTemp.toString())){
+                mModel.mFridgeShow = value;
+            }else if(name.equals(EnumBaseName.freezeShowTemp.toString())){
+                mModel.mFreezeShow = value;
+            }else if(name.equals(EnumBaseName.changeShowTemp.toString())){
+                mModel.mChangeShow = value;
+            }
+        }
+    }
+    private void updateModeLevel(JSONArray jsonArray){
+        Log.i(TAG,"mode level jsonArray:"+jsonArray);
+        for(int i=0;i<jsonArray.size();i++){
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            String name = (String)jsonObject.get("name");
+            int value = (int)jsonObject.get("value");
+            String disable = (String)jsonObject.get("disable");
+            Log.i(TAG,i+" name:"+name+" value:"+value+" disable:"+disable);
+            if(name.equals(EnumBaseName.fridgeTargetTemp.toString())){
+                mModel.mFridgeTarget = value;
+                mModel.mDisableFridge = disable;
+            }else if(name.equals(EnumBaseName.freezeTargetTemp.toString())){
+                mModel.mFreezeTarget = value;
+                mModel.mDisableFreeze = disable;
+            }else if(name.equals(EnumBaseName.changeTargetTemp.toString())){
+                mModel.mChangeTarget = value;
+                mModel.mDisableChange = disable;
+            }else if(name.equals(EnumBaseName.smartMode.toString())){
+                mModel.isSmart = (value == 1)?true:false;
+                mModel.mDisableSmart = disable;
+            }else if(name.equals(EnumBaseName.holidayMode.toString())){
+                mModel.isHoliday = (value == 1)?true:false;
+                mModel.mDisableHoliday = disable;
+            }else if(name.equals(EnumBaseName.quickColdMode.toString())){
+                mModel.isQuickCold = (value == 1)?true:false;
+                mModel.mDisableQuickCold = disable;
+            }else if(name.equals(EnumBaseName.quickFreezeMode.toString())){
+                mModel.isQuickFreeze = (value == 1)?true:false;
+                mModel.mDisableQuickFreeze = disable;
+            }else if(name.equals(EnumBaseName.fridgeSwitch.toString())){
+                mModel.isFridgeOpen = (value == 1)?true:false;
+                mModel.mDisableFridgeOpen = disable;
+            }
+        }
     }
 
 

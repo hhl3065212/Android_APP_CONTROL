@@ -22,8 +22,8 @@ public class FridgeModel {
     public int mFridgeMin,mFridgeMax,mFreezeMin,mFreezeMax,mChangeMin,mChangeMax;
     public int mFridgeTarget,mFreezeTarget,mChangeTarget;
     public int mFridgeShow,mFreezeShow,mChangeShow;
-    public boolean isSmart,isHoliday,isQuickCold,isQuickFreeze,isFridgeClose;
+    public boolean isSmart,isHoliday,isQuickCold,isQuickFreeze,isFridgeOpen;
     public String mDisableFridge,mDisableFreeze,mDisableChange,mDisableSmart,mDisableHoliday,mDisableQuickCold,
-            mDisableQuickFreeze,mDisableFridgeClose;
+            mDisableQuickFreeze,mDisableFridgeOpen;
 
 }

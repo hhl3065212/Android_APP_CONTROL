@@ -19,8 +19,12 @@ public class ControlCommandReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         String action =intent.getAction();
         if(action.equals(ConstantUtil.COMMAND_TO_SERVICE)) {
+            MyLogUtil.i(TAG, "Action="+action);
             String contentAction = intent.getStringExtra(ConstantUtil.KEY_MODE);
             MyLogUtil.i(TAG, "contentAction="+contentAction);
+            if((contentAction == null)||(contentAction.length() == 0)){
+                return;
+            }
             if (contentAction.equals(ConstantUtil.QUERY_CONTROL_READY)) {
                 //查询service是否ready
                 sendCommandToService(context, ConstantUtil.QUERY_CONTROL_READY);

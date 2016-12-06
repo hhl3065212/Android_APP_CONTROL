@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 连框颜色值 -->
+    <item>
+        <shape>
+            <solid android:background="#2D2923" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/transparent"></solid>
+            <stroke
+                android:width="0.5dp"
+                android:color="@color/gray_normal_line" />
+            <corners android:radius="10dp"></corners>
+        </shape>
+    </item>
+
+</layer-list>
+
+
+    <!--
+    <selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <stroke android:width="0dp" android:color="@color/black" />
+            <solid android:color="@color/my_sure" />
+            <corners android:radius="5dp" />
+        </shape>
+    </item>
+    <item android:state_pressed="false">
+        <shape android:shape="rectangle">
+            <stroke android:width="0dp" android:color="@color/black" />
+            <solid android:color="@color/white" />
+            <corners android:radius="5dp" />
+        </shape>
+    </item>
+    </selector>-->

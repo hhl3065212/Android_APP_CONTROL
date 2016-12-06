@@ -31,15 +31,16 @@ import static com.haiersmart.sfcdemo.constant.ConstantUtil.BROADCAST_ACTION_CHAN
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.BROADCAST_ACTION_CONTROL;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.BROADCAST_ACTION_ERROR;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.BROADCAST_ACTION_FREEZE_RANGE;
+import static com.haiersmart.sfcdemo.constant.ConstantUtil.BROADCAST_ACTION_FRIDGE_INFO;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.BROADCAST_ACTION_FRIDGE_RANGE;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.BROADCAST_ACTION_INFO;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.BROADCAST_ACTION_READY;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.BROADCAST_ACTION_TEMPER;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.COMMAND_TO_SERVICE;
-//import static com.haiersmart.sfcdemo.constant.ConstantUtil.FRIDGETYPE;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.KEY_CONTROL_INFO;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.KEY_CONTROL_INFO;
+import static com.haiersmart.sfcdemo.constant.ConstantUtil.KEY_FRIDGE_ID;
+import static com.haiersmart.sfcdemo.constant.ConstantUtil.KEY_FRIDGE_TYPE;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.KEY_MODE;
+import static com.haiersmart.sfcdemo.constant.ConstantUtil.KEY_READY;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.KEY_SET_COLD_LEVEL;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.KEY_SET_FREEZE_LEVEL;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.KEY_SET_FRIDGE_LEVEL;
@@ -54,7 +55,9 @@ import static com.haiersmart.sfcdemo.constant.ConstantUtil.MODE_SMART_OFF;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.MODE_SMART_ON;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.QUERY_CHANGE_TEMP_RANGE;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.QUERY_CONTROL_INFO;
+import static com.haiersmart.sfcdemo.constant.ConstantUtil.QUERY_CONTROL_READY;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.QUERY_FREEZE_TEMP_RANGE;
+import static com.haiersmart.sfcdemo.constant.ConstantUtil.QUERY_FRIDGE_INFO;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.QUERY_FRIDGE_TEMP_RANGE;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.QUERY_TEMPER_INFO;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.REFRIGERATOR_CLOSE;
@@ -62,12 +65,8 @@ import static com.haiersmart.sfcdemo.constant.ConstantUtil.REFRIGERATOR_OPEN;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.TEMPER_SETCOLD;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.TEMPER_SETCUSTOMAREA;
 import static com.haiersmart.sfcdemo.constant.ConstantUtil.TEMPER_SETFREEZE;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.KEY_READY;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.QUERY_CONTROL_READY;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.BROADCAST_ACTION_FRIDGE_INFO;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.KEY_FRIDGE_ID;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.KEY_FRIDGE_TYPE;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.QUERY_FRIDGE_INFO;
+
+//import static com.haiersmart.sfcdemo.constant.ConstantUtil.FRIDGETYPE;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "MainActivity";
@@ -84,6 +83,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private MyTestButton btnSmart, btnHoliday, btnQuickCold, btnQuickFreeze, btnFridgeSwitch;
     private SeekBar skbFridge, skbFreeze, skbChange;
 
+    private int onclickCounts = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         findView();
         mTimer = new Timer();
-        sendUserCommond(KEY_MODE, QUERY_CONTROL_READY);
+//        sendUserCommond(KEY_MODE, QUERY_CONTROL_READY);
     }
 
     @Override
@@ -213,6 +214,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         lineChangeTarger = (LinearLayout) findViewById(R.id.linear_demo_skb_change);
 
         tvFridgeModel = (TextView) findViewById(R.id.text_demo_fridge_model);
+        tvFridgeModel.setOnClickListener(this);
         tvStatusCode = (TextView) findViewById(R.id.text_demo_status_code);
         tvEnvTemp = (TextView) findViewById(R.id.text_demo_env_temp);
         tvEnvHum = (TextView) findViewById(R.id.text_demo_env_hum);
@@ -432,6 +434,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.btn_demo_return:
                 finish();
+                break;
+            case R.id.text_demo_fridge_model:
+                onclickCounts++;
+                if(onclickCounts > 5){
+                    onclickCounts = 0;
+                    Intent intent = new Intent();
+//                    intent.setClassName("com.haiersmart.sfcontrol","com.haiersmart.sfcontrol.ui.DebugActivity");
+                    intent.setComponent(new ComponentName("com.haiersmart.sfcontrol", "com.haiersmart.sfcontrol.ui.DebugActivity"));
+                    intent.setAction("DebugActivity");
+                    startActivity(intent);
+                }
                 break;
         }
     }

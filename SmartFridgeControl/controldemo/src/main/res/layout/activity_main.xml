@@ -370,7 +370,7 @@
                         android:layout_width="@dimen/auto_width"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:textSize="@dimen/text_size_40"
+                        android:textSize="@dimen/text_size_50"
                         android:enabled="false"/>
                     <com.haiersmart.sfcdemo.draw.MyTestButton
                         android:id="@+id/btn_demo_top_right"
@@ -378,7 +378,7 @@
                         android:layout_height="match_parent"
                         android:layout_marginLeft="@dimen/fab_margin"
                         android:layout_weight="1"
-                        android:textSize="@dimen/text_size_40"
+                        android:textSize="@dimen/text_size_50"
                         android:enabled="false"/>
                 </LinearLayout>
                 <LinearLayout
@@ -391,7 +391,7 @@
                         android:layout_width="@dimen/auto_width"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:textSize="@dimen/text_size_40"
+                        android:textSize="@dimen/text_size_50"
                         android:enabled="false"/>
                     <com.haiersmart.sfcdemo.draw.MyTestButton
                         android:id="@+id/btn_demo_center_right"
@@ -399,7 +399,7 @@
                         android:layout_height="match_parent"
                         android:layout_marginLeft="@dimen/fab_margin"
                         android:layout_weight="1"
-                        android:textSize="@dimen/text_size_40"
+                        android:textSize="@dimen/text_size_50"
                         android:enabled="false"/>
                 </LinearLayout>
                 <LinearLayout
@@ -412,7 +412,7 @@
                         android:layout_width="@dimen/auto_width"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:textSize="@dimen/text_size_40"
+                        android:textSize="@dimen/text_size_50"
                         android:enabled="false"/>
                     <com.haiersmart.sfcdemo.draw.MyTestButton
                         android:id="@+id/btn_demo_bottom_right"
@@ -420,8 +420,7 @@
                         android:layout_height="match_parent"
                         android:layout_marginLeft="@dimen/fab_margin"
                         android:layout_weight="1"
-                        android:text="智能"
-                        android:textSize="@dimen/text_size_40"
+                        android:textSize="@dimen/text_size_50"
                         android:enabled="false"/>
                 </LinearLayout>
 

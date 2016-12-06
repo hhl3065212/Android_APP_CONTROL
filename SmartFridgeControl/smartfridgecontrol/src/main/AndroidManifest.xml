@@ -47,10 +47,12 @@
             <!-- </intent-filter> -->
         </activity>
         <activity android:name=".ui.DebugActivity">
-             <!--<intent-filter>-->
+             <intent-filter>
              <!--<action android:name="android.intent.action.MAIN" />-->
              <!--<category android:name="android.intent.category.LAUNCHER" />-->
-             <!--</intent-filter>-->
+                 <action android:name="DebugActivity" />
+                 <category android:name="android.intent.category.DEFAULT" />
+             </intent-filter>
         </activity>
 
         <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>

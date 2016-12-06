@@ -10,9 +10,10 @@
 package com.haiersmart.sfcdemo.draw;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.AttributeSet;
 import android.widget.Button;
+
+import com.haiersmart.sfcdemo.R;
 
 /**
  * <p>function: </p>
@@ -38,12 +39,12 @@ public class MyTestButton extends Button{
     }
 
     public void setOn(){
+        setBackgroundResource(R.drawable.btn_myfamily_sure);
         isPress = true;
-        setBackgroundColor(Color.rgb(0x88,0xfe,0xfe));
     }
     public void setOff(){
+        setBackgroundResource(R.drawable.btn_myfamily_false);
         isPress = false;
-        setBackgroundColor(Color.rgb(0xdd,0xdd,0xdd));
     }
 
     public boolean isPress() {

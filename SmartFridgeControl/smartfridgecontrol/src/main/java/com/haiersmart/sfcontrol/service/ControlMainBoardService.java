@@ -43,11 +43,8 @@ public class ControlMainBoardService extends Service {
     static final String TAG = "ControlMainBoardService";
     private String mBindData;
     private boolean mIsNotifyUpper = false;
-//    private static ControlMainBoardService Instance = new ControlMainBoardService();
+    private boolean mIsServiceRestart = false;
 
-//    public static ControlMainBoardService getInstance() {
-//        return Instance;
-//    }
 
     public  ControlMainBoardService() {
     }
@@ -115,6 +112,11 @@ public class ControlMainBoardService extends Service {
                     break;
             }
 
+        }
+        if(intent == null) {
+            MyLogUtil.i(TAG,"onStartCommand intent=NULL for quick cold and quick freeze timer event!!!");
+//            handleServiceRestartEvent();
+            mIsServiceRestart = true;
         }
         // We want this service to continue running until it is explicitly
         // stopped, so return sticky.
@@ -185,6 +187,11 @@ public class ControlMainBoardService extends Service {
                     sendControlCmdResponse();
                     notifyTemperChanged(mModel.getTempEntries());
                 }
+                if(mIsServiceRestart) {
+                    handleServiceRestartEvent();
+                    mIsServiceRestart = false;
+                }
+
                 break;
             case ConstantUtil.MODE_SMART_ON://智能开
                 MyLogUtil.i(TAG, "handleActions smartOn");
@@ -405,6 +412,7 @@ public class ControlMainBoardService extends Service {
         @Override
         public void run() {
             coldCount++;
+            MyLogUtil.i(TAG, "coldOnRunnable coldCount=" + coldCount);
             if(coldCount % 6 == 0) {//1min
                 SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.COLDCOUNT,coldCount / 1l);
                 //10min
@@ -506,7 +514,7 @@ public class ControlMainBoardService extends Service {
 
         FridgeControlEntry coldEntry = new FridgeControlEntry("quickColdMode");
         getControlDbMgr().queryByName(coldEntry);
-        //速冻on
+        //速冷on
         if(coldEntry.value == 1) {
             //重新计时，重新计算coldCount
             SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.COLDTIME, System.currentTimeMillis() / 1l);
@@ -518,8 +526,8 @@ public class ControlMainBoardService extends Service {
 
         FridgeControlEntry freezeEntry = new FridgeControlEntry("quickFreezeMode");
         getControlDbMgr().queryByName(freezeEntry);
-        //速冷on
-        if(coldEntry.value == 1) {
+        //速冻on
+        if(freezeEntry.value == 1) {
             //重新计时，重新计算freezeCount
             SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.FREEZETIME, System.currentTimeMillis() / 1l);
             SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.FREEZECOUNT, 0l);
@@ -527,6 +535,33 @@ public class ControlMainBoardService extends Service {
             mModel.freezeOn();
             startFreezeOnTime();
         }
+    }
+
+    private void handleServiceRestartEvent() {
+        MyLogUtil.i(TAG,"handleServiceRestartEvent in");
+        FridgeControlEntry coldEntry = new FridgeControlEntry("quickColdMode");
+        getControlDbMgr().queryByName(coldEntry);
+        //速冻on
+        if(coldEntry.value == 1) {
+            MyLogUtil.i(TAG, "handleServiceRestartEvent cold");
+            //继续计时，累加restart前coldCount值
+            coldCount = (long)SpUtils.getInstance(ControlApplication.getInstance()).get(ConstantUtil.COLDCOUNT, 0l);
+            mModel.coldOn();
+            startColdOnTime();
+        }
+
+        FridgeControlEntry freezeEntry = new FridgeControlEntry("quickFreezeMode");
+        getControlDbMgr().queryByName(freezeEntry);
+        //速冻on
+        if(freezeEntry.value == 1) {
+            MyLogUtil.i(TAG, "handleServiceRestartEvent freeze");
+            //继续计时，累加restart前freezeCount值
+            freezeCount = (long)SpUtils.getInstance(ControlApplication.getInstance()).get(ConstantUtil.FREEZECOUNT, 0l);
+            //重发速冻命令
+            mModel.freezeOn();
+            startFreezeOnTime();
+        }
+        MyLogUtil.i(TAG,"handleServiceRestartEvent out");
     }
 
     public void sendUserCommond(EnumBaseName enumBaseName,int value){

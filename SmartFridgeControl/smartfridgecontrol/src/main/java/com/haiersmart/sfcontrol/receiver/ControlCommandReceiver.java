@@ -21,7 +21,13 @@ public class ControlCommandReceiver extends BroadcastReceiver {
         if(action.equals(ConstantUtil.COMMAND_TO_SERVICE)) {
             String contentAction = intent.getStringExtra(ConstantUtil.KEY_MODE);
             MyLogUtil.i(TAG, "contentAction="+contentAction);
-            if (contentAction.equals(ConstantUtil.MODE_SMART_ON)) {
+            if (contentAction.equals(ConstantUtil.QUERY_CONTROL_READY)) {
+                //查询service是否ready
+                sendCommandToService(context, ConstantUtil.QUERY_CONTROL_READY);
+            } else if(contentAction.equals(ConstantUtil.QUERY_FRIDGE_INFO)) {
+                //查询fridge id,type
+                sendCommandToService(context, ConstantUtil.QUERY_FRIDGE_INFO);
+            } else if (contentAction.equals(ConstantUtil.MODE_SMART_ON)) {
                 //智能开
                 sendCommandToService(context, ConstantUtil.MODE_SMART_ON);
             }else if (contentAction.equals(ConstantUtil.MODE_SMART_OFF)){

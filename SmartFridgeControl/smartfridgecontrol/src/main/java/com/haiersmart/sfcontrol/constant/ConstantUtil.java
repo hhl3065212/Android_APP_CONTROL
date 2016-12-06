@@ -71,8 +71,8 @@ public class ConstantUtil {
     //broadcast from mainboard to service, internal
     public static final String BROADCAST_ACTION_QUERY_BACK = "com.com.haiersmart.sfcontrol.queryback";//冰箱档设备查询码从电控板返回广播
     public static final String BROADCAST_ACTION_STATUS_BACK = "com.haiersmart.sfcontrol.statusback";//冰箱控制和温度等状态从电控板返回广播
-    public static final String BROADCAST_ACTION_FRIGEID_INFO = "com.haiersmart.sfcontrol.infochange";//设备fridge id发生变化广播
     //broadcast to user , external
+    public static final String BROADCAST_ACTION_FRIDGE_INFO = "com.haiersmart.sfcontrol.info";//设备fridge info(id, type)发生变化广播
     public static final String BROADCAST_ACTION_CONTROL = "com.haiersmart.sfcontrol.control";//通知模式和档位信息广播
     public static final String BROADCAST_ACTION_TEMPER = "com.haiersmart.sfcontrol.temper";//通知温度广播
     public static final String BROADCAST_ACTION_ERROR = "com.haiersmart.sfcontrol.error";//通知错误或故障信息广播
@@ -81,6 +81,7 @@ public class ConstantUtil {
     public static final String BROADCAST_ACTION_FRIDGE_RANGE = "com.haiersmart.sfcontrol.fridge.range";//通知冷藏档位大小范围
     public static final String BROADCAST_ACTION_CHANGE_RANGE = "com.haiersmart.sfcontrol.change.range";//通知变温档位大小范围
     public static final String BROADCAST_ACTION_FREEZE_RANGE = "com.haiersmart.sfcontrol.freeze.range";//通知冷冻档位大小范围
+    public static final String BROADCAST_ACTION_READY = "com.haiersmart.sfcontrol.ready";//通知service是否能正常获取主控板信息
 
     /**
      * user command request actions
@@ -117,16 +118,20 @@ public class ConstantUtil {
 
     //返回的key
     public static final String KEY_CONTROL_INFO = "ControlInfo";//识别key为“ControlInfo” 发送的数据为Serializable
-    public static final String KEY_FRIDGE_ID = "fridgeid";
+    public static final String KEY_FRIDGE_ID = "fridgeId";
+    public static final String KEY_FRIDGE_TYPE = "fridgeType";
     public static final String KEY_ERROR = "error";//错误命令key
     public static final String KEY_ALARM = "alarm";//报警key
     public static final String KEY_TEMPER = "temper";
     public static final String KEY_MODE= "commandMode";
+    public static final String KEY_READY= "serviceReady";
 
     public static final String KEY_SET_COLD_LEVEL= "coldlevel";
     public static final String KEY_SET_FRIDGE_LEVEL= "fridgelevel";
     public static final String KEY_SET_FREEZE_LEVEL= "freezelevel";
 
+    public static final String QUERY_CONTROL_READY= "queryControlReady";
+    public static final String QUERY_FRIDGE_INFO= "queryFridgeInfo";
     public static final String QUERY_CONTROL_INFO = "queryControlInfo";
     public static final String QUERY_TEMPER_INFO = "queryTemperInfo";
     public static final String QUERY_ERROR_INFO = "queryErrorInfo";

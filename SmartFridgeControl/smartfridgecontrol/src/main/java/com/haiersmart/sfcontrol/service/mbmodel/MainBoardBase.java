@@ -382,9 +382,10 @@ public abstract class MainBoardBase {
      * @return 冷藏打开命令帧
      */
     protected byte[] packFridgeOpen() {
-        FridgeControlEntry mFridgeControlEntry = new FridgeControlEntry("fridgeTargetTemp");
+        FridgeControlEntry mFridgeControlEntry = new FridgeControlEntry(EnumBaseName.fridgeTargetTemp.toString());
         mFridgeControlDbMgr.queryByName(mFridgeControlEntry);
-        return packFridgeTargetTemp(mFridgeControlEntry.value);
+        return mProtocolCommand.PackCmdFrame(EnumBaseName.fridgeTargetTemp, (byte) mFridgeControlEntry.value);
+//        return packFridgeTargetTemp(mFridgeControlEntry.value);
     }
 
     /**
@@ -405,14 +406,14 @@ public abstract class MainBoardBase {
     protected byte[] packModeCmd(String string,boolean b){
         byte[] tmp;
         if(b == true) {
-            if(string.equals("fridgeCloseMode")){
-                tmp = packFridgeClose();
+            if(string.equals(EnumBaseName.fridgeSwitch.toString())){
+                tmp = packFridgeOpen();
             }else {
                 tmp = mProtocolCommand.PackCmdFrame(EnumBaseName.valueOf(string), (byte) 1);
             }
         }else{
-            if(string.equals("fridgeCloseMode")){
-                tmp = packFridgeOpen();
+            if(string.equals(EnumBaseName.fridgeSwitch.toString())){
+                tmp = packFridgeClose();
             }else {
                 tmp = mProtocolCommand.PackCmdFrame(EnumBaseName.valueOf(string), (byte) 0);
             }

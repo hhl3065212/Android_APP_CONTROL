@@ -252,10 +252,12 @@ public class ControlMainBoardService extends Service {
        MyLogUtil.i(TAG, "handleQueryData");
        mIsModeInitAvialbe = true;
        String fridgeId = mBoardInfo.getFridgeId();
+//       String fridgeType = mBoardInfo.getFridgeType();
+
        if(mIsModeInitAvialbe && (mModel==null) ) {
            initModel(fridgeId);
            //broadcast fridgeId to app
-           sendFridgeIdResponse(fridgeId);
+           sendFridgeIdResponse();
        }
 
        //update database if value changed
@@ -280,10 +282,13 @@ public class ControlMainBoardService extends Service {
         }
     }
 
-    public void sendFridgeIdResponse(String fridgeId) {
+    public void sendFridgeIdResponse() {
         //broadcast fridgeId to app
         Intent intent = new Intent();
+        String fridgeId = mBoardInfo.getFridgeId();
+        String fridgeType = mBoardInfo.getFridgeType();
         intent.putExtra(ConstantUtil.KEY_FRIDGE_ID, fridgeId);
+        intent.putExtra(ConstantUtil.KEY_FRIDGE_TYPE, fridgeType);
         intent.setAction(ConstantUtil.BROADCAST_ACTION_FRIGEID_INFO);
         sendBroadcast(intent);
     }
@@ -318,7 +323,9 @@ public class ControlMainBoardService extends Service {
     public void notifyErrorOccurred(List<FridgeStatusEntry> statusEntries) {
         Intent intent = new Intent();
         intent.setAction(ConstantUtil.BROADCAST_ACTION_ERROR);
-        intent.putExtra(ConstantUtil.KEY_ERROR,(Serializable)statusEntries);
+//        intent.putExtra(ConstantUtil.KEY_ERROR,(Serializable)statusEntries);
+        String controlJson = JSON.toJSONString(statusEntries);
+        intent.putExtra(ConstantUtil.KEY_ERROR,controlJson);
         sendBroadcast(intent);
     }
 
@@ -382,10 +389,6 @@ public class ControlMainBoardService extends Service {
 
     public int getChangeMaxValue() {
         return mMBParams.getTargetTempRange().getChangeMaxValue();
-    }
-
-    public List<FridgeControlEntry> getControlEntries() {
-        return mModel.getControlEntries();
     }
 
     public String getFrameDataString(){

@@ -601,43 +601,8 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
         button.setTextColor(getResources().getColor(R.color.black));
     }
 
-//    private void initModeUI(List<FridgeControlEntry> controlList) {
-//        mIsSmart = controlList.get(0).value == 1 ? true : false;
-//        mIsHoliday = controlList.get(1).value == 1 ? true : false;
-//        mIsCold = controlList.get(2).value == 1 ? true : false;
-//        mIsFreeze = controlList.get(3).value == 1 ? true : false;
-//        if (mIsSmart) {
-//            enableButton(mBtnSmart);
-//        } else {
-//            disableButton(mBtnSmart);
-//        }
-//
-//        if (mIsHoliday) {
-//            enableButton(mBtnHoliday);
-//        } else {
-//            disableButton(mBtnHoliday);
-//        }
-//
-//        if (mIsCold) {
-//            enableButton(mBtnQuickCold);
-//        } else {
-//            disableButton(mBtnQuickCold);
-//        }
-//
-//        if (mIsFreeze) {
-//            enableButton(mBtnQuickFreeze);
-//        } else {
-//            disableButton(mBtnQuickFreeze);
-//        }
-//    }
-
-
 
     private void updateTempLevelSettingUI(List<FridgeControlEntry> controlList) {
-//        FridgeControlEntry coldLevelEntry = controlList.get(4);//冷藏档位值
-//        FridgeControlEntry freezeLevelEntry = controlList.get(5);//冷冻档位模式
-//        FridgeControlEntry changeLevelEntry = controlList.get(6);// 变温档位模式
-//        FridgeControlEntry coldSwitchEntry = controlList.get(7);//冷藏开关
         FridgeControlEntry coldLevelEntry = mService.getEntryByName(EnumBaseName.fridgeTargetTemp);//冷藏档位值
         FridgeControlEntry freezeLevelEntry = mService.getEntryByName(EnumBaseName.freezeTargetTemp);//冷冻档位模式
         FridgeControlEntry changeLevelEntry = mService.getEntryByName(EnumBaseName.changeTargetTemp);// 变温档位模式
@@ -701,8 +666,6 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
             mVarialableTempSeekbar.setEnabled(false);
         }
         mSettingVariableWarn = changeLevelEntry.disable;
-
-
 
         mFreezeTempSeekbar.setProgress(freezeLevel - mFreezeMinValue);
         if(freezeLevelEntry.disable.equals(ConstantUtil.NO_WARNING)) {

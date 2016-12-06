@@ -19,6 +19,10 @@ public class ControlMainBoardInfo {
        return  mMBParams.getFridgeId();
     }
 
+    public String getFridgeType() {
+        return mMBParams.getFridgeType();
+    }
+
     String getFridgeVersion() {
        return mMBParams.getFridgeVersion();
     }

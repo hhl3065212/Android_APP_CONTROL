@@ -307,7 +307,7 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
         intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_FRIDGE_RANGE);
         intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_CHANGE_RANGE);
         intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_FREEZE_RANGE);
-        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_FRIGEID_INFO);
+        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_FRIDGE_INFO);
         //intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_ALARM);//报警信息广播
         registerReceiver(receiveUpdateUI, intentFilter);
     }

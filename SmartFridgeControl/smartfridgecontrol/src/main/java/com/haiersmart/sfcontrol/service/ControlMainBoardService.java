@@ -157,9 +157,6 @@ public class ControlMainBoardService extends Service {
         return mDBHandle.getControlDbMgr();
     }
 
-//    public FridgeStatusDbMgr getStatusDbMgr() {
-//        return mDBHandle.getmStatusDbMgr();
-//    }
 
     public ControlMainBoardInfo getMainBoardInfo() {
         return mBoardInfo;
@@ -225,6 +222,12 @@ public class ControlMainBoardService extends Service {
             case ConstantUtil.REFRIGERATOR_CLOSE://冷藏关
                 mModel.refrigeratorClose();
                 break;
+            case ConstantUtil.QUERY_CONTROL_READY://查询档位和控制信息
+                sendControlReadyInfo();
+                break;
+            case ConstantUtil.QUERY_FRIDGE_INFO:
+                sendFridgeInfoResponse();
+                break;
             case ConstantUtil.QUERY_CONTROL_INFO://查询档位和控制信息
                 sendControlCmdResponse();
                 break;
@@ -257,7 +260,7 @@ public class ControlMainBoardService extends Service {
        if(mIsModeInitAvialbe && (mModel==null) ) {
            initModel(fridgeId);
            //broadcast fridgeId to app
-           sendFridgeIdResponse();
+           sendFridgeInfoResponse();
        }
 
        //update database if value changed
@@ -282,20 +285,32 @@ public class ControlMainBoardService extends Service {
         }
     }
 
-    public void sendFridgeIdResponse() {
+    public void sendFridgeInfoResponse() {
+        if(!mIsNotifyUpper) {
+            sendControlReadyInfo();
+            return;
+        }
         //broadcast fridgeId to app
         Intent intent = new Intent();
         String fridgeId = mBoardInfo.getFridgeId();
         String fridgeType = mBoardInfo.getFridgeType();
         intent.putExtra(ConstantUtil.KEY_FRIDGE_ID, fridgeId);
         intent.putExtra(ConstantUtil.KEY_FRIDGE_TYPE, fridgeType);
-        intent.setAction(ConstantUtil.BROADCAST_ACTION_FRIGEID_INFO);
+        intent.setAction(ConstantUtil.BROADCAST_ACTION_FRIDGE_INFO);
+        sendBroadcast(intent);
+    }
+
+    public void sendControlReadyInfo() {
+        Intent intent = new Intent();
+        intent.setAction(ConstantUtil.BROADCAST_ACTION_READY);
+        intent.putExtra(ConstantUtil.KEY_READY, mIsNotifyUpper);
         sendBroadcast(intent);
     }
 
     public void sendControlCmdResponse() {
         MyLogUtil.d(TAG, "sendControlCmdResponse in");
         if(!mIsNotifyUpper) {
+            sendControlReadyInfo();
             return;
         }
         Intent intent = new Intent();
@@ -332,6 +347,7 @@ public class ControlMainBoardService extends Service {
     public void provideFridgeTempRange(){
         MyLogUtil.i(TAG,"provideFridgeTempRange in");
         if(!mIsNotifyUpper) {
+            sendControlReadyInfo();
             MyLogUtil.i(TAG,"provideFridgeTempRange !mIsNotifyUpper  out");
             return;
         }
@@ -347,6 +363,7 @@ public class ControlMainBoardService extends Service {
 
     public void provideChangeTempRange(){
         if(!mIsNotifyUpper) {
+            sendControlReadyInfo();
             return;
         }
         Intent intent = new Intent();
@@ -358,6 +375,7 @@ public class ControlMainBoardService extends Service {
 
     public void provideFreezeTempRange(){
         if(!mIsNotifyUpper) {
+            sendControlReadyInfo();
             return;
         }
         Intent intent = new Intent();
@@ -367,33 +385,6 @@ public class ControlMainBoardService extends Service {
         sendBroadcast(intent);
     }
 
-    public int getFridgeMinValue() {
-        return mMBParams.getTargetTempRange().getFridgeMinValue();
-    }
-
-    public int getFridgeMaxValue() {
-        return mMBParams.getTargetTempRange().getFridgeMaxValue();
-    }
-
-    public int getFreezeMinValue() {
-        return mMBParams.getTargetTempRange().getFreezeMinValue();
-    }
-
-    public int getFreezeMaxValue() {
-        return mMBParams.getTargetTempRange().getFreezeMaxValue();
-    }
-
-    public int getChangeMinValue() {
-        return mMBParams.getTargetTempRange().getChangeMinValue();
-    }
-
-    public int getChangeMaxValue() {
-        return mMBParams.getTargetTempRange().getChangeMaxValue();
-    }
-
-    public String getFrameDataString(){
-        return mMBParams.getFrameDataString();
-    }
 
     public FridgeControlEntry getEntryByName(EnumBaseName name) {
         return mModel.getControlEntryByName(name);

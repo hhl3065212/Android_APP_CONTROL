@@ -519,6 +519,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } else if (name.equals(EnumBaseName.fridgeSwitch.toString())) {
                 mModel.isFridgeOpen = (value == 1) ? true : false;
                 mModel.mDisableFridgeOpen = disable;
+                if(mModel.mDisableFridgeOpen.equals("none")){
+                    btnFridgeSwitch.setEnabled(true);
+                }else {
+                    btnFridgeSwitch.setEnabled(false);
+                }
             }
         }
         skbFridge.setProgress(mModel.mFridgeTarget - mModel.mFridgeMin);

@@ -1,6 +1,5 @@
 package com.haiersmart.sfcontrol.service;
 
-import com.haiersmart.sfcontrol.constant.ConstantUtil;
 import com.haiersmart.sfcontrol.service.mbmodel.MainBoardEntry;
 
 import java.util.ArrayList;
@@ -49,7 +48,7 @@ public class ControlMainBoardInfo {
 
     //冷藏显示温度
     public int getFridgeShowTemp() {
-        int res = searchStatusValue("getFridgeShowTemp");
+        int res = searchStatusValue("fridgeShowTemp");
         return res;
     }
     //冷冻显示温度
@@ -152,7 +151,7 @@ public class ControlMainBoardInfo {
         String tempName = "";
         for(int i=0; i<tableLength; i++) {
             tempName = entryList.get(i).getName();
-            if( tempName == funcName ) {
+            if( tempName.equals(funcName) ) {
                 res = entryList.get(i).getValue();
                 break;
             }

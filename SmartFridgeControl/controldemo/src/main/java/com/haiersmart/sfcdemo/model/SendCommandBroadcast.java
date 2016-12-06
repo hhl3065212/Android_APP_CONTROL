@@ -47,7 +47,7 @@ public class SendCommandBroadcast{
                 break;
             case quickFreezeMode:
                 break;
-            case fridgeCloseMode:
+            case fridgeSwitch:
                 break;
             case fridgeTargetTemp:
                 break;

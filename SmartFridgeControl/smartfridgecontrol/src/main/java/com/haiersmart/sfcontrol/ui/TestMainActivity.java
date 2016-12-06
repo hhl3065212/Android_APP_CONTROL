@@ -22,7 +22,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar;
@@ -35,7 +34,6 @@ import com.haiersmart.sfcontrol.service.ControlMainBoardService;
 import com.haiersmart.sfcontrol.service.MainBoardParameters;
 import com.haiersmart.sfcontrol.utilslib.MyLogUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.haiersmart.sfcontrol.constant.ConstantUtil.REFRIGERATOR_CLOSE;

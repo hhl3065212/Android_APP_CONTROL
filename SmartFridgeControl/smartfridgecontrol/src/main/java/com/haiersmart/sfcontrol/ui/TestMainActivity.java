@@ -28,13 +28,15 @@ import com.haiersmart.sfcontrol.constant.ConstantUtil;
 import com.haiersmart.sfcontrol.constant.EnumBaseName;
 import com.haiersmart.sfcontrol.database.FridgeControlEntry;
 import com.haiersmart.sfcontrol.database.FridgeStatusEntry;
-import com.haiersmart.sfcontrol.receiver.ControlCommandReceiver;
 import com.haiersmart.sfcontrol.service.ControlMainBoardService;
 import com.haiersmart.sfcontrol.service.MainBoardParameters;
 import com.haiersmart.sfcontrol.utilslib.MyLogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.haiersmart.sfcontrol.constant.ConstantUtil.REFRIGERATOR_CLOSE;
+import static com.haiersmart.sfcontrol.constant.ConstantUtil.REFRIGERATOR_OPEN;
 
 public class TestMainActivity extends AppCompatActivity implements OnClickListener {
     private Intent mServiceIntent;
@@ -148,11 +150,12 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
                 }
 
                 if(mTbColdSwitchWarn.equals(ConstantUtil.NO_WARNING)) {
+                    MyLogUtil.d(TAG,"isChecked modedebug mTbColdSwitch.isChecked = "+mTbColdSwitch.isChecked());
                     if(mTbColdSwitch.isChecked()) {
-                        sendBroadcastToService(ConstantUtil.REFRIGERATOR_CLOSE);
+                        sendBroadcastToService(REFRIGERATOR_OPEN);
                         MyLogUtil.d(TAG,"onCheckedChanged modedebug set fridge close");
                     } else {
-                        sendBroadcastToService(ConstantUtil.REFRIGERATOR_OPEN);
+                        sendBroadcastToService(REFRIGERATOR_CLOSE);
                         MyLogUtil.d(TAG,"onCheckedChanged modedebug set fridge open");
                     }
                 }
@@ -521,6 +524,7 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
         }
 
         boolean isOpen = (coldSwitchEntry.value == 1 ? true : false);//默认0
+        MyLogUtil.d(TAG,"modedebug updateTempLevelSettingUI isOpen=" + isOpen);
         mTbColdSwitchWarn = coldSwitchEntry.disable;
         mTbColdSwitch.setChecked(isOpen);
         MyLogUtil.d(TAG,"modedebug updateTempLevelSettingUI mTbColdSwitchWarn=" + mTbColdSwitchWarn);

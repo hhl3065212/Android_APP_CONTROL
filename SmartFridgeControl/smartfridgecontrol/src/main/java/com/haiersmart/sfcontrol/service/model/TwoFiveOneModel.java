@@ -195,7 +195,7 @@ public class TwoFiveOneModel extends ModelBase {
         MyLogUtil.i(TAG,"setCold coldTemper=" + coldTemper);
         FridgeControlEntry coldLevelEntry = getControlEntryByName(EnumBaseName.fridgeTargetTemp);
         coldLevelEntry.value = coldTemper;
-        setControlValueByName(EnumBaseName.freezeTargetTemp, coldTemper);
+        setControlValueByName(EnumBaseName.fridgeTargetTemp, coldTemper);
         getControlDbMgr().updateValue(coldLevelEntry);
         mService.sendControlCmdResponse();
     }

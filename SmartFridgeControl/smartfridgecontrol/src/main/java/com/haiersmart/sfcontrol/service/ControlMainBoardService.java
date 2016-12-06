@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.text.TextUtils;
 
+import com.alibaba.fastjson.JSON;
 import com.haiersmart.sfcontrol.application.ControlApplication;
 import com.haiersmart.sfcontrol.constant.ConstantUtil;
 import com.haiersmart.sfcontrol.constant.EnumBaseName;
@@ -294,7 +295,9 @@ public class ControlMainBoardService extends Service {
         }
         Intent intent = new Intent();
         intent.setAction(ConstantUtil.BROADCAST_ACTION_CONTROL);
-        intent.putExtra(ConstantUtil.KEY_CONTROL_INFO,(Serializable)mModel.getControlEntries());
+//        intent.putExtra(ConstantUtil.KEY_CONTROL_INFO,(Serializable)mModel.getControlEntries());
+        String controlJson = JSON.toJSONString(mModel.getControlEntries());
+        intent.putExtra(ConstantUtil.KEY_CONTROL_INFO,controlJson);
         sendBroadcast(intent);
         MyLogUtil.d(TAG, "sendControlCmdResponse out");
     }
@@ -304,9 +307,11 @@ public class ControlMainBoardService extends Service {
         intent.setAction(ConstantUtil.BROADCAST_ACTION_TEMPER);
 //        MyLogUtil.i(TAG,"notifyTemperChanged statusEntries.size="+statusEntries.size());
 //        intent.putExtra(ConstantUtil.KEY_TEMPER,(Serializable)statusEntries);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(ConstantUtil.KEY_TEMPER, (Serializable)statusEntries);
-        intent.putExtra("key",bundle);
+//        Bundle bundle = new Bundle();
+//        intent.putExtra("key",bundle);
+//        bundle.putSerializable(ConstantUtil.KEY_TEMPER, (Serializable)statusEntries);
+        String statusJson = JSON.toJSONString(statusEntries); // [{"id":123,“name”：“”，“value”，}, {{"id":123,“name”：“”，“value”，}, {  }]
+        intent.putExtra(ConstantUtil.KEY_TEMPER,statusJson);
         sendBroadcast(intent);
     }
 

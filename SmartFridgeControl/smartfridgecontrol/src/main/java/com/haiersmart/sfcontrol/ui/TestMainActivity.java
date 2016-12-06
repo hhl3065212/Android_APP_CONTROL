@@ -22,6 +22,9 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar;
 import com.haiersmart.sfcontrol.R;
 import com.haiersmart.sfcontrol.constant.ConstantUtil;
@@ -79,9 +82,6 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
             }
         });
         registerBroadcast();
-//        mCommandReceiver = new ControlCommandReceiver();
-//        registerCommandBroadcast();
-
         initService();
         initViews();
 
@@ -149,10 +149,10 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
 
                 if(mTbColdSwitchWarn.equals(ConstantUtil.NO_WARNING)) {
                     if(mTbColdSwitch.isChecked()) {
-                        sendBroadcastToService(ConstantUtil.REFRIGERATOR_CLOSE);
+                        sendBroadcastToService(ConstantUtil.REFRIGERATOR_OPEN);
                         MyLogUtil.d(TAG,"onCheckedChanged modedebug set fridge close");
                     } else {
-                        sendBroadcastToService(ConstantUtil.REFRIGERATOR_OPEN);
+                        sendBroadcastToService(ConstantUtil.REFRIGERATOR_CLOSE);
                         MyLogUtil.d(TAG,"onCheckedChanged modedebug set fridge open");
                     }
                 }
@@ -192,7 +192,6 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
             sendBroadcastToService(ConstantUtil.BROADCAST_ACTION_TEMPER);
         } else {
             if(mIsInitDone) {
-//                updateShowTemps();
                 sendBroadcastToService(ConstantUtil.QUERY_CONTROL_INFO);
                 sendBroadcastToService(ConstantUtil.BROADCAST_ACTION_TEMPER);
             }
@@ -324,23 +323,28 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
             String action = intent.getAction();
             MyLogUtil.i(TAG, "BroadcastReceiver onReceive Range action="+ action);
             if (action.equals(ConstantUtil.BROADCAST_ACTION_CONTROL)) {
-                ArrayList<FridgeControlEntry> controlList =
-                        (ArrayList<FridgeControlEntry>) intent.getSerializableExtra(ConstantUtil.KEY_CONTROL_INFO);
-                if (controlList == null) {
-                    MyLogUtil.i(TAG, "BroadcastReceiver onReceive controlList NULL");
-                } else {
-                    updateSettingAndModeUI(controlList);
-                }
+//                ArrayList<FridgeControlEntry> controlList =
+//                        (ArrayList<FridgeControlEntry>) intent.getSerializableExtra(ConstantUtil.KEY_CONTROL_INFO);
+//                if (controlList == null) {
+//                    MyLogUtil.i(TAG, "BroadcastReceiver onReceive controlList NULL");
+//                } else {
+//                    updateSettingAndModeUI(controlList);
+//                }
+                String jsonString = intent.getStringExtra(ConstantUtil.KEY_CONTROL_INFO);
+                updateSettingAndModeUI(jsonString);
             } else if (action.equals(ConstantUtil.BROADCAST_ACTION_TEMPER)) {
-                Bundle bundle = intent.getBundleExtra("key");
-                ArrayList<FridgeStatusEntry> statusList =
-                        (ArrayList<FridgeStatusEntry>) bundle.getSerializable(ConstantUtil.KEY_TEMPER);
-                if (statusList != null) {
-                    MyLogUtil.v(TAG, "BroadcastReceiver onReceive statusList.size=" + statusList.size());
-                    updateTempAndModeUI(statusList);
-                } else {
-                    MyLogUtil.i(TAG, "BroadcastReceiver onReceive statusList is NULL");
-                }
+                String jsonString = intent.getStringExtra(ConstantUtil.KEY_TEMPER);
+                updateTempAndModeUI(jsonString);
+
+//                Bundle bundle = intent.getBundleExtra("key");
+//                ArrayList<FridgeStatusEntry> statusList =
+//                        (ArrayList<FridgeStatusEntry>) bundle.getSerializable(ConstantUtil.KEY_TEMPER);
+//                if (statusList != null) {
+//                    MyLogUtil.v(TAG, "BroadcastReceiver onReceive statusList.size=" + statusList.size());
+//                    updateTempAndModeUI(statusList);
+//                } else {
+//                    MyLogUtil.i(TAG, "BroadcastReceiver onReceive statusList is NULL");
+//                }
             } else if (action.equals(ConstantUtil.BROADCAST_ACTION_ERROR)) {
 
             } else if(action.equals(ConstantUtil.BROADCAST_ACTION_FRIDGE_RANGE)) {
@@ -359,6 +363,141 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
             }
         }
     };
+
+    private void updateTempAndModeUI(String jsonString) {
+        MyLogUtil.d(TAG, "UpdateTempAndModeUI in");
+        if(jsonString == null || jsonString.length()==0) return;
+        MyLogUtil.i(TAG, "UpdateTempAndModeUI json mIsInitDone=" + mIsInitDone);
+        if (mFreezeMinValue>=0) {
+            MyLogUtil.i(TAG,"updateTempAndModeUI Range QUERY_FRIDGE_TEMP_RANGE");
+            sendBroadcastToService(ConstantUtil.QUERY_FRIDGE_TEMP_RANGE);
+            sendBroadcastToService(ConstantUtil.QUERY_CHANGE_TEMP_RANGE);
+            sendBroadcastToService(ConstantUtil.QUERY_FREEZE_TEMP_RANGE);
+            sendBroadcastToService(ConstantUtil.QUERY_CONTROL_INFO);
+            mIsInitDone = true;
+        }
+        JSONArray array = JSONArray.parseArray(jsonString);
+        for(int i=0; i<array.size();i++) {
+            JSONObject object = array.getJSONObject(i);
+            String name = (String) object.get("name");
+            int temp =(int) object.get("value");
+            if(name.equals("fridgeShowTemp") ) {
+                mTvPicCold.setText(Integer.toString(temp));
+            } else if( name.equals("changeShowTemp") ) {
+                mTvPicVariable.setText(Integer.toString(temp));
+            }else if( name.equals("freezeShowTemp") ) {
+                mTvPicFreeze.setText(Integer.toString(temp));
+            }
+        }
+        mTvStatusCode.setText(mMainBoardParameters.getFrameDataString());
+        mTvEnvTemp.setText(Integer.toString(mMainBoardParameters.getMbsValueByName(EnumBaseName.envShowTemp.toString()))+"℃");
+        mTvEnvHum.setText(Integer.toString(mMainBoardParameters.getMbsValueByName(EnumBaseName.envShowHum.toString()))+"%");
+        MyLogUtil.d(TAG, "UpdateTempAndModeUI out");
+    }
+
+    private void updateSettingAndModeUI(String jsonString) {
+        MyLogUtil.d(TAG, "updateSettingAndModeUI in");
+        if(jsonString == null || jsonString.length()==0) return;
+
+        boolean isOpen = false;
+        int coldLevel = -1;
+        int changeLevel = -1;
+        int freezeLevel = -1;
+        JSONArray array = JSONArray.parseArray(jsonString);
+        for(int i=0; i<array.size();i++) {
+            JSONObject object = array.getJSONObject(i);
+            String name = (String) object.get("name");
+            int value = (int) object.get("value");
+            String disable = (String) object.get("disable");
+            if(name.equals("smartMode")) {
+                mIsSmart = value == 1 ? true:false;
+            } else if(name.equals("holidayMode")) {
+                mIsHoliday = value == 1 ? true:false;
+            } else if(name.equals("quickColdMode")) {
+                mIsCold = value == 1 ? true:false;
+            } else if(name.equals("quickFreezeMode")) {
+                mIsFreeze = value == 1 ? true:false;
+            } else if(name.equals("fridgeTargetTemp")) {
+                coldLevel = value;
+                mSettingColdWarn = disable;
+            } else if(name.equals("freezeTargetTemp")) {
+                freezeLevel = value;
+                mSettingFreezeWarn = disable;
+            } else if(name.equals("changeTargetTemp")) {
+                changeLevel = value;
+                mSettingVariableWarn = disable;
+            } else if(name.equals("fridgeSwitch")) {
+                isOpen = value == 1 ? true:false;
+                mTbColdSwitchWarn = disable;
+            }
+        }
+
+        if(mIsSmart) {
+            enableButton(mBtnSmart);
+            mTvSettingCold.setText("智能运行中");
+            mTvSettingFreeze.setText("智能运行中");
+        } else {
+            disableButton(mBtnSmart);
+            if(mIsHoliday) {
+                enableButton(mBtnHoliday);
+                mTvSettingCold.setText("假日运行中");
+            } else {
+                disableButton(mBtnHoliday);
+                mTvSettingCold.setText(Integer.toString(coldLevel) + "℃");
+            }
+
+            if(mIsFreeze) {
+                enableButton(mBtnQuickFreeze);
+                mTvSettingFreeze.setText("速冻中");
+            } else {
+                disableButton(mBtnQuickFreeze);
+                mTvSettingFreeze.setText(Integer.toString(freezeLevel) + "℃");
+            }
+        }
+
+        if(mIsCold) {
+            enableButton(mBtnQuickCold);
+            mTvSettingVariable.setText("速冷中");
+        } else {
+            disableButton(mBtnQuickCold);
+            mTvSettingVariable.setText(Integer.toString(changeLevel) + "℃");
+        }
+
+        mTbColdSwitch.setChecked(isOpen);
+        MyLogUtil.d(TAG,"modedebug updateTempLevelSettingUI mTbColdSwitchWarn=" + mTbColdSwitchWarn);
+        if (isOpen) {
+            mTvSettingCold.setTextColor(getResources().getColor(R.color.black2));
+            mTvSettingColdContent.setTextColor(getResources().getColor(R.color.black2));
+        }
+        else {
+            mTvSettingCold.setTextColor(getResources().getColor(R.color.grey_food_weight));
+            mTvSettingColdContent.setTextColor(getResources().getColor(R.color.grey_food_weight));
+
+        }
+
+        mColdTempSeekbar.setProgress(coldLevel - mFridgeMinValue);
+        if(mSettingColdWarn.equals(ConstantUtil.NO_WARNING)) {
+            mColdTempSeekbar.setEnabled(true);
+        } else {
+            mColdTempSeekbar.setEnabled(false);
+        }
+
+        mVarialableTempSeekbar.setProgress(changeLevel - mChangeMinValue);
+        if(mSettingVariableWarn.equals(ConstantUtil.NO_WARNING)) {
+            mVarialableTempSeekbar.setEnabled(true);
+        } else {
+            mVarialableTempSeekbar.setEnabled(false);
+        }
+
+        mFreezeTempSeekbar.setProgress(freezeLevel - mFreezeMinValue);
+        if(mSettingFreezeWarn.equals(ConstantUtil.NO_WARNING)) {
+            mFreezeTempSeekbar.setEnabled(true);
+        } else {
+            mFreezeTempSeekbar.setEnabled(false);
+        }
+
+        MyLogUtil.d(TAG,"modedebug updateTempLevelSettingUI mSettingColdWarn=" + mSettingColdWarn);
+    }
 
     private void updateSettingAndModeUI(List<FridgeControlEntry> controlList) {
         MyLogUtil.v(TAG, "UpdateSettingAndModeUI invoked");
@@ -678,11 +817,6 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
         }
     }
 
-    private void updateShowTemps() {
-        mTvPicCold.setText(Integer.toString(mService.getMainBoardInfo().getFridgeShowTemp())+"℃");
-        mTvPicVariable.setText(Integer.toString(mService.getMainBoardInfo().getVariableShowTemp())+ "℃");
-        mTvPicFreeze.setText(Integer.toString(mService.getMainBoardInfo().getFreezeShowTemp()) + "℃");
-    }
 
 
 }

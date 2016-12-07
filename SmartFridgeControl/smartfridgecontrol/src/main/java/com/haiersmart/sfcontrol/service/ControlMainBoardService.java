@@ -177,8 +177,6 @@ public class ControlMainBoardService extends Service {
 
         //Create serial port data which manage main board and android board logic class
         try {
-            //TODO: FridgeModel get from system
-            String FridgeModel = "UG";
             mProcessData = new PowerProcessData();
         } catch (IOException e) {
             e.printStackTrace();

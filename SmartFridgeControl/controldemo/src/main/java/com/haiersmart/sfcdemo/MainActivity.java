@@ -22,6 +22,8 @@ import com.haiersmart.sfcdemo.constant.EnumBaseName;
 import com.haiersmart.sfcdemo.draw.MyTestButton;
 import com.haiersmart.sfcdemo.model.FridgeModel;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -78,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private LinearLayout lineEnvTemp, lineEnvHum, lineFridgeTemp, lineFreezeTemp, lineChangeTemp,
             lineFridgeTarget, lineFreezeTarget, lineChangeTarger;
     private TextView tvFridgeModel, tvStatusCode, tvEnvTemp, tvEnvHum, tvFridgeTemp, tvFreezeTemp, tvChangeTemp,
-            tvFridgeTarget, tvFreezeTarget, tvChangeTarget;
+            tvFridgeTarget, tvFreezeTarget, tvChangeTarget,tvTime;
     private Button btnReturn;
     private MyTestButton btnSmart, btnHoliday, btnQuickCold, btnQuickFreeze, btnFridgeSwitch;
     private SeekBar skbFridge, skbFreeze, skbChange;
@@ -97,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         findView();
         mTimer = new Timer();
-//        sendUserCommond(KEY_MODE, QUERY_CONTROL_READY);
+        sendUserCommond(KEY_MODE, QUERY_CONTROL_READY);
     }
 
     @Override
@@ -224,6 +226,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tvFridgeTarget = (TextView) findViewById(R.id.text_demo_fridge_target);
         tvFreezeTarget = (TextView) findViewById(R.id.text_demo_freeze_target);
         tvChangeTarget = (TextView) findViewById(R.id.text_demo_change_target);
+        tvTime = (TextView)findViewById(R.id.text_demo_time);
 
         btnReturn = (Button) findViewById(R.id.btn_demo_return);
         btnReturn.setOnClickListener(this);
@@ -258,7 +261,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void setModel() {
 //        if(mModel.mFridgeModel != null) {
-        mModel.mFridgeModel = BCD251_MODEL;
+//        mModel.mFridgeModel = BCD251_MODEL;
         tvFridgeModel.setText(mModel.mFridgeModel);
         mWaitTask.cancel();
         setView();
@@ -287,6 +290,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             switch (msg.what) {
                 case 0x01:
                     sendUserCommond(KEY_READY, QUERY_CONTROL_READY);
+                    mWaitTask.cancel();
                     break;
                 case 0x02:
                     refreshUI();
@@ -298,6 +302,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void refreshUI() {
         //        sendUserCommond(KEY_MODE,QUERY_TEMPER_INFO);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        Date date = new Date(System.currentTimeMillis());
+        String strTime = simpleDateFormat.format(date);
+        tvTime.setText(strTime);
         switch (mModel.mFridgeModel) {
             case BCD251_MODEL:
                 tvFridgeTemp.setText(mModel.mFridgeShow + " ℃");

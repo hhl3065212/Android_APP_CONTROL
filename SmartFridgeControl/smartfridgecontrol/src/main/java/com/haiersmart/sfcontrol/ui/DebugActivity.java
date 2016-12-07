@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -50,6 +51,8 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
     private MyTestButton btnSmart,btnHoliday,btnQuickCold,btnQuickFreeze,btnFridgeClose;
     private SeekBar skbFridge,skbFreeze,skbChange;
 
+    private int onclickCounts = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,6 +92,7 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
         lineChangeTarger=(LinearLayout)findViewById(R.id.linear_debug_skb_change);
 
         tvFridgeModel = (TextView)findViewById(R.id.text_debug_fridge_model);
+        tvFridgeModel.setOnClickListener(this);
         tvStatusCode = (TextView)findViewById(R.id.text_debug_status_code);
         tvEnvTemp = (TextView)findViewById(R.id.text_debug_env_temp);
         tvEnvHum = (TextView)findViewById(R.id.text_debug_env_hum);
@@ -219,8 +223,10 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                 fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.fridgeSwitch);
                 if(fridgeControlEntry.value == 1){
                     btnFridgeClose.setOn();
+                    btnFridgeClose.setText("冷藏开");
                 }else {
                     btnFridgeClose.setOff();
+                    btnFridgeClose.setText("冷藏关");
                 }
                 break;
         }
@@ -318,7 +324,7 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
     }
     private void initFridgeClose(final int idButton){
         btnFridgeClose = (MyTestButton)findViewById(idButton);
-        btnFridgeClose.setText("冷藏开关");
+//        btnFridgeClose.setText("冷藏开关");
         btnFridgeClose.setEnabled(true);
 
         btnFridgeClose.setOnClickListener(new View.OnClickListener() {
@@ -342,6 +348,14 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
         switch (v.getId()){
             case R.id.btn_debug_return:
                 finish();
+                break;
+            case R.id.text_debug_fridge_model:
+                onclickCounts++;
+                if(onclickCounts > 5){
+                    onclickCounts = 0;
+                    Intent intent = new Intent(Settings.ACTION_SETTINGS);
+                    startActivity(intent);
+                }
                 break;
         }
     }

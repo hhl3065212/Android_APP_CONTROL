@@ -96,7 +96,29 @@
             android:background="@drawable/linear_layout"
             android:orientation="vertical"
             android:padding="@dimen/fab_margin">
-            <!--环境温度-->
+            <!--系统时间-->
+            <LinearLayout
+                android:id="@+id/linear_demo_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/fab_margin"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <TextView
+                    android:id="@+id/title_demo_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_time"
+                    android:textSize="@dimen/text_size_32"/>
+
+                <TextView
+                    android:id="@+id/text_demo_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2016.12.07 9:00:00"
+                    android:textSize="@dimen/text_size_32"/>
+            </LinearLayout>
             <LinearLayout
                 android:id="@+id/linear_demo_env_temp"
                 android:layout_width="match_parent"

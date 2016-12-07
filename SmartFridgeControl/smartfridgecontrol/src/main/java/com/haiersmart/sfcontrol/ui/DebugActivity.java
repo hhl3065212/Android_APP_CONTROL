@@ -155,7 +155,7 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
             tvFridgeModel.setText(mModel);
             mWaitTask.cancel();
             setView();
-            mTimer.schedule(mTimerTask,0,500);
+            mTimer.schedule(mTimerTask,0,200);
             MyLogUtil.i(TAG, "fridge model is " + mModel);
         }
     }

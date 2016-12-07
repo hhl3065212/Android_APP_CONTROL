@@ -28,12 +28,15 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "MainActivity";
     private boolean mIsBound = false;
     private static FridgeModel mModel = new FridgeModel();
 
     private Timer mTimer;
+    private TimerTask mWaitTask;
 
     private LinearLayout lineEnvTemp, lineEnvHum, lineFridgeTemp, lineFreezeTemp, lineChangeTemp,
             lineFridgeTarget, lineFreezeTarget, lineChangeTarger;
@@ -58,7 +61,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         findView();
         mTimer = new Timer();
-        mTimer.schedule(mWaitTask, 1000, 1000);
+//        mTimer.schedule(mWaitTask, 1000, 1000);
+        startQueryType();
         //        sendUserCommond(KEY_MODE, QUERY_CONTROL_READY);
         //        sendUserCommond(KEY_MODE, "demoReady");
         Log.i(TAG, "first sendControlCmdResponse main board is ready?");
@@ -114,18 +118,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 isReady = intent.getBooleanExtra(ConstantUtil.KEY_READY, false);
                 Log.i(TAG, "BroadcastReceiver receiveUpdateUI isReady=" + isReady);
                 if (isReady) {
-                    mWaitTask.cancel();
+                    stopQueryType();
                     sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_FRIDGE_INFO);
                     sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_FRIDGE_TEMP_RANGE);
                     sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_FREEZE_TEMP_RANGE);
                     sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_CHANGE_TEMP_RANGE);
+                }else {
+                    startQueryType();
                 }
-                //                else {
-                ////                    sendUserCommond(KEY_READY, QUERY_CONTROL_READY);
-                ////                    mHandler.sendEmptyMessageDelayed(0x01,1000);
-                ////                    mTimer.schedule(mWaitTask, 1000);
-                //                }
-
             } else if (action.equals(ConstantUtil.BROADCAST_ACTION_FRIDGE_INFO)) {
                 if (isReady) {
                     String id = intent.getStringExtra(ConstantUtil.KEY_FRIDGE_ID);
@@ -165,6 +165,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     };
 
     private void sendUserCommond(String key, String content) {
+        Log.i(TAG,"kill content = "+content);
         Intent intent = new Intent();
         intent.setAction(ConstantUtil.COMMAND_TO_SERVICE);
         intent.putExtra(key, content);
@@ -241,21 +242,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void setModel() {
         //        if(mModel.mFridgeModel != null) {
-        //        mModel.mFridgeModel = BCD251_MODEL;
+        mModel.mFridgeModel = ConstantUtil.BCD251_MODEL;
         tvFridgeModel.setText(mModel.mFridgeModel);
-        mWaitTask.cancel();
         setView();
 //        mTimer.schedule(mTimerTask, 0, 100);
         //        }
     }
-
-    private TimerTask mWaitTask = new TimerTask() {
-        @Override
-        public void run() {
-            mHandler.sendEmptyMessage(0x01);
-            //            setModel();
+    private void startQueryType(){
+        if(mWaitTask == null){
+            Log.i(TAG,"mWaitTask is null,now creat!");
+            mWaitTask = new TimerTask() {
+                @Override
+                public void run() {
+                    mHandler.sendEmptyMessage(0x01);
+                }
+            };
+            mTimer.schedule(mWaitTask,1000,1000);
         }
-    };
+    }
+
+    private void stopQueryType(){
+        if(mWaitTask != null){
+            Log.i(TAG,"mWaitTask cancel!");
+            mWaitTask.cancel();
+            mWaitTask = null;
+        }
+    }
+
+
 
     private TimerTask mTimerTask = new TimerTask() {
         @Override

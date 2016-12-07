@@ -114,6 +114,7 @@ public class ControlMainBoardService extends Service {
 
         }
         if(intent == null) {
+            MyLogUtil.i(TAG,"kill onStartCommand is null");
             MyLogUtil.i(TAG,"onStartCommand intent=NULL for quick cold and quick freeze timer event!!!");
 //            handleServiceRestartEvent();
             mIsServiceRestart = true;
@@ -135,7 +136,7 @@ public class ControlMainBoardService extends Service {
     }
 
     public void initService() {
-        MyLogUtil.i(TAG,"initService");
+        MyLogUtil.i(TAG,"kill initService");
         //Create Database
         mDBHandle =  DBOperation.getInstance();
 
@@ -165,6 +166,7 @@ public class ControlMainBoardService extends Service {
     }
 
     private void initModel(String modeName) {
+        MyLogUtil.i(TAG,"kill initModel");
         mModelFactory = new ModelFactory(this);
         mModel = mModelFactory.createModel(modeName);
         mModel.init();

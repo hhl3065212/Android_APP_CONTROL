@@ -218,9 +218,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void setView() {
-        //        initSeekBar();
-        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_TEMPER_INFO);
-        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_CONTROL_INFO);
         switch (mModel.mFridgeModel) {
             case ConstantUtil.BCD251_MODEL:
                 lineFridgeTemp.setVisibility(View.VISIBLE);
@@ -236,11 +233,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 initFridgeOpen(R.id.btn_demo_bottom_left);
                 break;
         }
+        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_TEMPER_INFO);
+        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_CONTROL_INFO);
     }
 
     private void setModel() {
 //        if(mModel.mFridgeModel != null) {
-//        mModel.mFridgeModel = BCD251_MODEL;
+        mModel.mFridgeModel = ConstantUtil.BCD251_MODEL;
         tvFridgeModel.setText(mModel.mFridgeModel);
         mWaitTask.cancel();
         setView();

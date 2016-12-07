@@ -7,7 +7,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -33,13 +35,12 @@ import com.haiersmart.sfcontrol.database.FridgeStatusEntry;
 import com.haiersmart.sfcontrol.service.ControlMainBoardService;
 import com.haiersmart.sfcontrol.service.MainBoardParameters;
 import com.haiersmart.sfcontrol.utilslib.MyLogUtil;
-
 import java.util.List;
-
 import static com.haiersmart.sfcontrol.constant.ConstantUtil.REFRIGERATOR_CLOSE;
 import static com.haiersmart.sfcontrol.constant.ConstantUtil.REFRIGERATOR_OPEN;
 
 public class TestMainActivity extends AppCompatActivity implements OnClickListener {
+    private static final String TAG = "TestMainActivity";
     private Intent mServiceIntent;
     private ControlMainBoardService mService;
     private MainBoardParameters mMainBoardParameters;
@@ -55,14 +56,13 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
             mTvSettingCold, mTvSettingVariable, mTvSettingFreeze, mTvSettingColdContent,
             mTvStatusCode,mTvEnvTemp,mTvEnvHum;
     private boolean mIsSmart, mIsHoliday, mIsCold, mIsFreeze;
-    private static final String TAG = "TestMainActivity";
-    private boolean mIsInitDone = false;
     private int mFridgeMinValue, mFridgeMaxValue, mFreezeMinValue, mFreezeMaxValue, mChangeMinValue, mChangeMaxValue;
     private boolean mIsBound = false;
     private ToggleButton mTbColdSwitch;
     private LinearLayout mLlColdLevel, mLlVariableLevel, mLlFreezeLevel;
     private String mSettingColdWarn,mSettingVariableWarn,mSettingFreezeWarn,mTbColdSwitchWarn;
-//    private ControlCommandReceiver mCommandReceiver;
+    private int mQueryReadyTimes = 0;
+
 
 
     @Override
@@ -84,7 +84,8 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
         registerBroadcast();
         initService();
         initViews();
-
+        sendBroadcastToService(ConstantUtil.QUERY_CONTROL_READY);
+        mQueryReadyTimes++;
         MyLogUtil.v(TAG, "onCreate finished");
     }
 
@@ -185,17 +186,6 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
         super.onResume();
         if(!mIsBound) {
             initService();
-            MyLogUtil.i(TAG,"onResume Range QUERY_FRIDGE_TEMP_RANGE");
-            sendBroadcastToService(ConstantUtil.QUERY_FRIDGE_TEMP_RANGE);
-            sendBroadcastToService(ConstantUtil.QUERY_CHANGE_TEMP_RANGE);
-            sendBroadcastToService(ConstantUtil.QUERY_FREEZE_TEMP_RANGE);
-            sendBroadcastToService(ConstantUtil.QUERY_CONTROL_INFO);
-            sendBroadcastToService(ConstantUtil.BROADCAST_ACTION_TEMPER);
-        } else {
-            if(mIsInitDone) {
-                sendBroadcastToService(ConstantUtil.QUERY_CONTROL_INFO);
-                sendBroadcastToService(ConstantUtil.BROADCAST_ACTION_TEMPER);
-            }
         }
 //        registerBroadcast();
     }
@@ -211,7 +201,9 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
         unbindService(conn);
         stopService(mServiceIntent);
         unregisterReceiver(receiveUpdateUI);
-//        unregisterReceiver(mCommandReceiver);
+        if(mQueryReadyTimes > 0) {
+            readyHandler.removeCallbacks(readyRunnable);
+        }
         super.onDestroy();
     }
 
@@ -219,14 +211,6 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnSmart: {
-//                if (mIsSmart) {
-//                    MyLogUtil.i(TAG, "onClick smart on");
-//                    mServiceIntent.setAction(ConstantUtil.MODE_SMART_OFF);
-//                } else {
-//                    MyLogUtil.i(TAG, "onClick smart off");
-//                    mServiceIntent.setAction(ConstantUtil.MODE_SMART_ON);
-//                }
-//                startService(mServiceIntent);
                 if (mIsSmart) {
                     MyLogUtil.i(TAG, "onClick smart on");
                     sendBroadcastToService(ConstantUtil.MODE_SMART_OFF);
@@ -301,36 +285,36 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
 
     private void registerBroadcast() {
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_CONTROL);//模式和档位信息广播
-        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_TEMPER);//温度广播
-        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_ERROR);//错误或故障信息广播
+        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_READY);
+        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_FRIDGE_INFO);
         intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_FRIDGE_RANGE);
         intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_CHANGE_RANGE);
         intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_FREEZE_RANGE);
-        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_FRIDGE_INFO);
+        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_CONTROL);//模式和档位信息广播
+        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_TEMPER);//温度广播
+        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_ERROR);//错误或故障信息广播
         //intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_ALARM);//报警信息广播
         registerReceiver(receiveUpdateUI, intentFilter);
     }
 
-//    private void registerCommandBroadcast() {
-//        IntentFilter intentFilter = new IntentFilter();
-//        intentFilter.addAction(ConstantUtil.COMMAND_TO_SERVICE);//用户命令模式和档位控制给Service广播
-//        registerReceiver(mCommandReceiver, intentFilter);
-//    }
 
     private BroadcastReceiver receiveUpdateUI = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             MyLogUtil.i(TAG, "BroadcastReceiver onReceive Range action="+ action);
-            if (action.equals(ConstantUtil.BROADCAST_ACTION_CONTROL)) {
-//                ArrayList<FridgeControlEntry> controlList =
-//                        (ArrayList<FridgeControlEntry>) intent.getSerializableExtra(ConstantUtil.KEY_CONTROL_INFO);
-//                if (controlList == null) {
-//                    MyLogUtil.i(TAG, "BroadcastReceiver onReceive controlList NULL");
-//                } else {
-//                    updateSettingAndModeUI(controlList);
-//                }
+            if(action.equals(ConstantUtil.BROADCAST_ACTION_READY)) {
+                Boolean isServiceReady = intent.getBooleanExtra(ConstantUtil.KEY_READY, true);
+                handleReadyEvent(isServiceReady);
+            } else if (action.equals(ConstantUtil.BROADCAST_ACTION_FRIDGE_INFO)) {
+                String fridgeId = intent.getStringExtra(ConstantUtil.KEY_FRIDGE_ID);
+                String fridgeType = intent.getStringExtra(ConstantUtil.KEY_FRIDGE_TYPE);
+                sendBroadcastToService(ConstantUtil.QUERY_FRIDGE_TEMP_RANGE);
+                sendBroadcastToService(ConstantUtil.QUERY_CHANGE_TEMP_RANGE);
+                sendBroadcastToService(ConstantUtil.QUERY_FREEZE_TEMP_RANGE);
+                sendBroadcastToService(ConstantUtil.QUERY_CONTROL_INFO);
+                sendBroadcastToService(ConstantUtil.QUERY_TEMPER_INFO);
+            } else if (action.equals(ConstantUtil.BROADCAST_ACTION_CONTROL)) {
                 String jsonString = intent.getStringExtra(ConstantUtil.KEY_CONTROL_INFO);
                 updateSettingAndModeUI(jsonString);
             } else if (action.equals(ConstantUtil.BROADCAST_ACTION_TEMPER)) {
@@ -365,18 +349,52 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
         }
     };
 
+    private void handleReadyEvent(Boolean isReady) {
+        if(isReady) {
+            if(mQueryReadyTimes > 0) {
+                readyHandler.removeCallbacks(readyRunnable);
+            }
+            mQueryReadyTimes = 0;
+            sendBroadcastToService(ConstantUtil.QUERY_FRIDGE_INFO);
+        } else {
+            mQueryReadyTimes++;
+            readyHandler.postDelayed(readyRunnable, 500);
+        }
+    }
+
+    Runnable readyRunnable = new Runnable() {
+        @Override
+        public void run() {
+            Message msg = new Message();
+            msg.what = 1;
+            readyHandler.sendMessage(msg);
+        }
+    };
+
+    private Handler readyHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 0x01:
+                    if(mQueryReadyTimes > 5) {
+                        ToastUtil.showToastCenter("Main board is not ready!");
+                        readyHandler.removeCallbacks(readyRunnable);
+                        mQueryReadyTimes = 0;
+                    } else {
+                        sendBroadcastToService(ConstantUtil.QUERY_CONTROL_READY);
+                    }
+                    break;
+                default:
+                    break;
+            }
+            super.handleMessage(msg);
+        }
+    };
+
+
     private void updateTempAndModeUI(String jsonString) {
         MyLogUtil.d(TAG, "UpdateTempAndModeUI in");
         if(jsonString == null || jsonString.length()==0) return;
-        MyLogUtil.i(TAG, "UpdateTempAndModeUI json mIsInitDone=" + mIsInitDone);
-        if (mFreezeMinValue>=0) {
-            MyLogUtil.i(TAG,"updateTempAndModeUI Range QUERY_FRIDGE_TEMP_RANGE");
-            sendBroadcastToService(ConstantUtil.QUERY_FRIDGE_TEMP_RANGE);
-            sendBroadcastToService(ConstantUtil.QUERY_CHANGE_TEMP_RANGE);
-            sendBroadcastToService(ConstantUtil.QUERY_FREEZE_TEMP_RANGE);
-            sendBroadcastToService(ConstantUtil.QUERY_CONTROL_INFO);
-            mIsInitDone = true;
-        }
         JSONArray array = JSONArray.parseArray(jsonString);
         for(int i=0; i<array.size();i++) {
             JSONObject object = array.getJSONObject(i);
@@ -482,112 +500,25 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
 
         }
 
-        mColdTempSeekbar.setProgress(coldLevel - mFridgeMinValue);
-        if(mSettingColdWarn.equals(ConstantUtil.NO_WARNING)) {
-            mColdTempSeekbar.setEnabled(true);
-        } else {
-            mColdTempSeekbar.setEnabled(false);
-        }
+        updateSeekBar(mColdTempSeekbar,mSettingColdWarn, coldLevel- mFridgeMinValue);
+        updateSeekBar(mVarialableTempSeekbar,mSettingVariableWarn, changeLevel - mChangeMinValue);
+        updateSeekBar(mFreezeTempSeekbar,mSettingFreezeWarn, freezeLevel- mFreezeMinValue);
 
-        mVarialableTempSeekbar.setProgress(changeLevel - mChangeMinValue);
-        if(mSettingVariableWarn.equals(ConstantUtil.NO_WARNING)) {
-            mVarialableTempSeekbar.setEnabled(true);
-        } else {
-            mVarialableTempSeekbar.setEnabled(false);
-        }
-
-        mFreezeTempSeekbar.setProgress(freezeLevel - mFreezeMinValue);
-        if(mSettingFreezeWarn.equals(ConstantUtil.NO_WARNING)) {
-            mFreezeTempSeekbar.setEnabled(true);
-        } else {
-            mFreezeTempSeekbar.setEnabled(false);
-        }
+        MyLogUtil.i(TAG,"updateSettingAndModeUI mFridgeMinValue="+mFridgeMinValue+",mChangeMinValue="+mChangeMinValue+",mFreezeMinValue="+mFreezeMinValue);
 
         MyLogUtil.d(TAG,"modedebug updateTempLevelSettingUI mSettingColdWarn=" + mSettingColdWarn);
     }
 
-    private void updateSettingAndModeUI(List<FridgeControlEntry> controlList) {
-        MyLogUtil.v(TAG, "UpdateSettingAndModeUI invoked");
-        FridgeControlEntry smartEntry = controlList.get(0);
-        if (smartEntry.value == 1) {
-            MyLogUtil.i(TAG, "updateSettingAndModeUI smart on");
-            mIsSmart = true;
-            enableButton(mBtnSmart);
-        } else {
-            MyLogUtil.i(TAG, "updateSettingAndModeUI smart off");
-            mIsSmart = false;
-            disableButton(mBtnSmart);
-        }
-        FridgeControlEntry holidayEntry = controlList.get(1);
-        if (holidayEntry.value == 1) {
-            mIsHoliday = true;
-            enableButton(mBtnHoliday);
-        } else {
-            mIsHoliday = false;
-            disableButton(mBtnHoliday);
-        }
-        FridgeControlEntry coldEntry = controlList.get(2);
-        if (coldEntry.value == 1) {
-            mIsCold = true;
-            enableButton(mBtnQuickCold);
-        } else {
-            mIsCold = false;
-            disableButton(mBtnQuickCold);
-        }
-        FridgeControlEntry freezeEntry = controlList.get(3);
-        if (freezeEntry.value == 1) {
-            mIsFreeze = true;
-            enableButton(mBtnQuickFreeze);
-        } else {
-            mIsFreeze = false;
-            disableButton(mBtnQuickFreeze);
-        }
+   private void updateSeekBar(VerticalSeekBar seekBar,String disableReason, int value) {
+       MyLogUtil.i(TAG,"updateSeekBar value="+value);
+       seekBar.setProgress(value);
+       if(disableReason.equals(ConstantUtil.NO_WARNING)) {
+           seekBar.setEnabled(true);
+       } else {
+           seekBar.setEnabled(false);
+       }
+   }
 
-        updateTempLevelSettingUI(controlList);
-    }
-
-    private void updateTempAndModeUI(List<FridgeStatusEntry> statusList) {
-        MyLogUtil.v(TAG, "UpdateTempAndModeUI in");
-
-        MyLogUtil.i(TAG, "UpdateTempAndModeUI mIsInitDone=" + mIsInitDone);
-        if (mFreezeMinValue>=0) {
-            MyLogUtil.i(TAG,"updateTempAndModeUI Range QUERY_FRIDGE_TEMP_RANGE");
-            sendBroadcastToService(ConstantUtil.QUERY_FRIDGE_TEMP_RANGE);
-            sendBroadcastToService(ConstantUtil.QUERY_CHANGE_TEMP_RANGE);
-            sendBroadcastToService(ConstantUtil.QUERY_FREEZE_TEMP_RANGE);
-            sendBroadcastToService(ConstantUtil.QUERY_CONTROL_INFO);
-            mIsInitDone = true;
-//            mFridgeMinValue = mService.getFridgeMinValue();
-//            mFridgeMaxValue = mService.getFridgeMaxValue();
-//            mFreezeMinValue = mService.getFreezeMinValue();
-//            mFreezeMaxValue = mService.getFreezeMaxValue();
-//            mChangeMinValue = mService.getChangeMinValue();
-//            mChangeMaxValue = mService.getChangeMaxValue();
-//
-//            mColdTempSeekbar.setMax(mFridgeMaxValue - mFridgeMinValue);
-//            MyLogUtil.i(TAG, "updateSettingAndModeUI mColdTempSeekbar MAX=" + mFridgeMaxValue);
-//            mVarialableTempSeekbar.setMax(mChangeMaxValue - mChangeMinValue);
-//            MyLogUtil.i(TAG, "updateSettingAndModeUI mVarialableTempSeekbar MAX=" + mChangeMaxValue);
-//            mFreezeTempSeekbar.setMax(mFreezeMaxValue - mFreezeMinValue);
-//            MyLogUtil.i(TAG, "updateSettingAndModeUI mFreezeTempSeekbar MAX=" + mFreezeMaxValue);
-//            List<FridgeControlEntry> controlList = mService.getControlEntries();
-//            initModeUI(controlList);
-//            updateTempLevelSettingUI(controlList);
-//            mService.setUIInitDone(true);
-//            mIsInitDone = true;
-        }
-        FridgeStatusEntry fridgeShowTempEntry = statusList.get(0);
-        mTvPicCold.setText(Integer.toString(mMainBoardParameters.getMbsValueByName(EnumBaseName.fridgeShowTemp.toString()))+"℃");
-        FridgeStatusEntry variableShowTempEntry = statusList.get(1);
-        mTvPicVariable.setText(Integer.toString(mMainBoardParameters.getMbsValueByName(EnumBaseName.changeShowTemp.toString()))+"℃");
-        FridgeStatusEntry freezeShowTempEntry = statusList.get(2);
-        mTvPicFreeze.setText(Integer.toString(mMainBoardParameters.getMbsValueByName(EnumBaseName.freezeShowTemp.toString()))+"℃");
-
-        mTvStatusCode.setText(mMainBoardParameters.getFrameDataString());
-        mTvEnvTemp.setText(Integer.toString(mMainBoardParameters.getMbsValueByName(EnumBaseName.envShowTemp.toString()))+"℃");
-        mTvEnvHum.setText(Integer.toString(mMainBoardParameters.getMbsValueByName(EnumBaseName.envShowHum.toString()))+"%");
-        MyLogUtil.v(TAG, "UpdateTempAndModeUI out");
-    }
 
     private void enableButton(Button button) {
         button.setBackgroundResource(R.drawable.btn_myfamily_sure);
@@ -598,85 +529,6 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
         button.setBackgroundResource(R.drawable.bt_mode_control);
         button.setTextColor(getResources().getColor(R.color.black));
     }
-
-
-    private void updateTempLevelSettingUI(List<FridgeControlEntry> controlList) {
-        FridgeControlEntry coldLevelEntry = mService.getEntryByName(EnumBaseName.fridgeTargetTemp);//冷藏档位值
-        FridgeControlEntry freezeLevelEntry = mService.getEntryByName(EnumBaseName.freezeTargetTemp);//冷冻档位模式
-        FridgeControlEntry changeLevelEntry = mService.getEntryByName(EnumBaseName.changeTargetTemp);// 变温档位模式
-        FridgeControlEntry coldSwitchEntry = mService.getEntryByName(EnumBaseName.fridgeSwitch);//冷藏开关
-
-        int coldLevel = coldLevelEntry.value;
-        int freezeLevel = freezeLevelEntry.value;
-        int changeLevel = changeLevelEntry.value;
-        if (mIsSmart) {
-            mTvSettingCold.setText("智能运行中");
-            mTvSettingFreeze.setText("智能运行中");
-        } else {
-            if (mIsHoliday) {
-                mTvSettingCold.setText("假日运行中");
-            } else {
-                mTvSettingCold.setText(Integer.toString(coldLevel) + "℃");
-            }
-            if (mIsFreeze) {
-                mTvSettingFreeze.setText("速冻中");
-            } else {
-                mTvSettingFreeze.setText(Integer.toString(freezeLevel) + "℃");
-            }
-        }
-
-        if (mIsCold) {
-            mTvSettingVariable.setText("速冷中");
-        } else {
-            mTvSettingVariable.setText(Integer.toString(changeLevel) + "℃");
-        }
-
-        boolean isOpen = (coldSwitchEntry.value == 1 ? true : false);//默认0
-        MyLogUtil.d(TAG,"modedebug updateTempLevelSettingUI isOpen=" + isOpen);
-        mTbColdSwitchWarn = coldSwitchEntry.disable;
-        mTbColdSwitch.setChecked(isOpen);
-        MyLogUtil.d(TAG,"modedebug updateTempLevelSettingUI mTbColdSwitchWarn=" + mTbColdSwitchWarn);
-
-        if (isOpen) {
-            mTvSettingCold.setTextColor(getResources().getColor(R.color.black2));
-            mTvSettingColdContent.setTextColor(getResources().getColor(R.color.black2));
-        }
-        else {
-            mTvSettingCold.setTextColor(getResources().getColor(R.color.grey_food_weight));
-            mTvSettingColdContent.setTextColor(getResources().getColor(R.color.grey_food_weight));
-
-        }
-
-
-        mColdTempSeekbar.setProgress(coldLevel - mFridgeMinValue);
-        if(coldLevelEntry.disable.equals(ConstantUtil.NO_WARNING)) {
-            mColdTempSeekbar.setEnabled(true);
-        } else {
-            mColdTempSeekbar.setEnabled(false);
-        }
-        mSettingColdWarn = coldLevelEntry.disable;
-        MyLogUtil.d(TAG,"modedebug updateTempLevelSettingUI mSettingColdWarn=" + mSettingColdWarn);
-
-        mVarialableTempSeekbar.setProgress(changeLevel - mChangeMinValue);
-        if(changeLevelEntry.disable.equals(ConstantUtil.NO_WARNING)) {
-            mVarialableTempSeekbar.setEnabled(true);
-        } else {
-            mVarialableTempSeekbar.setEnabled(false);
-        }
-        mSettingVariableWarn = changeLevelEntry.disable;
-
-        mFreezeTempSeekbar.setProgress(freezeLevel - mFreezeMinValue);
-        if(freezeLevelEntry.disable.equals(ConstantUtil.NO_WARNING)) {
-            mFreezeTempSeekbar.setEnabled(true);
-        } else {
-            mFreezeTempSeekbar.setEnabled(false);
-        }
-        mSettingFreezeWarn = freezeLevelEntry.disable;
-
-        MyLogUtil.i(TAG, "UpdateTempAndModeUI levels:" + "coldLevel=" + coldLevel + ",freezeLevel=" + freezeLevel + ",changeLevel=" + changeLevel);
-
-    }
-
 
     class SettingSeekBarChangeListener implements SeekBar.OnSeekBarChangeListener {
         @Override

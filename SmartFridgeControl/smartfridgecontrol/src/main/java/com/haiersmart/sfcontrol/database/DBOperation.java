@@ -32,7 +32,7 @@ public class DBOperation {
         createDBData();
     }
 
-    //public FridgeDataBaseRam mFridgeDataBaseRam = FridgeDataBaseRam.getInstance();
+
     public class DBBaseStatus{
         public String ParameterName;//参数名称
         public int Direction;//信息方向

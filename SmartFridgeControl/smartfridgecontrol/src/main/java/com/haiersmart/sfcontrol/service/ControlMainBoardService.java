@@ -31,17 +31,15 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class ControlMainBoardService extends Service {
+    static final String TAG = "ControlMainBoardService";
     private DBOperation mDBHandle;
     private MainBoardParameters mMBParams;
     private PowerProcessData mProcessData;
     private ControlMainBoardInfo mBoardInfo;
     private ModelFactory mModelFactory;
     private ModelBase mModel;
-    static final String TAG = "ControlMainBoardService";
-    private String mBindData;
-    private boolean mIsNotifyUpper = false;
+    private boolean mIsModelReady = false;
     private boolean mIsServiceRestart = false;
-
     private static int readyCounts = 0;
 
 
@@ -55,9 +53,6 @@ public class ControlMainBoardService extends Service {
     }
 
     public class CmbBinder extends Binder {
-//        public void setData(String data) {
-//            ControlMainBoardService.this.mBindData = data;
-//        }
         public ControlMainBoardService getService() {
             return ControlMainBoardService.this;
         }
@@ -77,94 +72,88 @@ public class ControlMainBoardService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent != null && !TextUtils.isEmpty(intent.getAction())) {
+        if(intent == null) {
+            //while system auto restart this service, this case should be run
+            MyLogUtil.i(TAG,"onStartCommand intent=NULL to handle quick cold or freeze timer event!");
+            mIsServiceRestart = true;
+        } else {
             String action = intent.getAction();
-            MyLogUtil.i(TAG,"onStartCommand action="+action);
-
-            switch (action) {
-                case ConstantUtil.QUERY_CONTROL_READY://查询service是否准备好
-                    MyLogUtil.i(TAG,readyCounts+" sendControlCmdResponse before main board is "+mIsNotifyUpper);
-                    readyCounts++;
-                    sendControlReadyInfo();
-                    break;
-                case ConstantUtil.BROADCAST_ACTION_QUERY_BACK:
-                    handleQueryData();
-                    break;
-                case ConstantUtil.BROADCAST_ACTION_STATUS_BACK:
+            MyLogUtil.i(TAG, "onStartCommand action=" + action);
+            if (!TextUtils.isEmpty(action)) {
+                switch (action) {
+                    case ConstantUtil.QUERY_CONTROL_READY://查询service是否准备好
+                        MyLogUtil.i(TAG, readyCounts + " sendControlCmdResponse before main board is " + mIsModelReady);
+                        readyCounts++;
+                        sendControlReadyInfo();
+                        break;
+                    case ConstantUtil.BROADCAST_ACTION_QUERY_BACK:
+                        handleQueryData();
+                        break;
+                    case ConstantUtil.BROADCAST_ACTION_STATUS_BACK:
 //                MyLogUtil.d(TAG, "onStartCommand status back");
-                    mModel.handleStatusDataResponse();
-                    if(!mIsNotifyUpper) {
-                        mIsNotifyUpper = true;
-                        provideFridgeTempRange();
-                        provideChangeTempRange();
-                        provideFreezeTempRange();
-                        sendControlCmdResponse();
-                        notifyTemperChanged(mModel.getTempEntries());
-                    }
-                    if(mIsServiceRestart) {
-                        handleServiceRestartEvent();
-                        mIsServiceRestart = false;
-                    }
-                    break;
-                case ConstantUtil.TEMPER_SETCOLD://冷藏区温控
-                {
-                    if(mModel != null) {
-                        int temperCold = intent.getIntExtra(ConstantUtil.KEY_SET_FRIDGE_LEVEL, 0);
-                        MyLogUtil.i(TAG,"onStartCommand TEMPER_SETCOLD temperCold="+temperCold);
-                        mModel.setCold(temperCold);
-                    } else {
-                        MyLogUtil.i(TAG,"onStartCommand action changed to QUERY_CONTROL_READY due to init not finished");
-                        sendControlReadyInfo();
-                    }
+                        mModel.handleStatusDataResponse();
+                        if (!mIsModelReady) {
+                            mIsModelReady = true;
+                        }
+                        if (mIsServiceRestart) {
+                            handleServiceRestartEvent();
+                            mIsServiceRestart = false;
+                        }
+                        break;
+                    case ConstantUtil.TEMPER_SETCOLD://冷藏区温控
+                    {
+                        if (mModel != null) {
+                            int temperCold = intent.getIntExtra(ConstantUtil.KEY_SET_FRIDGE_LEVEL, 0);
+                            MyLogUtil.i(TAG, "onStartCommand TEMPER_SETCOLD temperCold=" + temperCold);
+                            mModel.setCold(temperCold);
+                        } else {
+                            MyLogUtil.i(TAG, "onStartCommand action changed to QUERY_CONTROL_READY due to init not finished");
+                            sendControlReadyInfo();
+                        }
 
-                }
-                    break;
-                case ConstantUtil.TEMPER_SETFREEZE://冷冻区温控
-                {
-                    if(mModel != null) {
-                        int temperCold = intent.getIntExtra(ConstantUtil.KEY_SET_FREEZE_LEVEL, 0);
-                        mModel.setFreeze(temperCold);
-                    }else {
-                        MyLogUtil.i(TAG,"onStartCommand action changed to QUERY_CONTROL_READY due to init not finished");
-                        sendControlReadyInfo();
                     }
+                    break;
+                    case ConstantUtil.TEMPER_SETFREEZE://冷冻区温控
+                    {
+                        if (mModel != null) {
+                            int temperCold = intent.getIntExtra(ConstantUtil.KEY_SET_FREEZE_LEVEL, 0);
+                            mModel.setFreeze(temperCold);
+                        } else {
+                            MyLogUtil.i(TAG, "onStartCommand action changed to QUERY_CONTROL_READY due to init not finished");
+                            sendControlReadyInfo();
+                        }
 
-                }
-                    break;
-                case ConstantUtil.TEMPER_SETCUSTOMAREA://变温区温控
-                {
-                    if(mIsNotifyUpper) {
-                        int temperCold = intent.getIntExtra(ConstantUtil.KEY_SET_COLD_LEVEL, 0);
-                        mModel.setCustomArea(temperCold);
-                    }else {
-                        MyLogUtil.i(TAG,"onStartCommand action changed to QUERY_CONTROL_READY due to init not finished");
-                        sendControlReadyInfo();
-                    }
-                }
-                    break;
-                case ConstantUtil.BOOT_COMPLETED:
-                {
-                    MyLogUtil.i(TAG, "boot completed received!");
-                    handleBootEvent();
-                }
-                    break;
-                default:
-                    if(mIsNotifyUpper) {
-                        handleActions(action);
-                    } else {
-                        MyLogUtil.i(TAG,"onStartCommand action changed to QUERY_CONTROL_READY due to init not finished");
-                        sendControlReadyInfo();
                     }
                     break;
+                    case ConstantUtil.TEMPER_SETCUSTOMAREA://变温区温控
+                    {
+                        if (mIsModelReady) {
+                            int temperCold = intent.getIntExtra(ConstantUtil.KEY_SET_COLD_LEVEL, 0);
+                            mModel.setCustomArea(temperCold);
+                        } else {
+                            MyLogUtil.i(TAG, "onStartCommand action changed to QUERY_CONTROL_READY due to init not finished");
+                            sendControlReadyInfo();
+                        }
+                    }
+                    break;
+                    case ConstantUtil.BOOT_COMPLETED: {
+                        MyLogUtil.i(TAG, "boot completed received!");
+                        handleBootEvent();
+                    }
+                    break;
+                    default:
+                        if (mIsModelReady) {
+                            handleActions(action);
+                        } else {
+                            MyLogUtil.i(TAG, "onStartCommand action changed to QUERY_CONTROL_READY due to init not finished");
+                            sendControlReadyInfo();
+                        }
+                        break;
+                }
             }
 
         }
-        if(intent == null) {
-            MyLogUtil.i(TAG,"kill onStartCommand is null");
-            MyLogUtil.i(TAG,"onStartCommand intent=NULL for quick cold and quick freeze timer event!!!");
-//            handleServiceRestartEvent();
-            mIsServiceRestart = true;
-        }
+
         // We want this service to continue running until it is explicitly
         // stopped, so return sticky.
         return START_STICKY;
@@ -219,15 +208,15 @@ public class ControlMainBoardService extends Service {
     }
 
 
-   private void handleActions(String action) {
+   private void handleActions(String action, int ... value) {
 
         switch (action) {
             case ConstantUtil.MODE_SMART_ON://智能开
-//                MyLogUtil.i(TAG, "handleActions smartOn");
+                MyLogUtil.i(TAG, "handleActions smartOn");
                 mModel.smartOn();
                 break;
             case ConstantUtil.MODE_SMART_OFF://智能关
-//                MyLogUtil.i(TAG, "handleActions smartOff");
+                MyLogUtil.i(TAG, "handleActions smartOff");
                 mModel.smartOff();
                 break;
             case ConstantUtil.MODE_FREEZE_ON://速冻开
@@ -287,9 +276,12 @@ public class ControlMainBoardService extends Service {
    private void handleQueryData(){
        MyLogUtil.i(TAG, "handleQueryData");
        String fridgeId = mBoardInfo.getFridgeId();
+       String fridgeType = mBoardInfo.getFridgeType();
+       MyLogUtil.i(TAG,"handleQueryData fridgeId=" +fridgeId);
+       MyLogUtil.i(TAG,"handleQueryData fridgeType=" +fridgeType);
 
        if( mModel==null ) {
-           initModel(fridgeId);
+           initModel(fridgeType);
            //broadcast fridgeId to app
            sendFridgeInfoResponse();
        }
@@ -330,9 +322,9 @@ public class ControlMainBoardService extends Service {
     public void sendControlReadyInfo() {
         Intent intent = new Intent();
         intent.setAction(ConstantUtil.BROADCAST_ACTION_READY);
-        intent.putExtra(ConstantUtil.KEY_READY, mIsNotifyUpper);
+        intent.putExtra(ConstantUtil.KEY_READY, mIsModelReady);
         sendBroadcast(intent);
-        MyLogUtil.i(TAG,readyCounts+" sendControlCmdResponse main board is "+mIsNotifyUpper);
+        MyLogUtil.i(TAG,readyCounts+" sendControlCmdResponse main board is "+mIsModelReady);
     }
 
     public void sendControlCmdResponse() {
@@ -549,7 +541,7 @@ public class ControlMainBoardService extends Service {
             MyLogUtil.i(TAG, "handleServiceRestartEvent cold");
             //继续计时，累加restart前coldCount值
             coldCount = (long)SpUtils.getInstance(ControlApplication.getInstance()).get(ConstantUtil.COLDCOUNT, 0l);
-            mModel.coldOn();
+//            mModel.coldOn();
             startColdOnTime();
         }
 
@@ -561,7 +553,7 @@ public class ControlMainBoardService extends Service {
             //继续计时，累加restart前freezeCount值
             freezeCount = (long)SpUtils.getInstance(ControlApplication.getInstance()).get(ConstantUtil.FREEZECOUNT, 0l);
             //重发速冻命令
-            mModel.freezeOn();
+//            mModel.freezeOn();
             startFreezeOnTime();
         }
         MyLogUtil.i(TAG,"handleServiceRestartEvent out");

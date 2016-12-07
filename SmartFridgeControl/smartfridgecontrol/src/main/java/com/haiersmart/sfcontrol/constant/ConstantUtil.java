@@ -36,16 +36,6 @@ public class ConstantUtil {
     public static final String Bundle_FROM = "i00";
 
     /**
-     * fridge mode
-     */
-    public static final String BCD325_MODE = "BCD325";
-    public static final String BCD251_MODE = "BCD251";
-    public static final String BCD401_MODE = "BCD401";
-    public static final String BCD256_MODE = "BCD256";
-    public static final String BCD630_MODE = "BCD630";
-    public static final String BCD476_MODE = "BCD476";
-
-    /**
      * fridge full model
      */
     public static final String BCD325_MODEL= "BCD-325";
@@ -117,18 +107,16 @@ public class ConstantUtil {
     public static final String KEY_QUERY = "query";//远程模块主动查询冰箱状态
 
     //返回的key
-    public static final String KEY_CONTROL_INFO = "ControlInfo";//识别key为“ControlInfo” 发送的数据为Serializable
-    public static final String KEY_FRIDGE_ID = "fridgeId";
-    public static final String KEY_FRIDGE_TYPE = "fridgeType";
-    public static final String KEY_ERROR = "error";//错误命令key
-    public static final String KEY_ALARM = "alarm";//报警key
-    public static final String KEY_TEMPER = "temper";
     public static final String KEY_MODE= "commandMode";
     public static final String KEY_READY= "serviceReady";
+    public static final String KEY_FRIDGE_ID = "fridgeId";//冰箱系统型号
+    public static final String KEY_FRIDGE_TYPE = "fridgeType";//冰箱硬件型号 海尔注册的冰箱型号
+    public static final String KEY_CONTROL_INFO = "ControlInfo";//识别key为“ControlInfo” 发送的数据为Serializable
+    public static final String KEY_TEMPER = "temper";
+    public static final String KEY_ERROR = "error";//错误命令key
+    public static final String KEY_ALARM = "alarm";//报警key
 
-    public static final String KEY_SET_COLD_LEVEL= "coldlevel";
-    public static final String KEY_SET_FRIDGE_LEVEL= "fridgelevel";
-    public static final String KEY_SET_FREEZE_LEVEL= "freezelevel";
+
 
     public static final String QUERY_CONTROL_READY= "queryControlReady";
     public static final String QUERY_FRIDGE_INFO= "queryFridgeInfo";
@@ -138,6 +126,11 @@ public class ConstantUtil {
     public static final String QUERY_FRIDGE_TEMP_RANGE = "queryFridgeTempRange";
     public static final String QUERY_CHANGE_TEMP_RANGE = "queryChangeTempRange";
     public static final String QUERY_FREEZE_TEMP_RANGE = "queryFreezeTempRange";
+
+
+    public static final String KEY_SET_FRIDGE_LEVEL= "fridgelevel";
+    public static final String KEY_SET_COLD_LEVEL= "coldlevel";
+    public static final String KEY_SET_FREEZE_LEVEL= "freezelevel";
     public static final String FRIDGE_TEMP_MAX= "fridgeMaxValue";
     public static final String FRIDGE_TEMP_MIN= "fridgeMinValue";
     public static final String CHANGE_TEMP_MAX= "changeMaxValue";
@@ -172,8 +165,6 @@ public class ConstantUtil {
     public static final String DOOR_CHANGE_ALARM_FALSE= "changeDoorAlarmFalse";//变温门常开报警停止
 
 
-    public static final String FRIDGEMODE = "fridge_mode";//冰箱系统型号
-    public static final String FRIDGETYPE = "fridge_type";//冰箱硬件型号 海尔注册的冰箱型号
 
     //toast info
     public static final String NO_WARNING = "none";

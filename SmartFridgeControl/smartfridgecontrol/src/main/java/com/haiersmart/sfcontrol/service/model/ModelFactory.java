@@ -16,18 +16,18 @@ public class ModelFactory {
 
     public ModelBase createModel(String type) {
         ModelBase model = null;
-        if(type.equals(ConstantUtil.BCD251_SN)) {
+        if(type.equals(ConstantUtil.BCD251_MODEL)) {
             model = new TwoFiveOneModel(mService);
-        } else if (type.equals(ConstantUtil.BCD256_MODE)) {
+        } else if (type.equals(ConstantUtil.BCD256_MODEL)) {
 
-        }else if (type.equals(ConstantUtil.BCD325_MODE) ) {
+        }else if (type.equals(ConstantUtil.BCD325_MODEL) ) {
 
-        } else if (type.equals(ConstantUtil.BCD401_MODE )) {
+        } else if (type.equals(ConstantUtil.BCD401_MODEL )) {
 
-        } else if(type.equals(ConstantUtil.BCD630_MODE )) {
+        } else if(type.equals(ConstantUtil.BCD630_MODEL )) {
 
-        }else if(type.equals(ConstantUtil.BCD476_MODE )) {
-
+        }else if(type.equals(ConstantUtil.BCD476_MODEL )) {
+            model = new TwoFiveOneModel(mService);// hack to 251
         } else {
             model = new TwoFiveOneModel(mService);// default 251
         }

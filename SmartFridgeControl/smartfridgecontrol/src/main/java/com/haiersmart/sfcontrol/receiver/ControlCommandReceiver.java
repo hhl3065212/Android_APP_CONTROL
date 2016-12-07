@@ -28,6 +28,7 @@ public class ControlCommandReceiver extends BroadcastReceiver {
             if (contentAction.equals(ConstantUtil.QUERY_CONTROL_READY)) {
                 //查询service是否ready
                 sendCommandToService(context, ConstantUtil.QUERY_CONTROL_READY);
+                MyLogUtil.i(TAG, "contentAction=queryControlReady,send to service");
             } else if(contentAction.equals(ConstantUtil.QUERY_FRIDGE_INFO)) {
                 //查询fridge id,type
                 sendCommandToService(context, ConstantUtil.QUERY_FRIDGE_INFO);

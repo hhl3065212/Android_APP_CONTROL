@@ -3,7 +3,6 @@ package com.haiersmart.sfcontrol.service;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
-import android.os.Bundle;
 import android.os.IBinder;
 import android.text.TextUtils;
 
@@ -23,7 +22,6 @@ import com.haiersmart.sfcontrol.utilslib.MyLogUtil;
 import com.haiersmart.sfcontrol.utilslib.SpUtils;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -44,6 +42,8 @@ public class ControlMainBoardService extends Service {
     private String mBindData;
     private boolean mIsNotifyUpper = false;
     private boolean mIsServiceRestart = false;
+
+    private static int readyCounts = 0;
 
 
     public  ControlMainBoardService() {
@@ -177,7 +177,7 @@ public class ControlMainBoardService extends Service {
                 handleQueryData();
                 break;
             case ConstantUtil.BROADCAST_ACTION_STATUS_BACK:
-                MyLogUtil.d(TAG, "handleActions status back");
+//                MyLogUtil.d(TAG, "handleActions status back");
                 mModel.handleStatusDataResponse();
                 if(!mIsNotifyUpper) {
                     mIsNotifyUpper = true;
@@ -194,11 +194,11 @@ public class ControlMainBoardService extends Service {
 
                 break;
             case ConstantUtil.MODE_SMART_ON://智能开
-                MyLogUtil.i(TAG, "handleActions smartOn");
+//                MyLogUtil.i(TAG, "handleActions smartOn");
                 mModel.smartOn();
                 break;
             case ConstantUtil.MODE_SMART_OFF://智能关
-                MyLogUtil.i(TAG, "handleActions smartOff");
+//                MyLogUtil.i(TAG, "handleActions smartOff");
                 mModel.smartOff();
                 break;
             case ConstantUtil.MODE_FREEZE_ON://速冻开
@@ -229,7 +229,9 @@ public class ControlMainBoardService extends Service {
             case ConstantUtil.REFRIGERATOR_CLOSE://冷藏关
                 mModel.refrigeratorClose();
                 break;
-            case ConstantUtil.QUERY_CONTROL_READY://查询档位和控制信息
+            case ConstantUtil.QUERY_CONTROL_READY://查询service是否准备好
+                MyLogUtil.i(TAG,readyCounts+" sendControlCmdResponse before main board is "+mIsNotifyUpper);
+                readyCounts++;
                 sendControlReadyInfo();
                 break;
             case ConstantUtil.QUERY_FRIDGE_INFO:
@@ -312,6 +314,7 @@ public class ControlMainBoardService extends Service {
         intent.setAction(ConstantUtil.BROADCAST_ACTION_READY);
         intent.putExtra(ConstantUtil.KEY_READY, mIsNotifyUpper);
         sendBroadcast(intent);
+        MyLogUtil.i(TAG,readyCounts+" sendControlCmdResponse main board is "+mIsNotifyUpper);
     }
 
     public void sendControlCmdResponse() {

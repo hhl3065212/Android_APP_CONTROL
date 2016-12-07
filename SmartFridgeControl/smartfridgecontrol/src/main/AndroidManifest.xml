@@ -58,16 +58,18 @@
 
         <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
-        <receiver android:name=".receiver.BootCompletedReceiver">
-            <intent-filter>
+        <receiver android:name="com.haiersmart.sfcontrol.receiver.BootCompletedReceiver">
+            <intent-filter android:priority="1000">
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
+
         <receiver android:name=".receiver.DoorAlarmReceiver">
             <intent-filter>
                 <action android:name="com.haiersmart.sfcontrol.alarm"/>
             </intent-filter>
         </receiver>
+
         <receiver android:name=".receiver.ControlCommandReceiver">
             <intent-filter>
                 <action android:name="com.haiersmart.sfcontrol.command"/>

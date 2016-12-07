@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.haiersmart.sfcdemo.constant.ConstantUtil;
 import com.haiersmart.sfcdemo.constant.EnumBaseName;
 import com.haiersmart.sfcdemo.draw.MyTestButton;
 import com.haiersmart.sfcdemo.model.FridgeModel;
@@ -26,49 +27,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.BCD251_MODEL;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.BROADCAST_ACTION_ALARM;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.BROADCAST_ACTION_CHANGE_RANGE;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.BROADCAST_ACTION_CONTROL;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.BROADCAST_ACTION_ERROR;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.BROADCAST_ACTION_FREEZE_RANGE;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.BROADCAST_ACTION_FRIDGE_INFO;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.BROADCAST_ACTION_FRIDGE_RANGE;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.BROADCAST_ACTION_READY;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.BROADCAST_ACTION_TEMPER;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.COMMAND_TO_SERVICE;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.KEY_CONTROL_INFO;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.KEY_FRIDGE_ID;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.KEY_FRIDGE_TYPE;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.KEY_MODE;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.KEY_READY;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.KEY_SET_COLD_LEVEL;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.KEY_SET_FREEZE_LEVEL;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.KEY_SET_FRIDGE_LEVEL;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.KEY_TEMPER;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.MODE_COLD_OFF;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.MODE_COLD_ON;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.MODE_FREEZE_OFF;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.MODE_FREEZE_ON;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.MODE_HOLIDAY_OFF;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.MODE_HOLIDAY_ON;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.MODE_SMART_OFF;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.MODE_SMART_ON;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.QUERY_CHANGE_TEMP_RANGE;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.QUERY_CONTROL_INFO;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.QUERY_CONTROL_READY;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.QUERY_FREEZE_TEMP_RANGE;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.QUERY_FRIDGE_INFO;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.QUERY_FRIDGE_TEMP_RANGE;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.QUERY_TEMPER_INFO;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.REFRIGERATOR_CLOSE;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.REFRIGERATOR_OPEN;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.TEMPER_SETCOLD;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.TEMPER_SETCUSTOMAREA;
-import static com.haiersmart.sfcdemo.constant.ConstantUtil.TEMPER_SETFREEZE;
-
-//import static com.haiersmart.sfcdemo.constant.ConstantUtil.FRIDGETYPE;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "MainActivity";
@@ -86,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private SeekBar skbFridge, skbFreeze, skbChange;
 
     private int onclickCounts = 0;
+    private boolean isReady = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +58,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         findView();
         mTimer = new Timer();
-        sendUserCommond(KEY_MODE, QUERY_CONTROL_READY);
+        mTimer.schedule(mWaitTask,1000,1000);
+//        sendUserCommond(KEY_MODE, QUERY_CONTROL_READY);
+//        sendUserCommond(KEY_MODE, "demoReady");
+        Log.i(TAG,"first sendControlCmdResponse main board is ready?");
+
     }
 
     @Override
@@ -122,15 +85,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void registerBroadcast() {
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(BROADCAST_ACTION_READY);
-        intentFilter.addAction(BROADCAST_ACTION_FRIDGE_INFO);
-        intentFilter.addAction(BROADCAST_ACTION_CONTROL);//模式和档位信息广播
-        intentFilter.addAction(BROADCAST_ACTION_TEMPER);//温度广播
-        intentFilter.addAction(BROADCAST_ACTION_ERROR);//错误或故障信息广播
-        intentFilter.addAction(BROADCAST_ACTION_ALARM);
-        intentFilter.addAction(BROADCAST_ACTION_FRIDGE_RANGE);
-        intentFilter.addAction(BROADCAST_ACTION_CHANGE_RANGE);
-        intentFilter.addAction(BROADCAST_ACTION_FREEZE_RANGE);
+        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_READY);
+        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_FRIDGE_INFO);
+        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_CONTROL);//模式和档位信息广播
+        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_TEMPER);//温度广播
+        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_ERROR);//错误或故障信息广播
+        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_ALARM);
+        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_FRIDGE_RANGE);
+        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_CHANGE_RANGE);
+        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_FREEZE_RANGE);
         registerReceiver(receiveUpdateUI, intentFilter);
     }
 
@@ -140,59 +103,75 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             Log.i(TAG, "BroadcastReceiver receiveUpdateUI action=" + action);
-            if (action.equals(BROADCAST_ACTION_CONTROL)) {
-                String jsonString = intent.getStringExtra(KEY_CONTROL_INFO);
-                JSONArray jsonArray = JSONArray.parseArray(jsonString);
-                updateModeLevel(jsonArray);
-            } else if (action.equals(BROADCAST_ACTION_READY)) {
-                boolean isReady = intent.getBooleanExtra(KEY_READY, false);
+            if (action.equals(ConstantUtil.BROADCAST_ACTION_CONTROL)) {
                 if (isReady) {
-                    sendUserCommond(KEY_MODE, QUERY_FRIDGE_INFO);
-                    sendUserCommond(KEY_MODE, QUERY_FRIDGE_TEMP_RANGE);
-                    sendUserCommond(KEY_MODE, QUERY_FREEZE_TEMP_RANGE);
-                    sendUserCommond(KEY_MODE, QUERY_CHANGE_TEMP_RANGE);
-                    mWaitTask.cancel();
-                } else {
-                    mTimer.schedule(mWaitTask, 0, 1000);
+                    String jsonString = intent.getStringExtra(ConstantUtil.KEY_CONTROL_INFO);
+                    JSONArray jsonArray = JSONArray.parseArray(jsonString);
+                    updateModeLevel(jsonArray);
                 }
+            } else if (action.equals(ConstantUtil.BROADCAST_ACTION_READY)) {
+                isReady = intent.getBooleanExtra(ConstantUtil.KEY_READY, false);
+                Log.i(TAG, "BroadcastReceiver receiveUpdateUI isReady=" + isReady);
+                if (isReady) {
+                    mWaitTask.cancel();
+                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_FRIDGE_INFO);
+                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_FRIDGE_TEMP_RANGE);
+                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_FREEZE_TEMP_RANGE);
+                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_CHANGE_TEMP_RANGE);
+                }
+//                else {
+////                    sendUserCommond(KEY_READY, QUERY_CONTROL_READY);
+////                    mHandler.sendEmptyMessageDelayed(0x01,1000);
+////                    mTimer.schedule(mWaitTask, 1000);
+//                }
 
-            } else if (action.equals(BROADCAST_ACTION_FRIDGE_INFO)) {
-                String id = intent.getStringExtra(KEY_FRIDGE_ID);
-                String type = intent.getStringExtra(KEY_FRIDGE_TYPE);
-                mModel.mFridgeModel = type;
-                setModel();
-            } else if (action.equals(BROADCAST_ACTION_TEMPER)) {
-                String jsonString = intent.getStringExtra(KEY_TEMPER);
-                JSONArray jsonArray = JSONArray.parseArray(jsonString);
-                updateShowTemp(jsonArray);
-            } else if (action.equals(BROADCAST_ACTION_ERROR)) {
+            } else if (action.equals(ConstantUtil.BROADCAST_ACTION_FRIDGE_INFO)) {
+                if (isReady) {
+                    String id = intent.getStringExtra(ConstantUtil.KEY_FRIDGE_ID);
+                    String type = intent.getStringExtra(ConstantUtil.KEY_FRIDGE_TYPE);
+                    mModel.mFridgeModel = type;
+                    setModel();
+                }
+            } else if (action.equals(ConstantUtil.BROADCAST_ACTION_TEMPER)) {
+                if (isReady) {
+                    String jsonString = intent.getStringExtra(ConstantUtil.KEY_TEMPER);
+                    JSONArray jsonArray = JSONArray.parseArray(jsonString);
+                    updateShowTemp(jsonArray);
+                }
+            } else if (action.equals(ConstantUtil.BROADCAST_ACTION_ERROR)) {
 
-            } else if (action.equals(BROADCAST_ACTION_FRIDGE_RANGE)) {
-                mModel.mFridgeMin = intent.getIntExtra("fridgeMinValue", 0);
-                mModel.mFridgeMax = intent.getIntExtra("fridgeMaxValue", 0);
-                skbFridge.setMax(mModel.mFridgeMax - mModel.mFridgeMin);
-            } else if (action.equals(BROADCAST_ACTION_CHANGE_RANGE)) {
-                mModel.mChangeMin = intent.getIntExtra("changeMinValue", 0);
-                mModel.mChangeMax = intent.getIntExtra("changeMaxValue", 0);
-                skbChange.setMax(mModel.mChangeMax - mModel.mChangeMin);
-            } else if (action.equals(BROADCAST_ACTION_FREEZE_RANGE)) {
-                mModel.mFreezeMin = intent.getIntExtra("freezeMinValue", 0);
-                mModel.mFreezeMax = intent.getIntExtra("freezeMaxValue", 0);
-                skbFreeze.setMax(mModel.mFreezeMax - mModel.mFreezeMin);
+            } else if (action.equals(ConstantUtil.BROADCAST_ACTION_FRIDGE_RANGE)) {
+                if (isReady) {
+                    mModel.mFridgeMin = intent.getIntExtra("fridgeMinValue", 0);
+                    mModel.mFridgeMax = intent.getIntExtra("fridgeMaxValue", 0);
+                    skbFridge.setMax(mModel.mFridgeMax - mModel.mFridgeMin);
+                }
+            } else if (action.equals(ConstantUtil.BROADCAST_ACTION_CHANGE_RANGE)) {
+                if (isReady) {
+                    mModel.mChangeMin = intent.getIntExtra("changeMinValue", 0);
+                    mModel.mChangeMax = intent.getIntExtra("changeMaxValue", 0);
+                    skbChange.setMax(mModel.mChangeMax - mModel.mChangeMin);
+                }
+            } else if (action.equals(ConstantUtil.BROADCAST_ACTION_FREEZE_RANGE)) {
+                if (isReady) {
+                    mModel.mFreezeMin = intent.getIntExtra("freezeMinValue", 0);
+                    mModel.mFreezeMax = intent.getIntExtra("freezeMaxValue", 0);
+                    skbFreeze.setMax(mModel.mFreezeMax - mModel.mFreezeMin);
+                }
             }
         }
     };
 
     private void sendUserCommond(String key, String content) {
         Intent intent = new Intent();
-        intent.setAction(COMMAND_TO_SERVICE);
+        intent.setAction(ConstantUtil.COMMAND_TO_SERVICE);
         intent.putExtra(key, content);
         sendBroadcast(intent);
     }
 
     private void sendUserCommond(String keyOne, String contentOne, String keyTwo, int contentTwo) {
         Intent intent = new Intent();
-        intent.setAction(COMMAND_TO_SERVICE);
+        intent.setAction(ConstantUtil.COMMAND_TO_SERVICE);
         intent.putExtra(keyOne, contentOne);
         intent.putExtra(keyTwo, contentTwo);
         sendBroadcast(intent);
@@ -200,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void sendUserCommond(String key, int value) {
         Intent intent = new Intent();
-        intent.setAction(COMMAND_TO_SERVICE);
+        intent.setAction(ConstantUtil.COMMAND_TO_SERVICE);
         intent.putExtra(key, value);
         sendBroadcast(intent);
     }
@@ -240,10 +219,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void setView() {
         //        initSeekBar();
-        sendUserCommond(KEY_MODE, QUERY_TEMPER_INFO);
-        sendUserCommond(KEY_MODE, QUERY_CONTROL_INFO);
+        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_TEMPER_INFO);
+        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_CONTROL_INFO);
         switch (mModel.mFridgeModel) {
-            case BCD251_MODEL:
+            case ConstantUtil.BCD251_MODEL:
                 lineFridgeTemp.setVisibility(View.VISIBLE);
                 lineFreezeTemp.setVisibility(View.VISIBLE);
                 lineChangeTemp.setVisibility(View.VISIBLE);
@@ -289,8 +268,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 0x01:
-                    sendUserCommond(KEY_READY, QUERY_CONTROL_READY);
-                    mWaitTask.cancel();
+                    if(!isReady) {
+                        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_CONTROL_READY);
+                        Log.i(TAG, "sendControlCmdResponse main board is ready?");
+                        //                    mWaitTask.cancel();
+                    }
                     break;
                 case 0x02:
                     refreshUI();
@@ -307,7 +289,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String strTime = simpleDateFormat.format(date);
         tvTime.setText(strTime);
         switch (mModel.mFridgeModel) {
-            case BCD251_MODEL:
+            case ConstantUtil.BCD251_MODEL:
                 tvFridgeTemp.setText(mModel.mFridgeShow + " ℃");
                 tvFreezeTemp.setText(mModel.mFreezeShow + " ℃");
                 tvChangeTemp.setText(mModel.mChangeShow + " ℃");
@@ -352,9 +334,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(View v) {
                 if (v.getId() == idButton) {
                     if (btnSmart.isPress()) {
-                        sendUserCommond(KEY_MODE, MODE_SMART_OFF);
+                        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_SMART_OFF);
                     } else {
-                        sendUserCommond(KEY_MODE, MODE_SMART_ON);
+                        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_SMART_ON);
                     }
                 }
             }
@@ -371,9 +353,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(View v) {
                 if (v.getId() == idButton) {
                     if (btnHoliday.isPress()) {
-                        sendUserCommond(KEY_MODE, MODE_HOLIDAY_OFF);
+                        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_HOLIDAY_OFF);
                     } else {
-                        sendUserCommond(KEY_MODE, MODE_HOLIDAY_ON);
+                        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_HOLIDAY_ON);
                     }
                 }
             }
@@ -390,9 +372,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(View v) {
                 if (v.getId() == idButton) {
                     if (btnQuickCold.isPress()) {
-                        sendUserCommond(KEY_MODE, MODE_COLD_OFF);
+                        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_COLD_OFF);
                     } else {
-                        sendUserCommond(KEY_MODE, MODE_COLD_ON);
+                        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_COLD_ON);
                     }
                 }
             }
@@ -409,9 +391,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(View v) {
                 if (v.getId() == idButton) {
                     if (btnQuickFreeze.isPress()) {
-                        sendUserCommond(KEY_MODE, MODE_FREEZE_OFF);
+                        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_FREEZE_OFF);
                     } else {
-                        sendUserCommond(KEY_MODE, MODE_FREEZE_ON);
+                        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_FREEZE_ON);
                     }
                 }
             }
@@ -428,9 +410,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(View v) {
                 if (v.getId() == idButton) {
                     if (btnFridgeSwitch.isPress()) {
-                        sendUserCommond(KEY_MODE, REFRIGERATOR_CLOSE);
+                        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.REFRIGERATOR_CLOSE);
                     } else {
-                        sendUserCommond(KEY_MODE, REFRIGERATOR_OPEN);
+                        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.REFRIGERATOR_OPEN);
                     }
                 }
             }
@@ -472,7 +454,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 int progress = seekBar.getProgress();
-                sendUserCommond(KEY_MODE, TEMPER_SETCOLD, KEY_SET_FRIDGE_LEVEL, progress + mModel.mFridgeMin);
+                sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.TEMPER_SETCOLD,
+                        ConstantUtil.KEY_SET_FRIDGE_LEVEL, progress + mModel.mFridgeMin);
             }
         });
         skbFreeze.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -489,7 +472,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 int progress = seekBar.getProgress();
-                sendUserCommond(KEY_MODE, TEMPER_SETFREEZE, KEY_SET_FREEZE_LEVEL, progress + mModel.mFreezeMin);
+                sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.TEMPER_SETFREEZE,
+                        ConstantUtil.KEY_SET_FREEZE_LEVEL, progress + mModel.mFreezeMin);
             }
         });
         skbChange.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -506,7 +490,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 int progress = seekBar.getProgress();
-                sendUserCommond(KEY_MODE, TEMPER_SETCUSTOMAREA, KEY_SET_COLD_LEVEL, progress + mModel.mChangeMin);
+                sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.TEMPER_SETCUSTOMAREA,
+                        ConstantUtil.KEY_SET_COLD_LEVEL, progress + mModel.mChangeMin);
             }
         });
     }

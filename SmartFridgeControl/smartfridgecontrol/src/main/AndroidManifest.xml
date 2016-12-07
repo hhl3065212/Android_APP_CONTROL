@@ -1,18 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.haiersmart.sfcontrol">
-
-    <!--
-     <application
-        android:name=".application.ControlApplication"
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-
-    </application>
-    -->
     <application
         android:name=".application.ControlApplication"
         android:allowBackup="true"
@@ -56,13 +44,13 @@
              </intent-filter>
         </activity>
 
-        <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-
         <receiver android:name=".receiver.BootCompletedReceiver">
-            <intent-filter>
+            <intent-filter android:priority="1000">
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <!--<category android:name="android.intent.category.HOME" />-->
             </intent-filter>
         </receiver>
+
         <receiver android:name=".receiver.DoorAlarmReceiver">
             <intent-filter>
                 <action android:name="com.haiersmart.sfcontrol.alarm"/>
@@ -73,7 +61,8 @@
                 <action android:name="com.haiersmart.sfcontrol.command"/>
             </intent-filter>
         </receiver>
-
     </application>
+
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
 </manifest>

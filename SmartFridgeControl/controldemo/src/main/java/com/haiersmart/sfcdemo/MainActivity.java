@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private LinearLayout lineEnvTemp, lineEnvHum, lineFridgeTemp, lineFreezeTemp, lineChangeTemp,
             lineFridgeTarget, lineFreezeTarget, lineChangeTarger;
     private TextView tvFridgeModel, tvStatusCode, tvEnvTemp, tvEnvHum, tvFridgeTemp, tvFreezeTemp, tvChangeTemp,
-            tvFridgeTarget, tvFreezeTarget, tvChangeTarget,tvTime;
+            tvFridgeTarget, tvFreezeTarget, tvChangeTarget, tvTime;
     private Button btnReturn;
     private MyTestButton btnSmart, btnHoliday, btnQuickCold, btnQuickFreeze, btnFridgeSwitch;
     private SeekBar skbFridge, skbFreeze, skbChange;
@@ -58,23 +58,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         findView();
         mTimer = new Timer();
-        mTimer.schedule(mWaitTask,1000,1000);
-//        sendUserCommond(KEY_MODE, QUERY_CONTROL_READY);
-//        sendUserCommond(KEY_MODE, "demoReady");
-        Log.i(TAG,"first sendControlCmdResponse main board is ready?");
+        mTimer.schedule(mWaitTask, 1000, 1000);
+        //        sendUserCommond(KEY_MODE, QUERY_CONTROL_READY);
+        //        sendUserCommond(KEY_MODE, "demoReady");
+        Log.i(TAG, "first sendControlCmdResponse main board is ready?");
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-//        registerBroadcast();
+        //        registerBroadcast();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-//        unregisterReceiver(receiveUpdateUI);
+        //        unregisterReceiver(receiveUpdateUI);
     }
 
     @Override
@@ -108,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     String jsonString = intent.getStringExtra(ConstantUtil.KEY_CONTROL_INFO);
                     JSONArray jsonArray = JSONArray.parseArray(jsonString);
                     updateModeLevel(jsonArray);
+                    refreshUI();
                 }
             } else if (action.equals(ConstantUtil.BROADCAST_ACTION_READY)) {
                 isReady = intent.getBooleanExtra(ConstantUtil.KEY_READY, false);
@@ -119,11 +120,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_FREEZE_TEMP_RANGE);
                     sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_CHANGE_TEMP_RANGE);
                 }
-//                else {
-////                    sendUserCommond(KEY_READY, QUERY_CONTROL_READY);
-////                    mHandler.sendEmptyMessageDelayed(0x01,1000);
-////                    mTimer.schedule(mWaitTask, 1000);
-//                }
+                //                else {
+                ////                    sendUserCommond(KEY_READY, QUERY_CONTROL_READY);
+                ////                    mHandler.sendEmptyMessageDelayed(0x01,1000);
+                ////                    mTimer.schedule(mWaitTask, 1000);
+                //                }
 
             } else if (action.equals(ConstantUtil.BROADCAST_ACTION_FRIDGE_INFO)) {
                 if (isReady) {
@@ -137,6 +138,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     String jsonString = intent.getStringExtra(ConstantUtil.KEY_TEMPER);
                     JSONArray jsonArray = JSONArray.parseArray(jsonString);
                     updateShowTemp(jsonArray);
+                    refreshUI();
                 }
             } else if (action.equals(ConstantUtil.BROADCAST_ACTION_ERROR)) {
 
@@ -205,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tvFridgeTarget = (TextView) findViewById(R.id.text_demo_fridge_target);
         tvFreezeTarget = (TextView) findViewById(R.id.text_demo_freeze_target);
         tvChangeTarget = (TextView) findViewById(R.id.text_demo_change_target);
-        tvTime = (TextView)findViewById(R.id.text_demo_time);
+        tvTime = (TextView) findViewById(R.id.text_demo_time);
 
         btnReturn = (Button) findViewById(R.id.btn_demo_return);
         btnReturn.setOnClickListener(this);
@@ -218,9 +220,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void setView() {
-        //        initSeekBar();
-        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_TEMPER_INFO);
-        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_CONTROL_INFO);
         switch (mModel.mFridgeModel) {
             case ConstantUtil.BCD251_MODEL:
                 lineFridgeTemp.setVisibility(View.VISIBLE);
@@ -236,16 +235,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 initFridgeOpen(R.id.btn_demo_bottom_left);
                 break;
         }
+        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_TEMPER_INFO);
+        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_CONTROL_INFO);
     }
 
     private void setModel() {
-//        if(mModel.mFridgeModel != null) {
-//        mModel.mFridgeModel = BCD251_MODEL;
+        //        if(mModel.mFridgeModel != null) {
+        //        mModel.mFridgeModel = BCD251_MODEL;
         tvFridgeModel.setText(mModel.mFridgeModel);
         mWaitTask.cancel();
         setView();
-        mTimer.schedule(mTimerTask, 0, 500);
-//        }
+//        mTimer.schedule(mTimerTask, 0, 100);
+        //        }
     }
 
     private TimerTask mWaitTask = new TimerTask() {
@@ -268,7 +269,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 0x01:
-                    if(!isReady) {
+                    if (!isReady) {
                         sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_CONTROL_READY);
                         Log.i(TAG, "sendControlCmdResponse main board is ready?");
                         //                    mWaitTask.cancel();
@@ -427,10 +428,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.text_demo_fridge_model:
                 onclickCounts++;
-                if(onclickCounts > 5){
+                if (onclickCounts > 5) {
                     onclickCounts = 0;
                     Intent intent = new Intent();
-//                    intent.setClassName("com.haiersmart.sfcontrol","com.haiersmart.sfcontrol.ui.DebugActivity");
+                    //                    intent.setClassName("com.haiersmart.sfcontrol","com.haiersmart.sfcontrol.ui.DebugActivity");
                     intent.setComponent(new ComponentName("com.haiersmart.sfcontrol", "com.haiersmart.sfcontrol.ui.DebugActivity"));
                     intent.setAction("DebugActivity");
                     startActivity(intent);

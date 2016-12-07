@@ -24,7 +24,7 @@ public class ControlApplication extends Application {
         super.onCreate();
         mContext = getApplicationContext();
         mInstance = this;
-        MyLogUtil.on(true);
+        MyLogUtil.on(false);
         MyLogUtil.setLogEnable(true);
         MyLogUtil.i("ControlApplication", "onCreate mContext get ApplicationContext");
         Intent intent = new Intent(this,ControlMainBoardService.class);

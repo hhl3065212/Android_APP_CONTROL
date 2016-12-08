@@ -392,10 +392,10 @@ public class ControlMainBoardService extends Service {
 
     //public static final long COLDTIME = 60 * 60 * 3;
     //TODO:test use 1 min for quick cold time out
-    public static final long COLDTIME = 60 * 20;
+    public static final long COLDTIME = 60 * 11;
     //public static final long FREEZETIME = 60 * 60 * 50;
     //TODO:test use 2 min for quick freeze time out
-    public static final long FREEZETIME = 60 * 25;
+    public static final long FREEZETIME = 60 * 15;
     private static long coldCount = 0;
     private static long freezeCount = 0;
     private ScheduledExecutorService sExService = Executors.newScheduledThreadPool(2);
@@ -445,6 +445,7 @@ public class ControlMainBoardService extends Service {
             MyLogUtil.i(TAG, "stopColdOnTime cancel runnable");
             sColdOnFuture.cancel(true);
             coldCount = 0;
+            sColdOnFuture = null;
             SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.COLDCOUNT, 0l); 
         }
     }
@@ -453,6 +454,7 @@ public class ControlMainBoardService extends Service {
         @Override
         public void run() {
             freezeCount++;
+            MyLogUtil.i(TAG, "freezeOnRunnable freezeCount=" + freezeCount);
             if(freezeCount % 6 == 0) {//1min
                 SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.FREEZECOUNT,freezeCount / 1l);
                 //10min
@@ -470,6 +472,7 @@ public class ControlMainBoardService extends Service {
                 }
             }
             if ((freezeCount*10) >= FREEZETIME) {
+                MyLogUtil.i(TAG, "freezeOnRunnable stop freezeCount=" + freezeCount);
                 stopFreezeOnTime();
                 mModel.freezeOff();
             }
@@ -498,6 +501,7 @@ public class ControlMainBoardService extends Service {
             MyLogUtil.i(TAG, "stopFreezeOnTime cancel runnable");
             sFreezeOnFuture.cancel(true);
             freezeCount = 0;
+            sFreezeOnFuture = null;
             SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.FREEZECOUNT, 0l);
         }
     }
@@ -557,7 +561,7 @@ public class ControlMainBoardService extends Service {
         MyLogUtil.i(TAG,"handleServiceRestartEvent out");
     }
 
-    public void sendUserCommond(EnumBaseName enumBaseName,int value){
+    public void sendUserCommand(EnumBaseName enumBaseName,int value){
         switch (enumBaseName){
             case smartMode:
                 if(value == 1) {

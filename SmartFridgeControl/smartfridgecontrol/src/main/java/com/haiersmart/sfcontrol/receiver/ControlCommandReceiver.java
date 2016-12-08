@@ -22,8 +22,8 @@ public class ControlCommandReceiver extends BroadcastReceiver {
             MyLogUtil.i(TAG, "Action="+action);
             String contentAction = intent.getStringExtra(ConstantUtil.KEY_MODE);
             MyLogUtil.i(TAG, "contentAction="+contentAction);
-            if((contentAction == null)||(contentAction.length() == 0)){
-                return;
+            if((contentAction == null)||(contentAction.length() <= 0)){
+                throw new IllegalArgumentException();
             }
             if (contentAction.equals(ConstantUtil.QUERY_CONTROL_READY)) {
                 //查询service是否ready

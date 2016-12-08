@@ -253,10 +253,10 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                 if(v.getId() == idButton){
                     if(btnSmart.isPress()){
 //                        btnSmart.setOff();
-                        mControlService.sendUserCommond(EnumBaseName.smartMode,0);
+                        mControlService.sendUserCommand(EnumBaseName.smartMode,0);
                     }else {
 //                        btnSmart.setOn();
-                        mControlService.sendUserCommond(EnumBaseName.smartMode,1);
+                        mControlService.sendUserCommand(EnumBaseName.smartMode,1);
                     }
                 }
             }
@@ -273,10 +273,10 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                 if(v.getId() == idButton){
                     if(btnHoliday.isPress()){
 //                        btnHoliday.setOff();
-                        mControlService.sendUserCommond(EnumBaseName.holidayMode,0);
+                        mControlService.sendUserCommand(EnumBaseName.holidayMode,0);
                     }else {
 //                        btnHoliday.setOn();
-                        mControlService.sendUserCommond(EnumBaseName.holidayMode,1);
+                        mControlService.sendUserCommand(EnumBaseName.holidayMode,1);
                     }
                 }
             }
@@ -293,10 +293,10 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                 if(v.getId() == idButton){
                     if(btnQuickCold.isPress()){
 //                        btnQuickCold.setOff();
-                        mControlService.sendUserCommond(EnumBaseName.quickColdMode,0);
+                        mControlService.sendUserCommand(EnumBaseName.quickColdMode,0);
                     }else {
 //                        btnQuickCold.setOn();
-                        mControlService.sendUserCommond(EnumBaseName.quickColdMode,1);
+                        mControlService.sendUserCommand(EnumBaseName.quickColdMode,1);
                     }
                 }
             }
@@ -313,10 +313,10 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                 if(v.getId() == idButton){
                     if(btnQuickFreeze.isPress()){
 //                        btnQuickFreeze.setOff();
-                        mControlService.sendUserCommond(EnumBaseName.quickFreezeMode,0);
+                        mControlService.sendUserCommand(EnumBaseName.quickFreezeMode,0);
                     }else {
 //                        btnQuickFreeze.setOn();
-                        mControlService.sendUserCommond(EnumBaseName.quickFreezeMode,1);
+                        mControlService.sendUserCommand(EnumBaseName.quickFreezeMode,1);
                     }
                 }
             }
@@ -333,10 +333,10 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                 if(v.getId() == idButton){
                     if(btnFridgeClose.isPress()){
 //                        btnFridgeClose.setOff();
-                        mControlService.sendUserCommond(EnumBaseName.fridgeSwitch,0);
+                        mControlService.sendUserCommand(EnumBaseName.fridgeSwitch,0);
                     }else {
 //                        btnFridgeClose.setOn();
-                        mControlService.sendUserCommond(EnumBaseName.fridgeSwitch,1);
+                        mControlService.sendUserCommand(EnumBaseName.fridgeSwitch,1);
                     }
                 }
             }
@@ -377,7 +377,7 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                 int progress = seekBar.getProgress();
                 if(mIsBound)
                 {
-                    mControlService.sendUserCommond(EnumBaseName.fridgeTargetTemp,progress+mFridgeMin);
+                    mControlService.sendUserCommand(EnumBaseName.fridgeTargetTemp,progress+mFridgeMin);
                 }
             }
         });
@@ -396,7 +396,7 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
             public void onStopTrackingTouch(SeekBar seekBar) {
                 int progress = seekBar.getProgress();
                 if(mIsBound) {
-                    mControlService.sendUserCommond(EnumBaseName.freezeTargetTemp, progress + mFreezeMin);
+                    mControlService.sendUserCommand(EnumBaseName.freezeTargetTemp, progress + mFreezeMin);
                 }
             }
         });
@@ -415,7 +415,7 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
             public void onStopTrackingTouch(SeekBar seekBar) {
                 int progress = seekBar.getProgress();
                 if(mIsBound) {
-                    mControlService.sendUserCommond(EnumBaseName.changeTargetTemp, progress + mChangeMin);
+                    mControlService.sendUserCommand(EnumBaseName.changeTargetTemp, progress + mChangeMin);
                 }
             }
         });

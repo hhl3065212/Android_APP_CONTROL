@@ -22,6 +22,7 @@ import static com.haiersmart.sfcontrol.constant.ConstantUtil.BROADCAST_ACTION_AL
 import static com.haiersmart.sfcontrol.constant.ConstantUtil.DOOR_FRIDGE_CLOSE;
 import static com.haiersmart.sfcontrol.constant.ConstantUtil.DOOR_FRIDGE_OPEN;
 import static com.haiersmart.sfcontrol.constant.ConstantUtil.DOOR_STATUS;
+import com.haiersmart.sfcontrol.constant.EnumBaseName;
 
 /**
  * <p>function: </p>

@@ -153,6 +153,11 @@ public class TwoFiveOneModel extends ModelBase {
                 //恢复冷藏档位并设置可调节
                 setControlDisableByName(EnumBaseName.fridgeTargetTemp, ConstantUtil.NO_WARNING);
                 getControlDbMgr().updateDisableByName(EnumBaseName.fridgeTargetTemp, ConstantUtil.NO_WARNING);
+
+                //设置冷藏开关可调节
+                setControlDisableByName(EnumBaseName.fridgeSwitch, ConstantUtil.NO_WARNING);
+                getControlDbMgr().updateDisableByName(EnumBaseName.fridgeSwitch, ConstantUtil.NO_WARNING);
+
             }
             //设置速冻档位灰色
             setControlDisableByName(EnumBaseName.freezeTargetTemp,ConstantUtil.FREEZE_ON_SET_TEMPER_WARNING);

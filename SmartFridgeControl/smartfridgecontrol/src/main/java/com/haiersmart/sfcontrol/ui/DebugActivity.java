@@ -139,23 +139,27 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
         mFridgeMax = mTargetTempRange.getFridgeMaxValue();
         mFreezeMax = mTargetTempRange.getFreezeMaxValue();
         mChangeMax = mTargetTempRange.getChangeMaxValue();
+        MyLogUtil.i(TAG,mFridgeMax+","+mFridgeMin+","+mFreezeMax+","+mFreezeMin+","+mChangeMax+","+mChangeMin);
         skbFridge.setMax(mFridgeMax-mFridgeMin);
         skbFreeze.setMax(mFreezeMax-mFreezeMin);
         skbChange.setMax(mChangeMax-mChangeMin);
-        skbFridge.setProgress(getControlValueByName(EnumBaseName.fridgeTargetTemp)-mFridgeMin);
-        skbFreeze.setProgress(getControlValueByName(EnumBaseName.freezeTargetTemp)-mFreezeMin);
-        skbChange.setProgress(getControlValueByName(EnumBaseName.changeTargetTemp)-mChangeMin);
-        tvFridgeTarget.setText(Integer.toString(getControlValueByName(EnumBaseName.fridgeTargetTemp))+" ℃");
-        tvFreezeTarget.setText(Integer.toString(getControlValueByName(EnumBaseName.freezeTargetTemp))+" ℃");
-        tvChangeTarget.setText(Integer.toString(getControlValueByName(EnumBaseName.changeTargetTemp))+" ℃");
+        int fridgeTarget = mControlService.getEntryByName(EnumBaseName.fridgeTargetTemp).value;
+        int freezeTarget = mControlService.getEntryByName(EnumBaseName.freezeTargetTemp).value;
+        int changeTarget = mControlService.getEntryByName(EnumBaseName.changeTargetTemp).value;
+        skbFridge.setProgress(fridgeTarget-mFridgeMin);
+        skbFreeze.setProgress(freezeTarget-mFreezeMin);
+        skbChange.setProgress(changeTarget-mChangeMin);
+        tvFridgeTarget.setText(fridgeTarget+" ℃");
+        tvFreezeTarget.setText(freezeTarget+" ℃");
+        tvChangeTarget.setText(changeTarget+" ℃");
     }
     private void setModel(){
-        mModel = mSerialData.getCurrentModel();
-        if(mModel != null) {
+        if(mSerialData.isSerialDataReady()) {
+            mModel = mSerialData.getCurrentModel();
             tvFridgeModel.setText(mModel);
             mWaitTask.cancel();
             setView();
-            mTimer.schedule(mTimerTask,0,200);
+            mTimer.schedule(mTimerTask, 0, 200);
             MyLogUtil.i(TAG, "fridge model is " + mModel);
         }
     }

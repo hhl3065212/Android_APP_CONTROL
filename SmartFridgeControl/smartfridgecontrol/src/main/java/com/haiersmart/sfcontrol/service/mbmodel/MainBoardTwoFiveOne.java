@@ -10,6 +10,7 @@
 package com.haiersmart.sfcontrol.service.mbmodel;
 
 import com.haiersmart.sfcontrol.application.ControlApplication;
+import com.haiersmart.sfcontrol.constant.EnumBaseName;
 import com.haiersmart.sfcontrol.database.FridgeControlEntry;
 import com.haiersmart.sfcontrol.service.alarm.HandleDoorAlarm;
 import com.haiersmart.sfcontrol.service.configtable.ConfigTwoFiveOne;
@@ -70,6 +71,8 @@ public class MainBoardTwoFiveOne extends MainBoardBase {
             }else if(fridgeControlEntry.name.equals("quickFreezeMode")){
                 freezeCmdEn = false;//速冻 不比较冷冻档位
             }else if(fridgeControlEntry.name.equals("quickColdMode")){
+                changeCmdEn = false;//速冷 不比较变温档位
+            }else if(fridgeControlEntry.name.equals(EnumBaseName.fridgeSwitch.toString())){
                 changeCmdEn = false;//速冷 不比较变温档位
             }
         }

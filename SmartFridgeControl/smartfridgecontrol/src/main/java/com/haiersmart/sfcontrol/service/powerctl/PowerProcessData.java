@@ -36,25 +36,26 @@ public class PowerProcessData {
             super.run();
             while (!isInterrupted()) {
                 if (TimerThreadSwitch) {
-                    if(mTimerCounts>=mSyncTimes){
-                        if(mPowerSerialOpt.isSendListEmpty()){
-                            sendSyncCmd();
-                            mTimerCounts = 0;
-                        }
-                    }else {
-                        if ((mTimerCounts%mQueryTimes) == 0) {
-                            if(mPowerSerialOpt.isSendListEmpty()){
-                                sendQuerryCmd();
+                    if(mSerialData.isSerialDataReady()) {
+                        if (mTimerCounts >= mSyncTimes) {
+                            if (mPowerSerialOpt.isSendListEmpty()) {
+                                sendSyncCmd();
+                                mTimerCounts = 0;
                             }
+                        } else {
+                            if ((mTimerCounts % mQueryTimes) == 0) {
+                                if (mPowerSerialOpt.isSendListEmpty()) {
+                                    sendQuerryCmd();
+                                }
+                            }
+                            mTimerCounts++;
                         }
-                        mTimerCounts++;
                     }
-
-                    try {
-                        sleep(mSleepTime);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                }
+                try {
+                    sleep(mSleepTime);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -91,4 +92,11 @@ public class PowerProcessData {
         mPowerSerialOpt.sendCmdArray(mSerialData.packSyncMode());
     }
 
+    public boolean isTimerThreadSwitch() {
+        return TimerThreadSwitch;
+    }
+
+    public void setTimerThreadSwitch(boolean timerThreadSwitch) {
+        TimerThreadSwitch = timerThreadSwitch;
+    }
 }

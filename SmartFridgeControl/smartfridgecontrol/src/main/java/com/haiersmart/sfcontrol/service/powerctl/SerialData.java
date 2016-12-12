@@ -25,6 +25,7 @@ public class SerialData {
     private MainBoardInfo mMainBoardInfo;
     private MainBoardBase mMainBoard;
     private String mCurrentModel;
+    private boolean isSerialDataReady = false;
 
     private static SerialData instance;
 
@@ -149,6 +150,7 @@ public class SerialData {
             mMainBoard = new MainBoardTwoFiveOne();
         }
         mMainBoard.init();
+        isSerialDataReady = true;
     }
 
     /**
@@ -304,4 +306,7 @@ public class SerialData {
         MyLogUtil.i(TAG,"CommunicationErr counts is "+value);
     }
 
+    public boolean isSerialDataReady() {
+        return isSerialDataReady;
+    }
 }

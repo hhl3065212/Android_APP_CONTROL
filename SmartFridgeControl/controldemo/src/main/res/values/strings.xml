@@ -24,4 +24,5 @@
     <string name="title_fridge_temp">冷藏温度</string>
     <string name="title_freeze_temp">冷冻温度</string>
     <string name="title_change_temp">变温温度</string>
+    <string name="title_test">测试显示</string>
 </resources>

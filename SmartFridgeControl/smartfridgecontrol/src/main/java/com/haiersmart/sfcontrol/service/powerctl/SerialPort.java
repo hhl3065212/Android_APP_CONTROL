@@ -14,7 +14,16 @@
 package com.haiersmart.sfcontrol.service.powerctl;
 
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.IBinder;
+import android.os.RemoteException;
+
+import com.haiersmart.sfcontrol.application.ControlApplication;
 import com.haiersmart.sfcontrol.utilslib.MyLogUtil;
+import com.smart.haier.haierservice.IHaierService;
 
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
@@ -33,13 +42,46 @@ public class SerialPort {
     private FileDescriptor mFd;
     private FileInputStream mFileInputStream;
     private FileOutputStream mFileOutputStream;
+    private boolean isReady = false;
     private int mSerialPortNum = 0;
     private final String[] mSerialPortDevice = {"", "/dev/ttyMFD1", "/dev/ttyMT1", "/dev/ttyS0"};
     private final int mBaudRate = 4800;
-    private final String strModel;
+    private String strModel;
 
-    public SerialPort() throws SecurityException, IOException {
-        strModel = "UG";
+    private IHaierService mIService;
+    private ServiceConnection connHaierService = new ServiceConnection(){
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            mIService = IHaierService.Stub.asInterface(service);
+            try {
+                openSerialPort();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+    };
+
+    public SerialPort(){
+        Intent serviceIntent = new Intent();
+        ComponentName componentName = new ComponentName(
+                "com.smart.haier.haierservice",
+                "com.smart.haier.haierservice.MyService");
+        serviceIntent.setComponent(componentName);
+        ControlApplication.getInstance().mContext.bindService(serviceIntent, connHaierService, Context.BIND_AUTO_CREATE);
+    }
+
+
+    private void openSerialPort() throws IOException, RemoteException {
+        strModel = mIService.getSystemModel();
+//        strModel = "XD";
         if (strModel.indexOf("XD") >= 0) {
             mSerialPortNum = 3;
             mFd = SerialOpen(mSerialPortDevice[mSerialPortNum], mBaudRate);
@@ -64,15 +106,22 @@ public class SerialPort {
         MyLogUtil.i(TAG,"Serial Port has open,mFd = "+mFd);
 
         if (mFd == null) {
-//            Log.e(TAG, "power ctl brd native open returns null");
+            isReady = false;
             mSerialPortNum = 0;
-            throw new IOException();
+//            throw new IOException();
+        }else {
+            isReady = true;
+            mFileInputStream = new FileInputStream(mFd);
+            mFileOutputStream = new FileOutputStream(mFd);
         }
-        mFileInputStream = new FileInputStream(mFd);
-        mFileOutputStream = new FileOutputStream(mFd);
     }
 
     // Getters and setters
+
+    public boolean isReady() {
+        return isReady;
+    }
+
     public InputStream getInputStream() {
         return mFileInputStream;
     }
@@ -80,6 +129,7 @@ public class SerialPort {
     public OutputStream getOutputStream() {
         return mFileOutputStream;
     }
+
 
     // JNI
     private native static FileDescriptor SerialOpen(String path, int baudrate);
@@ -99,7 +149,9 @@ public class SerialPort {
     }
 
     public void SerialPortClose() {
-        SerialClose();
+        if(mFd != null) {
+            SerialClose();
+        }
     }
 
     public void SerialPortReOpen() {

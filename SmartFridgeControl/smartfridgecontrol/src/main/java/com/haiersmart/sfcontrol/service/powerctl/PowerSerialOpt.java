@@ -72,6 +72,8 @@ public class PowerSerialOpt {
             int size = 0;
             int SendCnt = 0;
 
+            waitSerialPortReady();//
+
             while (!isInterrupted()) {
                 if (ReadWriteParseThreadSwitch) {//读写线程开关
                     try {
@@ -85,7 +87,9 @@ public class PowerSerialOpt {
                             while (SendCnt < 3) {
                                 if (mReadFlag == false) {//发送命令
                                     MyLogUtil.i(TAG,"mSendByte:"+ PrintUtil.BytesToString(mSendByte,16)+",SendCnt:"+SendCnt);
-                                    mOutputStream.write(mSendByte);
+                                    if(mOutputStream != null) {
+                                        mOutputStream.write(mSendByte);
+                                    }
                                     SendCnt++;
                                     mReadFlag = true;
                                     try {
@@ -116,7 +120,7 @@ public class PowerSerialOpt {
                                                 mReadFlag = false;
                                                 break;
                                             } else {
-                                                CommunicationErr++;
+                                                CommunicationErr++;//通信数据错误计数
                                                 mSerialData.setCommunicationErr(CommunicationErr);
                                                 mReadFlag = false;
                                             }
@@ -147,11 +151,37 @@ public class PowerSerialOpt {
     }
 
 
-    public PowerSerialOpt() throws IOException {
+    private void waitSerialPortReady(){
+        int countsReady = 0;
+        boolean mWaiting = true;
+        while (mWaiting) {
+            try {
+                mWriteReadThread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            countsReady++;
+            if(countsReady > 10 || mSerialPort.isReady()) {
+                mWaiting = false;
+            }
+        }
+        if(mSerialPort.isReady()) {
+            mOutputStream = mSerialPort.getOutputStream();
+            mInputStream = mSerialPort.getInputStream();
+        }else{
+            mOutputStream = null;
+            mInputStream = new InputStream() {
+                @Override
+                public int read() throws IOException {
+                    return 0;
+                }
+            };
+        }
+    }
+    public PowerSerialOpt(){
         mProtocolCommand = new ProtocolCommand();
         mSerialPort = new SerialPort();
-        mOutputStream = mSerialPort.getOutputStream();
-        mInputStream = mSerialPort.getInputStream();
+
         byteSendList = java.util.Collections.synchronizedList(new LinkedList<byte[]>());
 
         mSerialData = SerialData.getInstance();
@@ -209,4 +239,11 @@ public class PowerSerialOpt {
         ReadWriteParseThreadSwitch = true;
     }
 
+    public boolean isReadWriteParseThreadSwitch() {
+        return ReadWriteParseThreadSwitch;
+    }
+
+    public void setReadWriteParseThreadSwitch(boolean readWriteParseThreadSwitch) {
+        ReadWriteParseThreadSwitch = readWriteParseThreadSwitch;
+    }
 }

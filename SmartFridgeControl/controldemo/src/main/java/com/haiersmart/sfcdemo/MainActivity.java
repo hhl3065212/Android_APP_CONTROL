@@ -41,13 +41,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private LinearLayout lineEnvTemp, lineEnvHum, lineFridgeTemp, lineFreezeTemp, lineChangeTemp,
             lineFridgeTarget, lineFreezeTarget, lineChangeTarger;
     private TextView tvFridgeModel, tvStatusCode, tvEnvTemp, tvEnvHum, tvFridgeTemp, tvFreezeTemp, tvChangeTemp,
-            tvFridgeTarget, tvFreezeTarget, tvChangeTarget, tvTime;
+            tvFridgeTarget, tvFreezeTarget, tvChangeTarget, tvTime ,tvTest;
     private Button btnReturn;
     private MyTestButton btnSmart, btnHoliday, btnQuickCold, btnQuickFreeze, btnFridgeSwitch;
     private SeekBar skbFridge, skbFreeze, skbChange;
 
     private int onclickCounts = 0;
     private boolean isReady = false;
+
+    private NetRunnable mNetRunnable;
+    private Thread mThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +69,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //        sendUserCommond(KEY_MODE, QUERY_CONTROL_READY);
         //        sendUserCommond(KEY_MODE, "demoReady");
         Log.i(TAG, "first sendControlCmdResponse main board is ready?");
-
+        mNetRunnable = new NetRunnable();
+        mNetRunnable.start();
+//        mThread = new Thread(mNetRunnable,"sntp");
+//        mThread.start();
     }
 
     @Override
@@ -209,6 +215,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tvFreezeTarget = (TextView) findViewById(R.id.text_demo_freeze_target);
         tvChangeTarget = (TextView) findViewById(R.id.text_demo_change_target);
         tvTime = (TextView) findViewById(R.id.text_demo_time);
+        tvTest = (TextView) findViewById(R.id.text_demo_test);
 
         btnReturn = (Button) findViewById(R.id.btn_demo_return);
         btnReturn.setOnClickListener(this);
@@ -243,9 +250,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void setModel() {
         //        if(mModel.mFridgeModel != null) {
         mModel.mFridgeModel = ConstantUtil.BCD251_MODEL;
-        tvFridgeModel.setText(mModel.mFridgeModel);
+        if(mModel.mFridgeModel.equals(ConstantUtil.BCD251_MODEL)) {
+            tvFridgeModel.setText(mModel.mFridgeModel);
+        }else if(mModel.mFridgeModel.equals(ConstantUtil.BCD256_MODEL)){
+            tvFridgeModel.setText(mModel.mFridgeModel+"/"+mModel.mFridgeModel+"(S)");
+        }else if(mModel.mFridgeModel.equals(ConstantUtil.BCD401_MODEL)){
+            tvFridgeModel.setText(mModel.mFridgeModel+"/"+mModel.mFridgeModel+"(S)");
+        }
         setView();
-//        mTimer.schedule(mTimerTask, 0, 100);
+        mTimer.schedule(mTimerTask, 0, 100);
         //        }
     }
     private void startQueryType(){
@@ -299,10 +312,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void refreshUI() {
         //        sendUserCommond(KEY_MODE,QUERY_TEMPER_INFO);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date(System.currentTimeMillis());
         String strTime = simpleDateFormat.format(date);
         tvTime.setText(strTime);
+//        mThread.run();
+        tvTest.setText(mNetRunnable.getNtpHost()+"\n"+mNetRunnable.getTimeoutCounts()+":"+mNetRunnable.getRequestCounts()
+                +"\n"+mNetRunnable.getTimeStamp()+"\n"+mNetRunnable.getTime());
         switch (mModel.mFridgeModel) {
             case ConstantUtil.BCD251_MODEL:
                 tvFridgeTemp.setText(mModel.mFridgeShow + " ℃");

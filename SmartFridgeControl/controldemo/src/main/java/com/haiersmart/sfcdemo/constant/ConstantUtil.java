@@ -35,23 +35,14 @@ public class ConstantUtil {
      */
     public static final String Bundle_FROM = "i00";
 
-    /**
-     * fridge mode
-     */
-    public static final String BCD325_MODE = "BCD325";
-    public static final String BCD251_MODE = "BCD251";
-    public static final String BCD401_MODE = "BCD401";
-    public static final String BCD256_MODE = "BCD256";
-    public static final String BCD630_MODE = "BCD630";
-    public static final String BCD476_MODE = "BCD476";
 
     /**
      * fridge type
      */
     public static final String BCD325_MODEL= "BCD-325";
     public static final String BCD251_MODEL = "BCD-251WDICU1";
-    public static final String BCD401_MODEL = "BCD-401WDIAU1/BCD-401WDIAU1(S)";
-    public static final String BCD256_MODEL = "BCD-256WDICU1/BCD-256WDICU1(S)";
+    public static final String BCD401_MODEL = "BCD-401WDIAU1";
+    public static final String BCD256_MODEL = "BCD-256WDICU1";
     public static final String BCD630_MODEL = "BCD-630";
     public static final String BCD476_MODEL = "BCD-476";
 

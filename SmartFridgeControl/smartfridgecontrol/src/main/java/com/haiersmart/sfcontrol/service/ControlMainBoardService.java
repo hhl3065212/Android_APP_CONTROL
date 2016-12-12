@@ -435,19 +435,17 @@ public class ControlMainBoardService extends Service {
     };
 
     private void startColdOnTime() {
-        MyLogUtil.i(TAG, "startColdOnTime ");
+        MyLogUtil.i(TAG, "startColdOnTime Count");
         sColdOnFuture = (RunnableScheduledFuture<?>) sExService.scheduleAtFixedRate(coldOnRunnable,10,10, TimeUnit.SECONDS);//10s周期
         SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.COLDTIME, System.currentTimeMillis() / 1l);
     }
     
     private void stopColdOnTime() {
-        if((sColdOnFuture != null) && (!sColdOnFuture.isCancelled())) {
-            MyLogUtil.i(TAG, "stopColdOnTime cancel runnable");
-            sColdOnFuture.cancel(true);
-            coldCount = 0;
-            sColdOnFuture = null;
-            SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.COLDCOUNT, 0l); 
-        }
+        MyLogUtil.i(TAG, "stopColdOnTime cancel runnable Count");
+        boolean res = sColdOnFuture.cancel(true);
+        coldCount = 0;
+        MyLogUtil.i(TAG, "stopColdOnTime cancel runnable coldCount="+coldCount +",res="+res);
+        SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.COLDCOUNT, 0l);
     }
 
     private Runnable freezeOnRunnable = new Runnable() {
@@ -480,7 +478,7 @@ public class ControlMainBoardService extends Service {
     };
 
     private void startFreezeOnTime() {
-        MyLogUtil.i(TAG, "startFreezeOnTime ");
+        MyLogUtil.i(TAG, "startFreezeOnTime Count");
         sFreezeOnFuture = (RunnableScheduledFuture<?>) sExService.scheduleAtFixedRate(freezeOnRunnable,10,10, TimeUnit.SECONDS);//10s周期
         SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.FREEZETIME, System.currentTimeMillis() / 1l);
 //        sExService.schedule(new Runnable() {
@@ -497,13 +495,11 @@ public class ControlMainBoardService extends Service {
     }
 
     private void stopFreezeOnTime() {
-        if((sFreezeOnFuture != null) && (!sFreezeOnFuture.isCancelled())) {
-            MyLogUtil.i(TAG, "stopFreezeOnTime cancel runnable");
-            sFreezeOnFuture.cancel(true);
-            freezeCount = 0;
-            sFreezeOnFuture = null;
-            SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.FREEZECOUNT, 0l);
-        }
+        MyLogUtil.i(TAG, "stopFreezeOnTime cancel runnable Count");
+        boolean res = sFreezeOnFuture.cancel(true);
+        freezeCount = 0;
+        MyLogUtil.i(TAG, "stopFreezeOnTime cancel runnable freezeCount="+freezeCount + ",res="+res);
+        SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.FREEZECOUNT, 0l);
     }
 
     private void handleBootEvent() {

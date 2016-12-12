@@ -21,6 +21,7 @@ import static com.haiersmart.sfcontrol.constant.ConstantUtil.BROADCAST_ACTION_AL
 import static com.haiersmart.sfcontrol.constant.ConstantUtil.DOOR_FRIDGE_CLOSE;
 import static com.haiersmart.sfcontrol.constant.ConstantUtil.DOOR_FRIDGE_OPEN;
 import static com.haiersmart.sfcontrol.constant.ConstantUtil.DOOR_STATUS;
+import com.haiersmart.sfcontrol.constant.EnumBaseName;
 
 /**
  * <p>function: </p>
@@ -71,6 +72,11 @@ public class MainBoardTwoFiveOne extends MainBoardBase {
                 freezeCmdEn = false;//速冻 不比较冷冻档位
             }else if(fridgeControlEntry.name.equals("quickColdMode")){
                 changeCmdEn = false;//速冷 不比较变温档位
+            }
+        }
+        for (FridgeControlEntry fridgeControlEntry:dbFridgeControlCancel){
+            if(fridgeControlEntry.name.equals(EnumBaseName.fridgeSwitch.toString())){
+                fridgeCmdEn = false;//速冷 不比较变温档位
             }
         }
         if(fridgeCmdEn == true){

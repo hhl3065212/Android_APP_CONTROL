@@ -76,7 +76,7 @@ public class MainBoardTwoFiveOne extends MainBoardBase {
         }
         for (FridgeControlEntry fridgeControlEntry:dbFridgeControlCancel){
             if(fridgeControlEntry.name.equals(EnumBaseName.fridgeSwitch.toString())){
-                changeCmdEn = false;//冷藏关闭 不比较变温档位
+                fridgeCmdEn = false;//冷藏关闭 不比较变温档位
             }
         }
         if(fridgeCmdEn == true){

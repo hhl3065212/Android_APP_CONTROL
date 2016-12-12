@@ -81,7 +81,10 @@ public class TwoFiveOneModel extends ModelBase {
                 getControlDbMgr().updateValueByName(EnumBaseName.holidayMode, 0);
             }
             //如果速冻模式on,发送设置速冻模式off cmd，数据库同步更新此状态
-            if(getControlValueByName(EnumBaseName.quickFreezeMode) == 1) {
+            FridgeControlEntry freezeEntry = getControlEntryByName(EnumBaseName.quickFreezeMode);
+            MyLogUtil.i(TAG, "smartOn  freezeEntry.value=" +freezeEntry.value);
+            if(freezeEntry.value == 1) {
+                mService.stopFreezeOnTime();
                 setControlValueByName(EnumBaseName.quickFreezeMode, 0);
                 //update database
                 getControlDbMgr().updateValueByName(EnumBaseName.quickFreezeMode, 0);

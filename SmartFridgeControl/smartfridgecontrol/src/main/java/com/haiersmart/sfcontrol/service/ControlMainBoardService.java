@@ -442,9 +442,12 @@ public class ControlMainBoardService extends Service {
     
     private void stopColdOnTime() {
         MyLogUtil.i(TAG, "stopColdOnTime cancel runnable Count");
-        boolean res = sColdOnFuture.cancel(true);
+        if(sColdOnFuture != null) {
+            boolean res = sColdOnFuture.cancel(true);
+            MyLogUtil.i(TAG, "stopColdOnTime cancel runnable Count sColdOnFuture res="+res);
+        }
         coldCount = 0;
-        MyLogUtil.i(TAG, "stopColdOnTime cancel runnable coldCount="+coldCount +",res="+res);
+        MyLogUtil.i(TAG, "stopColdOnTime cancel runnable coldCount="+coldCount );
         SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.COLDCOUNT, 0l);
     }
 
@@ -496,9 +499,12 @@ public class ControlMainBoardService extends Service {
 
     private void stopFreezeOnTime() {
         MyLogUtil.i(TAG, "stopFreezeOnTime cancel runnable Count");
-        boolean res = sFreezeOnFuture.cancel(true);
+        if(sFreezeOnFuture != null) {
+            boolean res = sFreezeOnFuture.cancel(true);
+            MyLogUtil.i(TAG, "stopFreezeOnTime cancel runnable Count sFreezeOnFuture res="+res);
+        }
         freezeCount = 0;
-        MyLogUtil.i(TAG, "stopFreezeOnTime cancel runnable freezeCount="+freezeCount + ",res="+res);
+        MyLogUtil.i(TAG, "stopFreezeOnTime cancel runnable freezeCount="+freezeCount );
         SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.FREEZECOUNT, 0l);
     }
 

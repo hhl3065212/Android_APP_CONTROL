@@ -204,6 +204,7 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
         if(mQueryReadyTimes > 0) {
             readyHandler.removeCallbacks(readyRunnable);
         }
+        statusHandler.removeCallbacks(statusRunnable);
         super.onDestroy();
     }
 
@@ -314,6 +315,7 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
                 sendBroadcastToService(ConstantUtil.QUERY_FREEZE_TEMP_RANGE);
                 sendBroadcastToService(ConstantUtil.QUERY_CONTROL_INFO);
                 sendBroadcastToService(ConstantUtil.QUERY_TEMPER_INFO);
+                statusHandler.post(statusRunnable);
             } else if (action.equals(ConstantUtil.BROADCAST_ACTION_CONTROL)) {
                 String jsonString = intent.getStringExtra(ConstantUtil.KEY_CONTROL_INFO);
                 updateSettingAndModeUI(jsonString);
@@ -391,6 +393,31 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
         }
     };
 
+    Runnable statusRunnable = new Runnable() {
+        @Override
+        public void run() {
+            Message msg = new Message();
+            msg.what = 1;
+            statusHandler.sendMessage(msg);
+        }
+    };
+
+    private Handler statusHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 0x01:
+                    mTvStatusCode.setText(mMainBoardParameters.getFrameDataString());
+                    mTvEnvTemp.setText(Integer.toString(mMainBoardParameters.getMbsValueByName(EnumBaseName.envShowTemp.toString()))+"℃");
+                    mTvEnvHum.setText(Integer.toString(mMainBoardParameters.getMbsValueByName(EnumBaseName.envShowHum.toString()))+"%");
+                    statusHandler.postDelayed(statusRunnable, 1000);
+                    break;
+                default:
+                    break;
+            }
+            super.handleMessage(msg);
+        }
+    };
 
     private void updateTempAndModeUI(String jsonString) {
         MyLogUtil.d(TAG, "UpdateTempAndModeUI in");
@@ -408,9 +435,10 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
                 mTvPicFreeze.setText(Integer.toString(temp));
             }
         }
-        mTvStatusCode.setText(mMainBoardParameters.getFrameDataString());
-        mTvEnvTemp.setText(Integer.toString(mMainBoardParameters.getMbsValueByName(EnumBaseName.envShowTemp.toString()))+"℃");
-        mTvEnvHum.setText(Integer.toString(mMainBoardParameters.getMbsValueByName(EnumBaseName.envShowHum.toString()))+"%");
+//        mTvStatusCode.setText(mMainBoardParameters.getFrameDataString());
+//        mTvEnvTemp.setText(Integer.toString(mMainBoardParameters.getMbsValueByName(EnumBaseName.envShowTemp.toString()))+"℃");
+//        mTvEnvHum.setText(Integer.toString(mMainBoardParameters.getMbsValueByName(EnumBaseName.envShowHum.toString()))+"%");
+
         MyLogUtil.d(TAG, "UpdateTempAndModeUI out");
     }
 

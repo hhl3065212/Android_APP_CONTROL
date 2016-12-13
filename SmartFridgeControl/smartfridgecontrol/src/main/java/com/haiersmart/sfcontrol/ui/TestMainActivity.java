@@ -378,8 +378,8 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 0x01:
-                    if(mQueryReadyTimes > 5) {
-                        ToastUtil.showToastCenter("Main board is not ready!");
+                    if(mQueryReadyTimes > 20) {
+                        ToastUtil.showToastCenter(" Connect main board more than 20s failed! over time!");
                         readyHandler.removeCallbacks(readyRunnable);
                         mQueryReadyTimes = 0;
                     } else {

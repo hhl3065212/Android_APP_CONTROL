@@ -36,6 +36,9 @@ public class PrintUtil {
                 stringBuffer.append(String.format("0x%02x,", tmp));
             }
         }
+        if(stringBuffer.length()==0) {
+            stringBuffer.append("not connected main board!");
+        }
         stringBuffer.deleteCharAt(stringBuffer.length() - 1);
         return stringBuffer.toString();
     }

@@ -390,12 +390,12 @@ public class ControlMainBoardService extends Service {
         return mModel.getControlEntryByName(name);
     }
 
-    //public static final long COLDTIME = 60 * 60 * 3;
+    public static final long COLDTIME = 60 * 60 * 3;
     //TODO:test use 1 min for quick cold time out
-    public static final long COLDTIME = 60 * 11;
-    //public static final long FREEZETIME = 60 * 60 * 50;
+//    public static final long COLDTIME = 60 * 11;
+    public static final long FREEZETIME = 60 * 60 * 50;
     //TODO:test use 2 min for quick freeze time out
-    public static final long FREEZETIME = 60 * 15;
+//    public static final long FREEZETIME = 60 * 12;
     private static long coldCount = 0;
     private static long freezeCount = 0;
     private ScheduledExecutorService sExService = Executors.newScheduledThreadPool(2);
@@ -434,13 +434,13 @@ public class ControlMainBoardService extends Service {
         }//end of run
     };
 
-    private void startColdOnTime() {
+    public void startColdOnTime() {
         MyLogUtil.i(TAG, "startColdOnTime Count");
         sColdOnFuture = (RunnableScheduledFuture<?>) sExService.scheduleAtFixedRate(coldOnRunnable,10,10, TimeUnit.SECONDS);//10s周期
         SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.COLDTIME, System.currentTimeMillis() / 1l);
     }
     
-    private void stopColdOnTime() {
+    public void stopColdOnTime() {
         MyLogUtil.i(TAG, "stopColdOnTime cancel runnable Count");
         if(sColdOnFuture != null) {
             boolean res = sColdOnFuture.cancel(true);
@@ -480,7 +480,7 @@ public class ControlMainBoardService extends Service {
         }//end of run
     };
 
-    private void startFreezeOnTime() {
+    public void startFreezeOnTime() {
         MyLogUtil.i(TAG, "startFreezeOnTime Count");
         sFreezeOnFuture = (RunnableScheduledFuture<?>) sExService.scheduleAtFixedRate(freezeOnRunnable,10,10, TimeUnit.SECONDS);//10s周期
         SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.FREEZETIME, System.currentTimeMillis() / 1l);
@@ -497,7 +497,7 @@ public class ControlMainBoardService extends Service {
 //        },COLDTIME,TimeUnit.SECONDS);
     }
 
-    private void stopFreezeOnTime() {
+    public void stopFreezeOnTime() {
         MyLogUtil.i(TAG, "stopFreezeOnTime cancel runnable Count");
         if(sFreezeOnFuture != null) {
             boolean res = sFreezeOnFuture.cancel(true);

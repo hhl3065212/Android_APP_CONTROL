@@ -39,7 +39,14 @@ public enum EnumBaseName {
     communicationErr("communicationErr"),
     communicationOverTime("communicationOverTime"),
     fridgeDoorErr("fridgeDoorErr"),
-    freezeDoorErr("freezeDoorErr");
+    freezeDoorErr("freezeDoorErr"),
+    envTempSensorErr("envTempSensorErr"),
+    fridgeSensorErr("fridgeSensorErr"),
+    freezeSensorErr("freezeSensorErr"),
+    changeSensorErr("changeSensorErr"),
+    defrostSensorErr("defrostSensorErr"),
+    freezeDefrostErr("freezeDefrostErr"),
+    envHumSensorErr("envHumSensorErr");
 
 
     private String nCode;

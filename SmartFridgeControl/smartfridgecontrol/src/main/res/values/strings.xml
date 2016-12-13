@@ -41,4 +41,26 @@
     <string name="title_factory_mac">MAC地址</string>
     <string name="title_factory_reset">重要提醒！\n恢复出厂设置后，您的网络信息，本地账户信息将被清空，是否确认回复？</string>
     <string name="btn_factory_reset">确认</string>
+    <string name="title_factory_sensor">温度传感器</string>
+    <string name="title_factory_env_temp">环境温度</string>
+    <string name="title_factory_env_hum">环境湿度</string>
+    <string name="title_factory_fridge">冷藏室传感器</string>
+    <string name="title_factory_freeze">冷冻室传感器</string>
+    <string name="title_factory_change">变温室传感器</string>
+    <string name="title_factory_defrost_sensor">化霜传感器</string>
+    <string name="text_factory_normal">正常</string>
+    <string name="title_factory_freeze_defrost">冷冻化霜</string>
+    <string name="text_factory_error">ERROR</string>
+    <string name="title_factory_status">状态</string>
+    <string name="title_factory_fridge_door">冷藏室门</string>
+    <string name="title_factory_communication">通信状态</string>
+    <string name="title_factory_pir">人感状态</string>
+    <string name="text_factory_has_person">有人</string>
+    <string name="text_factory_no_person">没人</string>
+    <string name="title_factory_wifi">WIFI强度</string>
+    <string name="text_door_open">开</string>
+    <string name="text_door_close">关</string>
+    <string name="text_factory_tp_start">TP正在校准中\n请勿触碰屏幕!</string>
+    <string name="text_factory_tp_ok">"0xf 0xf\n校准成功"</string>
+    <string name="text_factory_tp_faild">"校准失败"</string>
 </resources>

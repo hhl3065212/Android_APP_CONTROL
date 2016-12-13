@@ -390,12 +390,12 @@ public class ControlMainBoardService extends Service {
         return mModel.getControlEntryByName(name);
     }
 
-    public static final long COLDTIME = 60 * 60 * 3;
+//    public static final long COLDTIME = 60 * 60 * 3;
     //TODO:test use 1 min for quick cold time out
-//    public static final long COLDTIME = 60 * 11;
-    public static final long FREEZETIME = 60 * 60 * 50;
+    public static final long COLDTIME = 60 * 11;
+//    public static final long FREEZETIME = 60 * 60 * 50;
     //TODO:test use 2 min for quick freeze time out
-//    public static final long FREEZETIME = 60 * 12;
+    public static final long FREEZETIME = 60 * 12;
     private static long coldCount = 0;
     private static long freezeCount = 0;
     private ScheduledExecutorService sExService = Executors.newScheduledThreadPool(2);

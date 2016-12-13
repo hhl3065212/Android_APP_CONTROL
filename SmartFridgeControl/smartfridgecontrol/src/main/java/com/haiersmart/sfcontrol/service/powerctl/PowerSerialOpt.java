@@ -13,6 +13,8 @@
 
 package com.haiersmart.sfcontrol.service.powerctl;
 
+import android.os.RemoteException;
+
 import com.haiersmart.sfcontrol.application.ControlApplication;
 import com.haiersmart.sfcontrol.constant.ConstantUtil;
 import com.haiersmart.sfcontrol.constant.EnumBaseName;
@@ -72,7 +74,11 @@ public class PowerSerialOpt {
             int size = 0;
             int SendCnt = 0;
 
-            waitSerialPortReady();//
+            try {
+                waitSerialPortReady();//
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
 
             while (!isInterrupted()) {
                 if (ReadWriteParseThreadSwitch) {//读写线程开关
@@ -151,7 +157,7 @@ public class PowerSerialOpt {
     }
 
 
-    private void waitSerialPortReady(){
+    private void waitSerialPortReady() throws RemoteException {
         int countsReady = 0;
         boolean mWaiting = true;
         while (mWaiting) {
@@ -177,6 +183,8 @@ public class PowerSerialOpt {
                 }
             };
         }
+        mSerialData.setmOSVersion(getOSVersion());
+        mSerialData.setmOSType(getOSType());
     }
     public PowerSerialOpt(){
         mProtocolCommand = new ProtocolCommand();
@@ -245,5 +253,12 @@ public class PowerSerialOpt {
 
     public void setReadWriteParseThreadSwitch(boolean readWriteParseThreadSwitch) {
         ReadWriteParseThreadSwitch = readWriteParseThreadSwitch;
+    }
+
+    public String getOSVersion(){
+        return mSerialPort.getStrVersion();
+    }
+    public String getOSType(){
+        return mSerialPort.getStrModel();
     }
 }

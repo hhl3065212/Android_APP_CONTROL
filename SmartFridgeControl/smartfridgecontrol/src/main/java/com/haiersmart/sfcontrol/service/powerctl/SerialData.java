@@ -26,6 +26,8 @@ public class SerialData {
     private MainBoardBase mMainBoard;
     private String mCurrentModel;
     private boolean isSerialDataReady = false;
+    private String mOSVersion;
+    private String mOSType;
 
     private static SerialData instance;
 
@@ -308,5 +310,21 @@ public class SerialData {
 
     public boolean isSerialDataReady() {
         return isSerialDataReady;
+    }
+
+    public String getmOSVersion() {
+        return mOSVersion;
+    }
+
+    public void setmOSVersion(String mOSVersion) {
+        this.mOSVersion = mOSVersion;
+    }
+
+    public String getmOSType() {
+        return mOSType;
+    }
+
+    public void setmOSType(String mOSType) {
+        this.mOSType = mOSType;
     }
 }

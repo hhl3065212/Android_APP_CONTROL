@@ -47,6 +47,7 @@ public class SerialPort {
     private final String[] mSerialPortDevice = {"", "/dev/ttyMFD1", "/dev/ttyMT1", "/dev/ttyS0"};
     private final int mBaudRate = 4800;
     private String strModel;
+    private String strVersion;
 
     private IHaierService mIService;
     private ServiceConnection connHaierService = new ServiceConnection(){
@@ -79,8 +80,17 @@ public class SerialPort {
     }
 
 
+    public String getStrVersion() {
+        return strVersion;
+    }
+
+    public String getStrModel() {
+        return strModel;
+    }
+
     private void openSerialPort() throws IOException, RemoteException {
         strModel = mIService.getSystemModel();
+        strVersion = mIService.getSystemModel()+"_"+mIService.getSystemVersion()+"_"+mIService.getSystemCustom();
 //        strModel = "XD";
         if (strModel.indexOf("XD") >= 0) {
             mSerialPortNum = 3;

@@ -129,4 +129,15 @@ public class MainBoardParameters {
         String res = PrintUtil.BytesToString(mSerialData.getFrameData(),16);
         return res;
     }
+
+    /**
+     * 获得系统OS的版本号
+     * @return
+     */
+    public String getOSVersion(){
+        return "OS_"+mSerialData.getmOSVersion();
+    }
+    public String getOSType(){
+        return mSerialData.getmOSType();
+    }
 }

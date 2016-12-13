@@ -26,7 +26,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="@string/title_fridge_model"
-                android:textSize="@dimen/text_size_40"/>
+                android:textSize="@dimen/text_size_40"
+                android:textColor="@color/black2"/>
 
             <TextView
                 android:id="@+id/text_factory_fridge_model"
@@ -34,7 +35,8 @@
                 android:layout_height="match_parent"
                 android:layout_marginLeft="@dimen/tab_margin"
                 android:text="BCD-251WDICU1"
-                android:textSize="@dimen/text_size_40"/>
+                android:textSize="@dimen/text_size_40"
+                android:textColor="@color/black2"/>
         </LinearLayout>
 
         <LinearLayout
@@ -49,7 +51,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
                 android:text="@string/return_title"
-                android:textSize="@dimen/text_size_40"/>
+                android:textSize="@dimen/text_size_40"
+                android:textColor="@color/black2"/>
         </LinearLayout>
 
     </LinearLayout>
@@ -82,6 +85,7 @@
                     android:checked="true"
                     android:text="@string/rbt_factory_version"
                     android:textSize="@dimen/text_size_40"
+                    android:textColor="@color/black2"
                     android:visibility="visible"/>
 
                 <RadioButton
@@ -92,6 +96,7 @@
                     android:background="@drawable/rbt_factory"
                     android:text="@string/rbt_factory_reset"
                     android:textSize="@dimen/text_size_40"
+                    android:textColor="@color/black2"
                     android:visibility="visible"/>
 
                 <RadioButton
@@ -102,6 +107,7 @@
                     android:background="@drawable/rbt_factory"
                     android:text="@string/rbt_factory_status"
                     android:textSize="@dimen/text_size_40"
+                    android:textColor="@color/black2"
                     android:visibility="visible"/>
 
                 <RadioButton
@@ -112,6 +118,7 @@
                     android:background="@drawable/rbt_factory"
                     android:text="@string/rbt_factory_camera"
                     android:textSize="@dimen/text_size_40"
+                    android:textColor="@color/black2"
                     android:visibility="visible"/>
 
                 <RadioButton
@@ -122,6 +129,7 @@
                     android:background="@drawable/rbt_factory"
                     android:text="@string/rbt_factory_TP"
                     android:textSize="@dimen/text_size_40"
+                    android:textColor="@color/black2"
                     android:visibility="visible"/>
 
                 <RadioButton
@@ -132,6 +140,7 @@
                     android:background="@drawable/rbt_factory"
                     android:text="@string/rbt_factory_audio"
                     android:textSize="@dimen/text_size_40"
+                    android:textColor="@color/black2"
                     android:visibility="visible"/>
 
                 <RadioButton
@@ -142,6 +151,7 @@
                     android:background="@drawable/rbt_factory"
                     android:text="@string/rbt_factory_market"
                     android:textSize="@dimen/text_size_40"
+                    android:textColor="@color/black2"
                     android:visibility="visible"/>
 
                 <RadioButton
@@ -152,6 +162,7 @@
                     android:background="@drawable/rbt_factory"
                     android:text="@string/rbt_factory_debug"
                     android:textSize="@dimen/text_size_40"
+                    android:textColor="@color/black2"
                     android:visibility="visible"/>
             </RadioGroup>
         </LinearLayout>
@@ -182,7 +193,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/title_factory_tft_version"
-                        android:textSize="@dimen/text_size_40"/>
+                        android:textSize="@dimen/text_size_40"
+                        android:textColor="@color/black2"/>
 
                     <TextView
                         android:id="@+id/text_factory_tft_version"
@@ -190,7 +202,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/tab_margin"
                         android:text="BXN_256_0088_0002"
-                        android:textSize="@dimen/text_size_40"/>
+                        android:textSize="@dimen/text_size_40"
+                        android:textColor="@color/black2"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -204,7 +217,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/title_factory_os_version"
-                        android:textSize="@dimen/text_size_40"/>
+                        android:textSize="@dimen/text_size_40"
+                        android:textColor="@color/black2"/>
 
                     <TextView
                         android:id="@+id/text_factory_os_version"
@@ -212,7 +226,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/tab_margin"
                         android:text="OS_251UG2_0100_0002"
-                        android:textSize="@dimen/text_size_40"/>
+                        android:textSize="@dimen/text_size_40"
+                        android:textColor="@color/black2"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -226,7 +241,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/title_factory_mac"
-                        android:textSize="@dimen/text_size_40"/>
+                        android:textSize="@dimen/text_size_40"
+                        android:textColor="@color/black2"/>
 
                     <TextView
                         android:id="@+id/text_factory_mac"
@@ -234,7 +250,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/tab_margin"
                         android:text="00:08:30:5e:e9:9e"
-                        android:textSize="@dimen/text_size_40"/>
+                        android:textSize="@dimen/text_size_40"
+                        android:textColor="@color/black2"/>
                 </LinearLayout>
             </LinearLayout>
             <!--恢复出厂-->
@@ -251,7 +268,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/tab_margin"
                     android:text="@string/title_factory_reset"
-                    android:textSize="@dimen/text_size_40"/>
+                    android:textSize="@dimen/text_size_40"
+                    android:textColor="@color/black2"/>
 
                 <Button
                     android:id="@+id/btn_factory_reset"
@@ -260,15 +278,308 @@
                     android:layout_gravity="right"
                     android:layout_marginTop="@dimen/tab_margin"
                     android:text="@string/btn_factory_reset"
-                    android:textSize="@dimen/text_size_40"/>
+                    android:textSize="@dimen/text_size_40"
+                    android:textColor="@color/black2"/>
             </LinearLayout>
             <!--器件状态-->
             <LinearLayout
                 android:id="@+id/linear_factory_status"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:padding="@dimen/tab_margin"
                 android:orientation="horizontal"
                 android:visibility="gone">
+                <LinearLayout
+                    android:layout_width="@dimen/auto_width"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/title_factory_sensor"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/text_size_40"
+                        android:text="@string/title_factory_sensor"
+                        android:textColor="@color/black2"/>
+                    <LinearLayout
+                        android:id="@+id/linear_factory_env_temp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/fab_margin"
+                        android:paddingLeft="@dimen/fab_margin"
+                        android:visibility="gone">
+                        <TextView
+                            android:id="@+id/title_factory_env_temp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/text_size_40"
+                            android:text="@string/title_factory_env_temp"
+                            android:textColor="@color/black2"/>
+                        <TextView
+                            android:id="@+id/text_factory_env_temp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/tab_margin"
+                            android:textSize="@dimen/text_size_40"
+                            android:textColor="@color/black2"
+                            android:text="25℃"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/linear_factory_env_hum"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/fab_margin"
+                        android:paddingLeft="@dimen/fab_margin"
+                        android:visibility="gone">
+                        <TextView
+                            android:id="@+id/title_factory_env_hum"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/text_size_40"
+                            android:text="@string/title_factory_env_hum"
+                            android:textColor="@color/black2"/>
+                        <TextView
+                            android:id="@+id/text_factory_env_hum"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/tab_margin"
+                            android:textSize="@dimen/text_size_40"
+                            android:text="50%"
+                            android:textColor="@color/black2"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/linear_factory_fridge"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/fab_margin"
+                        android:paddingLeft="@dimen/fab_margin"
+                        android:visibility="gone">
+                        <TextView
+                            android:id="@+id/title_factory_fridge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/text_size_40"
+                            android:text="@string/title_factory_fridge"
+                            android:textColor="@color/black2"/>
+                        <TextView
+                            android:id="@+id/text_factory_fridge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/tab_margin"
+                            android:textSize="@dimen/text_size_40"
+                            android:text="25℃"
+                            android:textColor="@color/black2"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/linear_factory_freeze"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/fab_margin"
+                        android:paddingLeft="@dimen/fab_margin"
+                        android:visibility="gone">
+                        <TextView
+                            android:id="@+id/title_factory_freeze"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/text_size_40"
+                            android:text="@string/title_factory_freeze"
+                            android:textColor="@color/black2"/>
+                        <TextView
+                            android:id="@+id/text_factory_freeze"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/tab_margin"
+                            android:textSize="@dimen/text_size_40"
+                            android:text="25℃"
+                            android:textColor="@color/black2"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/linear_factory_change"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/fab_margin"
+                        android:paddingLeft="@dimen/fab_margin"
+                        android:visibility="gone">
+                        <TextView
+                            android:id="@+id/title_factory_change"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/text_size_40"
+                            android:text="@string/title_factory_change"
+                            android:textColor="@color/black2"/>
+                        <TextView
+                            android:id="@+id/text_factory_change"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/tab_margin"
+                            android:textSize="@dimen/text_size_40"
+                            android:text="25℃"
+                            android:textColor="@color/black2"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/linear_factory_defrost_sensor"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/fab_margin"
+                        android:paddingLeft="@dimen/fab_margin"
+                        android:visibility="gone">
+                        <TextView
+                            android:id="@+id/title_factory_defrost_sensor"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/text_size_40"
+                            android:textColor="@color/black2"
+                            android:text="@string/title_factory_defrost_sensor"/>
+                        <TextView
+                            android:id="@+id/text_factory_defrost_sensor"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/tab_margin"
+                            android:textSize="@dimen/text_size_40"
+                            android:textColor="@color/black2"
+                            android:text="@string/text_factory_normal"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/linear_factory_freeze_defrost"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/fab_margin"
+                        android:paddingLeft="@dimen/fab_margin"
+                        android:visibility="gone">
+                        <TextView
+                            android:id="@+id/title_factory_freeze_defrost"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/text_size_40"
+                            android:textColor="@color/black2"
+                            android:text="@string/title_factory_freeze_defrost"/>
+                        <TextView
+                            android:id="@+id/text_factory_freeze_defrost"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/tab_margin"
+                            android:textSize="@dimen/text_size_40"
+                            android:textColor="@color/black2"
+                            android:text="@string/text_factory_error"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="@dimen/auto_width"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/title_factory_status"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/text_size_40"
+                        android:text="@string/title_factory_status"
+                        android:textColor="@color/black2"/>
+                    <LinearLayout
+                        android:id="@+id/linear_factory_fridge_door"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/fab_margin"
+                        android:paddingLeft="@dimen/fab_margin"
+                        android:visibility="gone">
+                        <TextView
+                            android:id="@+id/title_factory_fridge_door"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/text_size_40"
+                            android:textColor="@color/black2"
+                            android:text="@string/title_factory_fridge_door"/>
+                        <TextView
+                            android:id="@+id/text_factory_fridge_door"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/tab_margin"
+                            android:textSize="@dimen/text_size_40"
+                            android:textColor="@color/black2"
+                            android:text="@string/text_door_open"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/linear_factory_communication"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/fab_margin"
+                        android:paddingLeft="@dimen/fab_margin"
+                        android:visibility="visible">
+                        <TextView
+                            android:id="@+id/title_factory_communication"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/text_size_40"
+                            android:textColor="@color/black2"
+                            android:text="@string/title_factory_communication"/>
+                        <TextView
+                            android:id="@+id/text_factory_communication"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/tab_margin"
+                            android:textSize="@dimen/text_size_40"
+                            android:textColor="@color/black2"
+                            android:text="@string/text_factory_normal"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/linear_factory_pir"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/fab_margin"
+                        android:paddingLeft="@dimen/fab_margin"
+                        android:visibility="visible">
+                        <TextView
+                            android:id="@+id/title_factory_pir"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/text_size_40"
+                            android:textColor="@color/black2"
+                            android:text="@string/title_factory_pir"/>
+                        <TextView
+                            android:id="@+id/text_factory_pir"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/tab_margin"
+                            android:textSize="@dimen/text_size_40"
+                            android:textColor="@color/black2"
+                            android:text="@string/text_factory_has_person"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/linear_factory_wifi"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/fab_margin"
+                        android:paddingLeft="@dimen/fab_margin"
+                        android:visibility="visible">
+                        <TextView
+                            android:id="@+id/title_factory_wifi"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/text_size_40"
+                            android:textColor="@color/black2"
+                            android:text="@string/title_factory_wifi"/>
+                        <TextView
+                            android:id="@+id/text_factory_wifi"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/tab_margin"
+                            android:textSize="@dimen/text_size_40"
+                            android:textColor="@color/black2"
+                            android:text="-"/>
+                    </LinearLayout>
+                </LinearLayout>
 
             </LinearLayout>
             <!--摄像头-->
@@ -287,6 +598,13 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
                 android:visibility="gone">
+                <TextView
+                    android:id="@+id/text_factory_TP"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/tab_margin"
+                    android:textSize="@dimen/text_size_40"
+                    android:textColor="@color/black2"/>
 
             </LinearLayout>
             <!--音频测试-->

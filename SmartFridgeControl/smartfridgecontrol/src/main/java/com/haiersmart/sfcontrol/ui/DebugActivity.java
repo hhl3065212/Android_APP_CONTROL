@@ -147,9 +147,9 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
         skbFridge.setMax(mFridgeMax-mFridgeMin);
         skbFreeze.setMax(mFreezeMax-mFreezeMin);
         skbChange.setMax(mChangeMax-mChangeMin);
-        int fridgeTarget = mControlService.getEntryByName(EnumBaseName.fridgeTargetTemp).value;
-        int freezeTarget = mControlService.getEntryByName(EnumBaseName.freezeTargetTemp).value;
-        int changeTarget = mControlService.getEntryByName(EnumBaseName.changeTargetTemp).value;
+        int fridgeTarget = mMainBoardParameters.getMbcValueByName(EnumBaseName.fridgeTargetTemp.toString());
+        int freezeTarget = mMainBoardParameters.getMbcValueByName(EnumBaseName.freezeTargetTemp.toString());
+        int changeTarget = mMainBoardParameters.getMbcValueByName(EnumBaseName.changeTargetTemp.toString());
         skbFridge.setProgress(fridgeTarget-mFridgeMin);
         skbFreeze.setProgress(freezeTarget-mFreezeMin);
         skbChange.setProgress(changeTarget-mChangeMin);

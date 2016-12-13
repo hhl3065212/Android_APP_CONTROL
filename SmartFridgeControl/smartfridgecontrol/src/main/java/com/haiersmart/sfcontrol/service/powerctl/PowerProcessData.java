@@ -30,6 +30,7 @@ public class PowerProcessData {
     private final int mSyncTimes= mSyncTicks/500;
     private int mTimerCounts = 0;
 
+
     private class TimerThread extends Thread {
 
         public void run() {
@@ -99,4 +100,5 @@ public class PowerProcessData {
     public void setTimerThreadSwitch(boolean timerThreadSwitch) {
         TimerThreadSwitch = timerThreadSwitch;
     }
+
 }

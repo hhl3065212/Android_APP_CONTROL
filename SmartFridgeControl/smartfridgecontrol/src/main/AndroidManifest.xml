@@ -18,10 +18,10 @@
             android:name=".ui.TestMainActivity"
             android:label="@string/title_activity_test_main"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN"/>-->
+                <!--<category android:name="android.intent.category.LAUNCHER"/>-->
+            <!--</intent-filter>-->
         </activity>
         <activity
             android:name=".ui.DoorAlarmActivity"
@@ -32,16 +32,17 @@
              <intent-filter>
                  <!--<action android:name="android.intent.action.MAIN" />-->
                  <!--<category android:name="android.intent.category.LAUNCHER" />-->
+                 <action android:name="FactoryStatusActivity" />
              <category android:name="android.intent.category.DEFAULT" />
              </intent-filter>
         </activity>
         <activity android:name=".ui.DebugActivity">
-             <!--<intent-filter>-->
+             <intent-filter>
              <!--<action android:name="android.intent.action.MAIN" />-->
              <!--<category android:name="android.intent.category.LAUNCHER" />-->
-                 <!--<action android:name="DebugActivity" />-->
-                 <!--<category android:name="android.intent.category.DEFAULT" />-->
-             <!--</intent-filter>-->
+                 <action android:name="DebugActivity" />
+                 <category android:name="android.intent.category.DEFAULT" />
+             </intent-filter>
         </activity>
 
         <receiver android:name=".receiver.BootCompletedReceiver">
@@ -65,5 +66,11 @@
     </application>
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
 </manifest>

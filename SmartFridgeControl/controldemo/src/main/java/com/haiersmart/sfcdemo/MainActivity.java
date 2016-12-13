@@ -69,10 +69,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //        sendUserCommond(KEY_MODE, QUERY_CONTROL_READY);
         //        sendUserCommond(KEY_MODE, "demoReady");
         Log.i(TAG, "first sendControlCmdResponse main board is ready?");
-        mNetRunnable = new NetRunnable();
-        mNetRunnable.start();
-//        mThread = new Thread(mNetRunnable,"sntp");
-//        mThread.start();
+//        mNetRunnable = new NetRunnable();
+//        mNetRunnable.start();
     }
 
     @Override
@@ -311,14 +309,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     };
 
     private void refreshUI() {
-        //        sendUserCommond(KEY_MODE,QUERY_TEMPER_INFO);
+
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date(System.currentTimeMillis());
         String strTime = simpleDateFormat.format(date);
         tvTime.setText(strTime);
-//        mThread.run();
-        tvTest.setText(mNetRunnable.getNtpHost()+"\n"+mNetRunnable.getTimeoutCounts()+":"+mNetRunnable.getRequestCounts()
-                +"\n"+mNetRunnable.getTimeStamp()+"\n"+mNetRunnable.getTime());
+//        tvTest.setText(mNetRunnable.getNtpHost()+"\n"+mNetRunnable.getTimeoutCounts()+":"+mNetRunnable.getRequestCounts()
+//                +"\n"+mNetRunnable.getTimeStamp()+"\n"+mNetRunnable.getTime());
         switch (mModel.mFridgeModel) {
             case ConstantUtil.BCD251_MODEL:
                 tvFridgeTemp.setText(mModel.mFridgeShow + " ℃");
@@ -462,8 +459,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     onclickCounts = 0;
                     Intent intent = new Intent();
                     //                    intent.setClassName("com.haiersmart.sfcontrol","com.haiersmart.sfcontrol.ui.DebugActivity");
-                    intent.setComponent(new ComponentName("com.haiersmart.sfcontrol", "com.haiersmart.sfcontrol.ui.DebugActivity"));
-                    intent.setAction("DebugActivity");
+                    intent.setComponent(new ComponentName("com.haiersmart.sfcontrol", "com.haiersmart.sfcontrol.ui.FactoryStatusActivity"));
+                    intent.setAction("FactoryStatusActivity");
                     startActivity(intent);
                 }
                 break;

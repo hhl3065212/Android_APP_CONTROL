@@ -25,4 +25,20 @@
     <string name="title_fridge_temp">冷藏温度</string>
     <string name="title_freeze_temp">冷冻温度</string>
     <string name="title_change_temp">变温温度</string>
+
+    <!--工厂测试界面-->
+    <string name="rbt_factory_version">版本号</string>
+    <string name="rbt_factory_reset">恢复出厂</string>
+    <string name="rbt_factory_status">器件状态</string>
+    <string name="rbt_factory_camera">摄像头</string>
+    <string name="rbt_factory_TP">TP校准</string>
+    <string name="rbt_factory_audio">音频测试</string>
+    <string name="rbt_factory_market">商场演示</string>
+    <string name="rbt_factory_debug">冰箱调试</string>
+
+    <string name="title_factory_tft_version">彩屏显示程序版本号</string>
+    <string name="title_factory_os_version">主控板程序版本号</string>
+    <string name="title_factory_mac">MAC地址</string>
+    <string name="title_factory_reset">重要提醒！\n恢复出厂设置后，您的网络信息，本地账户信息将被清空，是否确认回复？</string>
+    <string name="btn_factory_reset">确认</string>
 </resources>

@@ -47,6 +47,7 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
             lineFridgeTarget,lineFreezeTarget,lineChangeTarger;
     private TextView tvFridgeModel,tvStatusCode,tvEnvTemp,tvEnvHum,tvFridgeTemp,tvFreezeTemp,tvChangeTemp,
     tvFridgeTarget,tvFreezeTarget,tvChangeTarget;
+    private TextView tvTitleStatusCode;
     private Button btnReturn;
     private MyTestButton btnSmart,btnHoliday,btnQuickCold,btnQuickFreeze,btnFridgeClose;
     private SeekBar skbFridge,skbFreeze,skbChange;
@@ -102,6 +103,9 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
         tvFridgeTarget = (TextView)findViewById(R.id.text_debug_fridge_target);
         tvFreezeTarget = (TextView)findViewById(R.id.text_debug_freeze_target);
         tvChangeTarget = (TextView)findViewById(R.id.text_debug_change_target);
+        tvTitleStatusCode = (TextView)findViewById(R.id.title_debug_status_code);
+        tvTitleStatusCode.setOnClickListener(this);
+
 
         btnReturn = (Button)findViewById(R.id.btn_debug_return);
         btnReturn.setOnClickListener(this);
@@ -360,6 +364,10 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                     Intent intent = new Intent(Settings.ACTION_SETTINGS);
                     startActivity(intent);
                 }
+                break;
+            case R.id.title_debug_status_code:
+                Intent intent = new Intent(this,FactoryStatusActivity.class);
+                startActivity(intent);
                 break;
         }
     }

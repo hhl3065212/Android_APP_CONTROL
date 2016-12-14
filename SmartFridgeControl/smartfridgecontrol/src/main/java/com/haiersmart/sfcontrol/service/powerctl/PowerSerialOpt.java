@@ -45,17 +45,17 @@ public class PowerSerialOpt {
     public List<byte[]> byteSendList;//
     private ProtocolCommand mProtocolCommand;//命令组
 
-    private static PowerSerialOpt instance;
-
-    public static synchronized PowerSerialOpt getInstance() throws IOException {
-        if (instance == null) {
-            synchronized (PowerSerialOpt.class) {
-                if (instance == null)
-                    instance = new PowerSerialOpt();
-            }
-        }
-        return instance;
-    }
+//    private static PowerSerialOpt instance;
+//
+//    public static synchronized PowerSerialOpt getInstance() throws IOException {
+//        if (instance == null) {
+//            synchronized (PowerSerialOpt.class) {
+//                if (instance == null)
+//                    instance = new PowerSerialOpt();
+//            }
+//        }
+//        return instance;
+//    }
 
 
     /**
@@ -151,6 +151,8 @@ public class PowerSerialOpt {
                         e.printStackTrace();
                         return;
                     }
+                }else {
+
                 }
             }
         }
@@ -242,8 +244,6 @@ public class PowerSerialOpt {
 
     public void PowerSerialOptReOpen() {
         mSerialPort.SerialPortReOpen();
-        mOutputStream = mSerialPort.getOutputStream();
-        mInputStream = mSerialPort.getInputStream();
         ReadWriteParseThreadSwitch = true;
     }
 

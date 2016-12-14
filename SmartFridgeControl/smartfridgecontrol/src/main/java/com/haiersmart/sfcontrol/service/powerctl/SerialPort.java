@@ -50,7 +50,7 @@ public class SerialPort {
     private String strVersion;
 
     private IHaierService mIService;
-    private ServiceConnection connHaierService = new ServiceConnection(){
+    private ServiceConnection connHaierService = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -70,7 +70,7 @@ public class SerialPort {
         }
     };
 
-    public SerialPort(){
+    public SerialPort() {
         Intent serviceIntent = new Intent();
         ComponentName componentName = new ComponentName(
                 "com.smart.haier.haierservice",
@@ -90,18 +90,18 @@ public class SerialPort {
 
     private void openSerialPort() throws IOException, RemoteException {
         strModel = mIService.getSystemModel();
-        strVersion = mIService.getSystemModel()+"_"+mIService.getSystemVersion()+"_"+mIService.getSystemCustom();
-//        strModel = "XD";
+        strVersion = mIService.getSystemModel() + "_" + mIService.getSystemVersion() + "_" + mIService.getSystemCustom();
+        //        strModel = "XD";
         if (strModel.indexOf("XD") >= 0) {
             mSerialPortNum = 3;
             mFd = SerialOpen(mSerialPortDevice[mSerialPortNum], mBaudRate);
-        }  else if (strModel.indexOf("595") >=0) {
+        } else if (strModel.indexOf("595") >= 0) {
             mSerialPortNum = 1;
             mFd = SerialOpen(mSerialPortDevice[mSerialPortNum], mBaudRate);
-        } else if (strModel.indexOf("UG") >=0) {
+        } else if (strModel.indexOf("UG") >= 0) {
             mSerialPortNum = 2;
             mFd = SerialOpen(mSerialPortDevice[mSerialPortNum], mBaudRate);
-        }  else {
+        } else {
             mSerialPortNum = 1;
             mFd = SerialOpen(mSerialPortDevice[mSerialPortNum], mBaudRate);
             if (mFd == null) {
@@ -113,13 +113,13 @@ public class SerialPort {
                 }
             }
         }
-        MyLogUtil.i(TAG,"Serial Port has open,mFd = "+mFd);
+        MyLogUtil.i(TAG, "Serial Port has open,mFd = " + mFd);
 
         if (mFd == null) {
             isReady = false;
             mSerialPortNum = 0;
-//            throw new IOException();
-        }else {
+            //            throw new IOException();
+        } else {
             isReady = true;
             mFileInputStream = new FileInputStream(mFd);
             mFileOutputStream = new FileOutputStream(mFd);
@@ -159,13 +159,15 @@ public class SerialPort {
     }
 
     public void SerialPortClose() {
-        if(mFd != null) {
+        if (mFd != null) {
+            isReady = false;
             SerialClose();
         }
     }
 
     public void SerialPortReOpen() {
         mFd = SerialOpen(mSerialPortDevice[mSerialPortNum], mBaudRate);
+        isReady = true;
         mFileInputStream = new FileInputStream(mFd);
         mFileOutputStream = new FileOutputStream(mFd);
     }

@@ -112,6 +112,7 @@ public class ConstantUtil {
     public static final String KEY_CONTROL_INFO = "ControlInfo";//识别key为“ControlInfo” 发送的数据为Serializable
     public static final String KEY_FRIDGE_ID = "fridgeId";
     public static final String KEY_FRIDGE_TYPE = "fridgeType";
+    public static final String KEY_TYPE_ID = "typeId";//冰箱互联型号
     public static final String KEY_ERROR = "error";//错误命令key
     public static final String KEY_ALARM = "alarm";//报警key
     public static final String KEY_TEMPER = "temper";

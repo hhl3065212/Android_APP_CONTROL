@@ -52,7 +52,7 @@ public class ConstantUtil {
     public static final String BCD251_SN = "111c12002400081001030061800118420000000000";
     public static final String BCD401_SN = "111c12002400081001010061800447000000000000";
     public static final String BCD256_SN = "111c12002400081001030061800458410000000000";
-    public static final String BCD630_SN = "111C12002400081001010061800259430000000000";
+    public static final String BCD630_SN = "111c12002400081001010061800259430000000000";
     public static final String BCD476_SN = "111c12002400081001010061800347460000000000";
 
     /**
@@ -110,6 +110,7 @@ public class ConstantUtil {
     public static final String KEY_MODE= "commandMode";
     public static final String KEY_READY= "serviceReady";
     public static final String KEY_FRIDGE_ID = "fridgeId";//冰箱系统型号
+    public static final String KEY_TYPE_ID = "typeId";//冰箱互联型号
     public static final String KEY_FRIDGE_TYPE = "fridgeType";//冰箱硬件型号 海尔注册的冰箱型号
     public static final String KEY_CONTROL_INFO = "ControlInfo";//识别key为“ControlInfo” 发送的数据为Serializable
     public static final String KEY_TEMPER = "temper";
@@ -187,5 +188,6 @@ public class ConstantUtil {
     public static final String COLDCOUNT = "cold_count";//冷藏室计数
     public static final String FREEZETIME = "freeze_time";//冷冻室时间
     public static final String FREEZECOUNT = "freeze_count";//冷冻室计数
+
 
 }

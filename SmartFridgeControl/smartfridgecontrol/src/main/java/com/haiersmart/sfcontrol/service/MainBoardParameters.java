@@ -90,6 +90,13 @@ public class MainBoardParameters {
         return mSerialData.getMbdValueByName(name);
     }
 
+    public byte[] getDataBaseToBytes(){
+        return mSerialData.setDataBaseToBytes();
+    }
+    public String getTypeId(){
+        return mSerialData.getMainBoardInfo().getTypeId();
+    }
+
     public String getFridgeId() {
         return mSerialData.getMainBoardInfo().getFridgeId();
     }

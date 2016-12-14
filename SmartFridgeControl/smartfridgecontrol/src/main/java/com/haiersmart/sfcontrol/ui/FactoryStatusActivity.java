@@ -10,10 +10,7 @@
 package com.haiersmart.sfcontrol.ui;
 
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.net.wifi.ScanResult;
 import android.os.Bundle;
 import android.os.Handler;
@@ -51,7 +48,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
     private final String TAG = "FactoryStatusActivity";
 
     private MainBoardParameters mMBParam;
-    private String mFridgeModel;
+    private String mFridgeModel,mTftVersion,mOsVersion;
     RadioButton rbtVersion,rbtReset,rbtStatus,rbtCamera,rbtTP,rbtAudio,rbtMarket,rbtDebug;
     LinearLayout llVersion,llReset,llStatus,llCamera,llTP,llAudio,llMarket,llDebug;
     LinearLayout llEnvTemp,llEnvHum,llFridge,llFreeze,llChange,llDefrostSensor,llFreezeDefrost;
@@ -72,6 +69,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
         findViews();
         mMBParam = MainBoardParameters.getInstance();
         mFridgeModel = mMBParam.getFridgeType();
+        mTftVersion = this.getIntent().getStringExtra("version");
         initViews();
     }
 
@@ -385,20 +383,10 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
         setWifiContent();
     }
     private void setVersionUI(){
-        Context context = getApplicationContext();
-        PackageManager manager = getApplicationContext().getPackageManager();
-        PackageInfo info;
-        String tftVersion = "none";
-        try {
-            info = manager.getPackageInfo(context.getPackageName(), 0);
-            tftVersion = info.versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        String osVersion = mMBParam.getOSVersion();
-        String macString = DeviceUtil.getLocalMacAddress(context);
-        tvTftVersion.setText(tftVersion);
-        tvOsVersion.setText(osVersion);
+        mOsVersion = mMBParam.getOSVersion();
+        String macString = DeviceUtil.getLocalMacAddress(getApplicationContext());
+        tvTftVersion.setText(mTftVersion);
+        tvOsVersion.setText(mOsVersion);
         tvMac.setText(macString);
     }
 

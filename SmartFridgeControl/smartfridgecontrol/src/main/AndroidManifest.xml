@@ -18,10 +18,10 @@
             android:name=".ui.TestMainActivity"
             android:label="@string/title_activity_test_main"
             android:theme="@style/AppTheme.NoActionBar">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN"/>-->
-                <!--<category android:name="android.intent.category.LAUNCHER"/>-->
-            <!--</intent-filter>-->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
         </activity>
         <activity
             android:name=".ui.DoorAlarmActivity"
@@ -61,6 +61,7 @@
         <receiver android:name=".receiver.ControlCommandReceiver">
             <intent-filter>
                 <action android:name="com.haiersmart.sfcontrol.command"/>
+                <action android:name="com.haier.tft.control.pcb"/>
             </intent-filter>
         </receiver>
     </application>

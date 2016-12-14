@@ -385,7 +385,7 @@ public abstract class MainBoardBase {
         FridgeControlEntry mFridgeControlEntry = new FridgeControlEntry(EnumBaseName.fridgeTargetTemp.toString());
         mFridgeControlDbMgr.queryByName(mFridgeControlEntry);
         return mProtocolCommand.PackCmdFrame(EnumBaseName.fridgeTargetTemp, (byte) mFridgeControlEntry.value);
-//        return packFridgeTargetTemp(mFridgeControlEntry.value);
+        //        return packFridgeTargetTemp(mFridgeControlEntry.value);
     }
 
     /**
@@ -399,22 +399,23 @@ public abstract class MainBoardBase {
 
     /**
      * 按照名称打包模式命令，只适用于开启和关闭模式
+     *
      * @param string 命令的名称
-     * @param b true:开启 false:关闭
+     * @param b      true:开启 false:关闭
      * @return
      */
-    protected byte[] packModeCmd(String string,boolean b){
+    protected byte[] packModeCmd(String string, boolean b) {
         byte[] tmp;
-        if(b == true) {
-            if(string.equals(EnumBaseName.fridgeSwitch.toString())){
+        if (b == true) {
+            if (string.equals(EnumBaseName.fridgeSwitch.toString())) {
                 tmp = packFridgeOpen();
-            }else {
+            } else {
                 tmp = mProtocolCommand.PackCmdFrame(EnumBaseName.valueOf(string), (byte) 1);
             }
-        }else{
-            if(string.equals(EnumBaseName.fridgeSwitch.toString())){
+        } else {
+            if (string.equals(EnumBaseName.fridgeSwitch.toString())) {
                 tmp = packFridgeClose();
-            }else {
+            } else {
                 tmp = mProtocolCommand.PackCmdFrame(EnumBaseName.valueOf(string), (byte) 0);
             }
         }
@@ -433,36 +434,37 @@ public abstract class MainBoardBase {
     /**
      * 模式及档位同步，取出数据库中模式值，分为需要取消和需要设置。
      * 与主控板状态比较，先进行取消操作，再进行设置操作，最后同步档位
+     *
      * @return
      */
-    public ArrayList<byte[]> packSyncMode(){
+    public ArrayList<byte[]> packSyncMode() {
         ArrayList<byte[]> tmpSendBytes = new ArrayList<>();
         getDbModeClass();//获得最新数据库模式状态，并分为取消和设置两个类
         //进行取消操作
-        for (FridgeControlEntry fridgeControlEntry:dbFridgeControlCancel){
+        for (FridgeControlEntry fridgeControlEntry : dbFridgeControlCancel) {
             int mainBoardValue = getMainBoardControlByName(fridgeControlEntry.name);
             //与主控板状态不一致，则下发模式取消命令
-            if (fridgeControlEntry.value != mainBoardValue){
-                byte[] tmp = packModeCmd(fridgeControlEntry.name,false);
+            if (fridgeControlEntry.value != mainBoardValue) {
+                byte[] tmp = packModeCmd(fridgeControlEntry.name, false);
                 tmpSendBytes.add(tmp);
             }
         }
         //进行设置操作
-        for (FridgeControlEntry fridgeControlEntry:dbFridgeControlSet){
+        for (FridgeControlEntry fridgeControlEntry : dbFridgeControlSet) {
             int mainBoardValue = getMainBoardControlByName(fridgeControlEntry.name);
             //与主控板状态不一致，则下发模式设置命令
-            if (fridgeControlEntry.value != mainBoardValue){
-                byte[] tmp = packModeCmd(fridgeControlEntry.name,true);
+            if (fridgeControlEntry.value != mainBoardValue) {
+                byte[] tmp = packModeCmd(fridgeControlEntry.name, true);
                 tmpSendBytes.add(tmp);
             }
         }
         //模式同步以后进行档位同步
         ArrayList<byte[]> tmpBytes = packSyncLevel();
-        for (byte[] bytes:tmpBytes){
+        for (byte[] bytes : tmpBytes) {
             tmpSendBytes.add(bytes);
         }
-        for (byte[] bytes:tmpSendBytes){
-            MyLogUtil.i(TAG,"tmpSendBytes:"+ PrintUtil.BytesToString(bytes,PrintUtil.HEX));
+        for (byte[] bytes : tmpSendBytes) {
+            MyLogUtil.i(TAG, "tmpSendBytes:" + PrintUtil.BytesToString(bytes, PrintUtil.HEX));
         }
         return tmpSendBytes;
     }
@@ -474,17 +476,17 @@ public abstract class MainBoardBase {
      */
     private void getFridgeControlDb() {
         int size = dbFridgeControlEntry.size();
-        for (int i=0;i<size;i++) {
-            FridgeControlEntry fridgeControlEntry= dbFridgeControlEntry.get(i);
+        for (int i = 0; i < size; i++) {
+            FridgeControlEntry fridgeControlEntry = dbFridgeControlEntry.get(i);
             mFridgeControlDbMgr.queryByName(fridgeControlEntry);
-            dbFridgeControlEntry.set(i,fridgeControlEntry);
+            dbFridgeControlEntry.set(i, fridgeControlEntry);
         }
     }
 
     /**
      * 创建冰箱控制类，数据库的复制
      */
-    private void creatFridgeControlDb(){
+    private void creatFridgeControlDb() {
         dbFridgeControlEntry = new ArrayList<>();
         for (MainBoardEntry mainBoardEntry : mainBoardControl) {
             FridgeControlEntry mFridgeControlEntry = new FridgeControlEntry(mainBoardEntry.getName());
@@ -499,24 +501,24 @@ public abstract class MainBoardBase {
      * 获得数据库中控制类，并按照value值进行分类，
      * 0：为需要取消的模式；1：为需要设置的模式
      */
-    private void getDbModeClass(){
+    private void getDbModeClass() {
         dbFridgeControlSet.clear();
         dbFridgeControlCancel.clear();
         getFridgeControlDb();
-        for(FridgeControlEntry fridgeControlEntry:dbFridgeControlEntry){
-            if(fridgeControlEntry.name.equals("fridgeTargetTemp")){
+        for (FridgeControlEntry fridgeControlEntry : dbFridgeControlEntry) {
+            if (fridgeControlEntry.name.equals("fridgeTargetTemp")) {
                 continue;
             }
-            if(fridgeControlEntry.name.equals("freezeTargetTemp")){
+            if (fridgeControlEntry.name.equals("freezeTargetTemp")) {
                 continue;
             }
-            if(fridgeControlEntry.name.equals("changeTargetTemp")){
+            if (fridgeControlEntry.name.equals("changeTargetTemp")) {
                 continue;
             }
-            if(fridgeControlEntry.value == 0){
+            if (fridgeControlEntry.value == 0) {
                 dbFridgeControlCancel.add(fridgeControlEntry);
             }
-            if(fridgeControlEntry.value == 1){
+            if (fridgeControlEntry.value == 1) {
                 dbFridgeControlSet.add(fridgeControlEntry);
             }
         }
@@ -524,13 +526,41 @@ public abstract class MainBoardBase {
 
     /**
      * 通过名字查询主控板控制状态值
+     *
      * @param string
      * @return
      */
-    public int getMainBoardControlByName(String string){
+    public int getMainBoardControlByName(String string) {
         int tmp = -1;
-        for (MainBoardEntry mainBoardEntry:mainBoardControl){
-            if(mainBoardEntry.getName().equals(string)){
+        for (MainBoardEntry mainBoardEntry : mainBoardControl) {
+            if (mainBoardEntry.getName().equals(string)) {
+                tmp = mainBoardEntry.getValue();
+                break;
+            }
+        }
+        return tmp;
+    }
+    public MainBoardEntry getMainBoardControlEntryByName(String string) {
+        MainBoardEntry res = null;
+        for (MainBoardEntry mainBoardEntry : mainBoardControl) {
+            if (mainBoardEntry.getName().equals(string)) {
+                res = mainBoardEntry;
+                break;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 通过名字查询主控板状态值
+     *
+     * @param string
+     * @return
+     */
+    public int getMainBoardStatusByName(String string) {
+        int tmp = -1;
+        for (MainBoardEntry mainBoardEntry : mainBoardStatus) {
+            if (mainBoardEntry.getName().equals(string)) {
                 tmp = mainBoardEntry.getValue();
                 break;
             }
@@ -539,43 +569,31 @@ public abstract class MainBoardBase {
     }
 
     /**
-     * 通过名字查询主控板状态值
-     * @param string
-     * @return
-     */
-    public int getMainBoardStatusByName(String string){
-        int tmp = -1;
-        for (MainBoardEntry mainBoardEntry:mainBoardStatus){
-            if(mainBoardEntry.getName().equals(string)){
-                tmp = mainBoardEntry.getValue();
-                break;
-            }
-        }
-        return tmp;
-    }
-    /**
      * 通过名字查询主控板调试状态值
+     *
      * @param string
      * @return
      */
-    public int getMainBoardDebugByName(String string){
+    public int getMainBoardDebugByName(String string) {
         int tmp = -1;
-        for (MainBoardEntry mainBoardEntry:mainBoardDebug){
-            if(mainBoardEntry.getName().equals(string)){
+        for (MainBoardEntry mainBoardEntry : mainBoardDebug) {
+            if (mainBoardEntry.getName().equals(string)) {
                 tmp = mainBoardEntry.getValue();
                 break;
             }
         }
         return tmp;
     }
+
     /**
      * 通过名字设置主控板状态值
+     *
      * @param string
      * @param value
      */
-    protected void setMainBoardStatusByName(String string,int value){
-        for (MainBoardEntry mainBoardEntry:mainBoardStatus){
-            if(mainBoardEntry.getName().equals(string)){
+    protected void setMainBoardStatusByName(String string, int value) {
+        for (MainBoardEntry mainBoardEntry : mainBoardStatus) {
+            if (mainBoardEntry.getName().equals(string)) {
                 mainBoardEntry.setValue(value);
             }
         }
@@ -583,37 +601,76 @@ public abstract class MainBoardBase {
 
     /**
      * 设置通信超时状态
+     *
      * @param b
      */
-    public void setCommunicationOverTime(boolean b){
-        if(b) {
+    public void setCommunicationOverTime(boolean b) {
+        if (b) {
             setMainBoardStatusByName(EnumBaseName.communicationOverTime.toString(), 1);
-        }else {
+        } else {
             setMainBoardStatusByName(EnumBaseName.communicationOverTime.toString(), 0);
         }
     }
 
     /**
      * 设置通信数据错误次数
+     *
      * @param value
      */
-    public void setCommunicationErr(int value){
-            setMainBoardStatusByName(EnumBaseName.communicationErr.toString(), value);
+    public void setCommunicationErr(int value) {
+        setMainBoardStatusByName(EnumBaseName.communicationErr.toString(), value);
     }
 
-    protected void setFridgeDoorErr(boolean b){
-        if(b) {
+    protected void setFridgeDoorErr(boolean b) {
+        if (b) {
             setMainBoardStatusByName(EnumBaseName.fridgeDoorErr.toString(), 1);
-        }else {
+        } else {
             setMainBoardStatusByName(EnumBaseName.fridgeDoorErr.toString(), 0);
         }
     }
-    protected void setFreezeDoorErr(boolean b){
-        if(b) {
+
+    protected void setFreezeDoorErr(boolean b) {
+        if (b) {
             setMainBoardStatusByName(EnumBaseName.freezeDoorErr.toString(), 1);
-        }else {
+        } else {
             setMainBoardStatusByName(EnumBaseName.freezeDoorErr.toString(), 0);
         }
     }
+
+    public byte[] setDataBaseToBytes(byte[] get) {
+        byte[] frame = get;
+        boolean isFridgeSwitch = true;
+        for (MainBoardEntry mainBoardEntry : mainBoardControl) {
+            FridgeControlEntry fridgeControlEntry = new FridgeControlEntry(mainBoardEntry.getName());
+            mFridgeControlDbMgr.queryByName(fridgeControlEntry);
+            if (mainBoardEntry.getByteShift() < 8) {
+                byte tmpbyte = frame[mainBoardEntry.getStartByte() - 1];
+                if (fridgeControlEntry.value == 1) {
+                    tmpbyte |= (0x01 << mainBoardEntry.getByteShift());
+                } else {
+                    tmpbyte &= ~(0x01 << mainBoardEntry.getByteShift());
+                }
+                frame[mainBoardEntry.getStartByte() - 1] = tmpbyte;
+            } else if (mainBoardEntry.getByteShift() == 8) {
+                if (fridgeControlEntry.name.equals(EnumBaseName.fridgeTargetTemp.toString()) && !isFridgeSwitch) {
+                    frame[mainBoardEntry.getStartByte() - 1] = (byte) 0x00;
+                } else {
+                    int tmpint = fridgeControlEntry.value + mainBoardEntry.getDiffValue();
+                    frame[mainBoardEntry.getStartByte() - 1] = (byte) tmpint;
+                }
+            }else if(mainBoardEntry.getByteShift() == 9){
+                if(fridgeControlEntry.name.equals(EnumBaseName.fridgeSwitch.toString())){
+                    if(fridgeControlEntry.value==0){
+                        int startByte = getMainBoardControlEntryByName(EnumBaseName.fridgeTargetTemp.toString()).getStartByte();
+                        frame[startByte-1]= (byte) 0x00;
+                        isFridgeSwitch = false;
+                    }
+                }
+            }
+
+        }
+        return frame;
+    }
+
 
 }

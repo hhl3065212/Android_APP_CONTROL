@@ -5,6 +5,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -12,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -20,6 +23,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.haiersmart.sfcdemo.constant.ConstantUtil;
 import com.haiersmart.sfcdemo.constant.EnumBaseName;
+import com.haiersmart.sfcdemo.constant.QrCodeUtil;
+import com.haiersmart.sfcdemo.constant.TypeIdUtil;
 import com.haiersmart.sfcdemo.draw.MyTestButton;
 import com.haiersmart.sfcdemo.model.FridgeModel;
 
@@ -29,25 +34,27 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
-
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "MainActivity";
+    private Context mContext;
     private boolean mIsBound = false;
     private static FridgeModel mModel = new FridgeModel();
 
     private Timer mTimer;
-    private TimerTask mWaitTask;
+    private TimerTask mWaitTask, mTimerTask;
 
     private LinearLayout lineEnvTemp, lineEnvHum, lineFridgeTemp, lineFreezeTemp, lineChangeTemp,
             lineFridgeTarget, lineFreezeTarget, lineChangeTarger;
     private TextView tvFridgeModel, tvStatusCode, tvEnvTemp, tvEnvHum, tvFridgeTemp, tvFreezeTemp, tvChangeTemp,
-            tvFridgeTarget, tvFreezeTarget, tvChangeTarget, tvTime ,tvTest;
+            tvFridgeTarget, tvFreezeTarget, tvChangeTarget, tvTime, tvTest;
     private Button btnReturn;
     private MyTestButton btnSmart, btnHoliday, btnQuickCold, btnQuickFreeze, btnFridgeSwitch;
     private SeekBar skbFridge, skbFreeze, skbChange;
+    private ImageView imvQrCode;
 
     private int onclickCounts = 0;
     private boolean isReady = false;
+    private boolean isServiceReady = false;
 
     private NetRunnable mNetRunnable;
     private Thread mThread;
@@ -56,38 +63,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mContext = getApplicationContext();
         Intent intent = new Intent();
         intent.setComponent(new ComponentName("com.haiersmart.sfcontrol", "com.haiersmart.sfcontrol.service.ControlMainBoardService"));
         startService(intent);
-
         registerBroadcast();
-
         findView();
-        mTimer = new Timer();
-//        mTimer.schedule(mWaitTask, 1000, 1000);
         startQueryType();
-        //        sendUserCommond(KEY_MODE, QUERY_CONTROL_READY);
-        //        sendUserCommond(KEY_MODE, "demoReady");
-        Log.i(TAG, "first sendControlCmdResponse main board is ready?");
-//        mNetRunnable = new NetRunnable();
-//        mNetRunnable.start();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        if(isReady) {
+            startRefreshUI();
+        }else {
+            Intent intent = new Intent();
+            intent.setComponent(new ComponentName("com.haiersmart.sfcontrol", "com.haiersmart.sfcontrol.service.ControlMainBoardService"));
+            startService(intent);
+            startQueryType();
+        }
         //        registerBroadcast();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        stopRefreshUI();
         //        unregisterReceiver(receiveUpdateUI);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        stopRefreshUI();
         unregisterReceiver(receiveUpdateUI);
     }
 
@@ -119,22 +128,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     refreshUI();
                 }
             } else if (action.equals(ConstantUtil.BROADCAST_ACTION_READY)) {
-                isReady = intent.getBooleanExtra(ConstantUtil.KEY_READY, false);
+                isServiceReady = intent.getBooleanExtra(ConstantUtil.KEY_READY, false);
                 Log.i(TAG, "BroadcastReceiver receiveUpdateUI isReady=" + isReady);
-                if (isReady) {
+                if (isServiceReady) {
                     stopQueryType();
                     sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_FRIDGE_INFO);
                     sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_FRIDGE_TEMP_RANGE);
                     sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_FREEZE_TEMP_RANGE);
                     sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_CHANGE_TEMP_RANGE);
-                }else {
+                } else {
                     startQueryType();
                 }
             } else if (action.equals(ConstantUtil.BROADCAST_ACTION_FRIDGE_INFO)) {
-                if (isReady) {
-                    String id = intent.getStringExtra(ConstantUtil.KEY_FRIDGE_ID);
+                if (isServiceReady) {
+                    String id = intent.getStringExtra(ConstantUtil.KEY_TYPE_ID);
                     String type = intent.getStringExtra(ConstantUtil.KEY_FRIDGE_TYPE);
                     mModel.mFridgeModel = type;
+                    mModel.mTypeId = id;
                     setModel();
                 }
             } else if (action.equals(ConstantUtil.BROADCAST_ACTION_TEMPER)) {
@@ -169,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     };
 
     private void sendUserCommond(String key, String content) {
-        Log.i(TAG,"kill content = "+content);
+        Log.i(TAG, "kill content = " + content);
         Intent intent = new Intent();
         intent.setAction(ConstantUtil.COMMAND_TO_SERVICE);
         intent.putExtra(key, content);
@@ -223,6 +233,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         skbChange = (SeekBar) findViewById(R.id.skb_demo_change);
         listenerSeekBar();
 
+        imvQrCode = (ImageView)findViewById(R.id.imv_demo_test);
+
     }
 
     private void setView() {
@@ -241,6 +253,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 initFridgeOpen(R.id.btn_demo_bottom_left);
                 break;
         }
+        isReady = true;
+        tvTest.setText("使用馨小厨APP扫码绑定");
+        QrCodeUtil.createQRCode(imvQrCode, TypeIdUtil.getCode(mContext,mModel.mTypeId),300);
         sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_TEMPER_INFO);
         sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_CONTROL_INFO);
     }
@@ -248,47 +263,75 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void setModel() {
         //        if(mModel.mFridgeModel != null) {
         mModel.mFridgeModel = ConstantUtil.BCD251_MODEL;
-        if(mModel.mFridgeModel.equals(ConstantUtil.BCD251_MODEL)) {
+        if (mModel.mFridgeModel.equals(ConstantUtil.BCD251_MODEL)) {
             tvFridgeModel.setText(mModel.mFridgeModel);
-        }else if(mModel.mFridgeModel.equals(ConstantUtil.BCD256_MODEL)){
-            tvFridgeModel.setText(mModel.mFridgeModel+"/"+mModel.mFridgeModel+"(S)");
-        }else if(mModel.mFridgeModel.equals(ConstantUtil.BCD401_MODEL)){
-            tvFridgeModel.setText(mModel.mFridgeModel+"/"+mModel.mFridgeModel+"(S)");
+        } else if (mModel.mFridgeModel.equals(ConstantUtil.BCD256_MODEL)) {
+            tvFridgeModel.setText(mModel.mFridgeModel + "/" + mModel.mFridgeModel + "(S)");
+        } else if (mModel.mFridgeModel.equals(ConstantUtil.BCD401_MODEL)) {
+            tvFridgeModel.setText(mModel.mFridgeModel + "/" + mModel.mFridgeModel + "(S)");
         }
         setView();
-        mTimer.schedule(mTimerTask, 0, 100);
+        startRefreshUI();
         //        }
     }
-    private void startQueryType(){
-        if(mWaitTask == null){
-            Log.i(TAG,"mWaitTask is null,now creat!");
+
+    private void startQueryType() {
+        if (mTimer == null) {
+            mTimer = new Timer();
+        }
+        if (mWaitTask == null) {
+            Log.i(TAG, "mWaitTask is null,now creat!");
             mWaitTask = new TimerTask() {
                 @Override
                 public void run() {
                     mHandler.sendEmptyMessage(0x01);
                 }
             };
-            mTimer.schedule(mWaitTask,1000,1000);
+            mTimer.schedule(mWaitTask, 1000, 1000);
         }
     }
 
-    private void stopQueryType(){
-        if(mWaitTask != null){
-            Log.i(TAG,"mWaitTask cancel!");
+    private void stopQueryType() {
+        if (mWaitTask != null) {
+            Log.i(TAG, "mWaitTask cancel!");
             mWaitTask.cancel();
             mWaitTask = null;
         }
+        if (mTimer != null) {
+            mTimer.cancel();
+            mTimer = null;
+        }
+    }
+
+    private void startRefreshUI() {
+        if (mTimer == null) {
+            mTimer = new Timer();
+        }
+        if (mTimerTask == null) {
+            Log.i(TAG, "mTimerTask is null,now creat!");
+            mTimerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    mHandler.sendEmptyMessage(0x02);
+                }
+            };
+            mTimer.schedule(mTimerTask, 0, 300);
+        }
+    }
+
+    private void stopRefreshUI() {
+        if (mTimerTask != null) {
+            Log.i(TAG, "mTimerTask cancel!");
+            mTimerTask.cancel();
+            mTimerTask = null;
+        }
+        if (mTimer != null) {
+            mTimer.cancel();
+            mTimer = null;
+        }
     }
 
 
-
-    private TimerTask mTimerTask = new TimerTask() {
-        @Override
-        public void run() {
-            mHandler.sendEmptyMessage(0x02);
-            //            refreshUI();
-        }
-    };
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -314,41 +357,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Date date = new Date(System.currentTimeMillis());
         String strTime = simpleDateFormat.format(date);
         tvTime.setText(strTime);
-//        tvTest.setText(mNetRunnable.getNtpHost()+"\n"+mNetRunnable.getTimeoutCounts()+":"+mNetRunnable.getRequestCounts()
-//                +"\n"+mNetRunnable.getTimeStamp()+"\n"+mNetRunnable.getTime());
-        switch (mModel.mFridgeModel) {
-            case ConstantUtil.BCD251_MODEL:
-                tvFridgeTemp.setText(mModel.mFridgeShow + " ℃");
-                tvFreezeTemp.setText(mModel.mFreezeShow + " ℃");
-                tvChangeTemp.setText(mModel.mChangeShow + " ℃");
-                if (mModel.isSmart) {
-                    btnSmart.setOn();
-                } else {
-                    btnSmart.setOff();
-                }
-                if (mModel.isHoliday) {
-                    btnHoliday.setOn();
-                } else {
-                    btnHoliday.setOff();
-                }
-                if (mModel.isQuickCold) {
-                    btnQuickCold.setOn();
-                } else {
-                    btnQuickCold.setOff();
-                }
-                if (mModel.isQuickFreeze) {
-                    btnQuickFreeze.setOn();
-                } else {
-                    btnQuickFreeze.setOff();
-                }
-                if (mModel.isFridgeOpen) {
-                    btnFridgeSwitch.setOn();
-                    btnFridgeSwitch.setText("冷藏开");
-                } else {
-                    btnFridgeSwitch.setOff();
-                    btnFridgeSwitch.setText("冷藏关");
-                }
-                break;
+        //        tvTest.setText(mNetRunnable.getNtpHost()+"\n"+mNetRunnable.getTimeoutCounts()+":"+mNetRunnable.getRequestCounts()
+        //                +"\n"+mNetRunnable.getTimeStamp()+"\n"+mNetRunnable.getTime());
+        if (mModel.mFridgeModel.equals(ConstantUtil.BCD251_MODEL)) {
+            tvFridgeTemp.setText(mModel.mFridgeShow + " ℃");
+            tvFreezeTemp.setText(mModel.mFreezeShow + " ℃");
+            tvChangeTemp.setText(mModel.mChangeShow + " ℃");
+            if (mModel.isSmart) {
+                btnSmart.setOn();
+            } else {
+                btnSmart.setOff();
+            }
+            if (mModel.isHoliday) {
+                btnHoliday.setOn();
+            } else {
+                btnHoliday.setOff();
+            }
+            if (mModel.isQuickCold) {
+                btnQuickCold.setOn();
+            } else {
+                btnQuickCold.setOff();
+            }
+            if (mModel.isQuickFreeze) {
+                btnQuickFreeze.setOn();
+            } else {
+                btnQuickFreeze.setOff();
+            }
+            if (mModel.isFridgeOpen) {
+                btnFridgeSwitch.setOn();
+                btnFridgeSwitch.setText("冷藏开");
+            } else {
+                btnFridgeSwitch.setOff();
+                btnFridgeSwitch.setText("冷藏关");
+            }
         }
 
     }
@@ -457,10 +498,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 onclickCounts++;
                 if (onclickCounts > 5) {
                     onclickCounts = 0;
+                    PackageManager manager = getApplicationContext().getPackageManager();
+                    PackageInfo info;
+                    String tftVersion = "none";
+                    try {
+                        info = manager.getPackageInfo(getApplicationContext().getPackageName(), 0);
+                        tftVersion = info.versionName;
+                    } catch (PackageManager.NameNotFoundException e) {
+                        e.printStackTrace();
+                    }
                     Intent intent = new Intent();
                     //                    intent.setClassName("com.haiersmart.sfcontrol","com.haiersmart.sfcontrol.ui.DebugActivity");
                     intent.setComponent(new ComponentName("com.haiersmart.sfcontrol", "com.haiersmart.sfcontrol.ui.FactoryStatusActivity"));
                     intent.setAction("FactoryStatusActivity");
+                    intent.putExtra("version", tftVersion);
                     startActivity(intent);
                 }
                 break;

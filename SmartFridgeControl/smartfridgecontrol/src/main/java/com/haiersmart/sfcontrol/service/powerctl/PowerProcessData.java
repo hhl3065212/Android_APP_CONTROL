@@ -64,7 +64,7 @@ public class PowerProcessData {
 
     public PowerProcessData() throws IOException {
         mSerialData = SerialData.getInstance();
-        mPowerSerialOpt = PowerSerialOpt.getInstance();
+        mPowerSerialOpt = new PowerSerialOpt();
         sendGetIdCmd();
         mTimerThread = new TimerThread();
         mTimerThread.start();
@@ -76,11 +76,11 @@ public class PowerProcessData {
         mPowerSerialOpt.PowerSerialOptClose();
     }
 
-
     public void PowerProcDataStart() {
         mPowerSerialOpt.PowerSerialOptReOpen();
         TimerThreadSwitch = true;
     }
+
 
     private void sendGetIdCmd(){
         mPowerSerialOpt.sendCmdById(EnumBaseName.getDeviceId);

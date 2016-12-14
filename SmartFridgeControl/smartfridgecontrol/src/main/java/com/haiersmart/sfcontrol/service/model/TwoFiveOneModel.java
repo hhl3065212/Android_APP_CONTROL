@@ -401,6 +401,7 @@ public class TwoFiveOneModel extends ModelBase {
 
         if(isTempChanged) {
             mService.notifyTemperChanged(mShowTempEntryList);
+            mService.sendQuery();
         }
         MyLogUtil.v(TAG,"handleTemperInfoResponse out");
     }
@@ -464,6 +465,7 @@ public class TwoFiveOneModel extends ModelBase {
 
         if(isErrOccurred) {
             mService.notifyErrorOccurred(mErrorEntryList);
+            mService.sendQuery();
         }
     }
 

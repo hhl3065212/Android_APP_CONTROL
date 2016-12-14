@@ -1,5 +1,6 @@
 package com.haiersmart.sfcontrol.service.mbmodel;
 
+import com.haiersmart.sfcontrol.constant.ConstantUtil;
 import com.haiersmart.sfcontrol.database.FridgeInfoDbMgr;
 import com.haiersmart.sfcontrol.database.FridgeInfoEntry;
 import com.haiersmart.sfcontrol.utilslib.MyLogUtil;
@@ -16,7 +17,8 @@ import com.haiersmart.sfcontrol.utilslib.MyLogUtil;
 
 public class MainBoardInfo {
     private final String TAG = "MainBoardInfo";
-    private String fridgeId;//typeid
+    private String typeId;//互联互通用id
+    private String fridgeId;//主控板返回id
     private String fridgeVersion;//版本号
     private String fridgeFactory;//厂家
     private String fridgeSn;//专用号
@@ -63,6 +65,7 @@ public class MainBoardInfo {
 
     private void setFridgeId(String fridgeId) {
         this.fridgeId = fridgeId;
+        setTypeId();
     }
 
     private void setFridgeId(byte[] dataFrame) {
@@ -73,6 +76,23 @@ public class MainBoardInfo {
             stringBuffer.append(String.format("%02x", dataFrame[counts]));//by holy
         }//by holy
         this.fridgeId = stringBuffer.toString();
+        setTypeId();
+    }
+    private void setTypeId(){
+        StringBuffer tmpStr = new StringBuffer();
+        if(fridgeId.equals(ConstantUtil.BCD251_SN)){
+            tmpStr.append("111c12002400081001020061800118420000000000");
+        }else {
+            tmpStr.append(fridgeId);
+        }
+        for (int i=tmpStr.length();i<64;i++){
+            tmpStr.append("0");
+        }
+        typeId = tmpStr.toString();
+    }
+
+    public String getTypeId() {
+        return typeId;
     }
 
     public String getFridgeVersion() {

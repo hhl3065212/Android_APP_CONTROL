@@ -18,7 +18,7 @@ package com.haiersmart.sfcdemo.model;
  */
 public class FridgeModel {
     protected final String TAG = "FridgeModel";
-    public String mFridgeModel;
+    public String mFridgeModel,mTypeId;
     public int mFridgeMin,mFridgeMax,mFreezeMin,mFreezeMax,mChangeMin,mChangeMax;
     public int mFridgeTarget,mFreezeTarget,mChangeTarget;
     public int mFridgeShow,mFreezeShow,mChangeShow;

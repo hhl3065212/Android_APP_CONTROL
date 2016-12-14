@@ -35,6 +35,8 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.h6ah4i.android.widget.verticalseekbar:verticalseekbar:0.7.0'
     compile 'com.alibaba:fastjson:1.2.21'
+
+    compile project(':haier-wifiModule-new')
 //    compile 'com.google.android.gms:play-services-appindexing:8.4.0'
 //    compile project(path: ':smartfridgenation')
 }

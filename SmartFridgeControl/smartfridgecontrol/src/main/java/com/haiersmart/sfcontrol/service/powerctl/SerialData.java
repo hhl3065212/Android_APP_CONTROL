@@ -117,7 +117,11 @@ public class SerialData {
     }
 
     private byte[] getReceiveBuff() {
-        return ReceiveBuff;
+        byte[] res = new byte[DataLen];
+        for (int i=0;i<DataLen;i++) {
+            res[i] = ReceiveBuff[i];
+        }
+        return res;
     }
 
     private void updateBoardInfo(String fridgeId) {
@@ -326,5 +330,8 @@ public class SerialData {
 
     public void setmOSType(String mOSType) {
         this.mOSType = mOSType;
+    }
+    public byte[] setDataBaseToBytes(){
+        return mMainBoard.setDataBaseToBytes(getReceiveBuff());
     }
 }

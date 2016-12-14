@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.haiersmart.sfcontrol.application.ControlApplication;
 import com.haiersmart.sfcontrol.constant.ConstantUtil;
+import com.haiersmart.sfcontrol.constant.ConstantWifiUtil;
 import com.haiersmart.sfcontrol.constant.EnumBaseName;
 import com.haiersmart.sfcontrol.database.DBOperation;
 import com.haiersmart.sfcontrol.database.FridgeControlDbMgr;
@@ -19,10 +21,12 @@ import com.haiersmart.sfcontrol.service.model.ModelBase;
 import com.haiersmart.sfcontrol.service.model.ModelFactory;
 import com.haiersmart.sfcontrol.service.powerctl.PowerProcessData;
 import com.haiersmart.sfcontrol.utilslib.MyLogUtil;
+import com.haiersmart.sfcontrol.utilslib.PrintUtil;
 import com.haiersmart.sfcontrol.utilslib.SpUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RunnableFuture;
@@ -110,7 +114,7 @@ public class ControlMainBoardService extends Service {
                             MyLogUtil.i(TAG, "onStartCommand action changed to QUERY_CONTROL_READY due to init not finished");
                             sendControlReadyInfo();
                         }
-
+                        sendQuery();
                     }
                     break;
                     case ConstantUtil.TEMPER_SETFREEZE://冷冻区温控
@@ -122,7 +126,7 @@ public class ControlMainBoardService extends Service {
                             MyLogUtil.i(TAG, "onStartCommand action changed to QUERY_CONTROL_READY due to init not finished");
                             sendControlReadyInfo();
                         }
-
+                        sendQuery();
                     }
                     break;
                     case ConstantUtil.TEMPER_SETCUSTOMAREA://变温区温控
@@ -134,6 +138,7 @@ public class ControlMainBoardService extends Service {
                             MyLogUtil.i(TAG, "onStartCommand action changed to QUERY_CONTROL_READY due to init not finished");
                             sendControlReadyInfo();
                         }
+                        sendQuery();
                     }
                     break;
                     case ConstantUtil.BOOT_COMPLETED: {
@@ -161,11 +166,16 @@ public class ControlMainBoardService extends Service {
     }
 
 
+    @Override
+    public void onStart(Intent intent, int startId) {
+        super.onStart(intent, startId);
+    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         mProcessData.PowerProcDataStop();
+
         stopColdOnTime();
         stopFreezeOnTime();
     }
@@ -266,9 +276,13 @@ public class ControlMainBoardService extends Service {
             case ConstantUtil.QUERY_FREEZE_TEMP_RANGE://查询冷冻室温度档位范围
                 provideFreezeTempRange();
                 break;
+            case ConstantUtil.KEY_QUERY:
+                sendQuery();
+                break;
             default:
                 break;
         }
+       sendQuery();
     }
 
    private void handleQueryData(){
@@ -309,9 +323,11 @@ public class ControlMainBoardService extends Service {
     public void sendFridgeInfoResponse() {
         //broadcast fridgeId to app
         Intent intent = new Intent();
+        String typeId = mBoardInfo.getTypeId();
         String fridgeId = mBoardInfo.getFridgeId();
         String fridgeType = mBoardInfo.getFridgeType();
         intent.putExtra(ConstantUtil.KEY_FRIDGE_ID, fridgeId);
+        intent.putExtra(ConstantUtil.KEY_TYPE_ID, typeId);
         intent.putExtra(ConstantUtil.KEY_FRIDGE_TYPE, fridgeType);
         intent.setAction(ConstantUtil.BROADCAST_ACTION_FRIDGE_INFO);
         sendBroadcast(intent);
@@ -617,5 +633,28 @@ public class ControlMainBoardService extends Service {
         }
 
     }
+
+    public void sendQuery() {
+        Intent intent = new Intent();
+        intent.setAction(ConstantWifiUtil.ACTION_CONTROL);
+        intent.putExtra(ConstantWifiUtil.KEY_GETSTATE, getQueryResult());
+        byte[] bytes = mMBParams.getDataBaseToBytes();
+        intent.putExtra(ConstantWifiUtil.KEY_GETBYTES, bytes);
+        MyLogUtil.i("printSerialString", PrintUtil.BytesToString(bytes,16));
+        intent.putExtra(ConstantWifiUtil.KEY_TYPE_ID, mMBParams.getTypeId());
+        MyLogUtil.i("printSerialString", mMBParams.getFridgeId());
+        sendBroadcast(intent);
+        Log.d(TAG, "send query");
+    }
+    private HashMap getQueryResult() {
+        HashMap<String, String> stateList = new HashMap<>();
+        FridgeControlEntry fridgeControlEntry = new FridgeControlEntry(EnumBaseName.SterilizeMode.toString());
+        mDBHandle.getControlDbMgr().queryByName(fridgeControlEntry);
+        int valueSterilization = fridgeControlEntry.value;
+        stateList.put(ConstantWifiUtil.QUERY_GOOD_FOOD, "65278");
+        stateList.put(ConstantWifiUtil.QUERY_UV, "" + valueSterilization);
+        return stateList;
+    }
+
 
 } //End of class

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/grey_food_weight">
+    <TextView
+        android:id="@+id/text_factory_dialog_title"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:textSize="@dimen/text_size_40"
+        android:background="@color/black2"
+        android:text="11"
+        android:textColor="@color/gray2"
+        android:gravity="center"/>
+
+    <EditText
+        android:id="@+id/edit_factory_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_margin="@dimen/tab_margin"
+        android:textSize="@dimen/text_size_40"
+        android:background="@color/grey_food_weight"
+        android:gravity="center"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/tab_margin"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/btn_factory_dialog_cancel"
+            android:layout_width="@dimen/auto_width"
+            android:layout_height="80dp"
+            android:layout_weight="1"
+            android:text="取消"
+            android:textSize="@dimen/text_size_40"/>
+        <Button
+            android:id="@+id/btn_factory_dialog_enter"
+            android:layout_width="@dimen/auto_width"
+            android:layout_height="80dp"
+            android:layout_marginLeft="@dimen/tab_margin"
+            android:layout_weight="1"
+            android:text="确定"
+            android:textSize="@dimen/text_size_40"/>
+    </LinearLayout>
+
+</LinearLayout>

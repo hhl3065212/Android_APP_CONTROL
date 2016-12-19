@@ -43,7 +43,7 @@ public class ControlMainBoardService extends Service {
     private ModelFactory mModelFactory;
     private ModelBase mModel;
     private boolean mIsModelReady = false;
-    private boolean mIsServiceRestart = false;
+    private boolean mIsServiceRestart = true;
     private static int readyCounts = 0;
 
 
@@ -82,7 +82,7 @@ public class ControlMainBoardService extends Service {
             mIsServiceRestart = true;
         } else {
             String action = intent.getAction();
-            MyLogUtil.i(TAG, "onStartCommand action=" + action);
+//            MyLogUtil.i(TAG, "onStartCommand action=" + action);
             if (!TextUtils.isEmpty(action)) {
                 switch (action) {
                     case ConstantUtil.QUERY_CONTROL_READY://查询service是否准备好
@@ -95,10 +95,14 @@ public class ControlMainBoardService extends Service {
                         break;
                     case ConstantUtil.BROADCAST_ACTION_STATUS_BACK:
 //                MyLogUtil.d(TAG, "onStartCommand status back");
-                        mModel.handleStatusDataResponse();
                         if (!mIsModelReady) {
                             mIsModelReady = true;
+                            sendQuery();
                         }
+                        if(mIsModelReady){
+                            mModel.handleStatusDataResponse();
+                        }
+//                        MyLogUtil.i(TAG,"handleServiceRestartEvent mIsServiceRestart is "+mIsServiceRestart);
                         if (mIsServiceRestart) {
                             handleServiceRestartEvent();
                             mIsServiceRestart = false;
@@ -110,11 +114,12 @@ public class ControlMainBoardService extends Service {
                             int temperCold = intent.getIntExtra(ConstantUtil.KEY_SET_FRIDGE_LEVEL, 0);
                             MyLogUtil.i(TAG, "onStartCommand TEMPER_SETCOLD temperCold=" + temperCold);
                             mModel.setCold(temperCold);
+                            sendQuery();
                         } else {
                             MyLogUtil.i(TAG, "onStartCommand action changed to QUERY_CONTROL_READY due to init not finished");
                             sendControlReadyInfo();
                         }
-                        sendQuery();
+
                     }
                     break;
                     case ConstantUtil.TEMPER_SETFREEZE://冷冻区温控
@@ -122,11 +127,12 @@ public class ControlMainBoardService extends Service {
                         if (mModel != null) {
                             int temperCold = intent.getIntExtra(ConstantUtil.KEY_SET_FREEZE_LEVEL, 0);
                             mModel.setFreeze(temperCold);
+                            sendQuery();
                         } else {
                             MyLogUtil.i(TAG, "onStartCommand action changed to QUERY_CONTROL_READY due to init not finished");
                             sendControlReadyInfo();
                         }
-                        sendQuery();
+
                     }
                     break;
                     case ConstantUtil.TEMPER_SETCUSTOMAREA://变温区温控
@@ -134,11 +140,12 @@ public class ControlMainBoardService extends Service {
                         if (mIsModelReady) {
                             int temperCold = intent.getIntExtra(ConstantUtil.KEY_SET_COLD_LEVEL, 0);
                             mModel.setCustomArea(temperCold);
+                            sendQuery();
                         } else {
                             MyLogUtil.i(TAG, "onStartCommand action changed to QUERY_CONTROL_READY due to init not finished");
                             sendControlReadyInfo();
                         }
-                        sendQuery();
+
                     }
                     break;
                     case ConstantUtil.BOOT_COMPLETED: {
@@ -408,10 +415,10 @@ public class ControlMainBoardService extends Service {
 
 //    public static final long COLDTIME = 60 * 60 * 3;
     //TODO:test use 1 min for quick cold time out
-    public static final long COLDTIME = 60 * 11;
+    public static final long COLDTIME = 60 * 60;
 //    public static final long FREEZETIME = 60 * 60 * 50;
     //TODO:test use 2 min for quick freeze time out
-    public static final long FREEZETIME = 60 * 12;
+    public static final long FREEZETIME = 60 * 60;
     private static long coldCount = 0;
     private static long freezeCount = 0;
     private ScheduledExecutorService sExService = Executors.newScheduledThreadPool(2);
@@ -631,7 +638,7 @@ public class ControlMainBoardService extends Service {
             default:
                 mModel.getControlEntries();
         }
-
+        sendQuery();
     }
 
     public void sendQuery() {

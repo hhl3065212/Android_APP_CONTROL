@@ -147,9 +147,13 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
         skbFridge.setMax(mFridgeMax-mFridgeMin);
         skbFreeze.setMax(mFreezeMax-mFreezeMin);
         skbChange.setMax(mChangeMax-mChangeMin);
-        int fridgeTarget = mMainBoardParameters.getMbcValueByName(EnumBaseName.fridgeTargetTemp.toString());
-        int freezeTarget = mMainBoardParameters.getMbcValueByName(EnumBaseName.freezeTargetTemp.toString());
-        int changeTarget = mMainBoardParameters.getMbcValueByName(EnumBaseName.changeTargetTemp.toString());
+        FridgeControlEntry fridgeControlEntry;
+        fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.fridgeTargetTemp);
+        int fridgeTarget = fridgeControlEntry.value;
+        fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.freezeTargetTemp);
+        int freezeTarget = fridgeControlEntry.value;
+        fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.changeTargetTemp);
+        int changeTarget = fridgeControlEntry.value;
         skbFridge.setProgress(fridgeTarget-mFridgeMin);
         skbFreeze.setProgress(freezeTarget-mFreezeMin);
         skbChange.setProgress(changeTarget-mChangeMin);
@@ -367,6 +371,7 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                 break;
             case R.id.title_debug_status_code:
                 Intent intent = new Intent(this,FactoryStatusActivity.class);
+                intent.putExtra("version","debug1.0");
                 startActivity(intent);
                 break;
         }

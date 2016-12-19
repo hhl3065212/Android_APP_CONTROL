@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         if(isReady) {
+            sendUserCommond(ConstantUtil.KEY_MODE,ConstantUtil.QUERY_CONTROL_READY);
             startRefreshUI();
         }else {
             Intent intent = new Intent();
@@ -129,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             } else if (action.equals(ConstantUtil.BROADCAST_ACTION_READY)) {
                 isServiceReady = intent.getBooleanExtra(ConstantUtil.KEY_READY, false);
-                Log.i(TAG, "BroadcastReceiver receiveUpdateUI isReady=" + isReady);
+                Log.i(TAG, "BroadcastReceiver receiveUpdateUI isReady=" + isServiceReady);
                 if (isServiceReady) {
                     stopQueryType();
                     sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_FRIDGE_INFO);
@@ -276,6 +277,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void startQueryType() {
+        Intent intent = new Intent();
+        intent.setComponent(new ComponentName("com.haiersmart.sfcontrol", "com.haiersmart.sfcontrol.service.ControlMainBoardService"));
+        startService(intent);
         if (mTimer == null) {
             mTimer = new Timer();
         }
@@ -337,7 +341,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 0x01:
-                    if (!isReady) {
+                    if (!isServiceReady) {
                         sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_CONTROL_READY);
                         Log.i(TAG, "sendControlCmdResponse main board is ready?");
                         //                    mWaitTask.cancel();

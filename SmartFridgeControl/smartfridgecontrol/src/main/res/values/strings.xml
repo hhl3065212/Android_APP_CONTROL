@@ -63,4 +63,8 @@
     <string name="text_factory_tp_start">TP正在校准中\n请勿触碰屏幕!</string>
     <string name="text_factory_tp_ok">"0xf 0xf\n校准成功"</string>
     <string name="text_factory_tp_faild">"校准失败"</string>
+
+    <string name="pop_default_content">内容</string>
+    <string name="pop_default_title">提示</string>
+    <string name="pop_default_hint">请输入恢复出厂设置密码</string>
 </resources>

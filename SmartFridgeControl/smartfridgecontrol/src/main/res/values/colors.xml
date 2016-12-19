@@ -15,6 +15,8 @@
     <color name="grey_food_weight">#cccccc</color>
     <color name="black2">#333333</color>
     <color name="warn_green_text">#8bc638</color>
+    <color name="factory_green">#7bb628</color>
     <color name="transparent_half_half">#66000000</color>
     <color name="red">#ff0000</color>
+    <color name="factory_dialog_btn">#888888</color>
 </resources>

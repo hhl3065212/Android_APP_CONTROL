@@ -20,6 +20,8 @@ import com.haiersmart.sfcontrol.utilslib.PrintUtil;
 
 import java.util.ArrayList;
 
+import static com.haiersmart.sfcontrol.constant.EnumBaseName.changeTargetTemp;
+
 /**
  * <p>function: </p>
  * <p>description:  冰箱主控板模型，模型的配置，模式及档位同步，开关门及报警事件。</p>
@@ -145,17 +147,17 @@ public abstract class MainBoardBase {
      */
     private void initTargetTempRange(ProtocolConfigBase protocolConfigBase) {
 
-        if (protocolConfigBase.getName().equals("fridgeTargetTemp")) {
+        if (protocolConfigBase.getName().equals(EnumBaseName.fridgeTargetTemp.toString())) {
             mTargetTempRange.setFridgeRange(protocolConfigBase.getMinValue(),
                     protocolConfigBase.getMaxValue(),
                     protocolConfigBase.getDiffValue());
         }
-        if (protocolConfigBase.getName().equals("freezeTargetTemp")) {
+        if (protocolConfigBase.getName().equals(EnumBaseName.freezeTargetTemp.toString())) {
             mTargetTempRange.setFreezeRange(protocolConfigBase.getMinValue(),
                     protocolConfigBase.getMaxValue(),
                     protocolConfigBase.getDiffValue());
         }
-        if (protocolConfigBase.getName().equals("changeTargetTemp")) {
+        if (protocolConfigBase.getName().equals(EnumBaseName.changeTargetTemp.toString())) {
             mTargetTempRange.setChangeRange(protocolConfigBase.getMinValue(),
                     protocolConfigBase.getMaxValue(),
                     protocolConfigBase.getDiffValue());
@@ -288,7 +290,7 @@ public abstract class MainBoardBase {
         } else {
             mValue = (byte) (value + mTargetTempRange.getChangeDiffValue());
         }
-        return mProtocolCommand.PackCmdFrame(EnumBaseName.changeTargetTemp, mValue);
+        return mProtocolCommand.PackCmdFrame(changeTargetTemp, mValue);
     }
 
     public ArrayList<MainBoardEntry> getMainBoardControl() {
@@ -506,13 +508,13 @@ public abstract class MainBoardBase {
         dbFridgeControlCancel.clear();
         getFridgeControlDb();
         for (FridgeControlEntry fridgeControlEntry : dbFridgeControlEntry) {
-            if (fridgeControlEntry.name.equals("fridgeTargetTemp")) {
+            if (fridgeControlEntry.name.equals(EnumBaseName.fridgeTargetTemp.toString())) {
                 continue;
             }
-            if (fridgeControlEntry.name.equals("freezeTargetTemp")) {
+            if (fridgeControlEntry.name.equals(EnumBaseName.freezeTargetTemp.toString())) {
                 continue;
             }
-            if (fridgeControlEntry.name.equals("changeTargetTemp")) {
+            if (fridgeControlEntry.name.equals(changeTargetTemp.toString())) {
                 continue;
             }
             if (fridgeControlEntry.value == 0) {

@@ -28,14 +28,17 @@ public class MyTestButton extends Button{
 
     public MyTestButton(Context context) {
         super(context);
+        setOff();
     }
 
     public MyTestButton(Context context, AttributeSet attrs) {
         super(context, attrs);
+        setOff();
     }
 
     public MyTestButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        setOff();
     }
 
     public void setOn(){

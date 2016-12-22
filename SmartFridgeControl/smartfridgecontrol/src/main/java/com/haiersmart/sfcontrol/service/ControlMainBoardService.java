@@ -92,13 +92,13 @@ public class ControlMainBoardService extends Service {
                         break;
                     case ConstantUtil.BROADCAST_ACTION_QUERY_BACK:
                         handleQueryData();
+                        if (!mIsModelReady) {
+                            mIsModelReady = true;
+//                            sendQuery();
+                        }
                         break;
                     case ConstantUtil.BROADCAST_ACTION_STATUS_BACK:
 //                MyLogUtil.d(TAG, "onStartCommand status back");
-                        if (!mIsModelReady) {
-                            mIsModelReady = true;
-                            sendQuery();
-                        }
                         if(mIsModelReady){
                             mModel.handleStatusDataResponse();
                         }
@@ -114,6 +114,7 @@ public class ControlMainBoardService extends Service {
                             int temperCold = intent.getIntExtra(ConstantUtil.KEY_SET_FRIDGE_LEVEL, 0);
                             MyLogUtil.i(TAG, "onStartCommand TEMPER_SETCOLD temperCold=" + temperCold);
                             mModel.setCold(temperCold);
+                            MyLogUtil.d("printSerialString","fridge target");
                             sendQuery();
                         } else {
                             MyLogUtil.i(TAG, "onStartCommand action changed to QUERY_CONTROL_READY due to init not finished");
@@ -127,6 +128,7 @@ public class ControlMainBoardService extends Service {
                         if (mModel != null) {
                             int temperCold = intent.getIntExtra(ConstantUtil.KEY_SET_FREEZE_LEVEL, 0);
                             mModel.setFreeze(temperCold);
+                            MyLogUtil.d("printSerialString","freeze target");
                             sendQuery();
                         } else {
                             MyLogUtil.i(TAG, "onStartCommand action changed to QUERY_CONTROL_READY due to init not finished");
@@ -140,6 +142,7 @@ public class ControlMainBoardService extends Service {
                         if (mIsModelReady) {
                             int temperCold = intent.getIntExtra(ConstantUtil.KEY_SET_COLD_LEVEL, 0);
                             mModel.setCustomArea(temperCold);
+                            MyLogUtil.d("printSerialString","change target");
                             sendQuery();
                         } else {
                             MyLogUtil.i(TAG, "onStartCommand action changed to QUERY_CONTROL_READY due to init not finished");
@@ -229,38 +232,58 @@ public class ControlMainBoardService extends Service {
             case ConstantUtil.MODE_SMART_ON://智能开
                 MyLogUtil.i(TAG, "handleActions smartOn");
                 mModel.smartOn();
+                MyLogUtil.d("printSerialString","smartOn");
+                sendQuery();
                 break;
             case ConstantUtil.MODE_SMART_OFF://智能关
                 MyLogUtil.i(TAG, "handleActions smartOff");
                 mModel.smartOff();
+                MyLogUtil.d("printSerialString","smartOff");
+                sendQuery();
                 break;
             case ConstantUtil.MODE_FREEZE_ON://速冻开
                 mModel.freezeOn();
-                startFreezeOnTime();
+                startFreezeOnTime(true);
+                MyLogUtil.d("printSerialString","quick freeze on");
+                sendQuery();
                 break;
             case ConstantUtil.MODE_FREEZE_OFF://速冻关
                 mModel.freezeOff();
                 stopFreezeOnTime();
+                MyLogUtil.d("printSerialString","quick freeze off");
+                sendQuery();
                 break;
             case ConstantUtil.MODE_HOLIDAY_ON://假日开
                 mModel.holidayOn();
+                MyLogUtil.d("printSerialString","holiday on");
+                sendQuery();
                 break;
             case ConstantUtil.MODE_HOLIDAY_OFF://假日关
                 mModel.holidayOff();
+                MyLogUtil.d("printSerialString","holiday off");
+                sendQuery();
                 break;
             case ConstantUtil.MODE_COLD_ON://变温开
                 mModel.coldOn();
-                startColdOnTime();
+                startColdOnTime(true);
+                MyLogUtil.d("printSerialString","quick cold on");
+                sendQuery();
                 break;
             case ConstantUtil.MODE_COLD_OFF://变温关
                 mModel.coldOff();
                 stopColdOnTime();
+                MyLogUtil.d("printSerialString","quick cold off");
+                sendQuery();
                 break;
             case ConstantUtil.REFRIGERATOR_OPEN://冷藏开
                 mModel.refrigeratorOpen();
+                MyLogUtil.d("printSerialString","fridge on");
+                sendQuery();
                 break;
             case ConstantUtil.REFRIGERATOR_CLOSE://冷藏关
                 mModel.refrigeratorClose();
+                MyLogUtil.d("printSerialString","fridge off");
+                sendQuery();
                 break;
             case ConstantUtil.QUERY_FRIDGE_INFO:
                 sendFridgeInfoResponse();
@@ -284,12 +307,12 @@ public class ControlMainBoardService extends Service {
                 provideFreezeTempRange();
                 break;
             case ConstantUtil.KEY_QUERY:
+                MyLogUtil.d("printSerialString","query");
                 sendQuery();
                 break;
             default:
                 break;
         }
-       sendQuery();
     }
 
    private void handleQueryData(){
@@ -413,12 +436,12 @@ public class ControlMainBoardService extends Service {
         return mModel.getControlEntryByName(name);
     }
 
-//    public static final long COLDTIME = 60 * 60 * 3;
+    public static final long COLDTIME = 60 * 60 * 3;
     //TODO:test use 1 min for quick cold time out
-    public static final long COLDTIME = 60 * 60;
-//    public static final long FREEZETIME = 60 * 60 * 50;
+//    public static final long COLDTIME = 60 * 60;
+    public static final long FREEZETIME = 60 * 60 * 50;
     //TODO:test use 2 min for quick freeze time out
-    public static final long FREEZETIME = 60 * 60;
+//    public static final long FREEZETIME = 60 * 60;
     private static long coldCount = 0;
     private static long freezeCount = 0;
     private ScheduledExecutorService sExService = Executors.newScheduledThreadPool(2);
@@ -439,17 +462,17 @@ public class ControlMainBoardService extends Service {
                     long delta = currentTime - oldTime;
                     if (delta > 0) {
                         delta = delta / 10000;
-                        MyLogUtil.i(TAG, "cold delta=" + delta);
+                        MyLogUtil.i(TAG, "cold delta count=" + delta);
                         if (delta > coldCount) {
                             coldCount = delta;
-                            MyLogUtil.i(TAG, "delta coldCount=" + coldCount);
+                            MyLogUtil.i(TAG, "delta cold count=" + coldCount);
                         }
                     }
                 }
             }
 
             if ((coldCount*10) >= COLDTIME) {
-                MyLogUtil.i(TAG, "stop coldCount  =" + coldCount);
+                MyLogUtil.i(TAG, "stop cold count =" + coldCount);
                 stopColdOnTime();
                 mModel.coldOff();
             }
@@ -457,10 +480,30 @@ public class ControlMainBoardService extends Service {
         }//end of run
     };
 
-    public void startColdOnTime() {
+    /**
+     * 开始速冷计时
+     * @param reset ture:重新开始计时 false:继续计时
+     */
+    public void startColdOnTime(boolean reset) {
         MyLogUtil.i(TAG, "startColdOnTime Count");
         sColdOnFuture = (RunnableScheduledFuture<?>) sExService.scheduleAtFixedRate(coldOnRunnable,10,10, TimeUnit.SECONDS);//10s周期
-        SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.COLDTIME, System.currentTimeMillis() / 1l);
+        if(reset) {
+            coldCount = 0;
+            SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.COLDTIME, System.currentTimeMillis() / 1l);
+        }else {
+            coldCount = (long)SpUtils.getInstance(ControlApplication.getInstance()).get(ConstantUtil.COLDCOUNT, 0l);
+            long oldTime = (long) SpUtils.getInstance(ControlApplication.getInstance()).get(ConstantUtil.COLDTIME, 0l);
+            long currentTime = System.currentTimeMillis();
+            long delta = currentTime - oldTime;
+            if (delta > 0) {
+                delta = delta / 10000;
+                MyLogUtil.i(TAG, "cold delta count=" + delta);
+                if (delta > coldCount) {
+                    coldCount = delta;
+                    MyLogUtil.i(TAG, "delta cold count=" + coldCount);
+                }
+            }
+        }
     }
     
     public void stopColdOnTime() {
@@ -489,8 +532,10 @@ public class ControlMainBoardService extends Service {
                     long delta = currentTime - oldTime;
                     if (delta > 0) {
                         delta = delta / 10000;
+                        MyLogUtil.i(TAG, "freeze delta count=" + delta);
                         if (delta > freezeCount) {
                             freezeCount = delta;
+                            MyLogUtil.i(TAG, "delta freeze count=" + freezeCount);
                         }
                     }
                 }
@@ -503,21 +548,26 @@ public class ControlMainBoardService extends Service {
         }//end of run
     };
 
-    public void startFreezeOnTime() {
+    public void startFreezeOnTime(boolean reset) {
         MyLogUtil.i(TAG, "startFreezeOnTime Count");
         sFreezeOnFuture = (RunnableScheduledFuture<?>) sExService.scheduleAtFixedRate(freezeOnRunnable,10,10, TimeUnit.SECONDS);//10s周期
-        SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.FREEZETIME, System.currentTimeMillis() / 1l);
-//        sExService.schedule(new Runnable() {
-//            @Override
-//            public void run() {
-//                sColdOnFuture.cancel(true);
-//                coldCount = 0;
-//                //更新数据库
-//                SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.COLDCOUNT,0l);
-//                //退速冻
-//                mModel.coldOff();
-//            }
-//        },COLDTIME,TimeUnit.SECONDS);
+        if(reset) {
+            freezeCount = 0;
+            SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.FREEZETIME, System.currentTimeMillis() / 1l);
+        }else {
+            freezeCount = (long)SpUtils.getInstance(ControlApplication.getInstance()).get(ConstantUtil.FREEZECOUNT, 0l);
+            long oldTime = (long) SpUtils.getInstance(ControlApplication.getInstance()).get(ConstantUtil.FREEZETIME, 0l);
+            long currentTime = System.currentTimeMillis();
+            long delta = currentTime - oldTime;
+            if (delta > 0) {
+                delta = delta / 10000;
+                MyLogUtil.i(TAG, "freeze delta count=" + delta);
+                if (delta > freezeCount) {
+                    freezeCount = delta;
+                    MyLogUtil.i(TAG, "delta freeze count=" + freezeCount);
+                }
+            }
+        }
     }
 
     public void stopFreezeOnTime() {
@@ -539,11 +589,11 @@ public class ControlMainBoardService extends Service {
         //速冷on
         if(coldEntry.value == 1) {
             //重新计时，重新计算coldCount
-            SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.COLDTIME, System.currentTimeMillis() / 1l);
-            SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.COLDCOUNT, 0l);
+//            SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.COLDTIME, System.currentTimeMillis() / 1l);
+//            SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.COLDCOUNT, 0l);
             //重发速冻命令
 //            mModel.coldOn();
-            startColdOnTime();
+            startColdOnTime(true);
         }
 
         FridgeControlEntry freezeEntry = new FridgeControlEntry("quickFreezeMode");
@@ -551,11 +601,11 @@ public class ControlMainBoardService extends Service {
         //速冻on
         if(freezeEntry.value == 1) {
             //重新计时，重新计算freezeCount
-            SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.FREEZETIME, System.currentTimeMillis() / 1l);
-            SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.FREEZECOUNT, 0l);
+//            SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.FREEZETIME, System.currentTimeMillis() / 1l);
+//            SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.FREEZECOUNT, 0l);
             //重发速冻命令
 //            mModel.freezeOn();
-            startFreezeOnTime();
+            startFreezeOnTime(true);
         }
     }
 
@@ -567,9 +617,9 @@ public class ControlMainBoardService extends Service {
         if(coldEntry.value == 1) {
             MyLogUtil.i(TAG, "handleServiceRestartEvent cold");
             //继续计时，累加restart前coldCount值
-            coldCount = (long)SpUtils.getInstance(ControlApplication.getInstance()).get(ConstantUtil.COLDCOUNT, 0l);
+//            coldCount = (long)SpUtils.getInstance(ControlApplication.getInstance()).get(ConstantUtil.COLDCOUNT, 0l);
 //            mModel.coldOn();
-            startColdOnTime();
+            startColdOnTime(false);
         }
 
         FridgeControlEntry freezeEntry = new FridgeControlEntry("quickFreezeMode");
@@ -578,10 +628,10 @@ public class ControlMainBoardService extends Service {
         if(freezeEntry.value == 1) {
             MyLogUtil.i(TAG, "handleServiceRestartEvent freeze");
             //继续计时，累加restart前freezeCount值
-            freezeCount = (long)SpUtils.getInstance(ControlApplication.getInstance()).get(ConstantUtil.FREEZECOUNT, 0l);
+//            freezeCount = (long)SpUtils.getInstance(ControlApplication.getInstance()).get(ConstantUtil.FREEZECOUNT, 0l);
             //重发速冻命令
 //            mModel.freezeOn();
-            startFreezeOnTime();
+            startFreezeOnTime(false);
         }
         MyLogUtil.i(TAG,"handleServiceRestartEvent out");
     }
@@ -605,7 +655,7 @@ public class ControlMainBoardService extends Service {
             case quickColdMode:
                 if(value == 1) {
                     mModel.coldOn();
-                    startColdOnTime();
+                    startColdOnTime(true);
                 }else {
                     mModel.coldOff();
                     stopColdOnTime();
@@ -614,7 +664,7 @@ public class ControlMainBoardService extends Service {
             case quickFreezeMode:
                 if(value == 1) {
                     mModel.freezeOn();
-                    startFreezeOnTime();
+                    startFreezeOnTime(true);
                 }else {
                     mModel.freezeOff();
                     stopFreezeOnTime();
@@ -638,6 +688,7 @@ public class ControlMainBoardService extends Service {
             default:
                 mModel.getControlEntries();
         }
+        MyLogUtil.d("printSerialString","6");
         sendQuery();
     }
 
@@ -646,7 +697,9 @@ public class ControlMainBoardService extends Service {
         intent.setAction(ConstantWifiUtil.ACTION_CONTROL);
         intent.putExtra(ConstantWifiUtil.KEY_GETSTATE, getQueryResult());
         byte[] bytes = mMBParams.getDataBaseToBytes();
-        intent.putExtra(ConstantWifiUtil.KEY_GETBYTES, bytes);
+        if(bytes != null) {
+            intent.putExtra(ConstantWifiUtil.KEY_GETBYTES, bytes);
+        }
         MyLogUtil.i("printSerialString", PrintUtil.BytesToString(bytes,16));
         intent.putExtra(ConstantWifiUtil.KEY_TYPE_ID, mMBParams.getTypeId());
         MyLogUtil.i("printSerialString", mMBParams.getFridgeId());

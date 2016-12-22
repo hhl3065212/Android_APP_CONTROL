@@ -36,6 +36,7 @@ public class ConfigTwoFiveOne {
         protocolConfig.add(new ProtocolConfigBase("freezeTargetTemp", 0, 14, 8, -24, -16, 26));//冷冻目标温度
         protocolConfig.add(new ProtocolConfigBase("changeTargetTemp", 0, 15, 8, -18, 5, 21));//变温目标温度
 
+        protocolConfig.add(new ProtocolConfigBase("fridgeSwitch",0,13,9));//冷藏关闭 冷藏档位设置为0 如有此项一定放在所有模式之前
         protocolConfig.add(new ProtocolConfigBase("smartMode", 0, 20, 1));//智能模式
         protocolConfig.add(new ProtocolConfigBase("holidayMode", 0, 20, 2));//假日模式
         protocolConfig.add(new ProtocolConfigBase("quickFreezeMode", 0, 20, 3));//速冻模式
@@ -50,8 +51,6 @@ public class ConfigTwoFiveOne {
         protocolConfig.add(new ProtocolConfigBase("changeSensorErr", 1, 30, 4));//变温温度传感器故障
         protocolConfig.add(new ProtocolConfigBase("defrostSensorErr", 1, 29, 0));//化霜传感器故障
         protocolConfig.add(new ProtocolConfigBase("freezeDefrostErr", 1, 29, 6));//冷冻化霜故障
-
-        protocolConfig.add(new ProtocolConfigBase("fridgeSwitch",0,13,9));//冷藏关闭 冷藏档位设置为0
 
         //以下不是从主控板获取
         protocolConfig.add(new ProtocolConfigBase("communicationErr",1,1,10));//通信错误

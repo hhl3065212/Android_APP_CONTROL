@@ -24,6 +24,9 @@ public class PrintUtil {
      * @return
      */
     public static String BytesToString(byte[] bytes, int form) {
+        if(bytes == null){
+            return "";
+        }
         StringBuffer stringBuffer = new StringBuffer();
         for (byte tmp : bytes) {
             if (form == OCT) {

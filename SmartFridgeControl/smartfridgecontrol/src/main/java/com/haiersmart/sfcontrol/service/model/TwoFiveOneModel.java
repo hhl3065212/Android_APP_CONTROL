@@ -23,6 +23,8 @@ public class TwoFiveOneModel extends ModelBase {
 
     public void init() {
         initControlEntries();
+        initTempStatusEntries();
+        initErrorStatusEntries();
     }
 
     private void initControlEntries() {
@@ -401,6 +403,7 @@ public class TwoFiveOneModel extends ModelBase {
 
         if(isTempChanged) {
             mService.notifyTemperChanged(mShowTempEntryList);
+            MyLogUtil.d("printSerialString","temper");
             mService.sendQuery();
         }
         MyLogUtil.v(TAG,"handleTemperInfoResponse out");
@@ -465,6 +468,7 @@ public class TwoFiveOneModel extends ModelBase {
 
         if(isErrOccurred) {
             mService.notifyErrorOccurred(mErrorEntryList);
+            MyLogUtil.d("printSerialString","error");
             mService.sendQuery();
         }
     }

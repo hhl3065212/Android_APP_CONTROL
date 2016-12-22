@@ -12,12 +12,15 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -25,6 +28,7 @@ import com.haiersmart.sfcdemo.constant.ConstantUtil;
 import com.haiersmart.sfcdemo.constant.EnumBaseName;
 import com.haiersmart.sfcdemo.constant.QrCodeUtil;
 import com.haiersmart.sfcdemo.constant.TypeIdUtil;
+import com.haiersmart.sfcdemo.draw.AlarmWindow;
 import com.haiersmart.sfcdemo.draw.MyTestButton;
 import com.haiersmart.sfcdemo.model.FridgeModel;
 
@@ -59,6 +63,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private NetRunnable mNetRunnable;
     private Thread mThread;
 
+    private AlarmWindow alarmWindow;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,10 +81,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-        if(isReady) {
-            sendUserCommond(ConstantUtil.KEY_MODE,ConstantUtil.QUERY_CONTROL_READY);
+        if (isReady) {
+            sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_CONTROL_READY);
             startRefreshUI();
-        }else {
+        } else {
             Intent intent = new Intent();
             intent.setComponent(new ComponentName("com.haiersmart.sfcontrol", "com.haiersmart.sfcontrol.service.ControlMainBoardService"));
             startService(intent);
@@ -175,6 +181,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     mModel.mFreezeMax = intent.getIntExtra("freezeMaxValue", 0);
                     skbFreeze.setMax(mModel.mFreezeMax - mModel.mFreezeMin);
                 }
+            }else if(action.equals(ConstantUtil.BROADCAST_ACTION_ALARM)){
+                String doorAlarm = intent.getStringExtra(ConstantUtil.DOOR_ALARM_STATUS);
+                if(doorAlarm.equals(ConstantUtil.DOOR_FRIDGE_ALARM_TURE)){
+                    popAlarmWindow("冷藏室门开启，请关闭。");
+                }else if(doorAlarm.equals(ConstantUtil.DOOR_FRIDGE_ALARM_FALSE)){
+                    cancelAlarmWindow("冷藏室门开启，请关闭。");
+                }else if(doorAlarm.equals(ConstantUtil.DOOR_FREEZE_ALARM_TURE)){
+                    popAlarmWindow("冷冻室门开启，请关闭。");
+                }else if(doorAlarm.equals(ConstantUtil.DOOR_FREEZE_ALARM_FALSE)){
+                    cancelAlarmWindow("冷冻室门开启，请关闭。");
+                }else if(doorAlarm.equals(ConstantUtil.DOOR_CHANGE_ALARM_TURE)){
+                    popAlarmWindow("变温室门开启，请关闭。");
+                }else if(doorAlarm.equals(ConstantUtil.DOOR_CHANGE_ALARM_FALSE)){
+                    cancelAlarmWindow("变温室门开启，请关闭。");
+                }
+
             }
         }
     };
@@ -234,7 +256,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         skbChange = (SeekBar) findViewById(R.id.skb_demo_change);
         listenerSeekBar();
 
-        imvQrCode = (ImageView)findViewById(R.id.imv_demo_test);
+        imvQrCode = (ImageView) findViewById(R.id.imv_demo_test);
 
     }
 
@@ -256,7 +278,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         isReady = true;
         tvTest.setText("使用馨小厨APP扫码绑定");
-        QrCodeUtil.createQRCode(imvQrCode, TypeIdUtil.getCode(mContext,mModel.mTypeId),300);
+        QrCodeUtil.createQRCode(imvQrCode, TypeIdUtil.getCode(mContext, mModel.mTypeId), 300);
         sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_TEMPER_INFO);
         sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_CONTROL_INFO);
     }
@@ -490,6 +512,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         });
+        btnFridgeSwitch.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (mModel.mDisableFridgeOpen.equals("none")) {
+                    return false;
+                } else {
+                    String show;
+                    if (mModel.mDisableFridgeOpen.equals("关闭")) {
+                        show = "冷藏室已" + mModel.mDisableFridgeOpen + "，如要调节温度请先开启冷藏室";
+                    } else {
+                        show = mModel.mDisableFridgeOpen + "模式已开启，如要关闭冷藏室请先退出" + mModel.mDisableFridgeOpen + "模式";
+                    }
+                    Toast toast = Toast.makeText(mContext, show, Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER,0,0);
+                    toast.show();
+                    return true;
+                }
+            }
+        });
     }
 
     @Override
@@ -541,6 +582,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         ConstantUtil.KEY_SET_FRIDGE_LEVEL, progress + mModel.mFridgeMin);
             }
         });
+        skbFridge.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (mModel.mDisableFridge.equals("none")) {
+                    return false;
+                } else {
+                    String show;
+                    if (mModel.mDisableFridge.equals("关闭")) {
+                        show = "冷藏室已" + mModel.mDisableFridge + "，如要调节温度请先开启冷藏室";
+                    } else {
+                        show = mModel.mDisableFridge + "模式已开启，如要调节温度请先退出" + mModel.mDisableFridge + "模式";
+                    }
+                    Toast toast = Toast.makeText(mContext, show, Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER,0,0);
+                    toast.show();
+                    return true;
+                }
+            }
+        });
         skbFreeze.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -559,6 +619,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         ConstantUtil.KEY_SET_FREEZE_LEVEL, progress + mModel.mFreezeMin);
             }
         });
+        skbFreeze.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (mModel.mDisableFreeze.equals("none")) {
+                    return false;
+                }else {
+                    String show;
+                    if (mModel.mDisableFreeze.equals("关闭")) {
+                        show = "冷冻室已" + mModel.mDisableFreeze + "，如要调节温度请先开启冷冻室";
+                    } else {
+                        show = mModel.mDisableFreeze + "模式已开启，如要调节温度请先退出" + mModel.mDisableFreeze + "模式";
+                    }
+                    Toast toast = Toast.makeText(mContext, show, Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER,0,0);
+                    toast.show();
+                    return true;
+                }
+
+            }
+        });
         skbChange.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -575,6 +655,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 int progress = seekBar.getProgress();
                 sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.TEMPER_SETCUSTOMAREA,
                         ConstantUtil.KEY_SET_COLD_LEVEL, progress + mModel.mChangeMin);
+            }
+        });
+        skbChange.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (mModel.mDisableChange.equals("none")) {
+                    return false;
+                }else {
+                    String show;
+                    if (mModel.mDisableChange.equals("关闭")) {
+                        show = "变温室已" + mModel.mDisableFreeze + "，如要调节温度请先开启变温室";
+                    } else {
+                        show = mModel.mDisableChange + "模式已开启，如要调节温度请先退出" + mModel.mDisableChange + "模式";
+                    }
+                    Toast toast = Toast.makeText(mContext, show, Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER,0,0);
+                    toast.show();
+                    return true;
+                }
             }
         });
     }
@@ -629,36 +728,52 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } else if (name.equals(EnumBaseName.fridgeSwitch.toString())) {
                 mModel.isFridgeOpen = (value == 1) ? true : false;
                 mModel.mDisableFridgeOpen = disable;
-                if (mModel.mDisableFridgeOpen.equals("none")) {
-                    btnFridgeSwitch.setEnabled(true);
-                } else {
-                    btnFridgeSwitch.setEnabled(false);
-                }
+//                if (mModel.mDisableFridgeOpen.equals("none")) {
+                //                    btnFridgeSwitch.setEnabled(true);
+                //                } else {
+                //                    btnFridgeSwitch.setEnabled(false);
+                //                }
             }
         }
         skbFridge.setProgress(mModel.mFridgeTarget - mModel.mFridgeMin);
         if (mModel.mDisableFridge.equals("none")) {
-            skbFridge.setEnabled(true);
+//            skbFridge.setEnabled(true);
             tvFridgeTarget.setText(Integer.toString(mModel.mFridgeTarget) + " ℃");
         } else {
-            skbFridge.setEnabled(false);
+//            skbFridge.setEnabled(false);
             tvFridgeTarget.setText(mModel.mDisableFridge);
         }
         skbFreeze.setProgress(mModel.mFreezeTarget - mModel.mFreezeMin);
         if (mModel.mDisableFreeze.equals("none")) {
-            skbFreeze.setEnabled(true);
+//            skbFreeze.setEnabled(true);
             tvFreezeTarget.setText(Integer.toString(mModel.mFreezeTarget) + " ℃");
         } else {
-            skbFreeze.setEnabled(false);
+//            skbFreeze.setEnabled(false);
             tvFreezeTarget.setText(mModel.mDisableFreeze);
         }
         skbChange.setProgress(mModel.mChangeTarget - mModel.mChangeMin);
         if (mModel.mDisableChange.equals("none")) {
-            skbChange.setEnabled(true);
+//            skbChange.setEnabled(true);
             tvChangeTarget.setText(Integer.toString(mModel.mChangeTarget) + " ℃");
         } else {
-            skbChange.setEnabled(false);
+//            skbChange.setEnabled(false);
             tvChangeTarget.setText(mModel.mDisableChange);
+        }
+    }
+
+    private void popAlarmWindow(String show){
+        if(alarmWindow == null) {
+            alarmWindow = new AlarmWindow(this);
+        }
+        alarmWindow.addShow(show);
+        alarmWindow.showDialog();
+    }
+    private void cancelAlarmWindow(String show){
+        if(alarmWindow != null){
+            alarmWindow.deleteShow(show);
+            if(alarmWindow.isNoAlarm()){
+                alarmWindow = null;
+            }
         }
     }
 

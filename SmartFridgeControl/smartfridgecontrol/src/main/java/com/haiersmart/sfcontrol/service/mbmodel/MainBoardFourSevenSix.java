@@ -10,6 +10,7 @@
 package com.haiersmart.sfcontrol.service.mbmodel;
 
 import com.haiersmart.sfcontrol.application.ControlApplication;
+import com.haiersmart.sfcontrol.constant.EnumBaseName;
 import com.haiersmart.sfcontrol.database.FridgeControlEntry;
 import com.haiersmart.sfcontrol.service.alarm.HandleDoorAlarm;
 import com.haiersmart.sfcontrol.service.configtable.ConfigFourSevenSix;
@@ -38,7 +39,7 @@ public class MainBoardFourSevenSix extends MainBoardBase{
     /** 冷冻门中历史状态，用于来确定是否状态变化 */
     private static boolean mFreezeDoorHistoryStatus = false;
     /** 冷藏门从开门到报警时间 */
-    private static final int mFridgeDoorAlarmStartTime = 60*1000;//3*60*1000;
+    private static final int mFridgeDoorAlarmStartTime = 3*60*1000;//3*60*1000;
     /** 冷藏门从报警到自动停止时间 */
     private static final int mFridgeDoorAlarmStopTime = 10*60*1000;
     /** 冷冻门从开门到报警时间 */
@@ -77,32 +78,32 @@ public class MainBoardFourSevenSix extends MainBoardBase{
         boolean freezeCmdEn = true;//冷冻档位下发使能 初始为下发
 //        boolean changeCmdEn = true;//变温档位下发使能 初始为下发
         for (FridgeControlEntry fridgeControlEntry:dbFridgeControlSet){
-            if(fridgeControlEntry.name.equals("smartMode")){
+            if(fridgeControlEntry.name.equals(EnumBaseName.smartMode.toString())){
                 fridgeCmdEn = false;//智能 不比较冷藏档位
                 freezeCmdEn = false;//智能 不比较冷冻档位
-            }else if(fridgeControlEntry.name.equals("holidayMode")){
+            }else if(fridgeControlEntry.name.equals(EnumBaseName.holidayMode.toString())){
                 fridgeCmdEn = false;//假日 不比较冷藏档位
-            }else if(fridgeControlEntry.name.equals("quickFreezeMode")){
+            }else if(fridgeControlEntry.name.equals(EnumBaseName.quickFreezeMode.toString())){
                 freezeCmdEn = false;//速冻 不比较冷冻档位
-            }else if(fridgeControlEntry.name.equals("quickColdMode")){
+            }else if(fridgeControlEntry.name.equals(EnumBaseName.quickColdMode.toString())){
                 fridgeCmdEn = false;//速冷 不比较冷藏档位
             }
         }
         if(fridgeCmdEn){
-            FridgeControlEntry fridgeControlEntry = new FridgeControlEntry("fridgeTargetTemp");
+            FridgeControlEntry fridgeControlEntry = new FridgeControlEntry(EnumBaseName.fridgeTargetTemp.toString());
             mFridgeControlDbMgr.queryByName(fridgeControlEntry);
             int valueDb = fridgeControlEntry.value;
-            int valueBoard = getMainBoardControlByName("fridgeTargetTemp");
+            int valueBoard = getMainBoardControlByName(EnumBaseName.fridgeTargetTemp.toString());
             //温度值不同 下发档位
             if(valueDb != valueBoard) {
                 tmpSendBytes.add(packFridgeTargetTemp(valueDb));
             }
         }
         if(freezeCmdEn){
-            FridgeControlEntry fridgeControlEntry = new FridgeControlEntry("freezeTargetTemp");
+            FridgeControlEntry fridgeControlEntry = new FridgeControlEntry(EnumBaseName.freezeTargetTemp.toString());
             mFridgeControlDbMgr.queryByName(fridgeControlEntry);
             int valueDb = fridgeControlEntry.value;
-            int valueBoard = getMainBoardControlByName("freezeTargetTemp");
+            int valueBoard = getMainBoardControlByName(EnumBaseName.freezeTargetTemp.toString());
             //温度值不同 下发档位
             if(valueDb != valueBoard) {
                 tmpSendBytes.add(packFreezeTargetTemp(valueDb));

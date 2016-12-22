@@ -332,6 +332,12 @@ public class SerialData {
         this.mOSType = mOSType;
     }
     public byte[] setDataBaseToBytes(){
-        return mMainBoard.setDataBaseToBytes(getReceiveBuff());
+        byte[] res;
+        if(DataLen < 5){
+            res = null;
+        }else {
+            res = mMainBoard.setDataBaseToBytes(getReceiveBuff());
+        }
+        return res;
     }
 }

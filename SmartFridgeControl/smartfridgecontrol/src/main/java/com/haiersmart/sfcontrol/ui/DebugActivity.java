@@ -42,6 +42,7 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
     private int mFridgeMin,mFridgeMax,mFreezeMin,mFreezeMax,mChangeMin,mChangeMax;
 
     private Timer mTimer;
+    private TimerTask mWaitTask,mTimerTask;
 
     private LinearLayout lineEnvTemp,lineEnvHum,lineFridgeTemp,lineFreezeTemp,lineChangeTemp,
             lineFridgeTarget,lineFreezeTarget,lineChangeTarger;
@@ -62,9 +63,24 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
         mSerialData = SerialData.getInstance();
         mMainBoardParameters = MainBoardParameters.getInstance();
         findView();
-        mTimer = new Timer();
-        mTimer.schedule(mWaitTask,0,1000);
+        startWaitTask();
+//        mTimer = new Timer();
+//        mTimer.schedule(mWaitTask,0,1000);
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mTimerTask.cancel();
+        mWaitTask.cancel();
+        mTimer.cancel();
+    }
+
     ServiceConnection conn = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -167,24 +183,60 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
             tvFridgeModel.setText(mModel);
             mWaitTask.cancel();
             setView();
-            mTimer.schedule(mTimerTask, 0, 200);
+//            mTimer.schedule(mTimerTask, 0, 200);
+            startTimerTask();
             MyLogUtil.i(TAG, "fridge model is " + mModel);
         }
     }
-
-    private TimerTask mWaitTask = new TimerTask() {
-        @Override
-        public void run() {
-            mHandler.sendEmptyMessage(0x01);
+    private void startWaitTask(){
+        if(mWaitTask == null){
+            mWaitTask = new TimerTask() {
+                @Override
+                public void run() {
+                    mHandler.sendEmptyMessage(0x01);
+                }
+            };
         }
-    };
-
-    private TimerTask mTimerTask = new TimerTask() {
-        @Override
-        public void run() {
-            mHandler.sendEmptyMessage(0x02);
+        if(mTimer == null){
+            mTimer = new Timer();
         }
-    };
+        mTimer.schedule(mWaitTask,0,1000);
+    }
+    private void stopWaitTask(){
+        if(mWaitTask != null){
+            mWaitTask.cancel();
+            mWaitTask = null;
+        }
+        if(mTimer != null){
+            mTimer.cancel();
+            mTimer = null;
+        }
+    }
+    private void startTimerTask(){
+        if(mTimerTask == null){
+            mTimerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    mHandler.sendEmptyMessage(0x02);
+                }
+            };
+        }
+        if(mTimer == null){
+            mTimer = new Timer();
+        }
+        mTimer.schedule(mTimerTask,0,200);
+    }
+    private void stopTimerTask(){
+        if(mTimerTask != null){
+            mTimerTask.cancel();
+            mTimerTask = null;
+        }
+        if(mTimer != null){
+            mTimer.cancel();
+            mTimer = null;
+        }
+    }
+
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg){
@@ -233,6 +285,7 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                     btnQuickFreeze.setOff();
                 }
                 fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.fridgeSwitch);
+//                MyLogUtil.i(TAG,"fridgeSwitch status is " +fridgeControlEntry.value);
                 if(fridgeControlEntry.value == 1){
                     btnFridgeClose.setOn();
                     btnFridgeClose.setText("冷藏开");

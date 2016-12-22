@@ -23,11 +23,11 @@
                 <!--<category android:name="android.intent.category.LAUNCHER"/>-->
             <!--</intent-filter>-->
         </activity>
-        <activity
-            android:name=".ui.DoorAlarmActivity"
-            android:launchMode="singleTask"
-            android:theme="@style/myTransparent">
-        </activity>
+        <!--<activity-->
+            <!--android:name=".ui.DoorAlarmActivity"-->
+            <!--android:launchMode="singleTask"-->
+            <!--android:theme="@style/myTransparent">-->
+        <!--</activity>-->
         <activity android:name=".ui.FactoryStatusActivity">
              <intent-filter>
                  <!--<action android:name="android.intent.action.MAIN" />-->
@@ -52,11 +52,11 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".receiver.DoorAlarmReceiver">
-            <intent-filter>
-                <action android:name="com.haiersmart.sfcontrol.alarm"/>
-            </intent-filter>
-        </receiver>
+        <!--<receiver android:name=".receiver.DoorAlarmReceiver">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="com.haiersmart.sfcontrol.alarm"/>-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
 
         <receiver android:name=".receiver.ControlCommandReceiver">
             <intent-filter>

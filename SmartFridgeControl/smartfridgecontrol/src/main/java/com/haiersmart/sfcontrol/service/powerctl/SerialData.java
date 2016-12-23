@@ -340,4 +340,8 @@ public class SerialData {
         }
         return res;
     }
+
+    public void setDoorStauts(boolean b) {
+        mMainBoard.testDoor = b;
+    }
 }

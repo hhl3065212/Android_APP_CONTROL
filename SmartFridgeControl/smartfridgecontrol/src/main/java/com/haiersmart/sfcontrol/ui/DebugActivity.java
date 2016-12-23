@@ -50,7 +50,7 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
     tvFridgeTarget,tvFreezeTarget,tvChangeTarget;
     private TextView tvTitleStatusCode;
     private Button btnReturn;
-    private MyTestButton btnSmart,btnHoliday,btnQuickCold,btnQuickFreeze,btnFridgeClose;
+    private MyTestButton btnSmart,btnHoliday,btnQuickCold,btnQuickFreeze,btnFridgeClose,btnFridgeDoor;
     private SeekBar skbFridge,skbFreeze,skbChange;
 
     private int onclickCounts = 0;
@@ -148,6 +148,7 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                 initQuickCold(R.id.btn_debug_center_left);
                 initQuickFreeze(R.id.btn_debug_center_right);
                 initFridgeClose(R.id.btn_debug_bottom_left);
+                initFridgeDoor(R.id.btn_debug_bottom_right);
                 break;
         }
     }
@@ -402,6 +403,30 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                     }else {
 //                        btnFridgeClose.setOn();
                         mControlService.sendUserCommand(EnumBaseName.fridgeSwitch,1);
+                    }
+                }
+            }
+        });
+    }
+
+    private void initFridgeDoor(final int idButton){
+        btnFridgeDoor = (MyTestButton)findViewById(idButton);
+        btnFridgeDoor.setEnabled(true);
+        btnFridgeDoor.setOff();
+        btnFridgeDoor.setText("关门");
+
+        btnFridgeDoor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(v.getId() == idButton){
+                    if(btnFridgeDoor.isPress()){
+                        btnFridgeDoor.setOff();
+                        btnFridgeDoor.setText("关门");
+                        mSerialData.setDoorStauts(false);
+                    }else {
+                        btnFridgeDoor.setOn();
+                        btnFridgeDoor.setText("开门");
+                        mSerialData.setDoorStauts(true);
                     }
                 }
             }

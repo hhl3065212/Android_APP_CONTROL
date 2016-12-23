@@ -12,6 +12,7 @@ package com.haiersmart.sfcdemo.draw;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
+import android.os.PowerManager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,13 +33,15 @@ import java.util.ArrayList;
  */
 public class AlarmWindow extends PopupWindow implements View.OnClickListener{
     protected final String TAG = "AlarmWindow";
-    private Activity context;
+    private Activity activity;
+    private Context context;
     private View mMenuView;
     private TextView tvShowText;
     private ArrayList<String> listShow;
 
-    public AlarmWindow(Activity context){
-        this.context = context;
+    public AlarmWindow(Activity activity){
+        this.activity = activity;
+        context = this.activity.getBaseContext();
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mMenuView = inflater.inflate(R.layout.window_alarm, null);
@@ -103,7 +106,12 @@ public class AlarmWindow extends PopupWindow implements View.OnClickListener{
         if(context==null){
             return;
         }
-        showAtLocation(context.getWindow().getDecorView(),
+        PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP
+                |PowerManager.FULL_WAKE_LOCK,"alarm");
+        wakeLock.acquire();
+        wakeLock.release();
+        showAtLocation(activity.getWindow().getDecorView(),
                 Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL
                 , 0, 0); // 设置layout在PopupWindow中显示的位置
     }

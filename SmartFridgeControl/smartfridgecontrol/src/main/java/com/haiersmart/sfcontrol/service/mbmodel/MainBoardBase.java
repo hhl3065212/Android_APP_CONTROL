@@ -44,6 +44,7 @@ public abstract class MainBoardBase {
     protected ArrayList<FridgeControlEntry> dbFridgeControlEntry;//数据库对应查询的控制类
     protected ArrayList<FridgeControlEntry> dbFridgeControlCancel;//数据库中需要取消设置的类
     protected ArrayList<FridgeControlEntry> dbFridgeControlSet;//数据库中需要设置的类
+    public boolean testDoor = false;
 
     public MainBoardBase() {
         mProtocolCommand = new ProtocolCommand();
@@ -672,6 +673,27 @@ public abstract class MainBoardBase {
 
         }
         return frame;
+    }
+
+    protected class DoorStatusEntry{
+        private String name;
+        private int value;
+
+        public DoorStatusEntry(String name, int value) {
+            this.name = name;
+            this.value = value;
+        }
+
+        public DoorStatusEntry() {
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getValue() {
+            return value;
+        }
     }
 
 

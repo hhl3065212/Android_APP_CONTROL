@@ -9,9 +9,11 @@
  */
 package com.haiersmart.sfcontrol.service.alarm;
 
+import com.alibaba.fastjson.JSON;
 import com.haiersmart.sfcontrol.application.ControlApplication;
 import com.haiersmart.sfcontrol.utilslib.MyLogUtil;
 
+import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -37,6 +39,7 @@ public abstract class HandleDoorAlarm {
     private String mContent;
     /** 是否门开启报警*/
     private boolean isDoorAlarming;
+    private static HashMap<String,Integer> doorHashMap;
 
     private Timer timer;
     private TimerTaskStartAlarm timerTaskStartAlarm;
@@ -47,12 +50,16 @@ public abstract class HandleDoorAlarm {
         mAlarmToStopTime = nStopTime;
         mContent = content;
         isDoorAlarming = false;
+        if(doorHashMap == null){
+            doorHashMap = new HashMap<>();
+        }
+        doorHashMap.put(mContent,0);
     }
 
     /**
      * 开始门报警的任务，发送门报警广播，并开始关闭报警计时
      */
-    class TimerTaskStartAlarm extends TimerTask {
+    private class TimerTaskStartAlarm extends TimerTask {
 
         @Override
         public void run() {
@@ -83,6 +90,7 @@ public abstract class HandleDoorAlarm {
         if (timerTaskStartAlarm != null) {
             timerTaskStartAlarm.cancel();
             timerTaskStartAlarm = null;
+            MyLogUtil.i(TAG,"TimerTaskStartAlarm is stop");
         }
     }
 
@@ -90,7 +98,7 @@ public abstract class HandleDoorAlarm {
     /**
      * 结束门报警任务，发送停止门报警广播
      */
-    class  CloseAlarmTimer extends TimerTask{
+    private class  CloseAlarmTimer extends TimerTask{
 
         @Override
         public void run() {
@@ -119,6 +127,7 @@ public abstract class HandleDoorAlarm {
         if (closeAlarmTimer != null) {
             closeAlarmTimer.cancel();
             closeAlarmTimer = null;
+            MyLogUtil.i(TAG,"closeAlarmTimer is stop");
         }
     }
 
@@ -144,7 +153,10 @@ public abstract class HandleDoorAlarm {
         StringBuffer stringBuffer = new StringBuffer(mContent);
         stringBuffer.append("DoorAlarmTrue");
         MyLogUtil.i(TAG, "Door alarm status is " + stringBuffer.toString());
-        ControlApplication.getInstance().sendBroadcast(BROADCAST_ACTION_ALARM, DOOR_ALARM_STATUS, stringBuffer.toString());
+        doorHashMap.remove(mContent);
+        doorHashMap.put(mContent, 1);
+        String doorJson = JSON.toJSONString(doorHashMap);
+        ControlApplication.getInstance().sendBroadcast(BROADCAST_ACTION_ALARM, DOOR_ALARM_STATUS, doorJson);
         setDoorErr(true);
     }
 
@@ -154,12 +166,14 @@ public abstract class HandleDoorAlarm {
             StringBuffer stringBuffer = new StringBuffer(mContent);
             stringBuffer.append("DoorAlarmFalse");
             MyLogUtil.i(TAG, "Door alarm status is " + stringBuffer.toString());
-            ControlApplication.getInstance().sendBroadcast(BROADCAST_ACTION_ALARM, DOOR_ALARM_STATUS, stringBuffer.toString());
+            doorHashMap.remove(mContent);
+            doorHashMap.put(mContent, 0);
+            String doorJson = JSON.toJSONString(doorHashMap);
+            ControlApplication.getInstance().sendBroadcast(BROADCAST_ACTION_ALARM, DOOR_ALARM_STATUS, doorJson);
             setDoorErr(false);
         }
     }
 
     public abstract void setDoorErr(boolean b);
-
 
 }

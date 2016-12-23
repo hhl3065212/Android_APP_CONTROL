@@ -162,7 +162,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     refreshUI();
                 }
             } else if (action.equals(ConstantUtil.BROADCAST_ACTION_ERROR)) {
-
+                if (isReady) {
+                    String jsonString = intent.getStringExtra(ConstantUtil.KEY_ERROR);
+                    JSONArray jsonArray = JSONArray.parseArray(jsonString);
+                    Log.i(TAG, "error jsonArray:" + jsonArray);
+                }
             } else if (action.equals(ConstantUtil.BROADCAST_ACTION_FRIDGE_RANGE)) {
                 if (isReady) {
                     mModel.mFridgeMin = intent.getIntExtra("fridgeMinValue", 0);
@@ -182,21 +186,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     skbFreeze.setMax(mModel.mFreezeMax - mModel.mFreezeMin);
                 }
             }else if(action.equals(ConstantUtil.BROADCAST_ACTION_ALARM)){
-                String doorAlarm = intent.getStringExtra(ConstantUtil.DOOR_ALARM_STATUS);
-                if(doorAlarm.equals(ConstantUtil.DOOR_FRIDGE_ALARM_TURE)){
-                    popAlarmWindow("冷藏室门开启，请关闭。");
-                }else if(doorAlarm.equals(ConstantUtil.DOOR_FRIDGE_ALARM_FALSE)){
-                    cancelAlarmWindow("冷藏室门开启，请关闭。");
-                }else if(doorAlarm.equals(ConstantUtil.DOOR_FREEZE_ALARM_TURE)){
-                    popAlarmWindow("冷冻室门开启，请关闭。");
-                }else if(doorAlarm.equals(ConstantUtil.DOOR_FREEZE_ALARM_FALSE)){
-                    cancelAlarmWindow("冷冻室门开启，请关闭。");
-                }else if(doorAlarm.equals(ConstantUtil.DOOR_CHANGE_ALARM_TURE)){
-                    popAlarmWindow("变温室门开启，请关闭。");
-                }else if(doorAlarm.equals(ConstantUtil.DOOR_CHANGE_ALARM_FALSE)){
-                    cancelAlarmWindow("变温室门开启，请关闭。");
+                if(isReady) {
+                    String jsonDoor = intent.getStringExtra(ConstantUtil.DOOR_STATUS);
+                    if (jsonDoor != null) {
+                        JSONObject jsonObject = JSONObject.parseObject(jsonDoor);
+                        Log.i(TAG, "door status jsonObject:" + jsonObject);
+//                        handleDoorStatus(jsonObject);
+                    }
+                    String jsonAlarm = intent.getStringExtra(ConstantUtil.DOOR_ALARM_STATUS);
+                    if (jsonAlarm != null) {
+                        JSONObject jsonObject = JSONObject.parseObject(jsonAlarm);
+                        Log.i(TAG, "door alarm status jsonObject:" + jsonObject);
+                        handleDoorAlarm(jsonObject);
+                    }
                 }
-
             }
         }
     };
@@ -758,6 +761,43 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
 //            skbChange.setEnabled(false);
             tvChangeTarget.setText(mModel.mDisableChange);
+        }
+    }
+    private void handleDoorAlarm(JSONObject jsonObject){
+        Object object = jsonObject.get("fridge");
+        if(object == null || (int)object ==0){
+            cancelAlarmWindow("冷藏");
+        }else {
+            popAlarmWindow("冷藏");
+        }
+        object = jsonObject.get("freeze");
+        if(object == null || (int)object ==0){
+            cancelAlarmWindow("冷冻");
+        }else {
+            popAlarmWindow("冷冻");
+        }
+        object = jsonObject.get("change");
+        if(object == null || (int)object ==0){
+            cancelAlarmWindow("变温");
+        }else {
+            popAlarmWindow("变温");
+        }
+    }
+    private void handleDoorStatus(JSONObject jsonObject){
+        if((int)jsonObject.get("fridge")==1){
+            popAlarmWindow("冷藏");
+        }else {
+            cancelAlarmWindow("冷藏");
+        }
+        if((int)jsonObject.get("freeze")==1){
+            popAlarmWindow("冷冻");
+        }else {
+            cancelAlarmWindow("冷冻");
+        }
+        if((int)jsonObject.get("change")==1){
+            popAlarmWindow("变温");
+        }else {
+            cancelAlarmWindow("变温");
         }
     }
 

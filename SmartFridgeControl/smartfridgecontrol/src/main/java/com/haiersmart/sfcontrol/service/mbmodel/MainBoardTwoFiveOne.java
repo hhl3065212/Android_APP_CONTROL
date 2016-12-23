@@ -9,6 +9,7 @@
  */
 package com.haiersmart.sfcontrol.service.mbmodel;
 
+import com.alibaba.fastjson.JSON;
 import com.haiersmart.sfcontrol.application.ControlApplication;
 import com.haiersmart.sfcontrol.constant.EnumBaseName;
 import com.haiersmart.sfcontrol.database.FridgeControlEntry;
@@ -17,10 +18,9 @@ import com.haiersmart.sfcontrol.service.configtable.ConfigTwoFiveOne;
 import com.haiersmart.sfcontrol.utilslib.MyLogUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static com.haiersmart.sfcontrol.constant.ConstantUtil.BROADCAST_ACTION_ALARM;
-import static com.haiersmart.sfcontrol.constant.ConstantUtil.DOOR_FRIDGE_CLOSE;
-import static com.haiersmart.sfcontrol.constant.ConstantUtil.DOOR_FRIDGE_OPEN;
 import static com.haiersmart.sfcontrol.constant.ConstantUtil.DOOR_STATUS;
 
 /**
@@ -137,19 +137,28 @@ public class MainBoardTwoFiveOne extends MainBoardBase {
 
     @Override
     public void handleDoorEvents() {
-        boolean bFridgeDoorNowStatus = getMainBoardStatusByName("fridgeDoorStatus")==1?true:false;
+        boolean isDoorChange = false;
+        boolean bFridgeDoorNowStatus = getMainBoardStatusByName("fridgeDoorStatus")==1;
+//        boolean bFridgeDoorNowStatus = testDoor;
+        HashMap<String,Integer> doorHashMap = new HashMap<>();
 
         if(bFridgeDoorNowStatus != mFridgeDoorHistoryStatus){
             mFridgeDoorHistoryStatus = bFridgeDoorNowStatus;
             if(bFridgeDoorNowStatus){
                 MyLogUtil.i(TAG,"fridgeDoorStatus is open");
-                ControlApplication.getInstance().sendBroadcast(BROADCAST_ACTION_ALARM,DOOR_STATUS,DOOR_FRIDGE_OPEN);
                 mFridgeDoorAlarm.startAlarmTimer();
             }else {
                 MyLogUtil.i(TAG,"fridgeDoorStatus is close");
-                ControlApplication.getInstance().sendBroadcast(BROADCAST_ACTION_ALARM,DOOR_STATUS,DOOR_FRIDGE_CLOSE);
                 mFridgeDoorAlarm.stopAll();
             }
+            isDoorChange = true;
+        }
+        if(isDoorChange){
+            doorHashMap.put("fridge",bFridgeDoorNowStatus?1:0);
+            doorHashMap.put("freeze",0);
+            doorHashMap.put("change",0);
+            String doorJson = JSON.toJSONString(doorHashMap);
+            ControlApplication.getInstance().sendBroadcast(BROADCAST_ACTION_ALARM,DOOR_STATUS,doorJson);
         }
     }
 

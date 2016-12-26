@@ -107,6 +107,8 @@ public class ControlCommandReceiver extends BroadcastReceiver {
             } else if (contentAction.equals(ConstantUtil.QUERY_FREEZE_TEMP_RANGE)) {
                 //查询冷冻室温度档位范围
                 sendCommandToService(context, ConstantUtil.QUERY_FREEZE_TEMP_RANGE);
+            }else if(contentAction.equals(ConstantUtil.QUERY_TEMP_RANGE)){
+                sendCommandToService(context,ConstantUtil.QUERY_TEMP_RANGE);
             }
         } else if (action.equals(ConstantWifiUtil.ACTION_MODECONTROL)) {
             String contentAction = intent.getStringExtra(ConstantWifiUtil.KEY_SENDCONTROL);

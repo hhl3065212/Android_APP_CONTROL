@@ -5,36 +5,6 @@ package com.haiersmart.sfcdemo.constant;
  */
 public class ConstantUtil {
 
-    /**
-     * sp 默认文件名
-     */
-    public static final String SFCONTROL = "nation_sp";
-    /**
-     * 常量
-     */
-    public static final boolean DEBUG = true;  //true debug版本 false 正式版本
-
-    public static final int SERVICE_RESTART_TIME = 5 * 1000;                //Service 重启间隔时间
-    public static final int LUNBO_TIME = 15 * 1000;                //Service 重启间隔时间
-
-    public static final boolean MODBUS_SERVICE_STARTUP = true;                //Service 重启间隔时间
-
-    public static final int CODE_STATUS_SIZE = 110;                //电控板返回状态码数组大小
-
-    public static final int DB_VERSION = 1;
-    public static final String DB_NAME = "controlboard.db";
-    public static final String DB_TABLE_NAME_CONTROL = "controltable";
-    /**
-     * INTENT
-     */
-    public static final String INTENT_FROM = "i00";
-
-
-    /**
-     * Bundle
-     */
-    public static final String Bundle_FROM = "i00";
-
 
     /**
      * fridge type
@@ -47,33 +17,12 @@ public class ConstantUtil {
     public static final String BCD476_MODEL = "BCD-476";
 
     /**
-     * fridge typeid
-     */
-    public static final String BCD325_SN = "111c12002400081001030061800446410000000000";
-    public static final String BCD251_SN = "111c12002400081001030061800118420000000000";
-    public static final String BCD401_SN = "111c12002400081001010061800447000000000000";
-    public static final String BCD256_SN = "111c12002400081001030061800458410000000000";
-    public static final String BCD630_SN = "111C12002400081001010061800259430000000000";
-    public static final String BCD476_SN = "111c12002400081001010061800347460000000000";
-
-    /**
      * broadcast
      */
-    //broadcast from mainboard to service, internal
-    public static final String BROADCAST_ACTION_QUERY_BACK = "com.com.haiersmart.sfcontrol.queryback";//冰箱档设备查询码从电控板返回广播
-    public static final String BROADCAST_ACTION_STATUS_BACK = "com.haiersmart.sfcontrol.statusback";//冰箱控制和温度等状态从电控板返回广播
+
     //broadcast to user , external
-    public static final String BROADCAST_ACTION_FRIDGE_INFO = "com.haiersmart.sfcontrol.info";//设备fridge info(id, type)发生变化广播
-    public static final String BROADCAST_ACTION_INFO = "com.haiersmart.sfcontrol.info";//通知冰箱硬件型号
-    public static final String BROADCAST_ACTION_CONTROL = "com.haiersmart.sfcontrol.control";//通知模式和档位信息广播
-    public static final String BROADCAST_ACTION_TEMPER = "com.haiersmart.sfcontrol.temper";//通知温度广播
-    public static final String BROADCAST_ACTION_ERROR = "com.haiersmart.sfcontrol.error";//通知错误或故障信息广播
-    public static final String BROADCAST_ACTION_ALARM = "com.haiersmart.sfcontrol.alarm";//通知报警信息广播
     public static final String COMMAND_TO_SERVICE = "com.haiersmart.sfcontrol.command";//用户命令给service广播
-    public static final String BROADCAST_ACTION_FRIDGE_RANGE = "com.haiersmart.sfcontrol.fridge.range";//通知冷藏档位大小范围
-    public static final String BROADCAST_ACTION_CHANGE_RANGE = "com.haiersmart.sfcontrol.change.range";//通知变温档位大小范围
-    public static final String BROADCAST_ACTION_FREEZE_RANGE = "com.haiersmart.sfcontrol.freeze.range";//通知冷冻档位大小范围
-    public static final String BROADCAST_ACTION_READY = "com.haiersmart.sfcontrol.ready";//通知service是否能正常获取主控板信息
+    public static final String SERVICE_NOTICE = "com.haiersmart.sfcontrol.notice";//service通知状态
 
     /**
      * user command request actions
@@ -110,14 +59,14 @@ public class ConstantUtil {
 
     //返回的key
     public static final String KEY_CONTROL_INFO = "ControlInfo";//识别key为“ControlInfo” 发送的数据为Serializable
-    public static final String KEY_FRIDGE_ID = "fridgeId";
     public static final String KEY_FRIDGE_TYPE = "fridgeType";
     public static final String KEY_TYPE_ID = "typeId";//冰箱互联型号
     public static final String KEY_ERROR = "error";//错误命令key
-    public static final String KEY_ALARM = "alarm";//报警key
     public static final String KEY_TEMPER = "temper";
     public static final String KEY_MODE= "commandMode";
     public static final String KEY_READY= "serviceReady";
+    public static final String KEY_RANGE = "range";//温度控制范围
+    public static final String KEY_INFO = "info";//温度控制范围
 
     public static final String KEY_SET_COLD_LEVEL= "coldlevel";
     public static final String KEY_SET_FRIDGE_LEVEL= "fridgelevel";
@@ -128,9 +77,7 @@ public class ConstantUtil {
     public static final String QUERY_CONTROL_INFO = "queryControlInfo";
     public static final String QUERY_TEMPER_INFO = "queryTemperInfo";
     public static final String QUERY_ERROR_INFO = "queryErrorInfo";
-    public static final String QUERY_FRIDGE_TEMP_RANGE = "queryFridgeTempRange";
-    public static final String QUERY_CHANGE_TEMP_RANGE = "queryChangeTempRange";
-    public static final String QUERY_FREEZE_TEMP_RANGE = "queryFreezeTempRange";
+    public static final String QUERY_TEMP_RANGE = "queryTempRange";
 
 
     public static final String QUERY_MODE = "model";
@@ -143,45 +90,8 @@ public class ConstantUtil {
 
     //门状态
     public static final String DOOR_STATUS= "doorStatus";//门状态
-    public static final String DOOR_FRIDGE_OPEN = "fridgeDoorOpen";//冷藏门开门
-    public static final String DOOR_FRIDGE_CLOSE= "fridgeDoorClose";//冷藏门关门
-    public static final String DOOR_FREEZE_OPEN = "freezeDoorOpen";//冷冻门开门
-    public static final String DOOR_FREEZE_CLOSE= "freezeDoorClose";//冷冻门关门
-    public static final String DOOR_CHANGE_OPEN = "changeDoorOpen";//变温门开门
-    public static final String DOOR_CHANGE_CLOSE= "changeDoorClose";//变温门关门
+
     //门报警
     public static final String DOOR_ALARM_STATUS = "doorAlarmStatus";//门常开报警状态
-    public static final String DOOR_FRIDGE_ALARM_TURE = "fridgeDoorAlarmTrue";//冷藏门常开报警开始
-    public static final String DOOR_FRIDGE_ALARM_FALSE= "fridgeDoorAlarmFalse";//冷藏门常开报警停止
-    public static final String DOOR_FREEZE_ALARM_TURE= "freezeDoorAlarmTrue";//冷冻门常开报警开始
-    public static final String DOOR_FREEZE_ALARM_FALSE= "freezeDoorAlarmFalse";//冷冻门常开报警停止
-    public static final String DOOR_CHANGE_ALARM_TURE= "changeDoorAlarmTrue";//变温门常开报警开始
-    public static final String DOOR_CHANGE_ALARM_FALSE= "changeDoorAlarmFalse";//变温门常开报警停止
-
-
-    public static final String FRIDGEMODE = "fridge_mode";//冰箱系统型号
- //   public static final String FRIDGETYPE = "fridge_type";//冰箱硬件型号 海尔注册的冰箱型号
-
-    //toast info
-    public static final String NO_WARNING = "none";
-    public static final String HOLIDAY_ON_REFRIGERATOR_CLOSE_WARNING = "假日模式已开启，如要关闭冷藏室请先退出假日模式";
-    public static final String SMART_ON_REFRIGERATOR_CLOSE_WARNING = "智能模式已开启，如要关闭冷藏室请先退出智能模式";
-    public static final String SMART_ON_SET_TEMPER_WARNING = "智能模式已开启，如要调节温度请先退出智能模式";
-    public static final String HOLIDAY_ON_SET_TEMPER_WARNING = "假日模式已开启，如要调节温度请先退出假日模式";
-    public static final String FREEZE_ON_SET_TEMPER_WARNING = "速冻模式已开启，如要调节温度请先退出速冻模式";
-    public static final String CLOD_ON_SET_TEMPER_WARNING = "速冷模式已开启，如要调节温度请先退出速冷模式";
-    public static final String REFRIGERATOR_CLOSE_ON_SET_TEMPER_WARNING = "冷藏室已关闭，如要调节温度请先开启冷藏室";
-
-    //年月日
-    public static final String pop_year = "年";//y
-    public static final String pop_month = "月";//m
-    public static final String pop_day = "日";//d
-    public static boolean isAlarm = true;
-
-    //SP
-    public static final String COLDTIME = "cold_time";//冷藏室时间
-    public static final String COLDCOUNT = "cold_count";//冷藏室计数
-    public static final String FREEZETIME = "freeze_time";//冷冻室时间
-    public static final String FREEZECOUNT = "freeze_count";//冷冻室计数
 
 }

@@ -9,16 +9,16 @@
  */
 package com.haiersmart.sfcontrol.service.alarm;
 
+import android.content.Intent;
+
 import com.alibaba.fastjson.JSON;
 import com.haiersmart.sfcontrol.application.ControlApplication;
+import com.haiersmart.sfcontrol.constant.ConstantUtil;
 import com.haiersmart.sfcontrol.utilslib.MyLogUtil;
 
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import static com.haiersmart.sfcontrol.constant.ConstantUtil.BROADCAST_ACTION_ALARM;
-import static com.haiersmart.sfcontrol.constant.ConstantUtil.DOOR_ALARM_STATUS;
 
 /**
  * <p>function: </p>
@@ -155,8 +155,11 @@ public abstract class HandleDoorAlarm {
         MyLogUtil.i(TAG, "Door alarm status is " + stringBuffer.toString());
         doorHashMap.remove(mContent);
         doorHashMap.put(mContent, 1);
-        String doorJson = JSON.toJSONString(doorHashMap);
-        ControlApplication.getInstance().sendBroadcast(BROADCAST_ACTION_ALARM, DOOR_ALARM_STATUS, doorJson);
+        String doorAlarm = JSON.toJSONString(doorHashMap);
+        Intent intent = new Intent();
+        intent.putExtra(ConstantUtil.DOOR_ALARM_STATUS,doorAlarm);
+        intent.setAction(ConstantUtil.SERVICE_NOTICE);
+        ControlApplication.getInstance().sendBroadcast(intent);
         setDoorErr(true);
     }
 
@@ -168,8 +171,11 @@ public abstract class HandleDoorAlarm {
             MyLogUtil.i(TAG, "Door alarm status is " + stringBuffer.toString());
             doorHashMap.remove(mContent);
             doorHashMap.put(mContent, 0);
-            String doorJson = JSON.toJSONString(doorHashMap);
-            ControlApplication.getInstance().sendBroadcast(BROADCAST_ACTION_ALARM, DOOR_ALARM_STATUS, doorJson);
+            String doorAlarm = JSON.toJSONString(doorHashMap);
+            Intent intent = new Intent();
+            intent.putExtra(ConstantUtil.DOOR_ALARM_STATUS,doorAlarm);
+            intent.setAction(ConstantUtil.SERVICE_NOTICE);
+            ControlApplication.getInstance().sendBroadcast(intent);
             setDoorErr(false);
         }
     }

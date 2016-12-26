@@ -62,16 +62,17 @@ public class ConstantUtil {
     public static final String BROADCAST_ACTION_QUERY_BACK = "com.com.haiersmart.sfcontrol.queryback";//冰箱档设备查询码从电控板返回广播
     public static final String BROADCAST_ACTION_STATUS_BACK = "com.haiersmart.sfcontrol.statusback";//冰箱控制和温度等状态从电控板返回广播
     //broadcast to user , external
-    public static final String BROADCAST_ACTION_FRIDGE_INFO = "com.haiersmart.sfcontrol.info";//设备fridge info(id, type)发生变化广播
-    public static final String BROADCAST_ACTION_CONTROL = "com.haiersmart.sfcontrol.control";//通知模式和档位信息广播
-    public static final String BROADCAST_ACTION_TEMPER = "com.haiersmart.sfcontrol.temper";//通知温度广播
-    public static final String BROADCAST_ACTION_ERROR = "com.haiersmart.sfcontrol.error";//通知错误或故障信息广播
-    public static final String BROADCAST_ACTION_ALARM = "com.haiersmart.sfcontrol.alarm";//通知报警信息广播
+//    public static final String BROADCAST_ACTION_FRIDGE_INFO = "com.haiersmart.sfcontrol.info";//设备fridge info(id, type)发生变化广播
+//    public static final String BROADCAST_ACTION_CONTROL = "com.haiersmart.sfcontrol.control";//通知模式和档位信息广播
+//    public static final String BROADCAST_ACTION_TEMPER = "com.haiersmart.sfcontrol.temper";//通知温度广播
+//    public static final String BROADCAST_ACTION_ERROR = "com.haiersmart.sfcontrol.error";//通知错误或故障信息广播
+//    public static final String BROADCAST_ACTION_ALARM = "com.haiersmart.sfcontrol.alarm";//通知报警信息广播
     public static final String COMMAND_TO_SERVICE = "com.haiersmart.sfcontrol.command";//用户命令给service广播
-    public static final String BROADCAST_ACTION_FRIDGE_RANGE = "com.haiersmart.sfcontrol.fridge.range";//通知冷藏档位大小范围
-    public static final String BROADCAST_ACTION_CHANGE_RANGE = "com.haiersmart.sfcontrol.change.range";//通知变温档位大小范围
-    public static final String BROADCAST_ACTION_FREEZE_RANGE = "com.haiersmart.sfcontrol.freeze.range";//通知冷冻档位大小范围
-    public static final String BROADCAST_ACTION_READY = "com.haiersmart.sfcontrol.ready";//通知service是否能正常获取主控板信息
+    public static final String SERVICE_NOTICE = "com.haiersmart.sfcontrol.notice";//service通知状态
+//    public static final String BROADCAST_ACTION_FRIDGE_RANGE = "com.haiersmart.sfcontrol.fridge.range";//通知冷藏档位大小范围
+//    public static final String BROADCAST_ACTION_CHANGE_RANGE = "com.haiersmart.sfcontrol.change.range";//通知变温档位大小范围
+//    public static final String BROADCAST_ACTION_FREEZE_RANGE = "com.haiersmart.sfcontrol.freeze.range";//通知冷冻档位大小范围
+//    public static final String BROADCAST_ACTION_READY = "com.haiersmart.sfcontrol.ready";//通知service是否能正常获取主控板信息
 
     /**
      * user command request actions
@@ -116,6 +117,8 @@ public class ConstantUtil {
     public static final String KEY_TEMPER = "temper";
     public static final String KEY_ERROR = "error";//错误命令key
     public static final String KEY_ALARM = "alarm";//报警key
+    public static final String KEY_RANGE = "range";//温度控制范围
+    public static final String KEY_INFO = "info";//温度控制范围
 
 
 
@@ -124,6 +127,7 @@ public class ConstantUtil {
     public static final String QUERY_CONTROL_INFO = "queryControlInfo";
     public static final String QUERY_TEMPER_INFO = "queryTemperInfo";
     public static final String QUERY_ERROR_INFO = "queryErrorInfo";
+    public static final String QUERY_TEMP_RANGE = "queryTempRange";
     public static final String QUERY_FRIDGE_TEMP_RANGE = "queryFridgeTempRange";
     public static final String QUERY_CHANGE_TEMP_RANGE = "queryChangeTempRange";
     public static final String QUERY_FREEZE_TEMP_RANGE = "queryFreezeTempRange";

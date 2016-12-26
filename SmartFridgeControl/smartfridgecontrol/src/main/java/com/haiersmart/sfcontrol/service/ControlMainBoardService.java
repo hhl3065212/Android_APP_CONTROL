@@ -297,14 +297,8 @@ public class ControlMainBoardService extends Service {
             case ConstantUtil.QUERY_ERROR_INFO://查询故障信息
                 notifyErrorOccurred(mModel.getErrorEntries());
                 break;
-            case ConstantUtil.QUERY_FRIDGE_TEMP_RANGE://查询冷藏室温度档位范围
-                provideFridgeTempRange();
-                break;
-            case ConstantUtil.QUERY_CHANGE_TEMP_RANGE://查询变温室温度档位范围
-                provideChangeTempRange();
-                break;
-            case ConstantUtil.QUERY_FREEZE_TEMP_RANGE://查询冷冻室温度档位范围
-                provideFreezeTempRange();
+            case ConstantUtil.QUERY_TEMP_RANGE:
+                provideTempRange();
                 break;
             case ConstantUtil.KEY_QUERY:
                 MyLogUtil.d("printSerialString","query");
@@ -353,19 +347,18 @@ public class ControlMainBoardService extends Service {
     public void sendFridgeInfoResponse() {
         //broadcast fridgeId to app
         Intent intent = new Intent();
-        String typeId = mBoardInfo.getTypeId();
-        String fridgeId = mBoardInfo.getFridgeId();
-        String fridgeType = mBoardInfo.getFridgeType();
-        intent.putExtra(ConstantUtil.KEY_FRIDGE_ID, fridgeId);
-        intent.putExtra(ConstantUtil.KEY_TYPE_ID, typeId);
-        intent.putExtra(ConstantUtil.KEY_FRIDGE_TYPE, fridgeType);
-        intent.setAction(ConstantUtil.BROADCAST_ACTION_FRIDGE_INFO);
+        HashMap<String,String> hashMap = new HashMap<>();
+        hashMap.put(ConstantUtil.KEY_TYPE_ID,mBoardInfo.getTypeId());
+        hashMap.put(ConstantUtil.KEY_FRIDGE_TYPE,mBoardInfo.getFridgeType());
+        String infoString = JSON.toJSONString(hashMap);
+        intent.putExtra(ConstantUtil.KEY_INFO, infoString);
+        intent.setAction(ConstantUtil.SERVICE_NOTICE);
         sendBroadcast(intent);
     }
 
     public void sendControlReadyInfo() {
         Intent intent = new Intent();
-        intent.setAction(ConstantUtil.BROADCAST_ACTION_READY);
+        intent.setAction(ConstantUtil.SERVICE_NOTICE);
         intent.putExtra(ConstantUtil.KEY_READY, mIsModelReady);
         sendBroadcast(intent);
         MyLogUtil.i(TAG,readyCounts+" sendControlCmdResponse main board is "+mIsModelReady);
@@ -374,7 +367,7 @@ public class ControlMainBoardService extends Service {
     public void sendControlCmdResponse() {
         MyLogUtil.d(TAG, "sendControlCmdResponse in");
         Intent intent = new Intent();
-        intent.setAction(ConstantUtil.BROADCAST_ACTION_CONTROL);
+        intent.setAction(ConstantUtil.SERVICE_NOTICE);
 //        intent.putExtra(ConstantUtil.KEY_CONTROL_INFO,(Serializable)mModel.getControlEntries());
         String controlJson = JSON.toJSONString(mModel.getControlEntries());
         intent.putExtra(ConstantUtil.KEY_CONTROL_INFO,controlJson);
@@ -384,7 +377,7 @@ public class ControlMainBoardService extends Service {
 
     public void notifyTemperChanged( ArrayList<FridgeStatusEntry> statusEntries) {
         Intent intent = new Intent();
-        intent.setAction(ConstantUtil.BROADCAST_ACTION_TEMPER);
+        intent.setAction(ConstantUtil.SERVICE_NOTICE);
 //        MyLogUtil.i(TAG,"notifyTemperChanged statusEntries.size="+statusEntries.size());
 //        intent.putExtra(ConstantUtil.KEY_TEMPER,(Serializable)statusEntries);
 //        Bundle bundle = new Bundle();
@@ -397,25 +390,39 @@ public class ControlMainBoardService extends Service {
 
     public void notifyErrorOccurred(List<FridgeStatusEntry> statusEntries) {
         Intent intent = new Intent();
-        intent.setAction(ConstantUtil.BROADCAST_ACTION_ERROR);
+        intent.setAction(ConstantUtil.SERVICE_NOTICE);
 //        intent.putExtra(ConstantUtil.KEY_ERROR,(Serializable)statusEntries);
         String controlJson = JSON.toJSONString(statusEntries);
         intent.putExtra(ConstantUtil.KEY_ERROR,controlJson);
         sendBroadcast(intent);
     }
-
-    public void provideFridgeTempRange(){
+    public void provideTempRange(){
         Intent intent = new Intent();
-        intent.setAction(ConstantUtil.BROADCAST_ACTION_FRIDGE_RANGE);
+        intent.setAction(ConstantUtil.SERVICE_NOTICE);
+        HashMap<String,Integer> hashMapRange = new HashMap<>();
+        hashMapRange.put("fridgeMinValue",mMBParams.getTargetTempRange().getFridgeMinValue());
+        hashMapRange.put("fridgeMaxValue",mMBParams.getTargetTempRange().getFridgeMaxValue());
+        hashMapRange.put("freezeMinValue",mMBParams.getTargetTempRange().getFreezeMinValue());
+        hashMapRange.put("freezeMaxValue",mMBParams.getTargetTempRange().getFreezeMaxValue());
+        hashMapRange.put("changeMinValue",mMBParams.getTargetTempRange().getChangeMinValue());
+        hashMapRange.put("changeMaxValue",mMBParams.getTargetTempRange().getChangeMaxValue());
+        String rangeJson = JSON.toJSONString(hashMapRange);
+        intent.putExtra(ConstantUtil.KEY_RANGE,rangeJson);
+        sendBroadcast(intent);
+    }
+
+    /*public void provideFridgeTempRange(){
+        Intent intent = new Intent();
+        intent.setAction(ConstantUtil.SERVICE_NOTICE);
         intent.putExtra(ConstantUtil.FRIDGE_TEMP_MAX, mMBParams.getTargetTempRange().getFridgeMaxValue());
         intent.putExtra(ConstantUtil.FRIDGE_TEMP_MIN, mMBParams.getTargetTempRange().getFridgeMinValue());
         sendBroadcast(intent);
         MyLogUtil.i(TAG,"provideFridgeTempRange MaxValue="+mMBParams.getTargetTempRange().getFridgeMaxValue());
         MyLogUtil.i(TAG,"provideFridgeTempRange MinValue="+mMBParams.getTargetTempRange().getFridgeMinValue());
         MyLogUtil.i(TAG,"provideFridgeTempRange out");
-    }
+    }*/
 
-    public void provideChangeTempRange(){
+    /*public void provideChangeTempRange(){
         Intent intent = new Intent();
         intent.setAction(ConstantUtil.BROADCAST_ACTION_CHANGE_RANGE);
         intent.putExtra(ConstantUtil.CHANGE_TEMP_MAX, mMBParams.getTargetTempRange().getChangeMaxValue());
@@ -429,7 +436,7 @@ public class ControlMainBoardService extends Service {
         intent.putExtra(ConstantUtil.FREEZE_TEMP_MAX, mMBParams.getTargetTempRange().getFreezeMaxValue());
         intent.putExtra(ConstantUtil.FREEZE_TEMP_MIN, mMBParams.getTargetTempRange().getFreezeMinValue());
         sendBroadcast(intent);
-    }
+    }*/
 
 
     public FridgeControlEntry getEntryByName(EnumBaseName name) {

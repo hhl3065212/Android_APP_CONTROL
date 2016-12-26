@@ -70,12 +70,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mContext = getApplicationContext();
-        Intent intent = new Intent();
-        intent.setComponent(new ComponentName("com.haiersmart.sfcontrol", "com.haiersmart.sfcontrol.service.ControlMainBoardService"));
-        startService(intent);
+//        Intent intent = new Intent();
+//        intent.setComponent(new ComponentName("com.haiersmart.sfcontrol", "com.haiersmart.sfcontrol.service.ControlMainBoardService"));
+//        startService(intent);
         registerBroadcast();
         findView();
-        startQueryType();
+//        startQueryType();
     }
 
     @Override
@@ -109,15 +109,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void registerBroadcast() {
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_READY);
-        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_FRIDGE_INFO);
-        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_CONTROL);//模式和档位信息广播
-        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_TEMPER);//温度广播
-        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_ERROR);//错误或故障信息广播
-        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_ALARM);
-        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_FRIDGE_RANGE);
-        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_CHANGE_RANGE);
-        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_FREEZE_RANGE);
+//        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_READY);
+//        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_FRIDGE_INFO);
+//        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_CONTROL);//模式和档位信息广播
+//        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_TEMPER);//温度广播
+//        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_ERROR);//错误或故障信息广播
+//        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_ALARM);
+//        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_FRIDGE_RANGE);
+//        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_CHANGE_RANGE);
+//        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_FREEZE_RANGE);
+        intentFilter.addAction(ConstantUtil.SERVICE_NOTICE);
         registerReceiver(receiveUpdateUI, intentFilter);
     }
 
@@ -127,77 +128,64 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             Log.i(TAG, "BroadcastReceiver receiveUpdateUI action=" + action);
-            if (action.equals(ConstantUtil.BROADCAST_ACTION_CONTROL)) {
-                if (isReady) {
-                    String jsonString = intent.getStringExtra(ConstantUtil.KEY_CONTROL_INFO);
-                    JSONArray jsonArray = JSONArray.parseArray(jsonString);
-                    updateModeLevel(jsonArray);
-                    refreshUI();
+            if(action.equals(ConstantUtil.SERVICE_NOTICE)){
+                boolean ready = intent.getBooleanExtra(ConstantUtil.KEY_READY, isServiceReady);
+                if(isServiceReady != ready){
+                    isServiceReady = ready;
+                    if(isServiceReady) {
+                        stopQueryType();
+                        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_FRIDGE_INFO);
+                    }else {
+                        startQueryType();
+                    }
                 }
-            } else if (action.equals(ConstantUtil.BROADCAST_ACTION_READY)) {
-                isServiceReady = intent.getBooleanExtra(ConstantUtil.KEY_READY, false);
-                Log.i(TAG, "BroadcastReceiver receiveUpdateUI isReady=" + isServiceReady);
-                if (isServiceReady) {
-                    stopQueryType();
-                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_FRIDGE_INFO);
-                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_FRIDGE_TEMP_RANGE);
-                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_FREEZE_TEMP_RANGE);
-                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_CHANGE_TEMP_RANGE);
-                } else {
-                    startQueryType();
-                }
-            } else if (action.equals(ConstantUtil.BROADCAST_ACTION_FRIDGE_INFO)) {
-                if (isServiceReady) {
-                    String id = intent.getStringExtra(ConstantUtil.KEY_TYPE_ID);
-                    String type = intent.getStringExtra(ConstantUtil.KEY_FRIDGE_TYPE);
-                    mModel.mFridgeModel = type;
-                    mModel.mTypeId = id;
-                    setModel();
-                }
-            } else if (action.equals(ConstantUtil.BROADCAST_ACTION_TEMPER)) {
-                if (isReady) {
-                    String jsonString = intent.getStringExtra(ConstantUtil.KEY_TEMPER);
-                    JSONArray jsonArray = JSONArray.parseArray(jsonString);
-                    updateShowTemp(jsonArray);
-                    refreshUI();
-                }
-            } else if (action.equals(ConstantUtil.BROADCAST_ACTION_ERROR)) {
-                if (isReady) {
-                    String jsonString = intent.getStringExtra(ConstantUtil.KEY_ERROR);
-                    JSONArray jsonArray = JSONArray.parseArray(jsonString);
-                    Log.i(TAG, "error jsonArray:" + jsonArray);
-                }
-            } else if (action.equals(ConstantUtil.BROADCAST_ACTION_FRIDGE_RANGE)) {
-                if (isReady) {
-                    mModel.mFridgeMin = intent.getIntExtra("fridgeMinValue", 0);
-                    mModel.mFridgeMax = intent.getIntExtra("fridgeMaxValue", 0);
-                    skbFridge.setMax(mModel.mFridgeMax - mModel.mFridgeMin);
-                }
-            } else if (action.equals(ConstantUtil.BROADCAST_ACTION_CHANGE_RANGE)) {
-                if (isReady) {
-                    mModel.mChangeMin = intent.getIntExtra("changeMinValue", 0);
-                    mModel.mChangeMax = intent.getIntExtra("changeMaxValue", 0);
-                    skbChange.setMax(mModel.mChangeMax - mModel.mChangeMin);
-                }
-            } else if (action.equals(ConstantUtil.BROADCAST_ACTION_FREEZE_RANGE)) {
-                if (isReady) {
-                    mModel.mFreezeMin = intent.getIntExtra("freezeMinValue", 0);
-                    mModel.mFreezeMax = intent.getIntExtra("freezeMaxValue", 0);
-                    skbFreeze.setMax(mModel.mFreezeMax - mModel.mFreezeMin);
-                }
-            }else if(action.equals(ConstantUtil.BROADCAST_ACTION_ALARM)){
-                if(isReady) {
+                if(isReady){
+                    String jsonRange = intent.getStringExtra(ConstantUtil.KEY_RANGE);
+                    if(jsonRange != null){
+                        JSONObject jsonObject = JSONObject.parseObject(jsonRange);
+                        setTempRange(jsonObject);
+                        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_TEMPER_INFO);
+                        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_CONTROL_INFO);
+                        startRefreshUI();
+                    }
+                    String jsonControl = intent.getStringExtra(ConstantUtil.KEY_CONTROL_INFO);
+                    if(jsonControl != null) {
+                        JSONArray jsonArray = JSONArray.parseArray(jsonControl);
+                        updateModeLevel(jsonArray);
+                        refreshUI();
+                    }
+                    String jsonTemper = intent.getStringExtra(ConstantUtil.KEY_TEMPER);
+                    if(jsonTemper != null) {
+                        JSONArray jsonArray = JSONArray.parseArray(jsonTemper);
+                        updateShowTemp(jsonArray);
+                        refreshUI();
+                    }
+                    String jsonError = intent.getStringExtra(ConstantUtil.KEY_ERROR);
+                    if(jsonError != null) {
+                        JSONArray jsonArray = JSONArray.parseArray(jsonError);
+                        Log.i(TAG, "error jsonArray:" + jsonArray);
+                    }
                     String jsonDoor = intent.getStringExtra(ConstantUtil.DOOR_STATUS);
                     if (jsonDoor != null) {
                         JSONObject jsonObject = JSONObject.parseObject(jsonDoor);
                         Log.i(TAG, "door status jsonObject:" + jsonObject);
-//                        handleDoorStatus(jsonObject);
-                    }
+                                            }
                     String jsonAlarm = intent.getStringExtra(ConstantUtil.DOOR_ALARM_STATUS);
                     if (jsonAlarm != null) {
                         JSONObject jsonObject = JSONObject.parseObject(jsonAlarm);
                         Log.i(TAG, "door alarm status jsonObject:" + jsonObject);
                         handleDoorAlarm(jsonObject);
+                    }
+
+                }else {
+                    String jsonInfo = intent.getStringExtra(ConstantUtil.KEY_INFO);
+                    if(jsonInfo != null){
+                        JSONObject jsonObject = JSONObject.parseObject(jsonInfo);
+                        String id = (String) jsonObject.get(ConstantUtil.KEY_TYPE_ID);
+                        String type = (String) jsonObject.get(ConstantUtil.KEY_FRIDGE_TYPE);
+                        mModel.mFridgeModel = type;
+                        mModel.mTypeId = id;
+                        setModel();
                     }
                 }
             }
@@ -282,8 +270,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         isReady = true;
         tvTest.setText("使用馨小厨APP扫码绑定");
         QrCodeUtil.createQRCode(imvQrCode, TypeIdUtil.getCode(mContext, mModel.mTypeId), 300);
-        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_TEMPER_INFO);
-        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_CONTROL_INFO);
+        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_TEMP_RANGE);
     }
 
     private void setModel() {
@@ -297,7 +284,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             tvFridgeModel.setText(mModel.mFridgeModel + "/" + mModel.mFridgeModel + "(S)");
         }
         setView();
-        startRefreshUI();
+//        startRefreshUI();
         //        }
     }
 
@@ -764,20 +751,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
     private void handleDoorAlarm(JSONObject jsonObject){
-        Object object = jsonObject.get("fridge");
-        if(object == null || (int)object ==0){
+        Integer value = (Integer) jsonObject.get("fridge");
+        if(value == null || value ==0){
             cancelAlarmWindow("冷藏");
         }else {
             popAlarmWindow("冷藏");
         }
-        object = jsonObject.get("freeze");
-        if(object == null || (int)object ==0){
+        value = (Integer)jsonObject.get("freeze");
+        if(value == null || value ==0){
             cancelAlarmWindow("冷冻");
         }else {
             popAlarmWindow("冷冻");
         }
-        object = jsonObject.get("change");
-        if(object == null || (int)object ==0){
+        value = (Integer)jsonObject.get("change");
+        if(value == null || value ==0){
             cancelAlarmWindow("变温");
         }else {
             popAlarmWindow("变温");
@@ -799,6 +786,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }else {
             cancelAlarmWindow("变温");
         }
+    }
+    private void setTempRange(JSONObject jsonObject){
+        mModel.mFridgeMin = (Integer)jsonObject.get("fridgeMinValue");
+        mModel.mFridgeMax = (Integer)jsonObject.get("fridgeMaxValue");
+        mModel.mFreezeMin = (Integer)jsonObject.get("freezeMinValue");
+        mModel.mFreezeMax = (Integer)jsonObject.get("freezeMaxValue");
+        mModel.mChangeMin = (Integer)jsonObject.get("changeMinValue");
+        mModel.mChangeMax = (Integer)jsonObject.get("changeMaxValue");
+
+        skbFridge.setMax(mModel.mFridgeMax - mModel.mFridgeMin);
+        skbChange.setMax(mModel.mChangeMax - mModel.mChangeMin);
+        skbFreeze.setMax(mModel.mFreezeMax - mModel.mFreezeMin);
     }
 
     private void popAlarmWindow(String show){

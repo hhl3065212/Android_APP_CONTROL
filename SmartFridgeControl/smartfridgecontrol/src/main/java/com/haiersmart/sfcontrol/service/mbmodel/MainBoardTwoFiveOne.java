@@ -9,8 +9,11 @@
  */
 package com.haiersmart.sfcontrol.service.mbmodel;
 
+import android.content.Intent;
+
 import com.alibaba.fastjson.JSON;
 import com.haiersmart.sfcontrol.application.ControlApplication;
+import com.haiersmart.sfcontrol.constant.ConstantUtil;
 import com.haiersmart.sfcontrol.constant.EnumBaseName;
 import com.haiersmart.sfcontrol.database.FridgeControlEntry;
 import com.haiersmart.sfcontrol.service.alarm.HandleDoorAlarm;
@@ -19,9 +22,6 @@ import com.haiersmart.sfcontrol.utilslib.MyLogUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import static com.haiersmart.sfcontrol.constant.ConstantUtil.BROADCAST_ACTION_ALARM;
-import static com.haiersmart.sfcontrol.constant.ConstantUtil.DOOR_STATUS;
 
 /**
  * <p>function: </p>
@@ -158,7 +158,10 @@ public class MainBoardTwoFiveOne extends MainBoardBase {
             doorHashMap.put("freeze",0);
             doorHashMap.put("change",0);
             String doorJson = JSON.toJSONString(doorHashMap);
-            ControlApplication.getInstance().sendBroadcast(BROADCAST_ACTION_ALARM,DOOR_STATUS,doorJson);
+            Intent intent = new Intent();
+            intent.putExtra(ConstantUtil.DOOR_STATUS,doorJson);
+            intent.setAction(ConstantUtil.SERVICE_NOTICE);
+            ControlApplication.getInstance().sendBroadcast(intent);
         }
     }
 

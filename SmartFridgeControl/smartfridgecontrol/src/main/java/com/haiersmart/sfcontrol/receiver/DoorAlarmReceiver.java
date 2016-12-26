@@ -19,7 +19,7 @@ public class DoorAlarmReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if(intent.getAction().equals(ConstantUtil.BROADCAST_ACTION_ALARM)) {
+        if(intent.getAction().equals(ConstantUtil.SERVICE_NOTICE)) {
             String alarmInfo = intent.getStringExtra(ConstantUtil.DOOR_ALARM_STATUS);
             if(alarmInfo == null) {
                 return;

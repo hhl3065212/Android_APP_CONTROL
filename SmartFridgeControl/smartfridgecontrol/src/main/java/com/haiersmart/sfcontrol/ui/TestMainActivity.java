@@ -30,12 +30,10 @@ import com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar;
 import com.haiersmart.sfcontrol.R;
 import com.haiersmart.sfcontrol.constant.ConstantUtil;
 import com.haiersmart.sfcontrol.constant.EnumBaseName;
-import com.haiersmart.sfcontrol.database.FridgeControlEntry;
-import com.haiersmart.sfcontrol.database.FridgeStatusEntry;
 import com.haiersmart.sfcontrol.service.ControlMainBoardService;
 import com.haiersmart.sfcontrol.service.MainBoardParameters;
 import com.haiersmart.sfcontrol.utilslib.MyLogUtil;
-import java.util.List;
+
 import static com.haiersmart.sfcontrol.constant.ConstantUtil.REFRIGERATOR_CLOSE;
 import static com.haiersmart.sfcontrol.constant.ConstantUtil.REFRIGERATOR_OPEN;
 
@@ -286,15 +284,16 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
 
     private void registerBroadcast() {
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_READY);
-        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_FRIDGE_INFO);
-        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_FRIDGE_RANGE);
-        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_CHANGE_RANGE);
-        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_FREEZE_RANGE);
-        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_CONTROL);//模式和档位信息广播
-        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_TEMPER);//温度广播
-        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_ERROR);//错误或故障信息广播
+//        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_READY);
+//        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_FRIDGE_INFO);
+//        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_FRIDGE_RANGE);
+//        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_CHANGE_RANGE);
+//        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_FREEZE_RANGE);
+//        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_CONTROL);//模式和档位信息广播
+//        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_TEMPER);//温度广播
+//        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_ERROR);//错误或故障信息广播
         //intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_ALARM);//报警信息广播
+        intentFilter.addAction(ConstantUtil.SERVICE_NOTICE);
         registerReceiver(receiveUpdateUI, intentFilter);
     }
 
@@ -304,24 +303,27 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             MyLogUtil.i(TAG, "BroadcastReceiver onReceive Range action="+ action);
-            if(action.equals(ConstantUtil.BROADCAST_ACTION_READY)) {
+            if(action.equals(ConstantUtil.SERVICE_NOTICE)) {
                 Boolean isServiceReady = intent.getBooleanExtra(ConstantUtil.KEY_READY, true);
                 handleReadyEvent(isServiceReady);
-            } else if (action.equals(ConstantUtil.BROADCAST_ACTION_FRIDGE_INFO)) {
-                String fridgeId = intent.getStringExtra(ConstantUtil.KEY_FRIDGE_ID);
-                String fridgeType = intent.getStringExtra(ConstantUtil.KEY_FRIDGE_TYPE);
-                sendBroadcastToService(ConstantUtil.QUERY_FRIDGE_TEMP_RANGE);
-                sendBroadcastToService(ConstantUtil.QUERY_CHANGE_TEMP_RANGE);
-                sendBroadcastToService(ConstantUtil.QUERY_FREEZE_TEMP_RANGE);
-                sendBroadcastToService(ConstantUtil.QUERY_CONTROL_INFO);
-                sendBroadcastToService(ConstantUtil.QUERY_TEMPER_INFO);
-                statusHandler.post(statusRunnable);
-            } else if (action.equals(ConstantUtil.BROADCAST_ACTION_CONTROL)) {
-                String jsonString = intent.getStringExtra(ConstantUtil.KEY_CONTROL_INFO);
-                updateSettingAndModeUI(jsonString);
-            } else if (action.equals(ConstantUtil.BROADCAST_ACTION_TEMPER)) {
-                String jsonString = intent.getStringExtra(ConstantUtil.KEY_TEMPER);
-                updateTempAndModeUI(jsonString);
+            }
+
+//            } else if (action.equals(ConstantUtil.BROADCAST_ACTION_FRIDGE_INFO)) {
+//                String fridgeId = intent.getStringExtra(ConstantUtil.KEY_FRIDGE_ID);
+//                String fridgeType = intent.getStringExtra(ConstantUtil.KEY_FRIDGE_TYPE);
+//                sendBroadcastToService(ConstantUtil.QUERY_FRIDGE_TEMP_RANGE);
+//                sendBroadcastToService(ConstantUtil.QUERY_CHANGE_TEMP_RANGE);
+//                sendBroadcastToService(ConstantUtil.QUERY_FREEZE_TEMP_RANGE);
+//                sendBroadcastToService(ConstantUtil.QUERY_CONTROL_INFO);
+//                sendBroadcastToService(ConstantUtil.QUERY_TEMPER_INFO);
+//                statusHandler.post(statusRunnable);
+//            } else if (action.equals(ConstantUtil.BROADCAST_ACTION_CONTROL)) {
+//                String jsonString = intent.getStringExtra(ConstantUtil.KEY_CONTROL_INFO);
+//                updateSettingAndModeUI(jsonString);
+//            } else if (action.equals(ConstantUtil.BROADCAST_ACTION_TEMPER)) {
+//                String jsonString = intent.getStringExtra(ConstantUtil.KEY_TEMPER);
+//                updateTempAndModeUI(jsonString);
+//            }
 
 //                Bundle bundle = intent.getBundleExtra("key");
 //                ArrayList<FridgeStatusEntry> statusList =
@@ -332,22 +334,20 @@ public class TestMainActivity extends AppCompatActivity implements OnClickListen
 //                } else {
 //                    MyLogUtil.i(TAG, "BroadcastReceiver onReceive statusList is NULL");
 //                }
-            } else if (action.equals(ConstantUtil.BROADCAST_ACTION_ERROR)) {
-
-            } else if(action.equals(ConstantUtil.BROADCAST_ACTION_FRIDGE_RANGE)) {
-                mFridgeMinValue = intent.getIntExtra(ConstantUtil.FRIDGE_TEMP_MIN, 0);
-                mFridgeMaxValue = intent.getIntExtra(ConstantUtil.FRIDGE_TEMP_MAX, 0);
-                MyLogUtil.i(TAG,"BroadcastReceiver onReceive Range mFridgeMinValue ="+ mFridgeMinValue + "mFridgeMaxValue="+ mFridgeMaxValue);
-                mColdTempSeekbar.setMax(mFridgeMaxValue - mFridgeMinValue);
-            } else if(action.equals(ConstantUtil.BROADCAST_ACTION_CHANGE_RANGE)) {
-                mChangeMinValue = intent.getIntExtra(ConstantUtil.CHANGE_TEMP_MIN, 0);
-                mChangeMaxValue = intent.getIntExtra(ConstantUtil.CHANGE_TEMP_MAX, 0);
-                mVarialableTempSeekbar.setMax(mChangeMaxValue - mChangeMinValue);
-            } else if(action.equals(ConstantUtil.BROADCAST_ACTION_FREEZE_RANGE)) {
-                mFreezeMinValue = intent.getIntExtra(ConstantUtil.FREEZE_TEMP_MIN, 0);
-                mFreezeMaxValue = intent.getIntExtra(ConstantUtil.FREEZE_TEMP_MAX, 0);
-                mFreezeTempSeekbar.setMax(mFreezeMaxValue - mFreezeMinValue);
-            }
+//            }  else if(action.equals(ConstantUtil.BROADCAST_ACTION_FRIDGE_RANGE)) {
+//                mFridgeMinValue = intent.getIntExtra(ConstantUtil.FRIDGE_TEMP_MIN, 0);
+//                mFridgeMaxValue = intent.getIntExtra(ConstantUtil.FRIDGE_TEMP_MAX, 0);
+//                MyLogUtil.i(TAG,"BroadcastReceiver onReceive Range mFridgeMinValue ="+ mFridgeMinValue + "mFridgeMaxValue="+ mFridgeMaxValue);
+//                mColdTempSeekbar.setMax(mFridgeMaxValue - mFridgeMinValue);
+//            } else if(action.equals(ConstantUtil.BROADCAST_ACTION_CHANGE_RANGE)) {
+//                mChangeMinValue = intent.getIntExtra(ConstantUtil.CHANGE_TEMP_MIN, 0);
+//                mChangeMaxValue = intent.getIntExtra(ConstantUtil.CHANGE_TEMP_MAX, 0);
+//                mVarialableTempSeekbar.setMax(mChangeMaxValue - mChangeMinValue);
+//            } else if(action.equals(ConstantUtil.BROADCAST_ACTION_FREEZE_RANGE)) {
+//                mFreezeMinValue = intent.getIntExtra(ConstantUtil.FREEZE_TEMP_MIN, 0);
+//                mFreezeMaxValue = intent.getIntExtra(ConstantUtil.FREEZE_TEMP_MAX, 0);
+//                mFreezeTempSeekbar.setMax(mFreezeMaxValue - mFreezeMinValue);
+//            }
         }
     };
 

@@ -73,17 +73,6 @@ public class ConfigFourZeroOne {
     // TODO: 2016/11/15 如果有调试信息，请增加
     private void initDebug() {
         protocolDebugConfig = new ArrayList<>();
-
-        protocolDebugConfig.add(new ProtocolConfigBase(EnumBaseName.freezeDefrostRealTemp.name(),1,11,16,380));//冷冻化霜实际温度
-
-        protocolDebugConfig.add(new ProtocolConfigBase(EnumBaseName.changeRealTemp.name(),1,15,16,380));//变温实际温度
-        protocolDebugConfig.add(new ProtocolConfigBase(EnumBaseName.freezeFanVoltage.name(),1,17,8));//冷冻风机电压
-        protocolDebugConfig.add(new ProtocolConfigBase(EnumBaseName.pressorOneFreq.name(),1,18,8));//压机1频率
-        protocolDebugConfig.add(new ProtocolConfigBase(EnumBaseName.fridgeAirDoor.name(),1,19,0));//冷藏风门
-        protocolDebugConfig.add(new ProtocolConfigBase(EnumBaseName.changeAirDoor.name(),1,19,2));//变温风门
-        protocolDebugConfig.add(new ProtocolConfigBase(EnumBaseName.defrostHeater.name(),1,20,0));//化霜加热丝
-        protocolDebugConfig.add(new ProtocolConfigBase(EnumBaseName.changeHeater.name(),1,20,1));//变温室加热丝
-        protocolDebugConfig.add(new ProtocolConfigBase(EnumBaseName.fridgeLight.name(),1,21,0));//
     }
 
     public ArrayList<ProtocolConfigBase> getProtocolConfig() {

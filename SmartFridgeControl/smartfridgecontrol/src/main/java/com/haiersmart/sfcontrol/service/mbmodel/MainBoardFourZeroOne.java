@@ -9,12 +9,19 @@
  */
 package com.haiersmart.sfcontrol.service.mbmodel;
 
+import android.content.Intent;
+
+import com.alibaba.fastjson.JSON;
+import com.haiersmart.sfcontrol.application.ControlApplication;
+import com.haiersmart.sfcontrol.constant.ConstantUtil;
 import com.haiersmart.sfcontrol.constant.EnumBaseName;
 import com.haiersmart.sfcontrol.database.FridgeControlEntry;
 import com.haiersmart.sfcontrol.service.alarm.HandleDoorAlarm;
 import com.haiersmart.sfcontrol.service.configtable.ConfigFourZeroOne;
+import com.haiersmart.sfcontrol.utilslib.MyLogUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * <p>function: </p>
@@ -92,11 +99,39 @@ public class MainBoardFourZeroOne extends MainBoardBase{
 
     @Override
     public void processInVainMessage(byte[] frame) {
-
+        switch (frame[5]) {
+            case (byte) 0x00://无效命令
+                break;
+        }
     }
 
     @Override
     public void handleDoorEvents() {
+        boolean isDoorChange = false;
+        boolean bFridgeDoorNowStatus = getMainBoardStatusByName("fridgeDoorStatus")==1;
+        //        boolean bFridgeDoorNowStatus = testDoor;
+        HashMap<String,Integer> doorHashMap = new HashMap<>();
 
+        if(bFridgeDoorNowStatus != mFridgeDoorHistoryStatus){
+            mFridgeDoorHistoryStatus = bFridgeDoorNowStatus;
+            if(bFridgeDoorNowStatus){
+                MyLogUtil.i(TAG,"fridgeDoorStatus is open");
+                mFridgeDoorAlarm.startAlarmTimer();
+            }else {
+                MyLogUtil.i(TAG,"fridgeDoorStatus is close");
+                mFridgeDoorAlarm.stopAll();
+            }
+            isDoorChange = true;
+        }
+        if(isDoorChange){
+            doorHashMap.put("fridge",bFridgeDoorNowStatus?1:0);
+            doorHashMap.put("freeze",0);
+            doorHashMap.put("change",0);
+            String doorJson = JSON.toJSONString(doorHashMap);
+            Intent intent = new Intent();
+            intent.putExtra(ConstantUtil.DOOR_STATUS,doorJson);
+            intent.setAction(ConstantUtil.SERVICE_NOTICE);
+            ControlApplication.getInstance().sendBroadcast(intent);
+        }
     }
 }

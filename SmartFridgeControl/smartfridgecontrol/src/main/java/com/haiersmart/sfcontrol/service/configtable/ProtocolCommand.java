@@ -97,6 +97,10 @@ public class ProtocolCommand {
             case getDebug:
                 data = new byte[]{(byte)0xaa,(byte)0x55,(byte)0x04,(byte)0xff,(byte)0x8d,(byte)0x01,(byte) 0x00};
                 break;
+            case testMode:
+                data = new byte[]{(byte)0xaa,(byte)0x55,(byte)0x04,(byte)0x8a,(byte)0x5d,(byte)0x01,(byte) 0x00,(byte) 0x00};
+                data[6] = value[0];
+                break;
             default:
                 data = new byte[]{(byte)0xaa,(byte)0x55,(byte)0x04,(byte)0x01,(byte)0x4d,(byte)0x01,(byte) 0x00};
                 break;

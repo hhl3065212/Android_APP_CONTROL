@@ -62,7 +62,8 @@ public enum EnumBaseName {
     changeAirDoor("changeAirDoor"),
     defrostHeater("defrostHeater"),
     changeHeater("changeHeater"),
-    fridgeLight("fridgeLight");
+    fridgeLight("fridgeLight"),
+    testMode("testMode");
 
 
 

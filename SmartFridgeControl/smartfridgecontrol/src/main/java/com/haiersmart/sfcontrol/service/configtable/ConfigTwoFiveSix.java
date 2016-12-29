@@ -84,6 +84,7 @@ public class ConfigTwoFiveSix {
         protocolDebugConfig.add(new ProtocolConfigBase(EnumBaseName.defrostHeater.name(),1,20,0));//化霜加热丝
         protocolDebugConfig.add(new ProtocolConfigBase(EnumBaseName.changeHeater.name(),1,20,1));//变温室加热丝
         protocolDebugConfig.add(new ProtocolConfigBase(EnumBaseName.fridgeLight.name(),1,21,0));//
+        protocolDebugConfig.add(new ProtocolConfigBase(EnumBaseName.testMode.name(),1,22,8));//T模式
     }
 
     public ArrayList<ProtocolConfigBase> getProtocolConfig() {

@@ -30,6 +30,7 @@ public class MainBoardInfo {
 
     private void init() {
         String defaultFridgeId = "111c12002400081001030061800118420000000000";//typeid default 251
+//        String defaultFridgeId = "111c12002400081001030061800458410000000000";//typeid default 256
         mFridgeInfoDbMgr = FridgeInfoDbMgr.getInstance();
         FridgeInfoEntry mFridgeInfoEntry = new FridgeInfoEntry();
         mFridgeInfoEntry.name = "fridgeId";

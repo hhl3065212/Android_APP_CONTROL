@@ -143,6 +143,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     String jsonRange = intent.getStringExtra(ConstantUtil.KEY_RANGE);
                     if(jsonRange != null){
                         JSONObject jsonObject = JSONObject.parseObject(jsonRange);
+                        Log.i(TAG, "jsonRange is:" + jsonRange);
                         setTempRange(jsonObject);
                         sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_TEMPER_INFO);
                         sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_CONTROL_INFO);
@@ -181,6 +182,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     String jsonInfo = intent.getStringExtra(ConstantUtil.KEY_INFO);
                     if(jsonInfo != null){
                         JSONObject jsonObject = JSONObject.parseObject(jsonInfo);
+                        Log.i(TAG, "jsonInfo is:" + jsonInfo);
                         String id = (String) jsonObject.get(ConstantUtil.KEY_TYPE_ID);
                         String type = (String) jsonObject.get(ConstantUtil.KEY_FRIDGE_TYPE);
                         mModel.mFridgeModel = type;

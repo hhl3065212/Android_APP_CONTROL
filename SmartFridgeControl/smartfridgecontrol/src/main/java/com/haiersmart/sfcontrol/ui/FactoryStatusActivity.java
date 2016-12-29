@@ -33,6 +33,7 @@ import com.haiersmart.sfcontrol.constant.EnumBaseName;
 import com.haiersmart.sfcontrol.draw.MyTestAudioButton;
 import com.haiersmart.sfcontrol.draw.PopInputListener;
 import com.haiersmart.sfcontrol.draw.PopWindowNormalInput;
+import com.haiersmart.sfcontrol.service.ControlMainBoardService;
 import com.haiersmart.sfcontrol.service.MainBoardParameters;
 import com.haiersmart.sfcontrol.utilslib.DeviceUtil;
 import com.haiersmart.sfcontrol.utilslib.FactoryAudioUtil;
@@ -81,6 +82,9 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stauts_factory);
         findViews();
+        Intent intent = new Intent();
+        intent.setClass(this, ControlMainBoardService.class);
+        startService(intent);
         mMBParam = MainBoardParameters.getInstance();
         mFridgeModel = mMBParam.getFridgeType();
         mTftVersion = this.getIntent().getStringExtra("version");

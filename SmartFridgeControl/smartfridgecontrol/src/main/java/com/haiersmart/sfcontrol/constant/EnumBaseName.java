@@ -46,7 +46,26 @@ public enum EnumBaseName {
     changeSensorErr("changeSensorErr"),
     defrostSensorErr("defrostSensorErr"),
     freezeDefrostErr("freezeDefrostErr"),
-    envHumSensorErr("envHumSensorErr");
+    envHumSensorErr("envHumSensorErr"),
+    freezeFanErr("freezeFanErr"),
+    freezeDefrostSensorErr("freezeDefrostSensorErr"),
+//    debug
+    getDebug("getDebug"),
+    fridgeRealTemp("fridgeRealTemp"),
+    freezeRealTemp("freezeRealTemp"),
+    freezeDefrostRealTemp("freezeDefrostRealTemp"),
+    envRealTemp("envRealTemp"),
+    changeRealTemp("changeRealTemp"),
+    freezeFanVoltage("freezeFanVoltage"),
+    pressorOneFreq("pressorOneFreq"),
+    fridgeAirDoor("fridgeAirDoor"),
+    changeAirDoor("changeAirDoor"),
+    defrostHeater("defrostHeater"),
+    changeHeater("changeHeater"),
+    fridgeLight("fridgeLight");
+
+
+
 
 
     private String nCode;

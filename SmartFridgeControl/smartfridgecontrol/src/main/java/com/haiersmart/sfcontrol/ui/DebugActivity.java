@@ -63,7 +63,6 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
         mSerialData = SerialData.getInstance();
         mMainBoardParameters = MainBoardParameters.getInstance();
         findView();
-        startWaitTask();
 //        mTimer = new Timer();
 //        mTimer.schedule(mWaitTask,0,1000);
     }
@@ -88,6 +87,7 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
             mIsBound = true;
             ControlMainBoardService.CmbBinder binder = (ControlMainBoardService.CmbBinder) service;
             mControlService = binder.getService();
+            startWaitTask();
 //            mServiceIntent = new Intent(this, ControlMainBoardService.class);
 
         }

@@ -200,6 +200,9 @@ public class ConstantUtil {
     public static final String COLDCOUNT = "cold_count";//冷藏室计数
     public static final String FREEZETIME = "freeze_time";//冷冻室时间
     public static final String FREEZECOUNT = "freeze_count";//冷冻室计数
+    public static final String COLDEND = "cold_end";//冷藏室计时结束
+    public static final String FREEZEEND= "freeze_end";//冷冻室计时结束
+
 
 
 }

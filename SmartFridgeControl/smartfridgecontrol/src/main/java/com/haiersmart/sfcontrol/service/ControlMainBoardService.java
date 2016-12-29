@@ -28,11 +28,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RunnableFuture;
-import java.util.concurrent.RunnableScheduledFuture;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class ControlMainBoardService extends Service {
     static final String TAG = "ControlMainBoardService";
@@ -454,7 +454,10 @@ public class ControlMainBoardService extends Service {
     private ScheduledExecutorService sExService = Executors.newScheduledThreadPool(2);
     private RunnableFuture<?> sColdOnFuture;
     private RunnableFuture<?> sFreezeOnFuture;
-    private Runnable coldOnRunnable = new Runnable() {
+    private Timer timerColdOn,timerFreezeOn;
+    private TimerTask taskColdOn,taskFreezeOn;
+
+    /*private Runnable coldOnRunnable = new Runnable() {
         @Override
         public void run() {
             coldCount++;
@@ -485,7 +488,7 @@ public class ControlMainBoardService extends Service {
             }
 
         }//end of run
-    };
+    };*/
 
     /**
      * 开始速冷计时
@@ -493,7 +496,6 @@ public class ControlMainBoardService extends Service {
      */
     public void startColdOnTime(boolean reset) {
         MyLogUtil.i(TAG, "startColdOnTime Count");
-        sColdOnFuture = (RunnableScheduledFuture<?>) sExService.scheduleAtFixedRate(coldOnRunnable,10,10, TimeUnit.SECONDS);//10s周期
         if(reset) {
             coldCount = 0;
             SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.COLDTIME, System.currentTimeMillis() / 1l);
@@ -511,20 +513,69 @@ public class ControlMainBoardService extends Service {
                 }
             }
         }
+        if(timerColdOn == null){
+            timerColdOn = new Timer();
+        }
+        if(taskColdOn == null){
+            taskColdOn = new TimerTask() {
+                @Override
+                public void run() {
+                    coldCount++;
+                    MyLogUtil.i(TAG, "coldOnRunnable coldCount=" + coldCount);
+                    if(coldCount % 6 == 0) {//1min
+                        SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.COLDCOUNT,coldCount / 1l);
+                        //10min
+                        //TODO:确认是否还需要校准时间
+                        if(coldCount %  60 == 0 ) {
+                            long oldTime = (long) SpUtils.getInstance(ControlApplication.getInstance()).get(ConstantUtil.COLDTIME, 0l);
+                            long currentTime = System.currentTimeMillis();
+                            long delta = currentTime - oldTime;
+                            if (delta > 0) {
+                                delta = delta / 10000;
+                                MyLogUtil.i(TAG, "cold delta count=" + delta);
+                                if (delta > coldCount) {
+                                    coldCount = delta;
+                                    MyLogUtil.i(TAG, "delta cold count=" + coldCount);
+                                }
+                            }
+                        }
+                    }
+
+                    if ((coldCount*10) >= COLDTIME) {
+                        MyLogUtil.i(TAG, "stop cold count =" + coldCount);
+                        stopColdOnTime();
+                        mModel.coldOff();
+                    }
+                }
+            };
+        }
+//        sColdOnFuture = (RunnableScheduledFuture<?>) sExService.scheduleAtFixedRate(coldOnRunnable,10,10, TimeUnit.SECONDS);//10s周期
+        timerColdOn.schedule(taskColdOn,10000,10000);
     }
     
     public void stopColdOnTime() {
         MyLogUtil.i(TAG, "stopColdOnTime cancel runnable Count");
-        if(sColdOnFuture != null) {
+        if(taskColdOn != null){
+            taskColdOn.cancel();
+            taskColdOn = null;
+        }
+        if(timerColdOn != null){
+            timerColdOn.cancel();
+            timerColdOn = null;
+        }
+        long currentTime = System.currentTimeMillis();
+        SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.COLDEND,currentTime);
+        /*if(sColdOnFuture != null) {
             boolean res = sColdOnFuture.cancel(true);
             MyLogUtil.i(TAG, "stopColdOnTime cancel runnable Count sColdOnFuture res="+res);
+            sColdOnFuture = null;
         }
         coldCount = 0;
         MyLogUtil.i(TAG, "stopColdOnTime cancel runnable coldCount="+coldCount );
-        SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.COLDCOUNT, 0l);
+        SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.COLDCOUNT, 0l);*/
     }
 
-    private Runnable freezeOnRunnable = new Runnable() {
+    /*private Runnable freezeOnRunnable = new Runnable() {
         @Override
         public void run() {
             freezeCount++;
@@ -553,11 +604,11 @@ public class ControlMainBoardService extends Service {
                 mModel.freezeOff();
             }
         }//end of run
-    };
+    };*/
 
     public void startFreezeOnTime(boolean reset) {
         MyLogUtil.i(TAG, "startFreezeOnTime Count");
-        sFreezeOnFuture = (RunnableScheduledFuture<?>) sExService.scheduleAtFixedRate(freezeOnRunnable,10,10, TimeUnit.SECONDS);//10s周期
+//        sFreezeOnFuture = (RunnableScheduledFuture<?>) sExService.scheduleAtFixedRate(freezeOnRunnable,10,10, TimeUnit.SECONDS);//10s周期
         if(reset) {
             freezeCount = 0;
             SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.FREEZETIME, System.currentTimeMillis() / 1l);
@@ -575,17 +626,63 @@ public class ControlMainBoardService extends Service {
                 }
             }
         }
+        if(timerFreezeOn == null){
+            timerFreezeOn = new Timer();
+        }
+        if(taskFreezeOn == null){
+            taskFreezeOn = new TimerTask() {
+                @Override
+                public void run() {
+                    freezeCount++;
+                    MyLogUtil.i(TAG, "freezeOnRunnable freezeCount=" + freezeCount);
+                    if(freezeCount % 6 == 0) {//1min
+                        SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.FREEZECOUNT,freezeCount / 1l);
+                        //10min
+                        //TODO:确认是否还需要校准时间
+                        if(freezeCount %  60 == 0 ) {
+                            long oldTime = (long) SpUtils.getInstance(ControlApplication.getInstance()).get(ConstantUtil.FREEZETIME, 0l);
+                            long currentTime = System.currentTimeMillis();
+                            long delta = currentTime - oldTime;
+                            if (delta > 0) {
+                                delta = delta / 10000;
+                                MyLogUtil.i(TAG, "freeze delta count=" + delta);
+                                if (delta > freezeCount) {
+                                    freezeCount = delta;
+                                    MyLogUtil.i(TAG, "delta freeze count=" + freezeCount);
+                                }
+                            }
+                        }
+                    }
+                    if ((freezeCount*10) >= FREEZETIME) {
+                        MyLogUtil.i(TAG, "freezeOnRunnable stop freezeCount=" + freezeCount);
+                        stopFreezeOnTime();
+                        mModel.freezeOff();
+                    }
+                }
+            };
+        }
+        timerFreezeOn.schedule(taskFreezeOn,10000,10000);
     }
 
     public void stopFreezeOnTime() {
         MyLogUtil.i(TAG, "stopFreezeOnTime cancel runnable Count");
-        if(sFreezeOnFuture != null) {
-            boolean res = sFreezeOnFuture.cancel(true);
-            MyLogUtil.i(TAG, "stopFreezeOnTime cancel runnable Count sFreezeOnFuture res="+res);
+        if(taskFreezeOn != null){
+            taskFreezeOn.cancel();
+            taskFreezeOn = null;
         }
-        freezeCount = 0;
-        MyLogUtil.i(TAG, "stopFreezeOnTime cancel runnable freezeCount="+freezeCount );
-        SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.FREEZECOUNT, 0l);
+        if(timerFreezeOn != null){
+            timerFreezeOn.cancel();
+            timerFreezeOn = null;
+        }
+        long currentTime = System.currentTimeMillis();
+        SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.FREEZEEND,currentTime);
+//        if(sFreezeOnFuture != null) {
+//            boolean res = sFreezeOnFuture.cancel(true);
+//            MyLogUtil.i(TAG, "stopFreezeOnTime cancel runnable Count sFreezeOnFuture res="+res);
+//        }
+//        freezeCount = 0;
+//        MyLogUtil.i(TAG, "stopFreezeOnTime cancel runnable freezeCount="+freezeCount );
+//        SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.FREEZECOUNT, 0l);
     }
 
     private void handleBootEvent() {

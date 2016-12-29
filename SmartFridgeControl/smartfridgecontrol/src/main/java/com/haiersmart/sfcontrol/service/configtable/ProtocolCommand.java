@@ -9,7 +9,7 @@ import com.haiersmart.sfcontrol.constant.EnumBaseName;
 public class ProtocolCommand {
     private final String TAG="BaseCodeTable";
 
-    public byte[] PackCmdFrame(EnumBaseName cmd, byte... value){
+    public static byte[] PackCmdFrame(EnumBaseName cmd, byte... value){
         byte[] data;
         switch (cmd){
             case getAllProperty:
@@ -94,6 +94,9 @@ public class ProtocolCommand {
                     data[5] = (byte)(0x2a);
                 }
                 break;
+            case getDebug:
+                data = new byte[]{(byte)0xaa,(byte)0x55,(byte)0x04,(byte)0xff,(byte)0x8d,(byte)0x01,(byte) 0x00};
+                break;
             default:
                 data = new byte[]{(byte)0xaa,(byte)0x55,(byte)0x04,(byte)0x01,(byte)0x4d,(byte)0x01,(byte) 0x00};
                 break;
@@ -102,7 +105,7 @@ public class ProtocolCommand {
         data[data.length-1] = checkSum(data,data.length-1);
         return data;
     }
-    public byte checkSum(byte[] data, int len)
+    private static byte checkSum(byte[] data, int len)
     {
         byte mSum = 0;
         for(int i = 2; i < len; i++)

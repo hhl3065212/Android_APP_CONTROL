@@ -218,4 +218,13 @@ public class DeviceUtil {
             return 0;
         }
     }
+    public static void enablePirUG(Boolean enable){
+        if(enable){
+            String CommandPir = "echo 1 > /sys/bus/platform/drivers/mtk-kpd/motion_sensor_enable";
+            runCMD(CommandPir);
+        }else {
+            String CommandPir = "echo 0 > /sys/bus/platform/drivers/mtk-kpd/motion_sensor_enable";
+            runCMD(CommandPir);
+        }
+    }
 }

@@ -6,8 +6,11 @@ import com.haiersmart.sfcontrol.service.configtable.TargetTempRange;
 import com.haiersmart.sfcontrol.service.mbmodel.MainBoardFourSevenSix;
 import com.haiersmart.sfcontrol.service.mbmodel.MainBoardBase;
 import com.haiersmart.sfcontrol.service.mbmodel.MainBoardEntry;
+import com.haiersmart.sfcontrol.service.mbmodel.MainBoardFourZeroOne;
 import com.haiersmart.sfcontrol.service.mbmodel.MainBoardInfo;
 import com.haiersmart.sfcontrol.service.mbmodel.MainBoardTwoFiveOne;
+import com.haiersmart.sfcontrol.service.mbmodel.MainBoardTwoFiveSix;
+import com.haiersmart.sfcontrol.utilslib.DeviceUtil;
 import com.haiersmart.sfcontrol.utilslib.MyLogUtil;
 import com.haiersmart.sfcontrol.utilslib.PrintUtil;
 
@@ -46,6 +49,7 @@ public class SerialData {
         ReceiveBuff = new byte[MAX_BUFF_LEN];
         // MyLogUtil.i(TAG,"SerialData constructor ReceiveBuff.length="+ReceiveBuff.length );
         DataLen = 0;
+        DeviceUtil.enablePirUG(true);
     }
 
     public String getCurrentModel() {
@@ -63,12 +67,12 @@ public class SerialData {
             ReceiveBuff[i] = data[i];
         }
         ReceiveBuff[i] = 0;
-        MyLogUtil.i(TAG, "ReceiveBuff:" + PrintUtil.BytesToString(ReceiveBuff, 16,DataLen));
+        MyLogUtil.i(TAG, "ReceiveBuff:" + PrintUtil.BytesToString(ReceiveBuff, 16, DataLen));
     }
 
-    public byte[] getFrameData(){
+    public byte[] getFrameData() {
         byte[] res = new byte[DataLen];
-        for (int i=0;i<DataLen;i++){
+        for (int i = 0; i < DataLen; i++) {
             res[i] = ReceiveBuff[i];
         }
         return res;
@@ -118,7 +122,7 @@ public class SerialData {
 
     private byte[] getReceiveBuff() {
         byte[] res = new byte[DataLen];
-        for (int i=0;i<DataLen;i++) {
+        for (int i = 0; i < DataLen; i++) {
             res[i] = ReceiveBuff[i];
         }
         return res;
@@ -143,15 +147,23 @@ public class SerialData {
      */
     public void createMainBoard() {
         if (getFridgeId().equals(ConstantUtil.BCD251_SN)) {
-            MyLogUtil.i(TAG,"fridge mode:251");
+            MyLogUtil.i(TAG, "fridge mode:251");
             mCurrentModel = ConstantUtil.BCD251_MODEL;
             mMainBoard = new MainBoardTwoFiveOne();
         } else if (getFridgeId().equals(ConstantUtil.BCD476_SN)) {
-            MyLogUtil.i(TAG,"fridge mode:476");
+            MyLogUtil.i(TAG, "fridge mode:476");
             mCurrentModel = ConstantUtil.BCD476_MODEL;
             mMainBoard = new MainBoardFourSevenSix();
-        }else {
-            MyLogUtil.i(TAG,"fridge mode:default 251");
+        } else if (getFridgeId().equals(ConstantUtil.BCD256_SN)) {
+            MyLogUtil.i(TAG, "fridge mode:256");
+            mCurrentModel = ConstantUtil.BCD256_MODEL;
+            mMainBoard = new MainBoardTwoFiveSix();
+        } else if (getFridgeId().equals(ConstantUtil.BCD401_SN)) {
+            MyLogUtil.i(TAG, "fridge mode:401");
+            mCurrentModel = ConstantUtil.BCD401_MODEL;
+            mMainBoard = new MainBoardFourZeroOne();
+        } else {
+            MyLogUtil.i(TAG, "fridge mode:default 251");
             mCurrentModel = ConstantUtil.BCD251_MODEL;
             mMainBoard = new MainBoardTwoFiveOne();
         }
@@ -166,19 +178,20 @@ public class SerialData {
      */
     public ArrayList<MainBoardEntry> getMainBoardControl() {
         ArrayList<MainBoardEntry> res = null;
-        if(mMainBoard != null) {
+        if (mMainBoard != null) {
             res = mMainBoard.getMainBoardControl();
         }
-            return res;
+        return res;
 
     }
 
     /**
      * 通过名字获取控制类值
+     *
      * @param name
      * @return
      */
-    public int getMbcValueByName(String name){
+    public int getMbcValueByName(String name) {
         return mMainBoard.getMainBoardControlByName(name);
     }
 
@@ -189,18 +202,19 @@ public class SerialData {
      */
     public ArrayList<MainBoardEntry> getMainBoardStatus() {
         ArrayList<MainBoardEntry> res = null;
-        if(mMainBoard != null) {
+        if (mMainBoard != null) {
             res = mMainBoard.getMainBoardStatus();
         }
-            return res;
+        return res;
     }
 
     /**
      * 通过名字获取状态类值
+     *
      * @param name
      * @return
      */
-    public int getMbsValueByName(String name){
+    public int getMbsValueByName(String name) {
         return mMainBoard.getMainBoardStatusByName(name);
     }
 
@@ -211,17 +225,18 @@ public class SerialData {
      */
     public ArrayList<MainBoardEntry> getMainBoardDebug() {
         ArrayList<MainBoardEntry> res = null;
-        if(mMainBoard != null) {
+        if (mMainBoard != null) {
             res = mMainBoard.getMainBoardDebug();
         }
-            return res;
+        return res;
     }
+
     /**
      * 通过名字获取调试类值
      *
      * @return
      */
-    public int getMbdValueByName(String name){
+    public int getMbdValueByName(String name) {
         return mMainBoard.getMainBoardDebugByName(name);
     }
 
@@ -241,7 +256,7 @@ public class SerialData {
      */
     public TargetTempRange getTargetTempRange() {
         TargetTempRange res = null;
-        if(mMainBoard != null) {
+        if (mMainBoard != null) {
             res = mMainBoard.getTargetTempRange();
         }
         return res;
@@ -254,7 +269,7 @@ public class SerialData {
     public void ProcData() {
         switch (ReceiveBuff[3]) {
             case (byte) 0x02: //用户状态帧
-                if(mMainBoard != null) {
+                if (mMainBoard != null) {
                     mMainBoard.updataMainBoardParameters(ReceiveBuff);
                     mMainBoard.handleDoorEvents();
                 }
@@ -263,7 +278,7 @@ public class SerialData {
                 ControlApplication.getInstance().sendBroadcastToService(ConstantUtil.BROADCAST_ACTION_STATUS_BACK);
                 break;
             case (byte) 0x03: //无效帧
-                if(mMainBoard != null) {
+                if (mMainBoard != null) {
                     mMainBoard.processInVainMessage(ReceiveBuff);
                 }
                 break;
@@ -275,7 +290,7 @@ public class SerialData {
                 ControlApplication.getInstance().sendBroadcastToService(ConstantUtil.BROADCAST_ACTION_QUERY_BACK);
                 break;
             case (byte) 0xff: //设备调试信息
-                if(mMainBoard != null) {
+                if (mMainBoard != null) {
                     mMainBoard.updateMainBoardDebugMessage(ReceiveBuff);
                 }
                 break;
@@ -292,24 +307,24 @@ public class SerialData {
      */
     public ArrayList<byte[]> packSyncMode() {
         ArrayList<byte[]> res = null;
-        if(mMainBoard != null) {
+        if (mMainBoard != null) {
             res = mMainBoard.packSyncMode();
         }
         return res;
     }
 
-    public void setCommunicationOverTime(boolean b){
-        if(mMainBoard != null) {
+    public void setCommunicationOverTime(boolean b) {
+        if (mMainBoard != null) {
             mMainBoard.setCommunicationOverTime(b);
         }
-        MyLogUtil.i(TAG,"CommunicationOverTime is "+b);
+        MyLogUtil.i(TAG, "CommunicationOverTime is " + b);
     }
 
-    public void setCommunicationErr(int value){
-        if(mMainBoard != null) {
+    public void setCommunicationErr(int value) {
+        if (mMainBoard != null) {
             mMainBoard.setCommunicationErr(value);
         }
-        MyLogUtil.i(TAG,"CommunicationErr counts is "+value);
+        MyLogUtil.i(TAG, "CommunicationErr counts is " + value);
     }
 
     public boolean isSerialDataReady() {
@@ -331,11 +346,12 @@ public class SerialData {
     public void setmOSType(String mOSType) {
         this.mOSType = mOSType;
     }
-    public byte[] setDataBaseToBytes(){
+
+    public byte[] setDataBaseToBytes() {
         byte[] res;
-        if(DataLen < 5){
+        if (DataLen < 5) {
             res = null;
-        }else {
+        } else {
             res = mMainBoard.setDataBaseToBytes(getReceiveBuff());
         }
         return res;

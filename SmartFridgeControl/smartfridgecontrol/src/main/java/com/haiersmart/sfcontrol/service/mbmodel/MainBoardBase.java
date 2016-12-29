@@ -38,16 +38,14 @@ public abstract class MainBoardBase {
     protected ArrayList<MainBoardEntry> mainBoardControl;//控制类
     protected ArrayList<MainBoardEntry> mainBoardStatus;//状态类
     protected ArrayList<MainBoardEntry> mainBoardDebug;//调试类
-    private ProtocolCommand mProtocolCommand;//命令组
     private TargetTempRange mTargetTempRange;//档位控制温度范围
     protected FridgeControlDbMgr mFridgeControlDbMgr;//数据库管理
     protected ArrayList<FridgeControlEntry> dbFridgeControlEntry;//数据库对应查询的控制类
     protected ArrayList<FridgeControlEntry> dbFridgeControlCancel;//数据库中需要取消设置的类
     protected ArrayList<FridgeControlEntry> dbFridgeControlSet;//数据库中需要设置的类
-    public boolean testDoor = false;
+    public boolean testDoor = false;//
 
     public MainBoardBase() {
-        mProtocolCommand = new ProtocolCommand();
     }
 
     /**
@@ -255,7 +253,7 @@ public abstract class MainBoardBase {
         } else {
             mValue = (byte) (value + mTargetTempRange.getFridgeDiffValue());
         }
-        return mProtocolCommand.PackCmdFrame(EnumBaseName.fridgeTargetTemp, mValue);
+        return ProtocolCommand.PackCmdFrame(EnumBaseName.fridgeTargetTemp, mValue);
     }
 
     /**
@@ -273,7 +271,7 @@ public abstract class MainBoardBase {
         } else {
             mValue = (byte) (value + mTargetTempRange.getFreezeDiffValue());
         }
-        return mProtocolCommand.PackCmdFrame(EnumBaseName.freezeTargetTemp, mValue);
+        return ProtocolCommand.PackCmdFrame(EnumBaseName.freezeTargetTemp, mValue);
     }
 
     /**
@@ -291,7 +289,7 @@ public abstract class MainBoardBase {
         } else {
             mValue = (byte) (value + mTargetTempRange.getChangeDiffValue());
         }
-        return mProtocolCommand.PackCmdFrame(changeTargetTemp, mValue);
+        return ProtocolCommand.PackCmdFrame(EnumBaseName.changeTargetTemp, mValue);
     }
 
     public ArrayList<MainBoardEntry> getMainBoardControl() {
@@ -315,9 +313,9 @@ public abstract class MainBoardBase {
     protected byte[] packSmartMode(boolean b) {
         byte[] res;
         if (b) {
-            res = mProtocolCommand.PackCmdFrame(EnumBaseName.smartMode, (byte) 1);
+            res = ProtocolCommand.PackCmdFrame(EnumBaseName.smartMode, (byte) 1);
         } else {
-            res = mProtocolCommand.PackCmdFrame(EnumBaseName.smartMode, (byte) 0);
+            res = ProtocolCommand.PackCmdFrame(EnumBaseName.smartMode, (byte) 0);
         }
         return res;
     }
@@ -331,9 +329,9 @@ public abstract class MainBoardBase {
     protected byte[] packHolidayMode(boolean b) {
         byte[] res;
         if (b) {
-            res = mProtocolCommand.PackCmdFrame(EnumBaseName.holidayMode, (byte) 1);
+            res = ProtocolCommand.PackCmdFrame(EnumBaseName.holidayMode, (byte) 1);
         } else {
-            res = mProtocolCommand.PackCmdFrame(EnumBaseName.holidayMode, (byte) 0);
+            res = ProtocolCommand.PackCmdFrame(EnumBaseName.holidayMode, (byte) 0);
         }
         return res;
     }
@@ -347,9 +345,9 @@ public abstract class MainBoardBase {
     protected byte[] packQuickFreezeMode(boolean b) {
         byte[] res;
         if (b) {
-            res = mProtocolCommand.PackCmdFrame(EnumBaseName.quickFreezeMode, (byte) 1);
+            res = ProtocolCommand.PackCmdFrame(EnumBaseName.quickFreezeMode, (byte) 1);
         } else {
-            res = mProtocolCommand.PackCmdFrame(EnumBaseName.quickFreezeMode, (byte) 0);
+            res = ProtocolCommand.PackCmdFrame(EnumBaseName.quickFreezeMode, (byte) 0);
         }
         return res;
     }
@@ -363,9 +361,9 @@ public abstract class MainBoardBase {
     protected byte[] packQuickColdMode(boolean b) {
         byte[] res;
         if (b) {
-            res = mProtocolCommand.PackCmdFrame(EnumBaseName.quickColdMode, (byte) 1);
+            res = ProtocolCommand.PackCmdFrame(EnumBaseName.quickColdMode, (byte) 1);
         } else {
-            res = mProtocolCommand.PackCmdFrame(EnumBaseName.quickColdMode, (byte) 0);
+            res = ProtocolCommand.PackCmdFrame(EnumBaseName.quickColdMode, (byte) 0);
         }
         return res;
     }
@@ -376,7 +374,7 @@ public abstract class MainBoardBase {
      * @return 冷藏关闭命令帧
      */
     protected byte[] packFridgeClose() {
-        return mProtocolCommand.PackCmdFrame(EnumBaseName.fridgeTargetTemp, (byte) 0);
+        return ProtocolCommand.PackCmdFrame(EnumBaseName.fridgeTargetTemp, (byte) 0);
     }
 
     /**
@@ -387,7 +385,7 @@ public abstract class MainBoardBase {
     protected byte[] packFridgeOpen() {
         FridgeControlEntry mFridgeControlEntry = new FridgeControlEntry(EnumBaseName.fridgeTargetTemp.toString());
         mFridgeControlDbMgr.queryByName(mFridgeControlEntry);
-        return mProtocolCommand.PackCmdFrame(EnumBaseName.fridgeTargetTemp, (byte) mFridgeControlEntry.value);
+        return ProtocolCommand.PackCmdFrame(EnumBaseName.fridgeTargetTemp, (byte) mFridgeControlEntry.value);
         //        return packFridgeTargetTemp(mFridgeControlEntry.value);
     }
 
@@ -397,7 +395,7 @@ public abstract class MainBoardBase {
      * @return 查询命令帧
      */
     protected byte[] packQuerryCmd() {
-        return mProtocolCommand.PackCmdFrame(EnumBaseName.getAllProperty);
+        return ProtocolCommand.PackCmdFrame(EnumBaseName.getAllProperty);
     }
 
     /**
@@ -413,13 +411,13 @@ public abstract class MainBoardBase {
             if (string.equals(EnumBaseName.fridgeSwitch.toString())) {
                 tmp = packFridgeOpen();
             } else {
-                tmp = mProtocolCommand.PackCmdFrame(EnumBaseName.valueOf(string), (byte) 1);
+                tmp = ProtocolCommand.PackCmdFrame(EnumBaseName.valueOf(string), (byte) 1);
             }
         } else {
             if (string.equals(EnumBaseName.fridgeSwitch.toString())) {
                 tmp = packFridgeClose();
             } else {
-                tmp = mProtocolCommand.PackCmdFrame(EnumBaseName.valueOf(string), (byte) 0);
+                tmp = ProtocolCommand.PackCmdFrame(EnumBaseName.valueOf(string), (byte) 0);
             }
         }
         return tmp;

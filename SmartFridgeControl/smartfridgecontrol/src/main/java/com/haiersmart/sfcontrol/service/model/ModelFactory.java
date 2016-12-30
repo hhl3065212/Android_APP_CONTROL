@@ -26,6 +26,8 @@ public class ModelFactory {
 
         } else if(type.equals(ConstantUtil.BCD630_MODEL )) {
 
+        }else if(type.equals(ConstantUtil.BCD658_MODEL )) {
+
         }else if(type.equals(ConstantUtil.BCD476_MODEL )) {
             model = new TwoFiveOneModel(mService);// hack to 251
         } else {

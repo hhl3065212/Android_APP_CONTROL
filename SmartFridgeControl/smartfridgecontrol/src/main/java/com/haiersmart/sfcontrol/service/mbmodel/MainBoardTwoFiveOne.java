@@ -44,9 +44,13 @@ public class MainBoardTwoFiveOne extends MainBoardBase {
 
     @Override
     public void initConfig() {
+        /** 获得251配置文件 */
         ConfigTwoFiveOne mConfigTwoFiveOne = new ConfigTwoFiveOne();
+        /** 配置状态类 */
         mProtocolConfigStatus = mConfigTwoFiveOne.getProtocolConfig();
+        /** 配置调试类 */
         mProtocolConfigDebug = mConfigTwoFiveOne.getProtocolDebugConfig();
+        /** 申请冷藏门报警监听 */
         mFridgeDoorAlarm = new HandleDoorAlarm(mFridgeDoorAlarmStartTime, mFridgeDoorAlarmStopTime, "fridge") {
             @Override
             public void setDoorErr(boolean b) {

@@ -284,7 +284,6 @@ public class TwoFiveOneModel extends ModelBase {
         mService.sendControlCmdResponse();
     }
 
-    @Override
     public void coldOn() {
         MyLogUtil.i(TAG, "coldOn in");
         FridgeControlEntry coldEntry = getControlEntryByName(EnumBaseName.quickColdMode);
@@ -302,7 +301,6 @@ public class TwoFiveOneModel extends ModelBase {
         MyLogUtil.i(TAG, "coldOn out");
     }
 
-    @Override
     public void coldOff() {
         MyLogUtil.i(TAG, "coldOff in");
         FridgeControlEntry coldEntry = getControlEntryByName(EnumBaseName.quickColdMode);

@@ -49,6 +49,7 @@ public enum EnumBaseName {
     envHumSensorErr("envHumSensorErr"),
     freezeFanErr("freezeFanErr"),
     freezeDefrostSensorErr("freezeDefrostSensorErr"),
+    changeDoorErr("changeDoorErr"),
 //    debug
     getDebug("getDebug"),
     fridgeRealTemp("fridgeRealTemp"),

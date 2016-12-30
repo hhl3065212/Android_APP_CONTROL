@@ -69,11 +69,6 @@ public class MainBoardFourZeroOne extends MainBoardBase{
                 fridgeCmdEn = false;//速冷 不比较变温档位
             }
         }
-        for (FridgeControlEntry fridgeControlEntry:dbFridgeControlCancel){
-            if(fridgeControlEntry.name.equals(EnumBaseName.fridgeSwitch.toString())){
-                fridgeCmdEn = false;//冷藏关闭 不比较冷藏档位
-            }
-        }
         if(fridgeCmdEn){
             FridgeControlEntry fridgeControlEntry = new FridgeControlEntry(EnumBaseName.fridgeTargetTemp.toString());
             mFridgeControlDbMgr.queryByName(fridgeControlEntry);

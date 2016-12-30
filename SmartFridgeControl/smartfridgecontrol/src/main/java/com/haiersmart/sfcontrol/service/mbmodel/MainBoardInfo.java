@@ -80,12 +80,14 @@ public class MainBoardInfo {
         setTypeId();
     }
     private void setTypeId(){
-        StringBuffer tmpStr = new StringBuffer();
+        StringBuilder tmpStr = new StringBuilder();
+        //251 互联互通用id有区别单独处理
         if(fridgeId.equals(ConstantUtil.BCD251_SN)){
             tmpStr.append("111c12002400081001020061800118420000000000");
         }else {
             tmpStr.append(fridgeId);
         }
+        //补齐64位
         for (int i=tmpStr.length();i<64;i++){
             tmpStr.append("0");
         }

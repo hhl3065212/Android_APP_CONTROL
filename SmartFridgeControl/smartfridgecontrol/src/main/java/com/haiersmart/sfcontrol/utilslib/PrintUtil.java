@@ -27,7 +27,7 @@ public class PrintUtil {
         if(bytes == null){
             return "";
         }
-        StringBuffer stringBuffer = new StringBuffer();
+        StringBuilder stringBuffer = new StringBuilder();
         for (byte tmp : bytes) {
             if (form == OCT) {
                 stringBuffer.append(String.format("%03o ", tmp));
@@ -54,7 +54,7 @@ public class PrintUtil {
      * @return
      */
     public static String BytesToString(byte[] bytes, int form, int lenth) {
-        StringBuffer stringBuffer = new StringBuffer();
+        StringBuilder stringBuffer = new StringBuilder();
         for (int tmp = 0; tmp < lenth; tmp++) {
             if (form == OCT) {
                 stringBuffer.append(String.format("%03o ", bytes[tmp]));

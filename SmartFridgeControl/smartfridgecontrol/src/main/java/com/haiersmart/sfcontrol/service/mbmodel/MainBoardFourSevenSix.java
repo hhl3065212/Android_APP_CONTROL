@@ -74,7 +74,6 @@ public class MainBoardFourSevenSix extends MainBoardBase{
         //476 有冷藏、冷冻
         boolean fridgeCmdEn = true;//冷藏档位下发使能 初始为下发
         boolean freezeCmdEn = true;//冷冻档位下发使能 初始为下发
-//        boolean changeCmdEn = true;//变温档位下发使能 初始为下发
         for (FridgeControlEntry fridgeControlEntry:dbFridgeControlSet){
             if(fridgeControlEntry.name.equals(EnumBaseName.smartMode.name())){
                 fridgeCmdEn = false;//智能 不比较冷藏档位
@@ -142,19 +141,14 @@ public class MainBoardFourSevenSix extends MainBoardBase{
         boolean bFridgeDoorNowStatus = getMainBoardStatusByName("fridgeDoorStatus")==1;
         boolean bFreezeDoorNowStatus = getMainBoardStatusByName("freezeDoorStatus")==1;
         HashMap<String,Integer> doorHashMap = new HashMap<>();
-//        ArrayList<DoorStatusEntry> doorStatusEntry = new ArrayList<>();
-//        doorStatusEntry.add(new DoorStatusEntry("fridge",getMainBoardStatusByName("fridgeDoorStatus")));
-//        doorStatusEntry.add(new DoorStatusEntry("freeze",getMainBoardStatusByName("freezeDoorStatus")));
 
         if(bFridgeDoorNowStatus != mFridgeDoorHistoryStatus){
             mFridgeDoorHistoryStatus = bFridgeDoorNowStatus;
             if(bFridgeDoorNowStatus){
                 MyLogUtil.i(TAG,"fridgeDoorStatus is open");
-//                ControlApplication.getInstance().sendBroadcast(BROADCAST_ACTION_ALARM,DOOR_STATUS,DOOR_FRIDGE_OPEN);
                 mFridgeDoorAlarm.startAlarmTimer();
             }else {
                 MyLogUtil.i(TAG,"fridgeDoorStatus is close");
-//                ControlApplication.getInstance().sendBroadcast(BROADCAST_ACTION_ALARM,DOOR_STATUS,DOOR_FRIDGE_CLOSE);
                 mFridgeDoorAlarm.stopAll();
             }
             isDoorChange = true;
@@ -163,12 +157,10 @@ public class MainBoardFourSevenSix extends MainBoardBase{
             mFreezeDoorHistoryStatus = bFreezeDoorNowStatus;
             if(bFreezeDoorNowStatus){
                 MyLogUtil.i(TAG,"freezeDoorStatus is open");
-//                ControlApplication.getInstance().sendBroadcast(BROADCAST_ACTION_ALARM,DOOR_STATUS,DOOR_FREEZE_OPEN);
                 mFreezeDoorAlarm.startAlarmTimer();
                 setFreezeDoorErr(true);
             }else {
                 MyLogUtil.i(TAG,"freezeDoorStatus is close");
-//                ControlApplication.getInstance().sendBroadcast(BROADCAST_ACTION_ALARM,DOOR_STATUS,DOOR_FREEZE_CLOSE);
                 mFreezeDoorAlarm.stopAll();
                 setFreezeDoorErr(false);
             }

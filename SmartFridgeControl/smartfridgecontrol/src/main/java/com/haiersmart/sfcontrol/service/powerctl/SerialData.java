@@ -146,23 +146,28 @@ public class SerialData {
      * 创建主控板模型
      */
     public void createMainBoard() {
-        if (getFridgeId().equals(ConstantUtil.BCD251_SN)) {
+        String typeId = getFridgeId();
+        if (typeId.equals(ConstantUtil.BCD251_SN)) {
             MyLogUtil.i(TAG, "fridge mode:251");
             mCurrentModel = ConstantUtil.BCD251_MODEL;
             mMainBoard = new MainBoardTwoFiveOne();
-        } else if (getFridgeId().equals(ConstantUtil.BCD476_SN)) {
+        } else if (typeId.equals(ConstantUtil.BCD476_SN)) {
             MyLogUtil.i(TAG, "fridge mode:476");
             mCurrentModel = ConstantUtil.BCD476_MODEL;
             mMainBoard = new MainBoardFourSevenSix();
-        } else if (getFridgeId().equals(ConstantUtil.BCD256_SN)) {
+        } else if (typeId.equals(ConstantUtil.BCD256_SN)) {
             MyLogUtil.i(TAG, "fridge mode:256");
             mCurrentModel = ConstantUtil.BCD256_MODEL;
             mMainBoard = new MainBoardTwoFiveSix();
-        } else if (getFridgeId().equals(ConstantUtil.BCD401_SN)) {
+        } else if (typeId.equals(ConstantUtil.BCD401_SN)) {
             MyLogUtil.i(TAG, "fridge mode:401");
             mCurrentModel = ConstantUtil.BCD401_MODEL;
             mMainBoard = new MainBoardFourZeroOne();
-        } else {
+        } else if (typeId.equals(ConstantUtil.BCD658_SN)) {
+            MyLogUtil.i(TAG, "fridge mode:401");
+            mCurrentModel = ConstantUtil.BCD658_MODEL;
+            mMainBoard = new MainBoardFourZeroOne();
+        }else {
             MyLogUtil.i(TAG, "fridge mode:default 251");
             mCurrentModel = ConstantUtil.BCD251_MODEL;
             mMainBoard = new MainBoardTwoFiveOne();

@@ -3,7 +3,6 @@ package com.haiersmart.sfcontrol.service.model;
 import com.haiersmart.sfcontrol.constant.EnumBaseName;
 import com.haiersmart.sfcontrol.database.FridgeControlDbMgr;
 import com.haiersmart.sfcontrol.database.FridgeControlEntry;
-import com.haiersmart.sfcontrol.database.FridgeStatusDbMgr;
 import com.haiersmart.sfcontrol.database.FridgeStatusEntry;
 import com.haiersmart.sfcontrol.service.ControlMainBoardInfo;
 import com.haiersmart.sfcontrol.service.ControlMainBoardService;
@@ -17,11 +16,11 @@ import java.util.List;
 
 public abstract class ModelBase {
 
-    protected static List<FridgeControlEntry> mControlEntries;
-    protected ArrayList<FridgeStatusEntry> mShowTempEntryList;
-    protected ArrayList<FridgeStatusEntry> mErrorEntryList;
+    static List<FridgeControlEntry> mControlEntries;
+    ArrayList<FridgeStatusEntry> mShowTempEntryList;
+    ArrayList<FridgeStatusEntry> mErrorEntryList;
 
-    protected ControlMainBoardService mService;
+    ControlMainBoardService mService;
 
     ModelBase(ControlMainBoardService service) {
         mService = service;
@@ -39,15 +38,15 @@ public abstract class ModelBase {
         return mErrorEntryList;
     }
 
-    public FridgeControlDbMgr getControlDbMgr() {
+    FridgeControlDbMgr getControlDbMgr() {
         return mService.getControlDbMgr();
     }
 
-    public ControlMainBoardInfo getMainBoardInfo() {
+    ControlMainBoardInfo getMainBoardInfo() {
         return mService.getMainBoardInfo();
     }
 
-    public int getControlValueByName(EnumBaseName entryName) {
+    int getControlValueByName(EnumBaseName entryName) {
         int res = -1;
         String nameString = entryName.toString();
         for (FridgeControlEntry tempEntry: mControlEntries ){
@@ -72,7 +71,7 @@ public abstract class ModelBase {
         return entry;
     }
 
-    public void setControlValueByName(EnumBaseName entryName, int entryValue) {
+    void setControlValueByName(EnumBaseName entryName, int entryValue) {
         int listSize = mControlEntries.size();
         String nameString = entryName.toString();
         for (int i=0; i<listSize;i++ ){
@@ -83,7 +82,7 @@ public abstract class ModelBase {
         }
     }
 
-    public void setControlDisableByName(EnumBaseName entryName, String entryDisable) {
+    void setControlDisableByName(EnumBaseName entryName, String entryDisable) {
         int listSize = mControlEntries.size();
         String nameString = entryName.toString();
         for (int i=0; i<listSize;i++ ){
@@ -94,7 +93,7 @@ public abstract class ModelBase {
         }
     }
 
-    public void updateControlByEntry(FridgeControlEntry entry) {
+    void updateControlByEntry(FridgeControlEntry entry) {
         int listSize = mControlEntries.size();
         String nameString = entry.name;
         for (int i=0; i<listSize;i++ ){
@@ -106,25 +105,27 @@ public abstract class ModelBase {
         }
     }
 
+    /**
+     * 公用方法，子类需实现
+     */
     public abstract void init();
     public abstract void smartOn();
     public abstract void smartOff();
     public abstract void freezeOn();
     public abstract void freezeOff();
+    public abstract void coldOn();
+    public abstract void coldOff();
     public abstract void setCold(int coldTemper);
     public abstract void setFreeze(int freezeTemper);
     public abstract void handleStatusDataResponse();
 
+    /**
+     * 非公用方法，子类可重写
+     */
     public void holidayOn() {
     }
 
     public void holidayOff() {
-    }
-
-    public void coldOn() {
-    }
-
-    public void coldOff() {
     }
 
     public void refrigeratorOpen(){
@@ -135,4 +136,12 @@ public abstract class ModelBase {
 
     public void setCustomArea(int customTemper) {
     }
+
+    public void tidbitOn(){}
+
+    public void tidbitOff(){}
+
+    public void purifyOn(){}
+
+    public void purifyOff(){}
 }

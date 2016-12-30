@@ -33,19 +33,19 @@ import static com.haiersmart.sfcontrol.constant.EnumBaseName.changeTargetTemp;
  */
 public abstract class MainBoardBase {
     protected final String TAG = "MainBoardBase";
-    protected ArrayList<ProtocolConfigBase> mProtocolConfigStatus;//状态配置
-    protected ArrayList<ProtocolConfigBase> mProtocolConfigDebug;//调试配置
-    protected ArrayList<MainBoardEntry> mainBoardControl;//控制类
-    protected ArrayList<MainBoardEntry> mainBoardStatus;//状态类
-    protected ArrayList<MainBoardEntry> mainBoardDebug;//调试类
+    ArrayList<ProtocolConfigBase> mProtocolConfigStatus;//状态配置
+    ArrayList<ProtocolConfigBase> mProtocolConfigDebug;//调试配置
+    private ArrayList<MainBoardEntry> mainBoardControl;//控制类
+    private ArrayList<MainBoardEntry> mainBoardStatus;//状态类
+    private ArrayList<MainBoardEntry> mainBoardDebug;//调试类
     private TargetTempRange mTargetTempRange;//档位控制温度范围
-    protected FridgeControlDbMgr mFridgeControlDbMgr;//数据库管理
-    protected ArrayList<FridgeControlEntry> dbFridgeControlEntry;//数据库对应查询的控制类
-    protected ArrayList<FridgeControlEntry> dbFridgeControlCancel;//数据库中需要取消设置的类
-    protected ArrayList<FridgeControlEntry> dbFridgeControlSet;//数据库中需要设置的类
+    FridgeControlDbMgr mFridgeControlDbMgr;//数据库管理
+    private ArrayList<FridgeControlEntry> dbFridgeControlEntry;//数据库对应查询的控制类
+    ArrayList<FridgeControlEntry> dbFridgeControlCancel;//数据库中需要取消设置的类
+    ArrayList<FridgeControlEntry> dbFridgeControlSet;//数据库中需要设置的类
     public boolean testDoor = false;//
 
-    public MainBoardBase() {
+    MainBoardBase() {
     }
 
     /**
@@ -244,7 +244,7 @@ public abstract class MainBoardBase {
      * @param value 冷藏档位温度
      * @return 冷藏档位命令帧
      */
-    protected byte[] packFridgeTargetTemp(int value) {
+    byte[] packFridgeTargetTemp(int value) {
         byte mValue;
         if (value > mTargetTempRange.getFridgeMaxValue()) {
             mValue = mTargetTempRange.getFridgeMaxGear();
@@ -262,7 +262,7 @@ public abstract class MainBoardBase {
      * @param value 冷冻档位温度
      * @return 冷冻档位命令帧
      */
-    protected byte[] packFreezeTargetTemp(int value) {
+    byte[] packFreezeTargetTemp(int value) {
         byte mValue;
         if (value > mTargetTempRange.getFreezeMaxValue()) {
             mValue = mTargetTempRange.getFreezeMaxGear();
@@ -280,7 +280,7 @@ public abstract class MainBoardBase {
      * @param value 变温档位温度
      * @return 变温档位命令帧
      */
-    protected byte[] packChangeTargetTemp(int value) {
+    byte[] packChangeTargetTemp(int value) {
         byte mValue;
         if (value > mTargetTempRange.getChangeMaxValue()) {
             mValue = mTargetTempRange.getChangeMaxGear();
@@ -373,7 +373,7 @@ public abstract class MainBoardBase {
      *
      * @return 冷藏关闭命令帧
      */
-    protected byte[] packFridgeClose() {
+    private byte[] packFridgeClose() {
         return ProtocolCommand.PackCmdFrame(EnumBaseName.fridgeTargetTemp, (byte) 0);
     }
 
@@ -382,7 +382,7 @@ public abstract class MainBoardBase {
      *
      * @return 冷藏打开命令帧
      */
-    protected byte[] packFridgeOpen() {
+    private byte[] packFridgeOpen() {
         FridgeControlEntry mFridgeControlEntry = new FridgeControlEntry(EnumBaseName.fridgeTargetTemp.toString());
         mFridgeControlDbMgr.queryByName(mFridgeControlEntry);
         return ProtocolCommand.PackCmdFrame(EnumBaseName.fridgeTargetTemp, (byte) mFridgeControlEntry.value);
@@ -405,9 +405,9 @@ public abstract class MainBoardBase {
      * @param b      true:开启 false:关闭
      * @return
      */
-    protected byte[] packModeCmd(String string, boolean b) {
+    private byte[] packModeCmd(String string, boolean b) {
         byte[] tmp;
-        if (b == true) {
+        if (b) {
             if (string.equals(EnumBaseName.fridgeSwitch.toString())) {
                 tmp = packFridgeOpen();
             } else {
@@ -541,7 +541,13 @@ public abstract class MainBoardBase {
         }
         return tmp;
     }
-    public MainBoardEntry getMainBoardControlEntryByName(String string) {
+
+    /**
+     * 通过名字查询主控板控制类对象
+     * @param string
+     * @return
+     */
+    private MainBoardEntry getMainBoardControlEntryByName(String string) {
         MainBoardEntry res = null;
         for (MainBoardEntry mainBoardEntry : mainBoardControl) {
             if (mainBoardEntry.getName().equals(string)) {
@@ -592,7 +598,7 @@ public abstract class MainBoardBase {
      * @param string
      * @param value
      */
-    protected void setMainBoardStatusByName(String string, int value) {
+    private void setMainBoardStatusByName(String string, int value) {
         for (MainBoardEntry mainBoardEntry : mainBoardStatus) {
             if (mainBoardEntry.getName().equals(string)) {
                 mainBoardEntry.setValue(value);
@@ -607,9 +613,9 @@ public abstract class MainBoardBase {
      */
     public void setCommunicationOverTime(boolean b) {
         if (b) {
-            setMainBoardStatusByName(EnumBaseName.communicationOverTime.toString(), 1);
+            setMainBoardStatusByName(EnumBaseName.communicationOverTime.name(), 1);
         } else {
-            setMainBoardStatusByName(EnumBaseName.communicationOverTime.toString(), 0);
+            setMainBoardStatusByName(EnumBaseName.communicationOverTime.name(), 0);
         }
     }
 
@@ -619,25 +625,50 @@ public abstract class MainBoardBase {
      * @param value
      */
     public void setCommunicationErr(int value) {
-        setMainBoardStatusByName(EnumBaseName.communicationErr.toString(), value);
+        setMainBoardStatusByName(EnumBaseName.communicationErr.name(), value);
     }
 
-    protected void setFridgeDoorErr(boolean b) {
+    /**
+     * 设置冷藏门报警
+     * @param b
+     */
+    void setFridgeDoorErr(boolean b) {
         if (b) {
-            setMainBoardStatusByName(EnumBaseName.fridgeDoorErr.toString(), 1);
+            setMainBoardStatusByName(EnumBaseName.fridgeDoorErr.name(), 1);
         } else {
-            setMainBoardStatusByName(EnumBaseName.fridgeDoorErr.toString(), 0);
+            setMainBoardStatusByName(EnumBaseName.fridgeDoorErr.name(), 0);
         }
     }
 
-    protected void setFreezeDoorErr(boolean b) {
+    /**
+     * 设置冷冻门报警
+     * @param b
+     */
+    void setFreezeDoorErr(boolean b) {
         if (b) {
-            setMainBoardStatusByName(EnumBaseName.freezeDoorErr.toString(), 1);
+            setMainBoardStatusByName(EnumBaseName.freezeDoorErr.name(), 1);
         } else {
-            setMainBoardStatusByName(EnumBaseName.freezeDoorErr.toString(), 0);
+            setMainBoardStatusByName(EnumBaseName.freezeDoorErr.name(), 0);
+        }
+    }
+    /**
+     * 设置变温门报警
+     * @param b
+     */
+    void setChangeDoorErr(boolean b) {
+        if (b) {
+            setMainBoardStatusByName(EnumBaseName.changeDoorErr.name(), 1);
+        } else {
+            setMainBoardStatusByName(EnumBaseName.freezeDoorErr.name(), 0);
         }
     }
 
+    /**
+     * 为互联互通模块准备状态码
+     * 状态码和数据库信息保持一致，从底板获得状态码后，重新把数据库信息反算回状态码，其他位置保持不变
+     * @param get 底板返回的状态码
+     * @return
+     */
     public byte[] setDataBaseToBytes(byte[] get) {
         byte[] frame = get;
         boolean isFridgeSwitch = true;
@@ -659,11 +690,11 @@ public abstract class MainBoardBase {
                     int tmpint = fridgeControlEntry.value + mainBoardEntry.getDiffValue();
                     frame[mainBoardEntry.getStartByte() - 1] = (byte) tmpint;
                 }
-            }else if(mainBoardEntry.getByteShift() == 9){
-                if(fridgeControlEntry.name.equals(EnumBaseName.fridgeSwitch.toString())){
-                    if(fridgeControlEntry.value==0){
+            } else if (mainBoardEntry.getByteShift() == 9) {
+                if (fridgeControlEntry.name.equals(EnumBaseName.fridgeSwitch.toString())) {
+                    if (fridgeControlEntry.value == 0) {
                         int startByte = getMainBoardControlEntryByName(EnumBaseName.fridgeTargetTemp.toString()).getStartByte();
-                        frame[startByte-1]= (byte) 0x00;
+                        frame[startByte - 1] = (byte) 0x00;
                         isFridgeSwitch = false;
                     }
                 }
@@ -672,27 +703,5 @@ public abstract class MainBoardBase {
         }
         return frame;
     }
-
-    protected class DoorStatusEntry{
-        private String name;
-        private int value;
-
-        public DoorStatusEntry(String name, int value) {
-            this.name = name;
-            this.value = value;
-        }
-
-        public DoorStatusEntry() {
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public int getValue() {
-            return value;
-        }
-    }
-
 
 }

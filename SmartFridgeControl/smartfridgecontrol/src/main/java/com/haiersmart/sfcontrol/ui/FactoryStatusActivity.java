@@ -60,9 +60,11 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
     private String mFridgeModel, mTftVersion, mOsVersion;
     RadioButton rbtVersion, rbtReset, rbtStatus, rbtCamera, rbtTP, rbtAudio, rbtMarket, rbtDebug;
     LinearLayout llVersion, llReset, llStatus, llCamera, llTP, llAudio, llMarket, llDebug;
-    LinearLayout llEnvTemp, llEnvHum, llFridge, llFreeze, llChange, llDefrostSensor, llFreezeDefrost;
+    LinearLayout llEnvTemp, llEnvHum, llFridge, llFreeze, llChange, llDefrostSensor, llFreezeDefrost,
+    llFreezeFan;
     LinearLayout llFridgeDoor;
-    TextView tvEnvTemp, tvEnvHum, tvFridge, tvFreeze, tvChange, tvDefrostSensor, tvFreezeDefrost;
+    TextView tvEnvTemp, tvEnvHum, tvFridge, tvFreeze, tvChange, tvDefrostSensor, tvFreezeDefrost,
+    tvFreezeFan;
     TextView tvFridgeDoor, tvCommunication, tvPir, tvWifi;
     TextView tvFridgeModel, tvTftVersion, tvOsVersion, tvMac, tvTP;
     TextView tvTftVersionTitle,tvOsVersionTitle, tvMacTitle;
@@ -143,6 +145,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
         llChange = (LinearLayout) findViewById(R.id.linear_factory_change);
         llDefrostSensor = (LinearLayout) findViewById(R.id.linear_factory_defrost_sensor);
         llFreezeDefrost = (LinearLayout) findViewById(R.id.linear_factory_freeze_defrost);
+        llFreezeFan = (LinearLayout) findViewById(R.id.linear_factory_freeze_fan);
         llFridgeDoor = (LinearLayout) findViewById(R.id.linear_factory_fridge_door);
 
         tvEnvTemp = (TextView) findViewById(R.id.text_factory_env_temp);
@@ -152,6 +155,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
         tvChange = (TextView) findViewById(R.id.text_factory_change);
         tvDefrostSensor = (TextView) findViewById(R.id.text_factory_defrost_sensor);
         tvFreezeDefrost = (TextView) findViewById(R.id.text_factory_freeze_defrost);
+        tvFreezeFan = (TextView) findViewById(R.id.text_factory_freeze_fan);
         tvFridgeDoor = (TextView) findViewById(R.id.text_factory_fridge_door);
         tvCommunication = (TextView) findViewById(R.id.text_factory_communication);
         tvPir = (TextView) findViewById(R.id.text_factory_pir);
@@ -195,6 +199,27 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
     private void initViews() {
         setLinearContent(R.id.rbt_factory_version);//
         if (mFridgeModel.equals(ConstantUtil.BCD251_MODEL)) {
+            tvFridgeModel.setText(mFridgeModel);
+            rbtVersion.setVisibility(View.VISIBLE);
+            rbtReset.setVisibility(View.VISIBLE);
+            rbtStatus.setVisibility(View.VISIBLE);
+            rbtCamera.setVisibility(View.GONE);
+            rbtTP.setVisibility(View.VISIBLE);
+            rbtAudio.setVisibility(View.VISIBLE);
+            rbtMarket.setVisibility(View.GONE);
+            rbtDebug.setVisibility(View.GONE);
+        }else if(mFridgeModel.equals(ConstantUtil.BCD401_MODEL)){
+            tvFridgeModel.setText(mFridgeModel+"/"+mFridgeModel+"(S)");
+            rbtVersion.setVisibility(View.VISIBLE);
+            rbtReset.setVisibility(View.VISIBLE);
+            rbtStatus.setVisibility(View.VISIBLE);
+            rbtCamera.setVisibility(View.GONE);
+            rbtTP.setVisibility(View.VISIBLE);
+            rbtAudio.setVisibility(View.VISIBLE);
+            rbtMarket.setVisibility(View.GONE);
+            rbtDebug.setVisibility(View.GONE);
+        }else if (mFridgeModel.equals(ConstantUtil.BCD256_MODEL)){
+            tvFridgeModel.setText(mFridgeModel+"/"+mFridgeModel+"(S)");
             rbtVersion.setVisibility(View.VISIBLE);
             rbtReset.setVisibility(View.VISIBLE);
             rbtStatus.setVisibility(View.VISIBLE);
@@ -217,11 +242,28 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             llDefrostSensor.setVisibility(View.VISIBLE);
             llFreezeDefrost.setVisibility(View.VISIBLE);
             llFridgeDoor.setVisibility(View.VISIBLE);
+        }else if(mFridgeModel.equals(ConstantUtil.BCD401_MODEL)){
+            llEnvTemp.setVisibility(View.VISIBLE);
+            llFridge.setVisibility(View.VISIBLE);
+            llFreeze.setVisibility(View.VISIBLE);
+            llDefrostSensor.setVisibility(View.VISIBLE);
+            llFreezeDefrost.setVisibility(View.VISIBLE);
+            llFreezeFan.setVisibility(View.VISIBLE);
+            llFridgeDoor.setVisibility(View.VISIBLE);
+        }else if (mFridgeModel.equals(ConstantUtil.BCD256_MODEL)){
+            llEnvTemp.setVisibility(View.VISIBLE);
+            llFridge.setVisibility(View.VISIBLE);
+            llFreeze.setVisibility(View.VISIBLE);
+            llChange.setVisibility(View.VISIBLE);
+            llDefrostSensor.setVisibility(View.VISIBLE);
+            llFreezeDefrost.setVisibility(View.VISIBLE);
+            llFreezeFan.setVisibility(View.VISIBLE);
+            llFridgeDoor.setVisibility(View.VISIBLE);
         }
     }
 
     private void initDebugView() {
-        if (mFridgeModel.equals(ConstantUtil.BCD251_MODEL)) {
+        if (mFridgeModel.equals(ConstantUtil.BCD658_MODEL)) {
         }
     }
 
@@ -453,6 +495,13 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
                 tvFreezeDefrost.setText(getResources().getString(R.string.text_factory_error));
                 tvFreezeDefrost.setTextColor(getResources().getColor(R.color.red));
             }
+            if (mMBParam.getMbsValueByName(EnumBaseName.freezeFanErr.name()) == 0) {
+                tvFreezeFan.setText(getResources().getString(R.string.text_factory_normal));
+                tvFreezeFan.setTextColor(getResources().getColor(R.color.black2));
+            } else {
+                tvFreezeFan.setText(getResources().getString(R.string.text_factory_error));
+                tvFreezeFan.setTextColor(getResources().getColor(R.color.red));
+            }
             if (mMBParam.getMbsValueByName(EnumBaseName.fridgeDoorStatus.toString()) == 0) {
                 tvFridgeDoor.setText(getResources().getString(R.string.text_door_close));
                 tvFridgeDoor.setTextColor(getResources().getColor(R.color.black2));
@@ -478,6 +527,8 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             tvDefrostSensor.setTextColor(getResources().getColor(R.color.red));
             tvFreezeDefrost.setText(getResources().getString(R.string.text_factory_error));
             tvFreezeDefrost.setTextColor(getResources().getColor(R.color.red));
+            tvFreezeFan.setText(getResources().getString(R.string.text_factory_error));
+            tvFreezeFan.setTextColor(getResources().getColor(R.color.red));
             tvFridgeDoor.setText(getResources().getString(R.string.text_factory_error));
             tvFridgeDoor.setTextColor(getResources().getColor(R.color.red));
             tvCommunication.setText(getResources().getString(R.string.text_factory_error));

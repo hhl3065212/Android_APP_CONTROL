@@ -50,6 +50,7 @@
     <string name="title_factory_defrost_sensor">化霜传感器</string>
     <string name="text_factory_normal">正常</string>
     <string name="title_factory_freeze_defrost">冷冻化霜</string>
+    <string name="title_factory_freeze_fan">冷冻风机</string>
     <string name="text_factory_error">ERROR</string>
     <string name="title_factory_status">状态</string>
     <string name="title_factory_fridge_door">冷藏室门</string>
@@ -67,4 +68,19 @@
     <string name="pop_default_content">内容</string>
     <string name="pop_default_title">提示</string>
     <string name="pop_default_hint">请输入恢复出厂设置密码</string>
+
+    <string name="title_factory_fridge_real_temp">冷藏实际温度</string>
+    <string name="title_factory_freeze_real_temp">冷冻实际温度</string>
+    <string name="title_factory_change_real_temp">变温实际温度</string>
+    <string name="title_factory_env_real_temp">环境实际温度</string>
+    <string name="title_factory_freeze_defrost_real_temp">冷冻化霜实际温度</string>
+
+    <string name="title_factory_freeze_fan_voltage">冷冻风机电压</string>
+    <string name="title_factory_press_one_freq">压机1频率</string>
+    <string name="title_factory_fridge_air_door">冷藏室风门</string>
+    <string name="title_factory_change_air_door">变温室风门</string>
+    <string name="title_factory_defrost_heater">化霜加热丝</string>
+    <string name="title_factory_change_heater">变温室加热丝</string>
+    <string name="title_factory_fridge_light">冷藏灯</string>
+
 </resources>

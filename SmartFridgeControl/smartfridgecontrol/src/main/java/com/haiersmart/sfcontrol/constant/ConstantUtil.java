@@ -111,6 +111,8 @@ public class ConstantUtil {
 
     public static final String MODE_TIDBIT_ON = "openTidbitModel";//珍品开
     public static final String MODE_TIDBIT_OFF = "closeTidbitModel";//珍品关
+    public static final String MODE_PURIFY_ON = "openPurifyModel";//净化开
+    public static final String MODE_PURIFY_OFF = "closePurifyModel";//净化关
 
     //返回的key
     public static final String KEY_MODE= "commandMode";

@@ -115,6 +115,12 @@ public class ControlCommandReceiver extends BroadcastReceiver {
             } else if (contentAction.equals(ConstantUtil.MODE_TIDBIT_OFF)) {
                 //珍品关
                 sendCommandToService(context, ConstantUtil.MODE_TIDBIT_OFF);
+            }else if (contentAction.equals(ConstantUtil.MODE_PURIFY_ON)) {
+                //净化开
+                sendCommandToService(context, ConstantUtil.MODE_PURIFY_ON);
+            } else if (contentAction.equals(ConstantUtil.MODE_PURIFY_OFF)) {
+                //净化关
+                sendCommandToService(context, ConstantUtil.MODE_PURIFY_OFF);
             }
         } else if (action.equals(ConstantWifiUtil.ACTION_MODECONTROL)) {
             String contentAction = intent.getStringExtra(ConstantWifiUtil.KEY_SENDCONTROL);
@@ -145,9 +151,9 @@ public class ControlCommandReceiver extends BroadcastReceiver {
                     } else if (strs[1].equals(ConstantWifiUtil.MODE_ZHENPIN_OFF)) {
                         sendCommandToService(context, ConstantUtil.MODE_TIDBIT_OFF);
                     } else if (strs[1].equals(ConstantWifiUtil.MODE_CLEAN_ON)) {
-                        sendCommandToService(context, ConstantWifiUtil.MODE_CLEAN_ON);
+                        sendCommandToService(context, ConstantUtil.MODE_PURIFY_ON);
                     } else if (strs[1].equals(ConstantWifiUtil.MODE_CLEAN_OFF)) {
-                        sendCommandToService(context, ConstantWifiUtil.MODE_CLEAN_OFF);
+                        sendCommandToService(context, ConstantUtil.MODE_PURIFY_OFF);
                     }
                 }
                 if (strs[0].equals(ConstantWifiUtil.MODE_UV)) {

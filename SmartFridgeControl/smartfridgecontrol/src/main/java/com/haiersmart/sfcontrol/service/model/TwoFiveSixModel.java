@@ -215,6 +215,7 @@ public class TwoFiveSixModel extends ModelBase {
             //进速冷
             coldEntry.value = 1;
             coldEntry.disable = ConstantUtil.NO_WARNING;
+            updateControlByEntry(coldEntry);
             getControlDbMgr().updateEntry(coldEntry);
             //设置变温档位disable
             setControlDisableByName(EnumBaseName.changeTargetTemp, ConstantUtil.CLOD_ON_SET_TEMPER_WARNING);
@@ -230,9 +231,10 @@ public class TwoFiveSixModel extends ModelBase {
         MyLogUtil.i(TAG, "coldOff in");
         FridgeControlEntry coldEntry = getControlEntryByName(EnumBaseName.quickColdMode);
         if (coldEntry.value == 1) {
-            //进速冷
+            //退速冷
             coldEntry.value = 0;
             coldEntry.disable = ConstantUtil.NO_WARNING;
+            updateControlByEntry(coldEntry);
             getControlDbMgr().updateEntry(coldEntry);
             //设置变温档位enable,档位值显示
             setControlDisableByName(EnumBaseName.changeTargetTemp, ConstantUtil.NO_WARNING);
@@ -394,9 +396,10 @@ public class TwoFiveSixModel extends ModelBase {
             updateControlByEntry(coldEntry);
             getControlDbMgr().updateEntry(coldEntry);
 
-            //进速冷
+            //进珍品
             tidbitEntry.value = 1;
             tidbitEntry.disable = ConstantUtil.NO_WARNING;
+            updateControlByEntry(tidbitEntry);
             getControlDbMgr().updateEntry(tidbitEntry);
             //设置变温档位disable
             setControlDisableByName(EnumBaseName.changeTargetTemp, ConstantUtil.TIDBIT_ON_SET_TEMPER_WARNING);
@@ -419,6 +422,7 @@ public class TwoFiveSixModel extends ModelBase {
             //退珍品
             tidbitEntry.value = 0;
             tidbitEntry.disable = ConstantUtil.NO_WARNING;
+            updateControlByEntry(tidbitEntry);
             getControlDbMgr().updateEntry(tidbitEntry);
             //设置变温档位disable
             setControlDisableByName(EnumBaseName.changeTargetTemp, ConstantUtil.NO_WARNING);
@@ -487,9 +491,9 @@ public class TwoFiveSixModel extends ModelBase {
         //            isErrOccurred = true;
         //        }
 
-        int communicationErr = getMainBoardInfo().getCommunicationErr();
-        if (mErrorEntryList.get(1).value != communicationErr) {
-            mErrorEntryList.get(1).value = communicationErr;
+        int communicationOverTime = getMainBoardInfo().getCommunicationOverTime();
+        if (mErrorEntryList.get(1).value != communicationOverTime) {
+            mErrorEntryList.get(1).value = communicationOverTime;
             isErrOccurred = true;
         }
 

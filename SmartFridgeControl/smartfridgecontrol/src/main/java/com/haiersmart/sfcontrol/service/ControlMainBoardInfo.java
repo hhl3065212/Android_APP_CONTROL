@@ -75,10 +75,15 @@ public class ControlMainBoardInfo {
         int res = searchStatusValue("envShowTemp");
         return res;
     }
+    //环境实际温度
+    public int getEnvRealTemp() {
+        int res = searchStatusValue("envRealTemp");
+        return res;
+    }
 
     //环境显示湿度
-    public int getEnvShowHumidity() {
-        int res = searchStatusValue("envShowHumidity");
+    public int getEnvShowHum() {
+        int res = searchStatusValue("envShowHum");
         return res;
     }
     //冷藏门
@@ -106,6 +111,9 @@ public class ControlMainBoardInfo {
         int res = searchStatusValue("envSensorErr");
         return res;
     }
+    public int getEnvTempSensorErr(){
+        return searchStatusValue("envTempSensorErr");
+    }
     //冷藏传感器故障
     public int getFridgeSensorErr() {
         int res = searchStatusValue("fridgeSensorErr");
@@ -121,11 +129,17 @@ public class ControlMainBoardInfo {
         int res = searchStatusValue("changeSensorErr");
         return res;
     }
+    public int getEnvHumSensorErr(){
+        return searchStatusValue("envHumSensorErr");
+    }
 
     //化霜传感器故障
     public int getDefrostSensorErr() {
         int res = searchStatusValue("defrostSensorErr");
         return res;
+    }
+    public int getFreezeDefrostSensorErr(){
+        return searchStatusValue("freezeDefrostSensorErr");
     }
 
     //冷冻化霜传感器故障

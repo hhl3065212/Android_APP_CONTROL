@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView tvFridgeModel, tvStatusCode, tvEnvTemp, tvEnvHum, tvFridgeTemp, tvFreezeTemp, tvChangeTemp,
             tvFridgeTarget, tvFreezeTarget, tvChangeTarget, tvTime, tvTest;
     private Button btnReturn;
-    private MyTestButton btnSmart, btnHoliday, btnQuickCold, btnQuickFreeze, btnFridgeSwitch, btnTidbit;
+    private MyTestButton btnSmart, btnHoliday, btnQuickCold, btnQuickFreeze, btnFridgeSwitch, btnTidbit,btnPurify;
     private SeekBar skbFridge, skbFreeze, skbChange;
     private ImageView imvQrCode;
 
@@ -273,6 +273,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 initFridgeOpen(R.id.btn_demo_bottom_left);
                 initTidbit(R.id.btn_demo_bottom_right);
                 break;
+            case ConstantUtil.BCD401_MODEL:
+                lineFridgeTemp.setVisibility(View.VISIBLE);
+                lineFreezeTemp.setVisibility(View.VISIBLE);
+//                lineChangeTemp.setVisibility(View.VISIBLE);
+                lineFridgeTarget.setVisibility(View.VISIBLE);
+                lineFreezeTarget.setVisibility(View.VISIBLE);
+//                lineChangeTarger.setVisibility(View.VISIBLE);
+                initSmart(R.id.btn_demo_top_left);
+                initPurify(R.id.btn_demo_top_right);
+                initQuickCold(R.id.btn_demo_center_left);
+                initQuickFreeze(R.id.btn_demo_center_right);
+                break;
         }
         isReady = true;
         tvTest.setText("使用馨小厨APP扫码绑定");
@@ -447,6 +459,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } else {
                 btnTidbit.setOff();
             }
+        }else if (mModel.mFridgeModel.equals(ConstantUtil.BCD401_MODEL)) {
+            tvFridgeTemp.setText(mModel.mFridgeShow + " ℃");
+            tvFreezeTemp.setText(mModel.mFreezeShow + " ℃");
+            if (mModel.isSmart) {
+                btnSmart.setOn();
+            } else {
+                btnSmart.setOff();
+            }
+            if (mModel.isPurify) {
+                btnPurify.setOn();
+            } else {
+                btnPurify.setOff();
+            }
+            if (mModel.isQuickCold) {
+                btnQuickCold.setOn();
+            } else {
+                btnQuickCold.setOff();
+            }
+            if (mModel.isQuickFreeze) {
+                btnQuickFreeze.setOn();
+            } else {
+                btnQuickFreeze.setOff();
+            }
         }
 
     }
@@ -591,6 +626,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_TIDBIT_OFF);
                     } else {
                         sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_TIDBIT_ON);
+                    }
+                }
+            }
+        });
+    }
+
+    private void initPurify(final int idButton) {
+        btnPurify = (MyTestButton) findViewById(idButton);
+        btnPurify.setText("净化");
+        btnPurify.setEnabled(true);
+        btnPurify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (v.getId() == idButton) {
+                    if (btnPurify.isPress()) {
+                        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_PURIFY_OFF);
+                    } else {
+                        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_PURIFY_ON);
                     }
                 }
             }

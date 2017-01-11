@@ -23,7 +23,7 @@ public class ModelFactory {
         }else if (type.equals(ConstantUtil.BCD325_MODEL) ) {
 
         } else if (type.equals(ConstantUtil.BCD401_MODEL )) {
-
+            model = new FourZeroOneModel(mService);
         } else if(type.equals(ConstantUtil.BCD630_MODEL )) {
 
         }else if(type.equals(ConstantUtil.BCD658_MODEL )) {

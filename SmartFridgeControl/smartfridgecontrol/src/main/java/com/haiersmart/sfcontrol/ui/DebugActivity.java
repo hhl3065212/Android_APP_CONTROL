@@ -32,6 +32,7 @@ import java.util.TimerTask;
 
 import static com.haiersmart.sfcontrol.constant.ConstantUtil.BCD251_MODEL;
 import static com.haiersmart.sfcontrol.constant.ConstantUtil.BCD256_MODEL;
+import static com.haiersmart.sfcontrol.constant.ConstantUtil.BCD401_MODEL;
 
 public class DebugActivity extends AppCompatActivity implements View.OnClickListener{
     private static final String TAG = "DebugActivity";
@@ -52,7 +53,7 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
     tvFridgeTarget,tvFreezeTarget,tvChangeTarget;
     private TextView tvTitleStatusCode;
     private Button btnReturn;
-    private MyTestButton btnSmart,btnHoliday,btnQuickCold,btnQuickFreeze,btnFridgeClose,btnFridgeDoor;
+    private MyTestButton btnSmart,btnHoliday,btnQuickCold,btnQuickFreeze,btnFridgeClose,btnFridgeDoor,btnPurify;
     private SeekBar skbFridge,skbFreeze,skbChange;
 
     private int onclickCounts = 0;
@@ -167,6 +168,17 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                 initFridgeClose(R.id.btn_debug_bottom_left);
                 initFridgeDoor(R.id.btn_debug_bottom_right);
                 break;
+            case BCD401_MODEL:
+                lineEnvTemp.setVisibility(View.VISIBLE);
+                lineFridgeTemp.setVisibility(View.VISIBLE);
+                lineFreezeTemp.setVisibility(View.VISIBLE);
+                lineFridgeTarget.setVisibility(View.VISIBLE);
+                lineFreezeTarget.setVisibility(View.VISIBLE);
+                initSmart(R.id.btn_debug_top_left);
+                initPurify(R.id.btn_debug_top_right);
+                initQuickCold(R.id.btn_debug_center_left);
+                initQuickFreeze(R.id.btn_debug_center_right);
+                break;
         }
     }
     private void initSeekBar(){
@@ -201,6 +213,8 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
             if(mModel.equals(ConstantUtil.BCD251_MODEL)) {
                 tvFridgeModel.setText(mModel);
             }else if(mModel.equals(ConstantUtil.BCD256_MODEL))            {
+                tvFridgeModel.setText(mModel+"/"+mModel+"(S)");
+            }else if(mModel.equals(ConstantUtil.BCD401_MODEL))            {
                 tvFridgeModel.setText(mModel+"/"+mModel+"(S)");
             }
             mWaitTask.cancel();
@@ -355,6 +369,35 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                     btnFridgeClose.setText("冷藏关");
                 }
                 break;
+            case BCD401_MODEL:
+                tvEnvTemp.setText(getStatusValueByName(EnumBaseName.envShowTemp)+" ℃");
+                tvFridgeTemp.setText(getStatusValueByName(EnumBaseName.fridgeShowTemp)+" ℃");
+                tvFreezeTemp.setText(getStatusValueByName(EnumBaseName.freezeShowTemp)+" ℃");
+                fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.smartMode);
+                if(fridgeControlEntry.value == 1){
+                    btnSmart.setOn();
+                }else {
+                    btnSmart.setOff();
+                }
+                fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.purifyMode);
+                if(fridgeControlEntry.value == 1){
+                    btnPurify.setOn();
+                }else {
+                    btnPurify.setOff();
+                }
+                fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.quickColdMode);
+                if(fridgeControlEntry.value == 1){
+                    btnQuickCold.setOn();
+                }else {
+                    btnQuickCold.setOff();
+                }
+                fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.quickFreezeMode);
+                if(fridgeControlEntry.value == 1){
+                    btnQuickFreeze.setOn();
+                }else {
+                    btnQuickFreeze.setOff();
+                }
+                break;
         }
 
     }
@@ -487,6 +530,28 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                         btnFridgeDoor.setOn();
                         btnFridgeDoor.setText("开门");
                         mSerialData.setDoorStauts(true);
+                    }
+                }
+            }
+        });
+    }
+
+    private void initPurify(final int idButton){
+        btnPurify = (MyTestButton)findViewById(idButton);
+        btnPurify.setText("净化");
+        btnPurify.setEnabled(true);
+
+
+        btnPurify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(v.getId() == idButton){
+                    if(btnPurify.isPress()){
+                        //                        btnSmart.setOff();
+                        mControlService.sendUserCommand(EnumBaseName.purifyMode,0);
+                    }else {
+                        //                        btnSmart.setOn();
+                        mControlService.sendUserCommand(EnumBaseName.purifyMode,1);
                     }
                 }
             }

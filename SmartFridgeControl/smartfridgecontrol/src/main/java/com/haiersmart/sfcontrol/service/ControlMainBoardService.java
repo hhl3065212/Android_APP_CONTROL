@@ -312,6 +312,14 @@ public class ControlMainBoardService extends Service {
                 mModel.tidbitOff();
                 sendQuery();
                 break;
+            case ConstantUtil.MODE_PURIFY_ON:
+                mModel.purifyOn();
+                sendQuery();
+                break;
+            case ConstantUtil.MODE_PURIFY_OFF:
+                mModel.purifyOff();
+                sendQuery();
+                break;
             default:
                 break;
         }
@@ -803,6 +811,13 @@ public class ControlMainBoardService extends Service {
                     mModel.tidbitOn();
                 }else {
                     mModel.tidbitOff();
+                }
+                break;
+            case purifyMode:
+                if(value == 1) {
+                    mModel.purifyOn();
+                }else {
+                    mModel.purifyOff();
                 }
                 break;
             default:

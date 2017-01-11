@@ -109,6 +109,12 @@ public class ControlCommandReceiver extends BroadcastReceiver {
                 sendCommandToService(context, ConstantUtil.QUERY_FREEZE_TEMP_RANGE);
             }else if(contentAction.equals(ConstantUtil.QUERY_TEMP_RANGE)){
                 sendCommandToService(context,ConstantUtil.QUERY_TEMP_RANGE);
+            }else if (contentAction.equals(ConstantUtil.MODE_TIDBIT_ON)) {
+                //珍品开
+                sendCommandToService(context, ConstantUtil.MODE_TIDBIT_ON);
+            } else if (contentAction.equals(ConstantUtil.MODE_TIDBIT_OFF)) {
+                //珍品关
+                sendCommandToService(context, ConstantUtil.MODE_TIDBIT_OFF);
             }
         } else if (action.equals(ConstantWifiUtil.ACTION_MODECONTROL)) {
             String contentAction = intent.getStringExtra(ConstantWifiUtil.KEY_SENDCONTROL);

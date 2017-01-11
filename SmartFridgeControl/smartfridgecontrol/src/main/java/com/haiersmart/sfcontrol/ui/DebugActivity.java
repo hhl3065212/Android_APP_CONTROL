@@ -17,6 +17,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.haiersmart.sfcontrol.R;
+import com.haiersmart.sfcontrol.constant.ConstantUtil;
 import com.haiersmart.sfcontrol.constant.EnumBaseName;
 import com.haiersmart.sfcontrol.database.FridgeControlEntry;
 import com.haiersmart.sfcontrol.draw.MyTestButton;
@@ -30,6 +31,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import static com.haiersmart.sfcontrol.constant.ConstantUtil.BCD251_MODEL;
+import static com.haiersmart.sfcontrol.constant.ConstantUtil.BCD256_MODEL;
 
 public class DebugActivity extends AppCompatActivity implements View.OnClickListener{
     private static final String TAG = "DebugActivity";
@@ -150,6 +152,21 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                 initFridgeClose(R.id.btn_debug_bottom_left);
                 initFridgeDoor(R.id.btn_debug_bottom_right);
                 break;
+            case BCD256_MODEL:
+                lineEnvTemp.setVisibility(View.VISIBLE);
+                lineFridgeTemp.setVisibility(View.VISIBLE);
+                lineFreezeTemp.setVisibility(View.VISIBLE);
+                lineChangeTemp.setVisibility(View.VISIBLE);
+                lineFridgeTarget.setVisibility(View.VISIBLE);
+                lineFreezeTarget.setVisibility(View.VISIBLE);
+                lineChangeTarger.setVisibility(View.VISIBLE);
+                initSmart(R.id.btn_debug_top_left);
+                initHoliday(R.id.btn_debug_top_right);
+                initQuickCold(R.id.btn_debug_center_left);
+                initQuickFreeze(R.id.btn_debug_center_right);
+                initFridgeClose(R.id.btn_debug_bottom_left);
+                initFridgeDoor(R.id.btn_debug_bottom_right);
+                break;
         }
     }
     private void initSeekBar(){
@@ -181,7 +198,11 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
     private void setModel(){
         if(mSerialData.isSerialDataReady()) {
             mModel = mSerialData.getCurrentModel();
-            tvFridgeModel.setText(mModel);
+            if(mModel.equals(ConstantUtil.BCD251_MODEL)) {
+                tvFridgeModel.setText(mModel);
+            }else if(mModel.equals(ConstantUtil.BCD256_MODEL))            {
+                tvFridgeModel.setText(mModel+"/"+mModel+"(S)");
+            }
             mWaitTask.cancel();
             setView();
 //            mTimer.schedule(mTimerTask, 0, 200);
@@ -287,6 +308,45 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                 }
                 fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.fridgeSwitch);
 //                MyLogUtil.i(TAG,"fridgeSwitch status is " +fridgeControlEntry.value);
+                if(fridgeControlEntry.value == 1){
+                    btnFridgeClose.setOn();
+                    btnFridgeClose.setText("冷藏开");
+                }else {
+                    btnFridgeClose.setOff();
+                    btnFridgeClose.setText("冷藏关");
+                }
+                break;
+            case BCD256_MODEL:
+                tvEnvTemp.setText(getStatusValueByName(EnumBaseName.envShowTemp)+" ℃");
+                tvFridgeTemp.setText(getStatusValueByName(EnumBaseName.fridgeShowTemp)+" ℃");
+                tvFreezeTemp.setText(getStatusValueByName(EnumBaseName.freezeShowTemp)+" ℃");
+                tvChangeTemp.setText(getStatusValueByName(EnumBaseName.changeShowTemp)+" ℃");
+                fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.smartMode);
+                if(fridgeControlEntry.value == 1){
+                    btnSmart.setOn();
+                }else {
+                    btnSmart.setOff();
+                }
+                fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.holidayMode);
+                if(fridgeControlEntry.value == 1){
+                    btnHoliday.setOn();
+                }else {
+                    btnHoliday.setOff();
+                }
+                fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.quickColdMode);
+                if(fridgeControlEntry.value == 1){
+                    btnQuickCold.setOn();
+                }else {
+                    btnQuickCold.setOff();
+                }
+                fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.quickFreezeMode);
+                if(fridgeControlEntry.value == 1){
+                    btnQuickFreeze.setOn();
+                }else {
+                    btnQuickFreeze.setOff();
+                }
+                fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.fridgeSwitch);
+                //                MyLogUtil.i(TAG,"fridgeSwitch status is " +fridgeControlEntry.value);
                 if(fridgeControlEntry.value == 1){
                     btnFridgeClose.setOn();
                     btnFridgeClose.setText("冷藏开");

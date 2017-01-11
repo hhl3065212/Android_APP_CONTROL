@@ -19,7 +19,7 @@ public class ModelFactory {
         if(type.equals(ConstantUtil.BCD251_MODEL)) {
             model = new TwoFiveOneModel(mService);
         } else if (type.equals(ConstantUtil.BCD256_MODEL)) {
-
+            model = new TwoFiveSixModel(mService);
         }else if (type.equals(ConstantUtil.BCD325_MODEL) ) {
 
         } else if (type.equals(ConstantUtil.BCD401_MODEL )) {

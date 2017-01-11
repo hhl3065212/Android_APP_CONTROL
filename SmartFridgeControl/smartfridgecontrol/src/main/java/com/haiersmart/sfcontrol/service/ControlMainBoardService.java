@@ -304,6 +304,14 @@ public class ControlMainBoardService extends Service {
                 MyLogUtil.d("printSerialString","query");
                 sendQuery();
                 break;
+            case ConstantUtil.MODE_TIDBIT_ON:
+                mModel.tidbitOn();
+                sendQuery();
+                break;
+            case ConstantUtil.MODE_TIDBIT_OFF:
+                mModel.tidbitOff();
+                sendQuery();
+                break;
             default:
                 break;
         }
@@ -789,6 +797,14 @@ public class ControlMainBoardService extends Service {
                 break;
             case changeTargetTemp:
                 mModel.setCustomArea(value);
+                break;
+            case tidbitMode:
+                if(value == 1) {
+                    mModel.tidbitOn();
+                }else {
+                    mModel.tidbitOff();
+                }
+                break;
             default:
                 mModel.getControlEntries();
         }

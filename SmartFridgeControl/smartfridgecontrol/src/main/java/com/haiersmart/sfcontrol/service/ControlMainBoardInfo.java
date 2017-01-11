@@ -91,6 +91,11 @@ public class ControlMainBoardInfo {
         int res = searchStatusValue("communicationErr");
         return res;
     }
+    //通信超时
+    public int getCommunicationOverTime() {
+        int res = searchStatusValue("communicationOverTime");
+        return res;
+    }
     //冷藏门报警
     public int getFridgeDoorErr() {
         int res = searchStatusValue("fridgeDoorErr");
@@ -127,6 +132,10 @@ public class ControlMainBoardInfo {
      public int getFreezeDefrostErr() {
         int res = searchStatusValue("freezeDefrostErr");
         return res;
+    }
+
+    public int getFreezeFanErr(){
+        return searchStatusValue("freezeFanErr");
     }
 
     //化霜传感器实际温度

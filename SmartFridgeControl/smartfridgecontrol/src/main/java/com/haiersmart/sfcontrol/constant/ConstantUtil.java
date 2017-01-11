@@ -109,6 +109,9 @@ public class ConstantUtil {
     public static final String MODE_UV = "setUVModel";//设置杀菌模式
     public static final String KEY_QUERY = "query";//远程模块主动查询冰箱状态
 
+    public static final String MODE_TIDBIT_ON = "openTidbitModel";//珍品开
+    public static final String MODE_TIDBIT_OFF = "closeTidbitModel";//珍品关
+
     //返回的key
     public static final String KEY_MODE= "commandMode";
     public static final String KEY_READY= "serviceReady";
@@ -190,6 +193,7 @@ public class ConstantUtil {
     public static final String FREEZE_ON_SET_TEMPER_WARNING = "速冻";
     public static final String CLOD_ON_SET_TEMPER_WARNING = "速冷";
     public static final String REFRIGERATOR_CLOSE_ON_SET_TEMPER_WARNING = "关闭";
+    public static final String TIDBIT_ON_SET_TEMPER_WARNING = "珍品";
 
     //年月日
     public static final String pop_year = "年";//y

@@ -57,6 +57,9 @@ public class ConstantUtil {
     public static final String MODE_UV = "setUVModel";//设置杀菌模式
     public static final String KEY_QUERY = "query";//远程模块主动查询冰箱状态
 
+    public static final String MODE_TIDBIT_ON = "openTidbitModel";//珍品开
+    public static final String MODE_TIDBIT_OFF = "closeTidbitModel";//珍品关
+
     //返回的key
     public static final String KEY_CONTROL_INFO = "ControlInfo";//识别key为“ControlInfo” 发送的数据为Serializable
     public static final String KEY_FRIDGE_TYPE = "fridgeType";

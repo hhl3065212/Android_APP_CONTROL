@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView tvFridgeModel, tvStatusCode, tvEnvTemp, tvEnvHum, tvFridgeTemp, tvFreezeTemp, tvChangeTemp,
             tvFridgeTarget, tvFreezeTarget, tvChangeTarget, tvTime, tvTest;
     private Button btnReturn;
-    private MyTestButton btnSmart, btnHoliday, btnQuickCold, btnQuickFreeze, btnFridgeSwitch;
+    private MyTestButton btnSmart, btnHoliday, btnQuickCold, btnQuickFreeze, btnFridgeSwitch, btnTidbit;
     private SeekBar skbFridge, skbFreeze, skbChange;
     private ImageView imvQrCode;
 
@@ -109,15 +109,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void registerBroadcast() {
         IntentFilter intentFilter = new IntentFilter();
-//        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_READY);
-//        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_FRIDGE_INFO);
-//        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_CONTROL);//模式和档位信息广播
-//        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_TEMPER);//温度广播
-//        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_ERROR);//错误或故障信息广播
-//        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_ALARM);
-//        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_FRIDGE_RANGE);
-//        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_CHANGE_RANGE);
-//        intentFilter.addAction(ConstantUtil.BROADCAST_ACTION_FREEZE_RANGE);
         intentFilter.addAction(ConstantUtil.SERVICE_NOTICE);
         registerReceiver(receiveUpdateUI, intentFilter);
     }
@@ -268,6 +259,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 initQuickFreeze(R.id.btn_demo_center_right);
                 initFridgeOpen(R.id.btn_demo_bottom_left);
                 break;
+            case ConstantUtil.BCD256_MODEL:
+                lineFridgeTemp.setVisibility(View.VISIBLE);
+                lineFreezeTemp.setVisibility(View.VISIBLE);
+                lineChangeTemp.setVisibility(View.VISIBLE);
+                lineFridgeTarget.setVisibility(View.VISIBLE);
+                lineFreezeTarget.setVisibility(View.VISIBLE);
+                lineChangeTarger.setVisibility(View.VISIBLE);
+                initSmart(R.id.btn_demo_top_left);
+                initHoliday(R.id.btn_demo_top_right);
+                initQuickCold(R.id.btn_demo_center_left);
+                initQuickFreeze(R.id.btn_demo_center_right);
+                initFridgeOpen(R.id.btn_demo_bottom_left);
+                initTidbit(R.id.btn_demo_bottom_right);
+                break;
         }
         isReady = true;
         tvTest.setText("使用馨小厨APP扫码绑定");
@@ -277,7 +282,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void setModel() {
         //        if(mModel.mFridgeModel != null) {
-        mModel.mFridgeModel = ConstantUtil.BCD251_MODEL;
+//        mModel.mFridgeModel = ConstantUtil.BCD251_MODEL;
         if (mModel.mFridgeModel.equals(ConstantUtil.BCD251_MODEL)) {
             tvFridgeModel.setText(mModel.mFridgeModel);
         } else if (mModel.mFridgeModel.equals(ConstantUtil.BCD256_MODEL)) {
@@ -286,8 +291,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             tvFridgeModel.setText(mModel.mFridgeModel + "/" + mModel.mFridgeModel + "(S)");
         }
         setView();
-//        startRefreshUI();
-        //        }
     }
 
     private void startQueryType() {
@@ -408,6 +411,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 btnFridgeSwitch.setOff();
                 btnFridgeSwitch.setText("冷藏关");
             }
+        }else if (mModel.mFridgeModel.equals(ConstantUtil.BCD256_MODEL)) {
+            tvFridgeTemp.setText(mModel.mFridgeShow + " ℃");
+            tvFreezeTemp.setText(mModel.mFreezeShow + " ℃");
+            tvChangeTemp.setText(mModel.mChangeShow + " ℃");
+            if (mModel.isSmart) {
+                btnSmart.setOn();
+            } else {
+                btnSmart.setOff();
+            }
+            if (mModel.isHoliday) {
+                btnHoliday.setOn();
+            } else {
+                btnHoliday.setOff();
+            }
+            if (mModel.isQuickCold) {
+                btnQuickCold.setOn();
+            } else {
+                btnQuickCold.setOff();
+            }
+            if (mModel.isQuickFreeze) {
+                btnQuickFreeze.setOn();
+            } else {
+                btnQuickFreeze.setOff();
+            }
+            if (mModel.isFridgeOpen) {
+                btnFridgeSwitch.setOn();
+                btnFridgeSwitch.setText("冷藏开");
+            } else {
+                btnFridgeSwitch.setOff();
+                btnFridgeSwitch.setText("冷藏关");
+            }
+            if (mModel.isTidbit) {
+                btnTidbit.setOn();
+            } else {
+                btnTidbit.setOff();
+            }
         }
 
     }
@@ -466,6 +505,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         });
+
+        btnQuickCold.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (mModel.mDisableQuickCold.equals("none")) {
+                    return false;
+                } else {
+                    String show = mModel.mDisableQuickCold + "模式已开启，如要关闭冷藏室请先退出" + mModel.mDisableQuickCold + "模式";
+                    Toast toast = Toast.makeText(mContext, show, Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER,0,0);
+                    toast.show();
+                    return true;
+                }
+            }
+        });
     }
 
     private void initQuickFreeze(final int idButton) {
@@ -520,6 +574,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     toast.setGravity(Gravity.CENTER,0,0);
                     toast.show();
                     return true;
+                }
+            }
+        });
+    }
+
+    private void initTidbit(final int idButton) {
+        btnTidbit = (MyTestButton) findViewById(idButton);
+        btnTidbit.setText("珍品");
+        btnTidbit.setEnabled(true);
+        btnTidbit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (v.getId() == idButton) {
+                    if (btnTidbit.isPress()) {
+                        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_TIDBIT_OFF);
+                    } else {
+                        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_TIDBIT_ON);
+                    }
                 }
             }
         });
@@ -720,11 +792,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } else if (name.equals(EnumBaseName.fridgeSwitch.toString())) {
                 mModel.isFridgeOpen = (value == 1) ? true : false;
                 mModel.mDisableFridgeOpen = disable;
-//                if (mModel.mDisableFridgeOpen.equals("none")) {
-                //                    btnFridgeSwitch.setEnabled(true);
-                //                } else {
-                //                    btnFridgeSwitch.setEnabled(false);
-                //                }
+            }else if(name.equals(EnumBaseName.tidbitMode.toString())) {
+                mModel.isTidbit = (value == 1) ? true : false;
+                mModel.mDisableTidbit = disable;
             }
         }
         skbFridge.setProgress(mModel.mFridgeTarget - mModel.mFridgeMin);

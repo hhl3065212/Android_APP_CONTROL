@@ -59,7 +59,7 @@ public class ConfigTwoFiveSix {
         protocolConfig.add(new ProtocolConfigBase(EnumBaseName.fridgeSensorErr.name(), 1, 32, 1));//冷藏温度传感器故障
         protocolConfig.add(new ProtocolConfigBase(EnumBaseName.freezeSensorErr.name(), 1, 32, 3));//冷冻温度传感器故障
         protocolConfig.add(new ProtocolConfigBase(EnumBaseName.changeSensorErr.name(), 1, 32, 4));//变温温度传感器故障
-        protocolConfig.add(new ProtocolConfigBase(EnumBaseName.freezeDefrostSensorErr.name(), 1, 31, 0));//化霜传感器故障
+        protocolConfig.add(new ProtocolConfigBase(EnumBaseName.defrostSensorErr.name(), 1, 31, 0));//化霜传感器故障
         protocolConfig.add(new ProtocolConfigBase(EnumBaseName.freezeDefrostErr.name(), 1, 31, 6));//冷冻化霜故障
         protocolConfig.add(new ProtocolConfigBase(EnumBaseName.freezeFanErr.name(),1,31,4));//冷冻风机故障
 

@@ -122,20 +122,15 @@ public abstract class ModelBase {
     /**
      * 非公用方法，子类可重写
      */
-    public void holidayOn() {
-    }
+    public void holidayOn() {}
 
-    public void holidayOff() {
-    }
+    public void holidayOff() {}
 
-    public void refrigeratorOpen(){
-    }
+    public void refrigeratorOpen(){}
 
-    public void refrigeratorClose(){
-    }
+    public void refrigeratorClose(){}
 
-    public void setCustomArea(int customTemper) {
-    }
+    public void setCustomArea(int customTemper) {}
 
     public void tidbitOn(){}
 

@@ -752,7 +752,7 @@
                         android:layout_height="@dimen/auto_height"
                         android:layout_weight="3"
                         android:gravity="center"
-                        android:text="左声道播放"
+                        android:text="1声道播放"
                         android:textSize="@dimen/text_size_40"/>
 
                     <ProgressBar
@@ -781,7 +781,7 @@
                         android:layout_height="@dimen/auto_height"
                         android:layout_weight="3"
                         android:gravity="center"
-                        android:text="右声道播放"
+                        android:text="2声道播放"
                         android:textSize="@dimen/text_size_40"/>
 
                     <ProgressBar
@@ -802,7 +802,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:visibility="visible">
+                android:visibility="gone">
 
             </LinearLayout>
             <!--冰箱调试-->
@@ -811,7 +811,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <LinearLayout
                     android:layout_width="@dimen/auto_width"

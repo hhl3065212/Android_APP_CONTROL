@@ -386,7 +386,10 @@ public class TwoFiveSixModel extends ModelBase {
             //是否有速冷
             FridgeControlEntry coldEntry = getControlEntryByName(EnumBaseName.quickColdMode);
             //退速冷
-            coldEntry.value = 0;
+            if(coldEntry.value == 1) {
+                coldEntry.value = 0;
+                mService.stopColdOnTime();
+            }
             coldEntry.disable = ConstantUtil.TIDBIT_ON_SET_TEMPER_WARNING;
             updateControlByEntry(coldEntry);
             getControlDbMgr().updateEntry(coldEntry);
@@ -407,6 +410,12 @@ public class TwoFiveSixModel extends ModelBase {
     public void tidbitOff() {
         FridgeControlEntry tidbitEntry = getControlEntryByName(EnumBaseName.tidbitMode);
         if (tidbitEntry.value == 1) {
+            FridgeControlEntry coldEntry = getControlEntryByName(EnumBaseName.quickColdMode);
+            //速冷去掉disable
+//            coldEntry.value = 0;
+            coldEntry.disable = ConstantUtil.NO_WARNING;
+            updateControlByEntry(coldEntry);
+            getControlDbMgr().updateEntry(coldEntry);
             //退珍品
             tidbitEntry.value = 0;
             tidbitEntry.disable = ConstantUtil.NO_WARNING;

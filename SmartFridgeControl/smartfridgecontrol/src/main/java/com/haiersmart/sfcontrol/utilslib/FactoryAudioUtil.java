@@ -69,8 +69,8 @@ public class FactoryAudioUtil {
         btnPlayRight.setOff();
         tvRecord.setText("录音");
         tvPlayAll.setText("双声道播放");
-        tvPlayLeft.setText("左声道播放");
-        tvPlayRight.setText("右声道播放");
+        tvPlayLeft.setText("1声道播放");
+        tvPlayRight.setText("2声道播放");
         prbRecord.setProgress(0);
         prbPlayAll.setProgress(0);
         prbPlayLeft.setProgress(0);
@@ -270,10 +270,10 @@ public class FactoryAudioUtil {
             tvPlayAll.setText("双声道播放中...");
         } else if (left) {
             btnPlayLeft.setOn();
-            tvPlayLeft.setText("左声道播放中...");
+            tvPlayLeft.setText("1声道播放中...");
         } else if (right) {
             btnPlayRight.setOn();
-            tvPlayRight.setText("右声道播放中...");
+            tvPlayRight.setText("2声道播放中...");
         }
     }
 
@@ -284,11 +284,11 @@ public class FactoryAudioUtil {
             prbPlayAll.setProgress(0);
         } else if (left) {
             btnPlayLeft.setOff();
-            tvPlayLeft.setText("左声道播放");
+            tvPlayLeft.setText("1声道播放");
             prbPlayLeft.setProgress(0);
         } else if (right) {
             btnPlayRight.setOff();
-            tvPlayRight.setText("右声道播放");
+            tvPlayRight.setText("2声道播放");
             prbPlayRight.setProgress(0);
         }
     }

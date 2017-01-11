@@ -512,7 +512,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (mModel.mDisableQuickCold.equals("none")) {
                     return false;
                 } else {
-                    String show = mModel.mDisableQuickCold + "模式已开启，如要关闭冷藏室请先退出" + mModel.mDisableQuickCold + "模式";
+                    String show = mModel.mDisableQuickCold + "模式已开启，如要开启速冷请先退出" + mModel.mDisableQuickCold + "模式";
                     Toast toast = Toast.makeText(mContext, show, Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.CENTER,0,0);
                     toast.show();

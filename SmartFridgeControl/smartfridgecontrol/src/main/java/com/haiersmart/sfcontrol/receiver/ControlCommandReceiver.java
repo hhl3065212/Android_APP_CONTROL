@@ -107,9 +107,9 @@ public class ControlCommandReceiver extends BroadcastReceiver {
             } else if (contentAction.equals(ConstantUtil.QUERY_FREEZE_TEMP_RANGE)) {
                 //查询冷冻室温度档位范围
                 sendCommandToService(context, ConstantUtil.QUERY_FREEZE_TEMP_RANGE);
-            }else if(contentAction.equals(ConstantUtil.QUERY_TEMP_RANGE)){
-                sendCommandToService(context,ConstantUtil.QUERY_TEMP_RANGE);
-            }else if (contentAction.equals(ConstantUtil.MODE_TIDBIT_ON)) {
+            } else if (contentAction.equals(ConstantUtil.QUERY_TEMP_RANGE)) {
+                sendCommandToService(context, ConstantUtil.QUERY_TEMP_RANGE);
+            } else if (contentAction.equals(ConstantUtil.MODE_TIDBIT_ON)) {
                 //珍品开
                 sendCommandToService(context, ConstantUtil.MODE_TIDBIT_ON);
             } else if (contentAction.equals(ConstantUtil.MODE_TIDBIT_OFF)) {
@@ -120,8 +120,7 @@ public class ControlCommandReceiver extends BroadcastReceiver {
             String contentAction = intent.getStringExtra(ConstantWifiUtil.KEY_SENDCONTROL);
             if ((contentAction == null) || (contentAction.length() <= 0)) {
                 sendCommandToService(context, ConstantWifiUtil.KEY_QUERY);
-            }
-            if (contentAction.contains(":")) {// 带“:”
+            } else if (contentAction.contains(":")) {// 带“:”
                 String[] strs = contentAction.split(":");
                 Log.d(TAG, "receive::::1 " + Arrays.toString(strs));
                 if (strs[0].equals(ConstantWifiUtil.KEY_MODE)) {//模式控制命令
@@ -142,9 +141,9 @@ public class ControlCommandReceiver extends BroadcastReceiver {
                     } else if (strs[1].equals(ConstantWifiUtil.MODE_HOLIDAY_OFF)) {
                         sendCommandToService(context, ConstantWifiUtil.MODE_HOLIDAY_OFF);
                     } else if (strs[1].equals(ConstantWifiUtil.MODE_ZHENPIN_ON)) {
-                        sendCommandToService(context, ConstantWifiUtil.MODE_ZHENPIN_ON);
+                        sendCommandToService(context, ConstantUtil.MODE_TIDBIT_ON);
                     } else if (strs[1].equals(ConstantWifiUtil.MODE_ZHENPIN_OFF)) {
-                        sendCommandToService(context, ConstantWifiUtil.MODE_ZHENPIN_OFF);
+                        sendCommandToService(context, ConstantUtil.MODE_TIDBIT_OFF);
                     } else if (strs[1].equals(ConstantWifiUtil.MODE_CLEAN_ON)) {
                         sendCommandToService(context, ConstantWifiUtil.MODE_CLEAN_ON);
                     } else if (strs[1].equals(ConstantWifiUtil.MODE_CLEAN_OFF)) {

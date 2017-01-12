@@ -824,12 +824,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (name.equals(EnumBaseName.fridgeTargetTemp.toString())) {
                 mModel.mFridgeTarget = value;
                 mModel.mDisableFridge = disable;
+                skbFridge.setProgress(mModel.mFridgeTarget - mModel.mFridgeMin);
+                if (mModel.mDisableFridge.equals("none")) {
+                    //            skbFridge.setEnabled(true);
+                    tvFridgeTarget.setText(Integer.toString(mModel.mFridgeTarget) + " ℃");
+                } else {
+                    //            skbFridge.setEnabled(false);
+                    tvFridgeTarget.setText(mModel.mDisableFridge);
+                }
             } else if (name.equals(EnumBaseName.freezeTargetTemp.toString())) {
                 mModel.mFreezeTarget = value;
                 mModel.mDisableFreeze = disable;
+                skbFreeze.setProgress(mModel.mFreezeTarget - mModel.mFreezeMin);
+                if (mModel.mDisableFreeze.equals("none")) {
+                    //            skbFreeze.setEnabled(true);
+                    tvFreezeTarget.setText(Integer.toString(mModel.mFreezeTarget) + " ℃");
+                } else {
+                    //            skbFreeze.setEnabled(false);
+                    tvFreezeTarget.setText(mModel.mDisableFreeze);
+                }
             } else if (name.equals(EnumBaseName.changeTargetTemp.toString())) {
                 mModel.mChangeTarget = value;
                 mModel.mDisableChange = disable;
+                skbChange.setProgress(mModel.mChangeTarget - mModel.mChangeMin);
+                if (mModel.mDisableChange.equals("none")) {
+                    //            skbChange.setEnabled(true);
+                    tvChangeTarget.setText(Integer.toString(mModel.mChangeTarget) + " ℃");
+                } else {
+                    //            skbChange.setEnabled(false);
+                    tvChangeTarget.setText(mModel.mDisableChange);
+                }
             } else if (name.equals(EnumBaseName.smartMode.toString())) {
                 mModel.isSmart = (value == 1) ? true : false;
                 mModel.mDisableSmart = disable;
@@ -848,31 +872,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }else if(name.equals(EnumBaseName.tidbitMode.toString())) {
                 mModel.isTidbit = (value == 1) ? true : false;
                 mModel.mDisableTidbit = disable;
+            }else if (name.equals(EnumBaseName.purifyMode.toString())) {
+                mModel.isPurify = (value == 1);
+                mModel.mDisablePurify = disable;
             }
-        }
-        skbFridge.setProgress(mModel.mFridgeTarget - mModel.mFridgeMin);
-        if (mModel.mDisableFridge.equals("none")) {
-//            skbFridge.setEnabled(true);
-            tvFridgeTarget.setText(Integer.toString(mModel.mFridgeTarget) + " ℃");
-        } else {
-//            skbFridge.setEnabled(false);
-            tvFridgeTarget.setText(mModel.mDisableFridge);
-        }
-        skbFreeze.setProgress(mModel.mFreezeTarget - mModel.mFreezeMin);
-        if (mModel.mDisableFreeze.equals("none")) {
-//            skbFreeze.setEnabled(true);
-            tvFreezeTarget.setText(Integer.toString(mModel.mFreezeTarget) + " ℃");
-        } else {
-//            skbFreeze.setEnabled(false);
-            tvFreezeTarget.setText(mModel.mDisableFreeze);
-        }
-        skbChange.setProgress(mModel.mChangeTarget - mModel.mChangeMin);
-        if (mModel.mDisableChange.equals("none")) {
-//            skbChange.setEnabled(true);
-            tvChangeTarget.setText(Integer.toString(mModel.mChangeTarget) + " ℃");
-        } else {
-//            skbChange.setEnabled(false);
-            tvChangeTarget.setText(mModel.mDisableChange);
         }
     }
     private void handleDoorAlarm(JSONObject jsonObject){

@@ -70,7 +70,7 @@ public class ProtocolCommand {
             case getDeviceId://
                 data = new byte[]{(byte)0xAA,(byte)0x55,(byte)0x02,(byte)0x70,(byte)0x00};
                 break;
-            case purifyMode://
+            case purifyMode://净化
                 data = new byte[]{(byte)0xAA,(byte)0x55,(byte)0x04,(byte)0x01,(byte)0x4d,(byte)0x0c,(byte)0x00};
                 if(value[0] == 1){
                     data[5] = (byte)(0x0c);
@@ -100,6 +100,22 @@ public class ProtocolCommand {
             case testMode:
                 data = new byte[]{(byte)0xaa,(byte)0x55,(byte)0x04,(byte)0x8a,(byte)0x5d,(byte)0x01,(byte) 0x00,(byte) 0x00};
                 data[6] = value[0];
+                break;
+            case coldLightMode://coldLightMode
+                data = new byte[]{(byte)0xAA,(byte)0x55,(byte)0x04,(byte)0x01,(byte)0x4d,(byte)0x16,(byte)0x00};
+                if(value[0] == 1){
+                    data[5] = (byte)(0x16);
+                }else {
+                    data[5] = (byte)(0x17);
+                }
+                break;
+            case handleLightMode://handleLightMode
+                data = new byte[]{(byte)0xAA,(byte)0x55,(byte)0x04,(byte)0x01,(byte)0x4d,(byte)0x27,(byte)0x00};
+                if(value[0] == 1){
+                    data[5] = (byte)(0x27);
+                }else {
+                    data[5] = (byte)(0x28);
+                }
                 break;
             default:
                 data = new byte[]{(byte)0xaa,(byte)0x55,(byte)0x04,(byte)0x01,(byte)0x4d,(byte)0x01,(byte) 0x00};

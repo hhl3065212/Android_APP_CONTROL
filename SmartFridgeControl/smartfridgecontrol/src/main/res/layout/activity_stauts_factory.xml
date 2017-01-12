@@ -465,6 +465,32 @@
                             android:textColor="@color/black2"
                             android:textSize="@dimen/text_size_40"/>
                     </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/linear_factory_freeze_defrost_sensor"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/fab_margin"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/fab_margin"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/title_factory_freeze_defrost_sensor"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_factory_defrost_sensor"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+
+                        <TextView
+                            android:id="@+id/text_factory_freeze_defrost_sensor"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/tab_margin"
+                            android:text="@string/text_factory_normal"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+                    </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/linear_factory_freeze_defrost"

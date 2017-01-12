@@ -60,7 +60,7 @@ public class TwoFiveOneModel extends ModelBase {
    private void initErrorStatusEntries() {
        mErrorEntryList = new ArrayList<FridgeStatusEntry>();
        mErrorEntryList.add(new FridgeStatusEntry("envShowTemp", getMainBoardInfo().getEnvShowTemp()));
-       mErrorEntryList.add(new FridgeStatusEntry("envShowHumidity", getMainBoardInfo().getEnvShowHumidity()));
+       mErrorEntryList.add(new FridgeStatusEntry("envShowHumidity", getMainBoardInfo().getEnvShowHum()));
        mErrorEntryList.add(new FridgeStatusEntry("communicationErr", getMainBoardInfo().getCommunicationErr()));
        mErrorEntryList.add(new FridgeStatusEntry("envSensorErr", getMainBoardInfo().getEnvSensorErr()));
        mErrorEntryList.add(new FridgeStatusEntry("fridgeSensorErr", getMainBoardInfo().getFridgeSensorErr()));
@@ -416,7 +416,7 @@ public class TwoFiveOneModel extends ModelBase {
             isErrOccurred = true;
         }
 
-        int envShowHumidity = getMainBoardInfo().getEnvShowHumidity();
+        int envShowHumidity = getMainBoardInfo().getEnvShowHum();
         if(mErrorEntryList.get(1).value != envShowHumidity) {
             mErrorEntryList.get(1).value = envShowHumidity;
             isErrOccurred = true;

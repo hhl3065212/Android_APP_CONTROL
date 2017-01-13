@@ -3,6 +3,8 @@ package com.haiersmart.sfcontrol.application;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+
+import com.haiersmart.sfcontrol.constant.ConstantUtil;
 import com.haiersmart.sfcontrol.service.ControlMainBoardService;
 import com.haiersmart.sfcontrol.ui.DoorAlarmActivity;
 import com.haiersmart.sfcontrol.utilslib.MyLogUtil;
@@ -24,7 +26,7 @@ public class ControlApplication extends Application {
         super.onCreate();
         mContext = getApplicationContext();
         mInstance = this;
-        MyLogUtil.on(false);
+        MyLogUtil.on(ConstantUtil.DEBUG);
         MyLogUtil.setLogEnable(true);
         MyLogUtil.i("ControlApplication", "onCreate mContext get ApplicationContext");
         Intent intent = new Intent(this,ControlMainBoardService.class);

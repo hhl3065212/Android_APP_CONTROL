@@ -54,6 +54,9 @@
     <string name="text_factory_error">ERROR</string>
     <string name="title_factory_status">状态</string>
     <string name="title_factory_fridge_door">冷藏室门</string>
+    <string name="title_factory_freeze_door">冷冻室门</string>
+    <string name="title_factory_change_door">变温室门</string>
+    <string name="title_factory_inside_door">门中门</string>
     <string name="title_factory_communication">通信状态</string>
     <string name="title_factory_pir">人感状态</string>
     <string name="text_factory_has_person">有人</string>

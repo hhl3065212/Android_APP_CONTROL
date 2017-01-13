@@ -22,6 +22,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
@@ -62,17 +63,18 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
     LinearLayout llVersion, llReset, llStatus, llCamera, llTP, llAudio, llMarket, llDebug;
     LinearLayout llEnvTemp, llEnvHum, llFridge, llFreeze, llChange, llDefrostSensor, llFreezeDefrost,
     llFreezeFan,llFreezeDefrostSensor;
-    LinearLayout llFridgeDoor;
+    LinearLayout llFridgeDoor,llFreezeDoor,llChangeDoor,llInsideDoor;
     TextView tvEnvTemp, tvEnvHum, tvFridge, tvFreeze, tvChange, tvDefrostSensor, tvFreezeDefrost,
     tvFreezeFan,tvFreezeDefrostSensor;
-    TextView tvFridgeDoor, tvCommunication, tvPir, tvWifi;
+    TextView tvFridgeDoor, tvCommunication, tvPir, tvWifi,tvFreezeDoor,tvChangeDoor,tvInsidDoor;
     TextView tvFridgeModel, tvTftVersion, tvOsVersion, tvMac, tvTP;
     TextView tvTftVersionTitle,tvOsVersionTitle, tvMacTitle;
-    Button btnReturn, btnResetEnter;
+    Button btnReturn, btnResetEnter,btnMarket;
     MyTestAudioButton btnRecord, btnPlayAll, btnPlayLeft, btnPlayRight;
     TextView tvRecord, tvPlayAll, tvPlayLeft, tvPlayRight;
     ProgressBar prbRecord, prbPlayAll, prbPlayLeft, prbPlayRight;
     FactoryAudioUtil audioUtil;
+    CheckBox chbMmarket;
 
     private Timer mTimer;
     private TimerTask mTimerTask;
@@ -148,6 +150,9 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
         llFreezeFan = (LinearLayout) findViewById(R.id.linear_factory_freeze_fan);
         llFridgeDoor = (LinearLayout) findViewById(R.id.linear_factory_fridge_door);
         llFreezeDefrostSensor = (LinearLayout) findViewById(R.id.linear_factory_freeze_defrost_sensor);
+        llFridgeDoor = (LinearLayout) findViewById(R.id.linear_factory_freeze_door);
+        llChangeDoor = (LinearLayout) findViewById(R.id.linear_factory_change_door);
+        llInsideDoor = (LinearLayout) findViewById(R.id.linear_factory_inside_door);
 
         tvEnvTemp = (TextView) findViewById(R.id.text_factory_env_temp);
         tvEnvHum = (TextView) findViewById(R.id.text_factory_env_hum);
@@ -162,6 +167,9 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
         tvPir = (TextView) findViewById(R.id.text_factory_pir);
         tvWifi = (TextView) findViewById(R.id.text_factory_wifi);
         tvFreezeDefrostSensor= (TextView) findViewById(R.id.text_factory_freeze_defrost_sensor);
+        tvFreezeDoor = (TextView) findViewById(R.id.text_factory_freeze_door);
+        tvChangeDoor = (TextView) findViewById(R.id.text_factory_change_door);
+        tvInsidDoor = (TextView) findViewById(R.id.text_factory_inside_door);
 
         tvFridgeModel = (TextView) findViewById(R.id.text_factory_fridge_model);
         tvTftVersion = (TextView) findViewById(R.id.text_factory_tft_version);
@@ -179,6 +187,8 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
         btnReturn.setOnClickListener(this);
         btnResetEnter = (Button) findViewById(R.id.btn_factory_reset);
         btnResetEnter.setOnClickListener(this);
+        btnMarket = (Button) findViewById(R.id.btn_factory_market);
+        btnMarket.setOnClickListener(this);
 
         btnRecord = (MyTestAudioButton) findViewById(R.id.linear_factory_record);
         btnPlayAll = (MyTestAudioButton) findViewById(R.id.linear_factory_play_all);
@@ -230,6 +240,16 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             rbtAudio.setVisibility(View.VISIBLE);
             rbtMarket.setVisibility(View.GONE);
             rbtDebug.setVisibility(View.GONE);
+        }else if (mFridgeModel.equals(ConstantUtil.BCD476_MODEL)){
+            tvFridgeModel.setText(mFridgeModel);
+            rbtVersion.setVisibility(View.VISIBLE);
+            rbtReset.setVisibility(View.VISIBLE);
+            rbtStatus.setVisibility(View.VISIBLE);
+            rbtCamera.setVisibility(View.VISIBLE);
+            rbtTP.setVisibility(View.VISIBLE);
+            rbtAudio.setVisibility(View.VISIBLE);
+            rbtMarket.setVisibility(View.VISIBLE);
+            rbtDebug.setVisibility(View.VISIBLE);
         }
         initStatusView();
         initDebugView();
@@ -261,6 +281,17 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             llFreezeDefrost.setVisibility(View.VISIBLE);
             llFreezeFan.setVisibility(View.VISIBLE);
             llFridgeDoor.setVisibility(View.VISIBLE);
+        }else if (mFridgeModel.equals(ConstantUtil.BCD476_MODEL)){
+            llEnvTemp.setVisibility(View.VISIBLE);
+            llEnvHum.setVisibility(View.VISIBLE);
+            llFridge.setVisibility(View.VISIBLE);
+            llFreeze.setVisibility(View.VISIBLE);
+            llChange.setVisibility(View.VISIBLE);
+            llDefrostSensor.setVisibility(View.VISIBLE);
+            llFreezeDefrost.setVisibility(View.VISIBLE);
+            llFreezeFan.setVisibility(View.VISIBLE);
+            llFridgeDoor.setVisibility(View.VISIBLE);
+            llFreezeDoor.setVisibility(View.VISIBLE);
         }
     }
 
@@ -331,6 +362,13 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
                 break;
             case R.id.btn_factory_reset:
                 popResetPassWin();
+                break;
+            case R.id.btn_factory_market:
+                if(btnMarket.isPressed()){
+
+                }else {
+
+                }
                 break;
             default:
                 setLinearContent(v.getId());

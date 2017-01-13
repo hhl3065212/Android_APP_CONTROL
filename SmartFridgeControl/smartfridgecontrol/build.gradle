@@ -9,8 +9,7 @@ android {
         minSdkVersion 18
         targetSdkVersion 23
         versionCode 1
-        versionName 'BXC_0043_0000'
-
+        versionName 'BXC_0001_0000'
     }
     buildTypes {
         release {

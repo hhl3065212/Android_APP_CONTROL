@@ -31,16 +31,19 @@ import android.widget.TextView;
 import com.haiersmart.sfcontrol.R;
 import com.haiersmart.sfcontrol.constant.ConstantUtil;
 import com.haiersmart.sfcontrol.constant.EnumBaseName;
+import com.haiersmart.sfcontrol.draw.MyMarketButton;
 import com.haiersmart.sfcontrol.draw.MyTestAudioButton;
 import com.haiersmart.sfcontrol.draw.PopInputListener;
 import com.haiersmart.sfcontrol.draw.PopWindowNormalInput;
 import com.haiersmart.sfcontrol.service.ControlMainBoardService;
 import com.haiersmart.sfcontrol.service.MainBoardParameters;
+import com.haiersmart.sfcontrol.service.powerctl.PowerSerialOpt;
 import com.haiersmart.sfcontrol.utilslib.DeviceUtil;
 import com.haiersmart.sfcontrol.utilslib.FactoryAudioUtil;
 import com.haiersmart.sfcontrol.utilslib.MyLogUtil;
 import com.haiersmart.sfcontrol.utilslib.SystemCmdUtil;
 
+import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -58,6 +61,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
     private final String PASSWORD = "lkjh";
 
     private MainBoardParameters mMBParam;
+    private PowerSerialOpt mPowerSerialOpt;
     private String mFridgeModel, mTftVersion, mOsVersion;
     RadioButton rbtVersion, rbtReset, rbtStatus, rbtCamera, rbtTP, rbtAudio, rbtMarket, rbtDebug;
     LinearLayout llVersion, llReset, llStatus, llCamera, llTP, llAudio, llMarket, llDebug;
@@ -69,7 +73,8 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
     TextView tvFridgeDoor, tvCommunication, tvPir, tvWifi,tvFreezeDoor,tvChangeDoor,tvInsidDoor;
     TextView tvFridgeModel, tvTftVersion, tvOsVersion, tvMac, tvTP;
     TextView tvTftVersionTitle,tvOsVersionTitle, tvMacTitle;
-    Button btnReturn, btnResetEnter,btnMarket;
+    Button btnReturn, btnResetEnter;
+    MyMarketButton btnMarket;
     MyTestAudioButton btnRecord, btnPlayAll, btnPlayLeft, btnPlayRight;
     TextView tvRecord, tvPlayAll, tvPlayLeft, tvPlayRight;
     ProgressBar prbRecord, prbPlayAll, prbPlayLeft, prbPlayRight;
@@ -89,6 +94,11 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
         Intent intent = new Intent();
         intent.setClass(this, ControlMainBoardService.class);
         startService(intent);
+        try {
+            mPowerSerialOpt = PowerSerialOpt.getInstance();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         mMBParam = MainBoardParameters.getInstance();
         mFridgeModel = mMBParam.getFridgeType();
         mTftVersion = this.getIntent().getStringExtra("version");
@@ -150,7 +160,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
         llFreezeFan = (LinearLayout) findViewById(R.id.linear_factory_freeze_fan);
         llFridgeDoor = (LinearLayout) findViewById(R.id.linear_factory_fridge_door);
         llFreezeDefrostSensor = (LinearLayout) findViewById(R.id.linear_factory_freeze_defrost_sensor);
-        llFridgeDoor = (LinearLayout) findViewById(R.id.linear_factory_freeze_door);
+        llFreezeDoor = (LinearLayout) findViewById(R.id.linear_factory_freeze_door);
         llChangeDoor = (LinearLayout) findViewById(R.id.linear_factory_change_door);
         llInsideDoor = (LinearLayout) findViewById(R.id.linear_factory_inside_door);
 
@@ -187,7 +197,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
         btnReturn.setOnClickListener(this);
         btnResetEnter = (Button) findViewById(R.id.btn_factory_reset);
         btnResetEnter.setOnClickListener(this);
-        btnMarket = (Button) findViewById(R.id.btn_factory_market);
+        btnMarket = (MyMarketButton) findViewById(R.id.btn_factory_market);
         btnMarket.setOnClickListener(this);
 
         btnRecord = (MyTestAudioButton) findViewById(R.id.linear_factory_record);
@@ -364,10 +374,12 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
                 popResetPassWin();
                 break;
             case R.id.btn_factory_market:
-                if(btnMarket.isPressed()){
-
+                if(btnMarket.isPress()){
+                    mPowerSerialOpt.sendCmdById(EnumBaseName.marketDemo,0);
+                    btnMarket.setOff();
                 }else {
-
+                    mPowerSerialOpt.sendCmdById(EnumBaseName.marketDemo,1);
+                    btnMarket.setOn();
                 }
                 break;
             default:
@@ -405,7 +417,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
                 break;
             case R.id.rbt_factory_camera:
                 rbtCamera.setChecked(true);
-                llStatus.setVisibility(View.VISIBLE);
+                llCamera.setVisibility(View.VISIBLE);
                 break;
             case R.id.rbt_factory_TP:
                 rbtTP.setChecked(true);
@@ -425,6 +437,11 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             case R.id.rbt_factory_market:
                 rbtMarket.setChecked(true);
                 llMarket.setVisibility(View.VISIBLE);
+                btnMarket.setOff();
+                boolean isMarket = mMBParam.getMbsValueByName(EnumBaseName.marketDemo.name())==1;
+                if(isMarket){
+                    btnMarket.setOn();
+                }
                 break;
             case R.id.rbt_factory_debug:
                 rbtDebug.setChecked(true);
@@ -481,6 +498,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
                     break;
             }
         }
+
     };
 
     private void refreshStatusUI() {

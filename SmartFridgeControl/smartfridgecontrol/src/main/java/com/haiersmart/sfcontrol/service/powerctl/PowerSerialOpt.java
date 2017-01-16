@@ -45,17 +45,17 @@ public class PowerSerialOpt {
     public List<byte[]> byteSendList;//
     private ProtocolCommand mProtocolCommand;//命令组
 
-//    private static PowerSerialOpt instance;
-//
-//    public static synchronized PowerSerialOpt getInstance() throws IOException {
-//        if (instance == null) {
-//            synchronized (PowerSerialOpt.class) {
-//                if (instance == null)
-//                    instance = new PowerSerialOpt();
-//            }
-//        }
-//        return instance;
-//    }
+    private static PowerSerialOpt instance;
+
+    public static synchronized PowerSerialOpt getInstance() throws IOException {
+        if (instance == null) {
+            synchronized (PowerSerialOpt.class) {
+                if (instance == null)
+                    instance = new PowerSerialOpt();
+            }
+        }
+        return instance;
+    }
 
 
     /**
@@ -227,6 +227,10 @@ public class PowerSerialOpt {
     }
     public void sendCmdById(EnumBaseName mEnumBaseName){
         byte[] cmd = mProtocolCommand.PackCmdFrame(mEnumBaseName);
+        byteSendList.add(cmd);
+    }
+    public void sendCmdById(EnumBaseName mEnumBaseName,int value){
+        byte[] cmd = mProtocolCommand.PackCmdFrame(mEnumBaseName,(byte)value);
         byteSendList.add(cmd);
     }
 

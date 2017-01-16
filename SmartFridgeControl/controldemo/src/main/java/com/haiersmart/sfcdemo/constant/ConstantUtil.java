@@ -14,7 +14,7 @@ public class ConstantUtil {
     public static final String BCD401_MODEL = "BCD-401WDIAU1";
     public static final String BCD256_MODEL = "BCD-256WDICU1";
     public static final String BCD630_MODEL = "BCD-630";
-    public static final String BCD476_MODEL = "BCD-476";
+    public static final String BCD476_MODEL = "BCD-476WDICU1";
 
     /**
      * broadcast

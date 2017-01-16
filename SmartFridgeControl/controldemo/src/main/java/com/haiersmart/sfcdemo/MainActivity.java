@@ -301,6 +301,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             tvFridgeModel.setText(mModel.mFridgeModel + "/" + mModel.mFridgeModel + "(S)");
         } else if (mModel.mFridgeModel.equals(ConstantUtil.BCD401_MODEL)) {
             tvFridgeModel.setText(mModel.mFridgeModel + "/" + mModel.mFridgeModel + "(S)");
+        }else if (mModel.mFridgeModel.equals(ConstantUtil.BCD476_MODEL)) {
+            tvFridgeModel.setText(mModel.mFridgeModel);
         }
         setView();
     }
@@ -670,7 +672,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         e.printStackTrace();
                     }
                     Intent intent = new Intent();
-                    //                    intent.setClassName("com.haiersmart.sfcontrol","com.haiersmart.sfcontrol.ui.DebugActivity");
                     intent.setComponent(new ComponentName("com.haiersmart.sfcontrol", "com.haiersmart.sfcontrol.ui.FactoryStatusActivity"));
                     intent.setAction("FactoryStatusActivity");
                     intent.putExtra("version", tftVersion);

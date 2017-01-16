@@ -41,6 +41,7 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
     private SerialData mSerialData;
     private MainBoardParameters mMainBoardParameters;
     private String mModel;
+    private boolean isready = false;
     private TargetTempRange mTargetTempRange;
     private int mFridgeMin,mFridgeMax,mFreezeMin,mFreezeMax,mChangeMin,mChangeMax;
 
@@ -73,14 +74,22 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onPause() {
         super.onPause();
+        if(isready) {
+            stopTimerTask();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(isready){
+            startTimerTask();
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mTimerTask.cancel();
-        mWaitTask.cancel();
-        mTimer.cancel();
     }
 
     ServiceConnection conn = new ServiceConnection() {
@@ -91,8 +100,6 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
             ControlMainBoardService.CmbBinder binder = (ControlMainBoardService.CmbBinder) service;
             mControlService = binder.getService();
             startWaitTask();
-//            mServiceIntent = new Intent(this, ControlMainBoardService.class);
-
         }
 
         @Override
@@ -209,6 +216,7 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
     }
     private void setModel(){
         if(mSerialData.isSerialDataReady()) {
+            stopWaitTask();
             mModel = mSerialData.getCurrentModel();
             if(mModel.equals(ConstantUtil.BCD251_MODEL)) {
                 tvFridgeModel.setText(mModel);
@@ -216,10 +224,11 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                 tvFridgeModel.setText(mModel+"/"+mModel+"(S)");
             }else if(mModel.equals(ConstantUtil.BCD401_MODEL))            {
                 tvFridgeModel.setText(mModel+"/"+mModel+"(S)");
+            }else if(mModel.equals(ConstantUtil.BCD476_MODEL))            {
+                tvFridgeModel.setText(mModel);
             }
-            mWaitTask.cancel();
             setView();
-//            mTimer.schedule(mTimerTask, 0, 200);
+            isready = true;
             startTimerTask();
             MyLogUtil.i(TAG, "fridge model is " + mModel);
         }

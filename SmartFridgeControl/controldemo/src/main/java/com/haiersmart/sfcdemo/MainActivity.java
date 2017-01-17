@@ -276,12 +276,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case ConstantUtil.BCD401_MODEL:
                 lineFridgeTemp.setVisibility(View.VISIBLE);
                 lineFreezeTemp.setVisibility(View.VISIBLE);
-//                lineChangeTemp.setVisibility(View.VISIBLE);
                 lineFridgeTarget.setVisibility(View.VISIBLE);
                 lineFreezeTarget.setVisibility(View.VISIBLE);
-//                lineChangeTarger.setVisibility(View.VISIBLE);
                 initSmart(R.id.btn_demo_top_left);
                 initPurify(R.id.btn_demo_top_right);
+                initQuickCold(R.id.btn_demo_center_left);
+                initQuickFreeze(R.id.btn_demo_center_right);
+                break;
+            case ConstantUtil.BCD476_MODEL:
+                lineFridgeTemp.setVisibility(View.VISIBLE);
+                lineFreezeTemp.setVisibility(View.VISIBLE);
+                lineFridgeTarget.setVisibility(View.VISIBLE);
+                lineFreezeTarget.setVisibility(View.VISIBLE);
+                initSmart(R.id.btn_demo_top_left);
+                initHoliday(R.id.btn_demo_top_right);
                 initQuickCold(R.id.btn_demo_center_left);
                 initQuickFreeze(R.id.btn_demo_center_right);
                 break;
@@ -473,6 +481,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 btnPurify.setOn();
             } else {
                 btnPurify.setOff();
+            }
+            if (mModel.isQuickCold) {
+                btnQuickCold.setOn();
+            } else {
+                btnQuickCold.setOff();
+            }
+            if (mModel.isQuickFreeze) {
+                btnQuickFreeze.setOn();
+            } else {
+                btnQuickFreeze.setOff();
+            }
+        }else if (mModel.mFridgeModel.equals(ConstantUtil.BCD476_MODEL)) {
+            tvFridgeTemp.setText(mModel.mFridgeShow + " ℃");
+            tvFreezeTemp.setText(mModel.mFreezeShow + " ℃");
+            if (mModel.isSmart) {
+                btnSmart.setOn();
+            } else {
+                btnSmart.setOff();
+            }
+            if (mModel.isHoliday) {
+                btnHoliday.setOn();
+            } else {
+                btnHoliday.setOff();
             }
             if (mModel.isQuickCold) {
                 btnQuickCold.setOn();
@@ -809,7 +840,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mModel.mFreezeShow = value;
             } else if (name.equals(EnumBaseName.changeShowTemp.toString())) {
                 mModel.mChangeShow = value;
-                tvChangeTemp.setText(Integer.toString(value));
             }
         }
     }

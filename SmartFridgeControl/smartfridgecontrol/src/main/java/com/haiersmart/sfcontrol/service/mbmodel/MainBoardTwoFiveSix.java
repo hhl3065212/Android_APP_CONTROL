@@ -157,8 +157,6 @@ public class MainBoardTwoFiveSix extends MainBoardBase{
         }
         if(isDoorChange){
             doorHashMap.put("fridge",bFridgeDoorNowStatus?1:0);
-            doorHashMap.put("freeze",0);
-            doorHashMap.put("change",0);
             String doorJson = JSON.toJSONString(doorHashMap);
             Intent intent = new Intent();
             intent.putExtra(ConstantUtil.DOOR_STATUS,doorJson);

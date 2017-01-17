@@ -38,6 +38,8 @@ public class AlarmWindow extends PopupWindow implements View.OnClickListener{
     private View mMenuView;
     private TextView tvShowText;
     private ArrayList<String> listShow;
+    private PowerManager pm;
+    private PowerManager.WakeLock wakeLock;
 
     public AlarmWindow(Activity activity){
         this.activity = activity;
@@ -101,16 +103,25 @@ public class AlarmWindow extends PopupWindow implements View.OnClickListener{
             }
         }
     }
+
+    @Override
+    public void dismiss() {
+        super.dismiss();
+        if  (wakeLock !=  null  && wakeLock.isHeld()) {
+            wakeLock.release();
+            wakeLock = null ;
+        }
+    }
+
     public void showDialog() {
         // 显示窗口
         if(context==null){
             return;
         }
-        PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP
-                |PowerManager.FULL_WAKE_LOCK,"alarm");
+        pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        wakeLock = pm.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP
+                |PowerManager.FULL_WAKE_LOCK|PowerManager.ON_AFTER_RELEASE,"alarm");
         wakeLock.acquire();
-        wakeLock.release();
         showAtLocation(activity.getWindow().getDecorView(),
                 Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL
                 , 0, 0); // 设置layout在PopupWindow中显示的位置

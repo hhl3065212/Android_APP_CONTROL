@@ -33,6 +33,7 @@ import java.util.TimerTask;
 import static com.haiersmart.sfcontrol.constant.ConstantUtil.BCD251_MODEL;
 import static com.haiersmart.sfcontrol.constant.ConstantUtil.BCD256_MODEL;
 import static com.haiersmart.sfcontrol.constant.ConstantUtil.BCD401_MODEL;
+import static com.haiersmart.sfcontrol.constant.ConstantUtil.BCD476_MODEL;
 
 public class DebugActivity extends AppCompatActivity implements View.OnClickListener{
     private static final String TAG = "DebugActivity";
@@ -186,6 +187,17 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                 initQuickCold(R.id.btn_debug_center_left);
                 initQuickFreeze(R.id.btn_debug_center_right);
                 break;
+            case BCD476_MODEL:
+                lineEnvTemp.setVisibility(View.VISIBLE);
+                lineFridgeTemp.setVisibility(View.VISIBLE);
+                lineFreezeTemp.setVisibility(View.VISIBLE);
+                lineFridgeTarget.setVisibility(View.VISIBLE);
+                lineFreezeTarget.setVisibility(View.VISIBLE);
+                initSmart(R.id.btn_debug_top_left);
+                initHoliday(R.id.btn_debug_top_right);
+                initQuickCold(R.id.btn_debug_center_left);
+                initQuickFreeze(R.id.btn_debug_center_right);
+                break;
         }
     }
     private void initSeekBar(){
@@ -224,7 +236,7 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                 tvFridgeModel.setText(mModel+"/"+mModel+"(S)");
             }else if(mModel.equals(ConstantUtil.BCD401_MODEL))            {
                 tvFridgeModel.setText(mModel+"/"+mModel+"(S)");
-            }else if(mModel.equals(ConstantUtil.BCD476_MODEL))            {
+            }else if(mModel.equals(BCD476_MODEL))            {
                 tvFridgeModel.setText(mModel);
             }
             setView();
@@ -393,6 +405,35 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                     btnPurify.setOn();
                 }else {
                     btnPurify.setOff();
+                }
+                fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.quickColdMode);
+                if(fridgeControlEntry.value == 1){
+                    btnQuickCold.setOn();
+                }else {
+                    btnQuickCold.setOff();
+                }
+                fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.quickFreezeMode);
+                if(fridgeControlEntry.value == 1){
+                    btnQuickFreeze.setOn();
+                }else {
+                    btnQuickFreeze.setOff();
+                }
+                break;
+            case BCD476_MODEL:
+                tvEnvTemp.setText(getStatusValueByName(EnumBaseName.envShowTemp)+" ℃");
+                tvFridgeTemp.setText(getStatusValueByName(EnumBaseName.fridgeShowTemp)+" ℃");
+                tvFreezeTemp.setText(getStatusValueByName(EnumBaseName.freezeShowTemp)+" ℃");
+                fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.smartMode);
+                if(fridgeControlEntry.value == 1){
+                    btnSmart.setOn();
+                }else {
+                    btnSmart.setOff();
+                }
+                fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.holidayMode);
+                if(fridgeControlEntry.value == 1){
+                    btnHoliday.setOn();
+                }else {
+                    btnHoliday.setOff();
                 }
                 fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.quickColdMode);
                 if(fridgeControlEntry.value == 1){

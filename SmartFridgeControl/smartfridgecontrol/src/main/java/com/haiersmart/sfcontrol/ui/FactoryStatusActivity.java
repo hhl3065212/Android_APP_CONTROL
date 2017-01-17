@@ -296,7 +296,6 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             llEnvHum.setVisibility(View.VISIBLE);
             llFridge.setVisibility(View.VISIBLE);
             llFreeze.setVisibility(View.VISIBLE);
-            llChange.setVisibility(View.VISIBLE);
             llDefrostSensor.setVisibility(View.VISIBLE);
             llFreezeDefrost.setVisibility(View.VISIBLE);
             llFreezeFan.setVisibility(View.VISIBLE);
@@ -583,6 +582,13 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             } else {
                 tvFridgeDoor.setText(getResources().getString(R.string.text_door_open));
                 tvFridgeDoor.setTextColor(getResources().getColor(R.color.black2));
+            }
+            if (mMBParam.getMbsValueByName(EnumBaseName.freezeDoorStatus.toString()) == 0) {
+                tvFreezeDoor.setText(getResources().getString(R.string.text_door_close));
+                tvFreezeDoor.setTextColor(getResources().getColor(R.color.black2));
+            } else {
+                tvFreezeDoor.setText(getResources().getString(R.string.text_door_open));
+                tvFreezeDoor.setTextColor(getResources().getColor(R.color.black2));
             }
             tvCommunication.setText(getResources().getString(R.string.text_factory_normal));
             tvCommunication.setTextColor(getResources().getColor(R.color.black2));

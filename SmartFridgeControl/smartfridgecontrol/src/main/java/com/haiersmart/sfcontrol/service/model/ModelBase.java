@@ -139,4 +139,11 @@ public abstract class ModelBase {
     public void purifyOn(){}
 
     public void purifyOff(){}
+
+    public void SterilizeModeOn(int step){}
+
+    public void SterilizeModeOff(){}
+
+    public void SterilizeSwitchOn(){}
+    public void SterilizeSwitchOff(){}
 }

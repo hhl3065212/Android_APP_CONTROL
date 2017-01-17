@@ -61,17 +61,13 @@ public class FridgeControlDbMgr {
         entries.add(new FridgeControlEntry("quickColdMode", 0, ConstantUtil.NO_WARNING));//3 速冷模式
         entries.add(new FridgeControlEntry("quickFreezeMode", 0, ConstantUtil.NO_WARNING));//4 速冻模式
         entries.add(new FridgeControlEntry("tidbitMode", 0, ConstantUtil.NO_WARNING));//5 珍品模式
-        entries.add(new FridgeControlEntry("marketDemo", 0, ConstantUtil.NO_WARNING));//6
-        entries.add(new FridgeControlEntry("freshLight", 0, ConstantUtil.NO_WARNING));//7
-        entries.add(new FridgeControlEntry("strongPurifyMode", 0, ConstantUtil.NO_WARNING));//8 强效净化模式
-        entries.add(new FridgeControlEntry("fridgeTargetTemp", 5, ConstantUtil.SMART_ON_SET_TEMPER_WARNING));//9 冷藏目标温度
-        entries.add(new FridgeControlEntry("freezeTargetTemp", -18, ConstantUtil.SMART_ON_SET_TEMPER_WARNING));//10 冷冻目标温度
-        entries.add(new FridgeControlEntry("changeTargetTemp", 0, ConstantUtil.NO_WARNING));//11 变温目标温度
-        entries.add(new FridgeControlEntry("camera", 0, ConstantUtil.NO_WARNING));//12
-        entries.add(new FridgeControlEntry("fridgeSwitch", 1, ConstantUtil.SMART_ON_REFRIGERATOR_CLOSE_WARNING));//13 冷藏开关 默认为1
-        entries.add(new FridgeControlEntry("variableOffMode", 0, ConstantUtil.NO_WARNING));//14
-        entries.add(new FridgeControlEntry("shutDown", 0, ConstantUtil.NO_WARNING));//15
-        entries.add(new FridgeControlEntry("TestMode", 0, ConstantUtil.NO_WARNING));//16
+        entries.add(new FridgeControlEntry("fridgeSwitch", 1, ConstantUtil.SMART_ON_REFRIGERATOR_CLOSE_WARNING));//6 冷藏开关 默认为1
+        entries.add(new FridgeControlEntry("strongPurifyMode", 0, ConstantUtil.NO_WARNING));//7 强效净化模式
+        entries.add(new FridgeControlEntry("fridgeTargetTemp", 5, ConstantUtil.SMART_ON_SET_TEMPER_WARNING));//8 冷藏目标温度
+        entries.add(new FridgeControlEntry("freezeTargetTemp", -18, ConstantUtil.SMART_ON_SET_TEMPER_WARNING));//9 冷冻目标温度
+        entries.add(new FridgeControlEntry("changeTargetTemp", 0, ConstantUtil.NO_WARNING));//10 变温目标温度
+        entries.add(new FridgeControlEntry("SterilizeMode", 0, ConstantUtil.NO_WARNING));//11
+        entries.add(new FridgeControlEntry("SterilizeSwitch", 0, ConstantUtil.NO_WARNING));//12
         add(entries);
     }
 

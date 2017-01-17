@@ -210,6 +210,10 @@ public class ConstantUtil {
     public static final String FREEZECOUNT = "freeze_count";//冷冻室计数
     public static final String COLDEND = "cold_end";//冷藏室计时结束
     public static final String FREEZEEND= "freeze_end";//冷冻室计时结束
+    public static final String STERILIZETIME= "sterilize_time";//杀菌开始时间
+    public static final String STERILIZETIMECOUNT= "sterilize_count";//杀菌计时
+    public static final String STERILIZETIMEINTERVALCOUNT= "sterilize_interval_count";//杀菌计时
+
 
 
 

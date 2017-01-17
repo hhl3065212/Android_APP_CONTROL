@@ -40,6 +40,7 @@ public class MainBoardFourZeroOne extends MainBoardBase{
     /** 冷藏门开门报警操作 */
     private HandleDoorAlarm mFridgeDoorAlarm;
 
+
     @Override
     public void initConfig() {
         ConfigFourZeroOne mConfigFourZeroOne = new ConfigFourZeroOne();

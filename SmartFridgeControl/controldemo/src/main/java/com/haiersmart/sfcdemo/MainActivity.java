@@ -48,10 +48,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TimerTask mWaitTask, mTimerTask;
 
     private LinearLayout lineEnvTemp, lineEnvHum, lineFridgeTemp, lineFreezeTemp, lineChangeTemp,
-            lineFridgeTarget, lineFreezeTarget, lineChangeTarger;
+            lineFridgeTarget, lineFreezeTarget, lineChangeTarger,lineSterilize;
     private TextView tvFridgeModel, tvStatusCode, tvEnvTemp, tvEnvHum, tvFridgeTemp, tvFreezeTemp, tvChangeTemp,
             tvFridgeTarget, tvFreezeTarget, tvChangeTarget, tvTime, tvTest;
     private Button btnReturn;
+    private MyTestButton btnSterilizeSmart, btnSterilizeStrong, btnSterilize3, btnSterilize4, btnSterilize5,
+            btnSterilize6,btnSterilize7,btnSterilize8,btnSterilize9;
+    private TextView tvSterilizeRuntime,tvSterilizeInterval;
     private MyTestButton btnSmart, btnHoliday, btnQuickCold, btnQuickFreeze, btnFridgeSwitch, btnTidbit,btnPurify;
     private SeekBar skbFridge, skbFreeze, skbChange;
     private ImageView imvQrCode;
@@ -217,6 +220,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         lineFridgeTarget = (LinearLayout) findViewById(R.id.linear_demo_skb_fridge);
         lineFreezeTarget = (LinearLayout) findViewById(R.id.linear_demo_skb_freeze);
         lineChangeTarger = (LinearLayout) findViewById(R.id.linear_demo_skb_change);
+        lineSterilize = (LinearLayout) findViewById(R.id.linear_demo_sterilize);
 
         tvFridgeModel = (TextView) findViewById(R.id.text_demo_fridge_model);
         tvFridgeModel.setOnClickListener(this);
@@ -231,9 +235,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tvChangeTarget = (TextView) findViewById(R.id.text_demo_change_target);
         tvTime = (TextView) findViewById(R.id.text_demo_time);
         tvTest = (TextView) findViewById(R.id.text_demo_test);
+        tvSterilizeRuntime = (TextView) findViewById(R.id.text_demo_sterilize_runtime);
+        tvSterilizeInterval = (TextView) findViewById(R.id.text_demo_sterilize_interval);
 
         btnReturn = (Button) findViewById(R.id.btn_demo_return);
         btnReturn.setOnClickListener(this);
+
+        btnSterilizeSmart = (MyTestButton) findViewById(R.id.btn_demo_sterilize_smart);
+        btnSterilizeStrong = (MyTestButton) findViewById(R.id.btn_demo_sterilize_strong);
+        btnSterilize3 = (MyTestButton) findViewById(R.id.btn_demo_sterilize_3);
+        btnSterilize4 = (MyTestButton) findViewById(R.id.btn_demo_sterilize_4);
+        btnSterilize5= (MyTestButton) findViewById(R.id.btn_demo_sterilize_5);
+        btnSterilize6 = (MyTestButton) findViewById(R.id.btn_demo_sterilize_6);
+        btnSterilize7 = (MyTestButton) findViewById(R.id.btn_demo_sterilize_7);
+        btnSterilize8 = (MyTestButton) findViewById(R.id.btn_demo_sterilize_8);
+        btnSterilize9 = (MyTestButton) findViewById(R.id.btn_demo_sterilize_9);
 
         skbFridge = (SeekBar) findViewById(R.id.skb_demo_fridge);
         skbFreeze = (SeekBar) findViewById(R.id.skb_demo_freeze);
@@ -288,6 +304,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 lineFreezeTemp.setVisibility(View.VISIBLE);
                 lineFridgeTarget.setVisibility(View.VISIBLE);
                 lineFreezeTarget.setVisibility(View.VISIBLE);
+                lineSterilize.setVisibility(View.VISIBLE);
                 initSmart(R.id.btn_demo_top_left);
                 initHoliday(R.id.btn_demo_top_right);
                 initQuickCold(R.id.btn_demo_center_left);

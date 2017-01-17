@@ -48,8 +48,10 @@ public class FourSevenSixModel extends ModelBase{
         mControlEntries.add(controlEntryList.get(1));//1 假日模式
         mControlEntries.add(controlEntryList.get(3));//2 速冷模式
         mControlEntries.add(controlEntryList.get(4));//3 速冻模式
-        mControlEntries.add(controlEntryList.get(9));//5 冷藏档位模式
-        mControlEntries.add(controlEntryList.get(10));//6 冷冻档位模式
+        mControlEntries.add(controlEntryList.get(8));//4 冷藏档位模式
+        mControlEntries.add(controlEntryList.get(9));//5 冷冻档位模式
+        mControlEntries.add(controlEntryList.get(11));//6 杀菌模式
+        mControlEntries.add(controlEntryList.get(12));//7 杀菌开关
         MyLogUtil.i(TAG, "initControlEntries out");
     }
 
@@ -304,6 +306,63 @@ public class FourSevenSixModel extends ModelBase{
             getControlDbMgr().updateDisableByName(EnumBaseName.fridgeTargetTemp, ConstantUtil.NO_WARNING);
             MyLogUtil.d(TAG,"holidayOff modedebug fridgeTargetTemp disable="+getControlEntryByName(EnumBaseName.fridgeTargetTemp).disable);
 
+        }
+        //广播档位和模式信息给上层
+        mService.sendControlCmdResponse();
+    }
+
+    @Override
+    public void SterilizeModeOn(int step){
+        FridgeControlEntry sterilizeEntry = getControlEntryByName(EnumBaseName.SterilizeMode);
+        if(sterilizeEntry.value != step) {
+            sterilizeEntry.value = step;
+            sterilizeEntry.disable = ConstantUtil.NO_WARNING;
+            updateControlByEntry(sterilizeEntry);
+            getControlDbMgr().updateEntry(sterilizeEntry);
+        }
+        //广播档位和模式信息给上层
+        mService.sendControlCmdResponse();
+    }
+    @Override
+    public void SterilizeModeOff(){
+        FridgeControlEntry sterilizeEntry = getControlEntryByName(EnumBaseName.SterilizeMode);
+        if(sterilizeEntry.value != 0) {
+            sterilizeEntry.value = 0;
+            sterilizeEntry.disable = ConstantUtil.NO_WARNING;
+            updateControlByEntry(sterilizeEntry);
+            getControlDbMgr().updateEntry(sterilizeEntry);
+        }
+        FridgeControlEntry sterilizeSwitchEntry = getControlEntryByName(EnumBaseName.SterilizeSwitch);
+        if(sterilizeSwitchEntry.value == 1) {
+            sterilizeSwitchEntry.value = 0;
+            sterilizeSwitchEntry.disable = ConstantUtil.NO_WARNING;
+            updateControlByEntry(sterilizeSwitchEntry);
+            getControlDbMgr().updateEntry(sterilizeSwitchEntry);
+        }
+        //广播档位和模式信息给上层
+        mService.sendControlCmdResponse();
+    }
+
+    @Override
+    public void SterilizeSwitchOn(){
+        FridgeControlEntry sterilizeSwitchEntry = getControlEntryByName(EnumBaseName.SterilizeSwitch);
+        if(sterilizeSwitchEntry.value == 0) {
+            sterilizeSwitchEntry.value = 1;
+            sterilizeSwitchEntry.disable = ConstantUtil.NO_WARNING;
+            updateControlByEntry(sterilizeSwitchEntry);
+            getControlDbMgr().updateEntry(sterilizeSwitchEntry);
+        }
+        //广播档位和模式信息给上层
+        mService.sendControlCmdResponse();
+    }
+    @Override
+    public void SterilizeSwitchOff(){
+        FridgeControlEntry sterilizeSwitchEntry = getControlEntryByName(EnumBaseName.SterilizeSwitch);
+        if(sterilizeSwitchEntry.value == 1) {
+            sterilizeSwitchEntry.value = 0;
+            sterilizeSwitchEntry.disable = ConstantUtil.NO_WARNING;
+            updateControlByEntry(sterilizeSwitchEntry);
+            getControlDbMgr().updateEntry(sterilizeSwitchEntry);
         }
         //广播档位和模式信息给上层
         mService.sendControlCmdResponse();

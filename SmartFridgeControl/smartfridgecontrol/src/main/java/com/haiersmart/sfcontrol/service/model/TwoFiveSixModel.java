@@ -49,10 +49,10 @@ public class TwoFiveSixModel extends ModelBase {
         mControlEntries.add(controlEntryList.get(3));//2 速冷模式
         mControlEntries.add(controlEntryList.get(4));//3 速冻模式
         mControlEntries.add(controlEntryList.get(5));//4 珍品模式
-        mControlEntries.add(controlEntryList.get(9));//5 冷藏档位模式
-        mControlEntries.add(controlEntryList.get(10));//6 冷冻档位模式
-        mControlEntries.add(controlEntryList.get(11));//7 变温档位模式
-        mControlEntries.add(controlEntryList.get(13));//8 冷藏开关
+        mControlEntries.add(controlEntryList.get(6));//8 冷藏开关
+        mControlEntries.add(controlEntryList.get(8));//5 冷藏档位模式
+        mControlEntries.add(controlEntryList.get(9));//6 冷冻档位模式
+        mControlEntries.add(controlEntryList.get(10));//7 变温档位模式
         MyLogUtil.i(TAG, "initControlEntries out");
     }
 

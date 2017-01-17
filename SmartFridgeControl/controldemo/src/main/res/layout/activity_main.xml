@@ -255,6 +255,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/text_size_32"/>
+
                 <ImageView
                     android:id="@+id/imv_demo_test"
                     android:layout_width="match_parent"
@@ -400,77 +401,246 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/tab_margin"/>
                 </LinearLayout>
+                <!--杀菌控制-->
+                <LinearLayout
+                    android:id="@+id/linear_demo_sterilize"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/fab_margin"
+                    android:background="@color/gray2"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/fab_margin"
+                    android:visibility="visible">
+
+                    <LinearLayout
+                        android:layout_width="@dimen/auto_width"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/auto_height"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="杀菌"
+                            android:textSize="@dimen/text_size_32"/>
+
+                        <TextView
+                            android:id="@+id/text_demo_sterilize_runtime"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/auto_height"
+                            android:layout_marginTop="@dimen/fab_margin"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="30:00"
+                            android:textSize="@dimen/text_size_32"/>
+
+                        <TextView
+                            android:id="@+id/text_demo_sterilize_interval"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/auto_height"
+                            android:layout_marginTop="@dimen/fab_margin"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="03:00"
+                            android:textSize="@dimen/text_size_32"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="@dimen/auto_width"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:layout_marginLeft="@dimen/fab_margin"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:visibility="visible">
+
+                            <com.haiersmart.sfcdemo.draw.MyTestButton
+                                android:id="@+id/btn_demo_sterilize_smart"
+                                android:layout_width="@dimen/auto_width"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="智能"
+                                android:textSize="@dimen/text_size_32"/>
+
+                            <com.haiersmart.sfcdemo.draw.MyTestButton
+                                android:id="@+id/btn_demo_sterilize_strong"
+                                android:layout_width="@dimen/auto_width"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/fab_margin"
+                                android:layout_weight="1"
+                                android:text="强力"
+                                android:textSize="@dimen/text_size_32"/>
+
+                            <com.haiersmart.sfcdemo.draw.MyTestButton
+                                android:id="@+id/btn_demo_sterilize_3"
+                                android:layout_width="@dimen/auto_width"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/fab_margin"
+                                android:layout_weight="1"
+                                android:text="3小时"
+                                android:textSize="@dimen/text_size_32"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/fab_margin"
+                            android:orientation="horizontal"
+                            android:visibility="visible">
+
+                            <com.haiersmart.sfcdemo.draw.MyTestButton
+                                android:id="@+id/btn_demo_sterilize_4"
+                                android:layout_width="@dimen/auto_width"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="4小时"
+                                android:textSize="@dimen/text_size_32"/>
+
+                            <com.haiersmart.sfcdemo.draw.MyTestButton
+                                android:id="@+id/btn_demo_sterilize_5"
+                                android:layout_width="@dimen/auto_width"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/fab_margin"
+                                android:layout_weight="1"
+                                android:text="5小时"
+                                android:textSize="@dimen/text_size_32"/>
+
+                            <com.haiersmart.sfcdemo.draw.MyTestButton
+                                android:id="@+id/btn_demo_sterilize_6"
+                                android:layout_width="@dimen/auto_width"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/fab_margin"
+                                android:layout_weight="1"
+                                android:text="6小时"
+                                android:textSize="@dimen/text_size_32"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/fab_margin"
+                            android:orientation="horizontal"
+                            android:visibility="visible">
+
+                            <com.haiersmart.sfcdemo.draw.MyTestButton
+                                android:id="@+id/btn_demo_sterilize_7"
+                                android:layout_width="@dimen/auto_width"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="7小时"
+                                android:textSize="@dimen/text_size_32"/>
+
+                            <com.haiersmart.sfcdemo.draw.MyTestButton
+                                android:id="@+id/btn_demo_sterilize_8"
+                                android:layout_width="@dimen/auto_width"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/fab_margin"
+                                android:layout_weight="1"
+                                android:text="8小时"
+                                android:textSize="@dimen/text_size_32"/>
+
+                            <com.haiersmart.sfcdemo.draw.MyTestButton
+                                android:id="@+id/btn_demo_sterilize_9"
+                                android:layout_width="@dimen/auto_width"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/fab_margin"
+                                android:layout_weight="1"
+                                android:text="9小时"
+                                android:textSize="@dimen/text_size_32"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
             </LinearLayout>
+
+
             <!--模式控制-->
             <LinearLayout
                 android:id="@+id/linear_demo_mode"
                 android:layout_width="@dimen/auto_width"
                 android:layout_height="match_parent"
-                android:padding="@dimen/fab_margin"
+                android:layout_weight="1"
                 android:orientation="vertical"
-                android:layout_weight="1">
+                android:padding="@dimen/fab_margin">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/auto_height"
-                    android:orientation="horizontal"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
                     <com.haiersmart.sfcdemo.draw.MyTestButton
                         android:id="@+id/btn_demo_top_left"
                         android:layout_width="@dimen/auto_width"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:textSize="@dimen/text_size_50"
-                        android:enabled="false"/>
+                        android:enabled="false"
+                        android:textSize="@dimen/text_size_50"/>
+
                     <com.haiersmart.sfcdemo.draw.MyTestButton
                         android:id="@+id/btn_demo_top_right"
                         android:layout_width="@dimen/auto_width"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="@dimen/fab_margin"
                         android:layout_weight="1"
-                        android:textSize="@dimen/text_size_50"
-                        android:enabled="false"/>
+                        android:enabled="false"
+                        android:textSize="@dimen/text_size_50"/>
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/auto_height"
                     android:layout_marginTop="@dimen/fab_margin"
                     android:layout_weight="1">
+
                     <com.haiersmart.sfcdemo.draw.MyTestButton
                         android:id="@+id/btn_demo_center_left"
                         android:layout_width="@dimen/auto_width"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:textSize="@dimen/text_size_50"
-                        android:enabled="false"/>
+                        android:enabled="false"
+                        android:textSize="@dimen/text_size_50"/>
+
                     <com.haiersmart.sfcdemo.draw.MyTestButton
                         android:id="@+id/btn_demo_center_right"
                         android:layout_width="@dimen/auto_width"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="@dimen/fab_margin"
                         android:layout_weight="1"
-                        android:textSize="@dimen/text_size_50"
-                        android:enabled="false"/>
+                        android:enabled="false"
+                        android:textSize="@dimen/text_size_50"/>
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/auto_height"
                     android:layout_marginTop="@dimen/fab_margin"
                     android:layout_weight="1">
+
                     <com.haiersmart.sfcdemo.draw.MyTestButton
                         android:id="@+id/btn_demo_bottom_left"
                         android:layout_width="@dimen/auto_width"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:textSize="@dimen/text_size_50"
-                        android:enabled="false"/>
+                        android:enabled="false"
+                        android:textSize="@dimen/text_size_50"/>
+
                     <com.haiersmart.sfcdemo.draw.MyTestButton
                         android:id="@+id/btn_demo_bottom_right"
                         android:layout_width="@dimen/auto_width"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="@dimen/fab_margin"
                         android:layout_weight="1"
-                        android:textSize="@dimen/text_size_50"
-                        android:enabled="false"/>
+                        android:enabled="false"
+                        android:textSize="@dimen/text_size_50"/>
                 </LinearLayout>
 
 

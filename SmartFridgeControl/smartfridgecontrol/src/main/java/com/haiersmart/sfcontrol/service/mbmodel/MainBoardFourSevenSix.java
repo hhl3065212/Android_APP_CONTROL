@@ -49,6 +49,7 @@ public class MainBoardFourSevenSix extends MainBoardBase{
     /** 冷冻门开门报警操作 */
     private HandleDoorAlarm mFreezeDoorAlarm;
 
+
     @Override
     public void initConfig() {
         ConfigFourSevenSix mConfigFourSevenSix = new ConfigFourSevenSix();

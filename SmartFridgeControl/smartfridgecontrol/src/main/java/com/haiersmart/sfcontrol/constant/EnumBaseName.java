@@ -17,14 +17,15 @@ public enum EnumBaseName {
     quickColdMode("quickColdMode"),//
     quickFreezeMode("quickFreezeMode"),//
     tidbitMode("tidbitMode"),//
-    marketDemo("marketDemo"),//
     fridgeSwitch("fridgeSwitch"),
     strongPurifyMode("strongPurifyMode"),//
     fridgeTargetTemp("fridgeTargetTemp"),//
     freezeTargetTemp("freezeTargetTemp"),//
     changeTargetTemp("changeTargetTemp"),//
     SterilizeMode("SterilizeMode"),//
+    SterilizeSwitch("SterilizeSwitch"),//
 
+    marketDemo("marketDemo"),//
     getDeviceId("getDeviceId"),//
     getAllProperty("getAllProperty"),
     fridgeShowTemp("fridgeShowTemp"),

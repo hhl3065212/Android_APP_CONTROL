@@ -42,6 +42,7 @@ public class MainBoardTwoFiveOne extends MainBoardBase {
     /** 冷藏门开门报警操作 */
     private HandleDoorAlarm mFridgeDoorAlarm;
 
+
     @Override
     public void initConfig() {
         /** 获得251配置文件 */

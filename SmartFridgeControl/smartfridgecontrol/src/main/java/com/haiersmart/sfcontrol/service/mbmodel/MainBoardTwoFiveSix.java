@@ -41,6 +41,7 @@ public class MainBoardTwoFiveSix extends MainBoardBase{
     /** 冷藏门开门报警操作 */
     private HandleDoorAlarm mFridgeDoorAlarm;
 
+
     @Override
     public void initConfig() {
         ConfigTwoFiveSix mConfigTwoFiveSix = new ConfigTwoFiveSix();

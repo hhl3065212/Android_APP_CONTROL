@@ -47,7 +47,7 @@ public class ConfigFourSevenSix {
 
         protocolConfig.add(new ProtocolConfigBase(EnumBaseName.fridgeDoorStatus.name(), 1, 22, 0));//冷藏门
         protocolConfig.add(new ProtocolConfigBase(EnumBaseName.freezeDoorStatus.name(), 1, 22, 1));//冷冻门
-        protocolConfig.add(new ProtocolConfigBase(EnumBaseName.SterilizeMode.name(), 0, 22, 4));//杀菌
+        protocolConfig.add(new ProtocolConfigBase(EnumBaseName.SterilizeSwitch.name(), 0, 22, 4));//杀菌
         protocolConfig.add(new ProtocolConfigBase(EnumBaseName.marketDemo.name(), 1, 21, 0));//商场演示
 
         protocolConfig.add(new ProtocolConfigBase(EnumBaseName.envTempSensorErr.name(), 1, 32, 0));//环境温度传感器故障

@@ -733,7 +733,7 @@ public class ControlMainBoardService extends Service {
         MyLogUtil.i(TAG,"handleServiceRestartEvent in");
         FridgeControlEntry coldEntry = new FridgeControlEntry("quickColdMode");
         getControlDbMgr().queryByName(coldEntry);
-        //速冻on
+        //速冷on
         if(coldEntry.value == 1) {
             MyLogUtil.i(TAG, "handleServiceRestartEvent cold");
             //继续计时，累加restart前coldCount值
@@ -849,6 +849,43 @@ public class ControlMainBoardService extends Service {
         stateList.put(ConstantWifiUtil.QUERY_GOOD_FOOD, "65278");
         stateList.put(ConstantWifiUtil.QUERY_UV, "" + valueSterilization);
         return stateList;
+    }
+
+    /**
+     * 杀菌功能启用这个
+     *
+     */
+    private final int[] SterilizeInterval = {0,6*60*60,4*60*60,3*60*60,4*60*60,5*60*60,6*60*60,7*60*60,8*60*60,9*60*60};
+    private Timer timerSterilize;
+    private TimerTask timerTaskSterilize;
+    private int countsSterilizeInterval;
+    private int countsSterilizeRun;
+
+    public void startSterilize(int mode){
+        if(mode != 0) {
+            mModel.SterilizeSwitchOn();
+            int timeSterilizeInterval = SterilizeInterval[mode];
+            countsSterilizeRun = 30*60;
+            countsSterilizeInterval = 0;
+            long startTime = (long) SpUtils.getInstance(ControlApplication.getInstance()).get(ConstantUtil.STERILIZETIME, 0l);
+            long currentTime = System.currentTimeMillis();
+
+            if (timerSterilize == null) {
+                timerSterilize = new Timer();
+            }
+            if (timerTaskSterilize == null) {
+                timerTaskSterilize = new TimerTask() {
+                    @Override
+                    public void run() {
+                        countsSterilizeRun--;countsSterilizeInterval++;
+                        long startTime = (long) SpUtils.getInstance(ControlApplication.getInstance()).get(ConstantUtil.FREEZETIME, 0l);
+                        long currentTime = System.currentTimeMillis();
+                    }
+                };
+                timerSterilize.schedule(timerTaskSterilize, 1000, 1000);
+            }
+        }
+
     }
 
 

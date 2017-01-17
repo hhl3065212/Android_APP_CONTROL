@@ -45,7 +45,7 @@ public abstract class MainBoardBase {
     ArrayList<FridgeControlEntry> dbFridgeControlSet;//数据库中需要设置的类
     public boolean testDoor = false;//
 
-    MainBoardBase() {
+    public MainBoardBase() {
     }
 
     /**

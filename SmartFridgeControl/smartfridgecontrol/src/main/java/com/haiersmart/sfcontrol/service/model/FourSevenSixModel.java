@@ -312,39 +312,34 @@ public class FourSevenSixModel extends ModelBase{
     }
 
     @Override
-    public void SterilizeModeOn(int step){
+    public void setSterilizeMode(int step){
         FridgeControlEntry sterilizeEntry = getControlEntryByName(EnumBaseName.SterilizeMode);
+        FridgeControlEntry sterilizeSwitchEntry = getControlEntryByName(EnumBaseName.SterilizeSwitch);
         if(sterilizeEntry.value != step) {
+            if(step == 0){
+                mService.stopSterilize();
+                if(sterilizeSwitchEntry.value == 1) {
+                    sterilizeSwitchEntry.value = 0;
+                    sterilizeSwitchEntry.disable = ConstantUtil.NO_WARNING;
+                    updateControlByEntry(sterilizeSwitchEntry);
+                    getControlDbMgr().updateEntry(sterilizeSwitchEntry);
+                }
+            }
             sterilizeEntry.value = step;
             sterilizeEntry.disable = ConstantUtil.NO_WARNING;
             updateControlByEntry(sterilizeEntry);
             getControlDbMgr().updateEntry(sterilizeEntry);
-        }
-        //广播档位和模式信息给上层
-        mService.sendControlCmdResponse();
-    }
-    @Override
-    public void SterilizeModeOff(){
-        FridgeControlEntry sterilizeEntry = getControlEntryByName(EnumBaseName.SterilizeMode);
-        if(sterilizeEntry.value != 0) {
-            sterilizeEntry.value = 0;
-            sterilizeEntry.disable = ConstantUtil.NO_WARNING;
-            updateControlByEntry(sterilizeEntry);
-            getControlDbMgr().updateEntry(sterilizeEntry);
-        }
-        FridgeControlEntry sterilizeSwitchEntry = getControlEntryByName(EnumBaseName.SterilizeSwitch);
-        if(sterilizeSwitchEntry.value == 1) {
-            sterilizeSwitchEntry.value = 0;
-            sterilizeSwitchEntry.disable = ConstantUtil.NO_WARNING;
-            updateControlByEntry(sterilizeSwitchEntry);
-            getControlDbMgr().updateEntry(sterilizeSwitchEntry);
+            if(step != 0) {
+                mService.startSterilize(step);
+            }
         }
         //广播档位和模式信息给上层
         mService.sendControlCmdResponse();
     }
 
+
     @Override
-    public void SterilizeSwitchOn(){
+    public void sterilizeSwitchOn(){
         FridgeControlEntry sterilizeSwitchEntry = getControlEntryByName(EnumBaseName.SterilizeSwitch);
         if(sterilizeSwitchEntry.value == 0) {
             sterilizeSwitchEntry.value = 1;
@@ -354,9 +349,10 @@ public class FourSevenSixModel extends ModelBase{
         }
         //广播档位和模式信息给上层
         mService.sendControlCmdResponse();
+        MyLogUtil.i(TAG,"ster::sterilizeSwitchOn");
     }
     @Override
-    public void SterilizeSwitchOff(){
+    public void sterilizeSwitchOff(){
         FridgeControlEntry sterilizeSwitchEntry = getControlEntryByName(EnumBaseName.SterilizeSwitch);
         if(sterilizeSwitchEntry.value == 1) {
             sterilizeSwitchEntry.value = 0;
@@ -366,6 +362,7 @@ public class FourSevenSixModel extends ModelBase{
         }
         //广播档位和模式信息给上层
         mService.sendControlCmdResponse();
+        MyLogUtil.i(TAG,"ster::sterilizeSwitchOff");
     }
 
     @Override

@@ -121,6 +121,10 @@ public class ControlCommandReceiver extends BroadcastReceiver {
             } else if (contentAction.equals(ConstantUtil.MODE_PURIFY_OFF)) {
                 //净化关
                 sendCommandToService(context, ConstantUtil.MODE_PURIFY_OFF);
+            }else if (contentAction.equals(ConstantUtil.MODE_STERILIZE_ON)) {
+                //杀菌模式
+                int sterilizeStep = intent.getIntExtra(ConstantUtil.MODE_UV,0);
+                sendTemperCmdToService(context, ConstantUtil.MODE_STERILIZE_ON,ConstantUtil.MODE_UV,sterilizeStep);
             }
         } else if (action.equals(ConstantWifiUtil.ACTION_MODECONTROL)) {
             String contentAction = intent.getStringExtra(ConstantWifiUtil.KEY_SENDCONTROL);

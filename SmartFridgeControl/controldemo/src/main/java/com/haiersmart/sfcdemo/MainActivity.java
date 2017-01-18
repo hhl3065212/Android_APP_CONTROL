@@ -48,16 +48,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TimerTask mWaitTask, mTimerTask;
 
     private LinearLayout lineEnvTemp, lineEnvHum, lineFridgeTemp, lineFreezeTemp, lineChangeTemp,
-            lineFridgeTarget, lineFreezeTarget, lineChangeTarger,lineSterilize;
+            lineFridgeTarget, lineFreezeTarget, lineChangeTarger, lineSterilize;
     private TextView tvFridgeModel, tvStatusCode, tvEnvTemp, tvEnvHum, tvFridgeTemp, tvFreezeTemp, tvChangeTemp,
             tvFridgeTarget, tvFreezeTarget, tvChangeTarget, tvTime, tvTest;
     private Button btnReturn;
     private MyTestButton btnSterilizeSmart, btnSterilizeStrong, btnSterilize3, btnSterilize4, btnSterilize5,
-            btnSterilize6,btnSterilize7,btnSterilize8,btnSterilize9;
-    private TextView tvSterilizeRuntime,tvSterilizeInterval;
-    private MyTestButton btnSmart, btnHoliday, btnQuickCold, btnQuickFreeze, btnFridgeSwitch, btnTidbit,btnPurify;
+            btnSterilize6, btnSterilize7, btnSterilize8, btnSterilize9;
+    private TextView tvSterilizeRuntime, tvSterilizeInterval;
+    private MyTestButton btnSmart, btnHoliday, btnQuickCold, btnQuickFreeze, btnFridgeSwitch, btnTidbit, btnPurify;
     private SeekBar skbFridge, skbFreeze, skbChange;
     private ImageView imvQrCode;
+
+    private int countsSterilize = 0;
 
     private int onclickCounts = 0;
     private boolean isReady = false;
@@ -73,12 +75,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mContext = getApplicationContext();
-//        Intent intent = new Intent();
-//        intent.setComponent(new ComponentName("com.haiersmart.sfcontrol", "com.haiersmart.sfcontrol.service.ControlMainBoardService"));
-//        startService(intent);
+        //        Intent intent = new Intent();
+        //        intent.setComponent(new ComponentName("com.haiersmart.sfcontrol", "com.haiersmart.sfcontrol.service.ControlMainBoardService"));
+        //        startService(intent);
         registerBroadcast();
         findView();
-//        startQueryType();
+        //        startQueryType();
     }
 
     @Override
@@ -122,20 +124,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             Log.i(TAG, "BroadcastReceiver receiveUpdateUI action=" + action);
-            if(action.equals(ConstantUtil.SERVICE_NOTICE)){
+            if (action.equals(ConstantUtil.SERVICE_NOTICE)) {
                 boolean ready = intent.getBooleanExtra(ConstantUtil.KEY_READY, isServiceReady);
-                if(isServiceReady != ready){
+                if (isServiceReady != ready) {
                     isServiceReady = ready;
-                    if(isServiceReady) {
+                    if (isServiceReady) {
                         stopQueryType();
                         sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_FRIDGE_INFO);
-                    }else {
+                    } else {
                         startQueryType();
                     }
                 }
-                if(isReady){
+                if (isReady) {
                     String jsonRange = intent.getStringExtra(ConstantUtil.KEY_RANGE);
-                    if(jsonRange != null){
+                    if (jsonRange != null) {
                         JSONObject jsonObject = JSONObject.parseObject(jsonRange);
                         Log.i(TAG, "jsonRange is:" + jsonRange);
                         setTempRange(jsonObject);
@@ -144,27 +146,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         startRefreshUI();
                     }
                     String jsonControl = intent.getStringExtra(ConstantUtil.KEY_CONTROL_INFO);
-                    if(jsonControl != null) {
+                    if (jsonControl != null) {
                         JSONArray jsonArray = JSONArray.parseArray(jsonControl);
                         updateModeLevel(jsonArray);
                         refreshUI();
                     }
                     String jsonTemper = intent.getStringExtra(ConstantUtil.KEY_TEMPER);
-                    if(jsonTemper != null) {
+                    if (jsonTemper != null) {
                         JSONArray jsonArray = JSONArray.parseArray(jsonTemper);
                         updateShowTemp(jsonArray);
                         refreshUI();
                     }
                     String jsonError = intent.getStringExtra(ConstantUtil.KEY_ERROR);
-                    if(jsonError != null) {
+                    if (jsonError != null) {
                         JSONArray jsonArray = JSONArray.parseArray(jsonError);
                         Log.i(TAG, "error jsonArray:" + jsonArray);
                     }
                     String jsonDoor = intent.getStringExtra(ConstantUtil.DOOR_STATUS);
                     if (jsonDoor != null) {
-                        JSONObject jsonObject = JSONObject.parseObject(jsonDoor);
-                        Log.i(TAG, "door status jsonObject:" + jsonObject);
-                                            }
+                        final JSONObject jsonObject = JSONObject.parseObject(jsonDoor);
+
+                        Log.d(TAG, "door status jsonObject:" + jsonObject);
+
+                    }
                     String jsonAlarm = intent.getStringExtra(ConstantUtil.DOOR_ALARM_STATUS);
                     if (jsonAlarm != null) {
                         JSONObject jsonObject = JSONObject.parseObject(jsonAlarm);
@@ -172,9 +176,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         handleDoorAlarm(jsonObject);
                     }
 
-                }else {
+                } else {
                     String jsonInfo = intent.getStringExtra(ConstantUtil.KEY_INFO);
-                    if(jsonInfo != null){
+                    if (jsonInfo != null) {
                         JSONObject jsonObject = JSONObject.parseObject(jsonInfo);
                         Log.i(TAG, "jsonInfo is:" + jsonInfo);
                         String id = (String) jsonObject.get(ConstantUtil.KEY_TYPE_ID);
@@ -245,11 +249,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnSterilizeStrong = (MyTestButton) findViewById(R.id.btn_demo_sterilize_strong);
         btnSterilize3 = (MyTestButton) findViewById(R.id.btn_demo_sterilize_3);
         btnSterilize4 = (MyTestButton) findViewById(R.id.btn_demo_sterilize_4);
-        btnSterilize5= (MyTestButton) findViewById(R.id.btn_demo_sterilize_5);
+        btnSterilize5 = (MyTestButton) findViewById(R.id.btn_demo_sterilize_5);
         btnSterilize6 = (MyTestButton) findViewById(R.id.btn_demo_sterilize_6);
         btnSterilize7 = (MyTestButton) findViewById(R.id.btn_demo_sterilize_7);
         btnSterilize8 = (MyTestButton) findViewById(R.id.btn_demo_sterilize_8);
         btnSterilize9 = (MyTestButton) findViewById(R.id.btn_demo_sterilize_9);
+        btnSterilizeSmart.setOnClickListener(this);
+        btnSterilizeStrong.setOnClickListener(this);
+        btnSterilize3.setOnClickListener(this);
+        btnSterilize4.setOnClickListener(this);
+        btnSterilize5.setOnClickListener(this);
+        btnSterilize6.setOnClickListener(this);
+        btnSterilize7.setOnClickListener(this);
+        btnSterilize8.setOnClickListener(this);
+        btnSterilize9.setOnClickListener(this);
 
         skbFridge = (SeekBar) findViewById(R.id.skb_demo_fridge);
         skbFreeze = (SeekBar) findViewById(R.id.skb_demo_freeze);
@@ -319,14 +332,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void setModel() {
         //        if(mModel.mFridgeModel != null) {
-//        mModel.mFridgeModel = ConstantUtil.BCD251_MODEL;
+        //        mModel.mFridgeModel = ConstantUtil.BCD251_MODEL;
         if (mModel.mFridgeModel.equals(ConstantUtil.BCD251_MODEL)) {
             tvFridgeModel.setText(mModel.mFridgeModel);
         } else if (mModel.mFridgeModel.equals(ConstantUtil.BCD256_MODEL)) {
             tvFridgeModel.setText(mModel.mFridgeModel + "/" + mModel.mFridgeModel + "(S)");
         } else if (mModel.mFridgeModel.equals(ConstantUtil.BCD401_MODEL)) {
             tvFridgeModel.setText(mModel.mFridgeModel + "/" + mModel.mFridgeModel + "(S)");
-        }else if (mModel.mFridgeModel.equals(ConstantUtil.BCD476_MODEL)) {
+        } else if (mModel.mFridgeModel.equals(ConstantUtil.BCD476_MODEL)) {
             tvFridgeModel.setText(mModel.mFridgeModel);
         }
         setView();
@@ -450,7 +463,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 btnFridgeSwitch.setOff();
                 btnFridgeSwitch.setText("冷藏关");
             }
-        }else if (mModel.mFridgeModel.equals(ConstantUtil.BCD256_MODEL)) {
+        } else if (mModel.mFridgeModel.equals(ConstantUtil.BCD256_MODEL)) {
             tvFridgeTemp.setText(mModel.mFridgeShow + " ℃");
             tvFreezeTemp.setText(mModel.mFreezeShow + " ℃");
             tvChangeTemp.setText(mModel.mChangeShow + " ℃");
@@ -486,7 +499,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } else {
                 btnTidbit.setOff();
             }
-        }else if (mModel.mFridgeModel.equals(ConstantUtil.BCD401_MODEL)) {
+        } else if (mModel.mFridgeModel.equals(ConstantUtil.BCD401_MODEL)) {
             tvFridgeTemp.setText(mModel.mFridgeShow + " ℃");
             tvFreezeTemp.setText(mModel.mFreezeShow + " ℃");
             if (mModel.isSmart) {
@@ -509,7 +522,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } else {
                 btnQuickFreeze.setOff();
             }
-        }else if (mModel.mFridgeModel.equals(ConstantUtil.BCD476_MODEL)) {
+        } else if (mModel.mFridgeModel.equals(ConstantUtil.BCD476_MODEL)) {
             tvFridgeTemp.setText(mModel.mFridgeShow + " ℃");
             tvFreezeTemp.setText(mModel.mFreezeShow + " ℃");
             if (mModel.isSmart) {
@@ -532,8 +545,69 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } else {
                 btnQuickFreeze.setOff();
             }
+            switch (mModel.mSterilizeMode) {
+                case 0:
+                    tvSterilizeRuntime.setText("30:00");
+                    setSterilizeButtonOff();
+                    break;
+                case 1:
+                    setSterilizeButtonOff();
+                    btnSterilizeSmart.setOn();
+                    break;
+                case 2:
+                    setSterilizeButtonOff();
+                    btnSterilizeStrong.setOn();
+                    break;
+                case 3:
+                    setSterilizeButtonOff();
+                    btnSterilize3.setOn();
+                    break;
+                case 4:
+                    setSterilizeButtonOff();
+                    btnSterilize4.setOn();
+                    break;
+                case 5:
+                    setSterilizeButtonOff();
+                    btnSterilize5.setOn();
+                    break;
+                case 6:
+                    setSterilizeButtonOff();
+                    btnSterilize6.setOn();
+                    break;
+                case 7:
+                    setSterilizeButtonOff();
+                    btnSterilize7.setOn();
+                    break;
+                case 8:
+                    setSterilizeButtonOff();
+                    btnSterilize8.setOn();
+                    break;
+                case 9:
+                    setSterilizeButtonOff();
+                    btnSterilize9.setOn();
+                    break;
+            }
+            if (mModel.mSterilizeMode != 0) {
+                if (countsSterilize > 0) {
+                    countsSterilize--;
+                    SimpleDateFormat timeSterilize = new SimpleDateFormat("mm:ss");
+                    String strTimeSterilize = timeSterilize.format(new Date(countsSterilize * 1000));
+                    tvSterilizeRuntime.setText(strTimeSterilize);
+                }
+            }
         }
+    }
 
+    private void setSterilizeButtonOff() {
+        btnSterilizeSmart.setOff();
+        btnSterilizeStrong.setOff();
+        btnSterilize3.setOff();
+        btnSterilize4.setOff();
+        btnSterilize5.setOff();
+        btnSterilize6.setOff();
+        btnSterilize7.setOff();
+        btnSterilize8.setOff();
+        btnSterilize9.setOff();
     }
 
     private void initSmart(final int idButton) {
@@ -599,7 +673,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 } else {
                     String show = mModel.mDisableQuickCold + "模式已开启，如要开启速冷请先退出" + mModel.mDisableQuickCold + "模式";
                     Toast toast = Toast.makeText(mContext, show, Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.CENTER,0,0);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
                     return true;
                 }
@@ -656,7 +730,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         show = mModel.mDisableFridgeOpen + "模式已开启，如要关闭冷藏室请先退出" + mModel.mDisableFridgeOpen + "模式";
                     }
                     Toast toast = Toast.makeText(mContext, show, Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.CENTER,0,0);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
                     return true;
                 }
@@ -726,6 +800,87 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     startActivity(intent);
                 }
                 break;
+            case R.id.btn_demo_sterilize_smart:
+                if (btnSterilizeSmart.isPress()) {
+                    tvSterilizeInterval.setText("00:00");
+                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_STERILIZE_ON, ConstantUtil.MODE_UV, 0);
+                } else {
+                    tvSterilizeInterval.setText("06:00");
+                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_STERILIZE_ON, ConstantUtil.MODE_UV, 1);
+                }
+                break;
+            case R.id.btn_demo_sterilize_strong:
+                if (btnSterilizeStrong.isPress()) {
+                    tvSterilizeInterval.setText("00:00");
+                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_STERILIZE_ON, ConstantUtil.MODE_UV, 0);
+                } else {
+                    tvSterilizeInterval.setText("04:00");
+                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_STERILIZE_ON, ConstantUtil.MODE_UV, 2);
+                }
+                break;
+            case R.id.btn_demo_sterilize_3:
+                if (btnSterilize3.isPress()) {
+                    tvSterilizeInterval.setText("00:00");
+                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_STERILIZE_ON, ConstantUtil.MODE_UV, 0);
+                } else {
+                    tvSterilizeInterval.setText("03:00");
+                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_STERILIZE_ON, ConstantUtil.MODE_UV, 3);
+                }
+                break;
+            case R.id.btn_demo_sterilize_4:
+                if (btnSterilize4.isPress()) {
+                    tvSterilizeInterval.setText("00:00");
+                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_STERILIZE_ON, ConstantUtil.MODE_UV, 0);
+                } else {
+                    tvSterilizeInterval.setText("04:00");
+                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_STERILIZE_ON, ConstantUtil.MODE_UV, 4);
+                }
+                break;
+            case R.id.btn_demo_sterilize_5:
+                if (btnSterilize5.isPress()) {
+                    tvSterilizeInterval.setText("00:00");
+                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_STERILIZE_ON, ConstantUtil.MODE_UV, 0);
+                } else {
+                    tvSterilizeInterval.setText("05:00");
+                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_STERILIZE_ON, ConstantUtil.MODE_UV, 5);
+                }
+                break;
+            case R.id.btn_demo_sterilize_6:
+                if (btnSterilize6.isPress()) {
+                    tvSterilizeInterval.setText("00:00");
+                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_STERILIZE_ON, ConstantUtil.MODE_UV, 0);
+                } else {
+                    tvSterilizeInterval.setText("06:00");
+                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_STERILIZE_ON, ConstantUtil.MODE_UV, 6);
+                }
+                break;
+            case R.id.btn_demo_sterilize_7:
+                if (btnSterilize7.isPress()) {
+                    tvSterilizeInterval.setText("00:00");
+                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_STERILIZE_ON, ConstantUtil.MODE_UV, 0);
+                } else {
+                    tvSterilizeInterval.setText("07:00");
+                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_STERILIZE_ON, ConstantUtil.MODE_UV, 7);
+                }
+                break;
+            case R.id.btn_demo_sterilize_8:
+                if (btnSterilize8.isPress()) {
+                    tvSterilizeInterval.setText("00:00");
+                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_STERILIZE_ON, ConstantUtil.MODE_UV, 0);
+                } else {
+                    tvSterilizeInterval.setText("08:00");
+                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_STERILIZE_ON, ConstantUtil.MODE_UV, 8);
+                }
+                break;
+            case R.id.btn_demo_sterilize_9:
+                if (btnSterilize9.isPress()) {
+                    tvSterilizeInterval.setText("00:00");
+                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_STERILIZE_ON, ConstantUtil.MODE_UV, 0);
+                } else {
+                    tvSterilizeInterval.setText("09:00");
+                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_STERILIZE_ON, ConstantUtil.MODE_UV, 9);
+                }
+                break;
         }
     }
 
@@ -761,7 +916,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         show = mModel.mDisableFridge + "模式已开启，如要调节温度请先退出" + mModel.mDisableFridge + "模式";
                     }
                     Toast toast = Toast.makeText(mContext, show, Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.CENTER,0,0);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
                     return true;
                 }
@@ -790,7 +945,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (mModel.mDisableFreeze.equals("none")) {
                     return false;
-                }else {
+                } else {
                     String show;
                     if (mModel.mDisableFreeze.equals("关闭")) {
                         show = "冷冻室已" + mModel.mDisableFreeze + "，如要调节温度请先开启冷冻室";
@@ -798,7 +953,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         show = mModel.mDisableFreeze + "模式已开启，如要调节温度请先退出" + mModel.mDisableFreeze + "模式";
                     }
                     Toast toast = Toast.makeText(mContext, show, Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.CENTER,0,0);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
                     return true;
                 }
@@ -828,7 +983,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (mModel.mDisableChange.equals("none")) {
                     return false;
-                }else {
+                } else {
                     String show;
                     if (mModel.mDisableChange.equals("关闭")) {
                         show = "变温室已" + mModel.mDisableFreeze + "，如要调节温度请先开启变温室";
@@ -836,7 +991,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         show = mModel.mDisableChange + "模式已开启，如要调节温度请先退出" + mModel.mDisableChange + "模式";
                     }
                     Toast toast = Toast.makeText(mContext, show, Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.CENTER,0,0);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
                     return true;
                 }
@@ -917,76 +1072,90 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } else if (name.equals(EnumBaseName.fridgeSwitch.toString())) {
                 mModel.isFridgeOpen = (value == 1) ? true : false;
                 mModel.mDisableFridgeOpen = disable;
-            }else if(name.equals(EnumBaseName.tidbitMode.toString())) {
+            } else if (name.equals(EnumBaseName.tidbitMode.toString())) {
                 mModel.isTidbit = (value == 1) ? true : false;
                 mModel.mDisableTidbit = disable;
-            }else if (name.equals(EnumBaseName.purifyMode.toString())) {
+            } else if (name.equals(EnumBaseName.purifyMode.toString())) {
                 mModel.isPurify = (value == 1);
                 mModel.mDisablePurify = disable;
+            } else if (name.equals(EnumBaseName.SterilizeMode.name())) {
+                mModel.mSterilizeMode = value;
+                mModel.mDisableSterilize = disable;
+            } else if (name.equals(EnumBaseName.SterilizeSwitch.name())) {
+                if (value == 1) {
+                    mModel.isSterilize = true;
+                    countsSterilize = 30 * 60;
+                } else {
+                    mModel.isSterilize = false;
+                }
             }
         }
     }
-    private void handleDoorAlarm(JSONObject jsonObject){
+
+    private void handleDoorAlarm(JSONObject jsonObject) {
         Integer value = (Integer) jsonObject.get("fridge");
-        if(value == null || value ==0){
+        if (value == null || value == 0) {
             cancelAlarmWindow("冷藏");
-        }else {
+        } else {
             popAlarmWindow("冷藏");
         }
-        value = (Integer)jsonObject.get("freeze");
-        if(value == null || value ==0){
+        value = (Integer) jsonObject.get("freeze");
+        if (value == null || value == 0) {
             cancelAlarmWindow("冷冻");
-        }else {
+        } else {
             popAlarmWindow("冷冻");
         }
-        value = (Integer)jsonObject.get("change");
-        if(value == null || value ==0){
+        value = (Integer) jsonObject.get("change");
+        if (value == null || value == 0) {
             cancelAlarmWindow("变温");
-        }else {
+        } else {
             popAlarmWindow("变温");
         }
     }
-    private void handleDoorStatus(JSONObject jsonObject){
-        if((int)jsonObject.get("fridge")==1){
+
+    private void handleDoorStatus(JSONObject jsonObject) {
+        if ((int) jsonObject.get("fridge") == 1) {
             popAlarmWindow("冷藏");
-        }else {
+        } else {
             cancelAlarmWindow("冷藏");
         }
-        if((int)jsonObject.get("freeze")==1){
+        if ((int) jsonObject.get("freeze") == 1) {
             popAlarmWindow("冷冻");
-        }else {
+        } else {
             cancelAlarmWindow("冷冻");
         }
-        if((int)jsonObject.get("change")==1){
+        if ((int) jsonObject.get("change") == 1) {
             popAlarmWindow("变温");
-        }else {
+        } else {
             cancelAlarmWindow("变温");
         }
     }
-    private void setTempRange(JSONObject jsonObject){
-        mModel.mFridgeMin = (Integer)jsonObject.get("fridgeMinValue");
-        mModel.mFridgeMax = (Integer)jsonObject.get("fridgeMaxValue");
-        mModel.mFreezeMin = (Integer)jsonObject.get("freezeMinValue");
-        mModel.mFreezeMax = (Integer)jsonObject.get("freezeMaxValue");
-        mModel.mChangeMin = (Integer)jsonObject.get("changeMinValue");
-        mModel.mChangeMax = (Integer)jsonObject.get("changeMaxValue");
+
+    private void setTempRange(JSONObject jsonObject) {
+        mModel.mFridgeMin = (Integer) jsonObject.get("fridgeMinValue");
+        mModel.mFridgeMax = (Integer) jsonObject.get("fridgeMaxValue");
+        mModel.mFreezeMin = (Integer) jsonObject.get("freezeMinValue");
+        mModel.mFreezeMax = (Integer) jsonObject.get("freezeMaxValue");
+        mModel.mChangeMin = (Integer) jsonObject.get("changeMinValue");
+        mModel.mChangeMax = (Integer) jsonObject.get("changeMaxValue");
 
         skbFridge.setMax(mModel.mFridgeMax - mModel.mFridgeMin);
         skbChange.setMax(mModel.mChangeMax - mModel.mChangeMin);
         skbFreeze.setMax(mModel.mFreezeMax - mModel.mFreezeMin);
     }
 
-    private void popAlarmWindow(String show){
-        if(alarmWindow == null) {
+    private void popAlarmWindow(String show) {
+        if (alarmWindow == null) {
             alarmWindow = new AlarmWindow(this);
         }
         alarmWindow.addShow(show);
         alarmWindow.showDialog();
     }
-    private void cancelAlarmWindow(String show){
-        if(alarmWindow != null){
+
+    private void cancelAlarmWindow(String show) {
+        if (alarmWindow != null) {
             alarmWindow.deleteShow(show);
-            if(alarmWindow.isNoAlarm()){
+            if (alarmWindow.isNoAlarm()) {
                 alarmWindow = null;
             }
         }

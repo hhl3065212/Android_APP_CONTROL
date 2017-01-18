@@ -20,10 +20,10 @@ public class FridgeModel {
     protected final String TAG = "FridgeModel";
     public String mFridgeModel,mTypeId;
     public int mFridgeMin,mFridgeMax,mFreezeMin,mFreezeMax,mChangeMin,mChangeMax;
-    public int mFridgeTarget,mFreezeTarget,mChangeTarget;
+    public int mFridgeTarget,mFreezeTarget,mChangeTarget,mSterilizeMode;
     public int mFridgeShow,mFreezeShow,mChangeShow;
-    public boolean isSmart,isHoliday,isQuickCold,isQuickFreeze,isFridgeOpen,isTidbit,isPurify;
+    public boolean isSmart,isHoliday,isQuickCold,isQuickFreeze,isFridgeOpen,isTidbit,isPurify,isSterilize;
     public String mDisableFridge,mDisableFreeze,mDisableChange,mDisableSmart,mDisableHoliday,mDisableQuickCold,
-            mDisableQuickFreeze,mDisableFridgeOpen,mDisableTidbit,mDisablePurify;
+            mDisableQuickFreeze,mDisableFridgeOpen,mDisableTidbit,mDisablePurify,mDisableSterilize;
 
 }

@@ -159,17 +159,15 @@ public class MainBoardFourSevenSix extends MainBoardBase{
             if(bFreezeDoorNowStatus){
                 MyLogUtil.i(TAG,"freezeDoorStatus is open");
                 mFreezeDoorAlarm.startAlarmTimer();
-                setFreezeDoorErr(true);
             }else {
                 MyLogUtil.i(TAG,"freezeDoorStatus is close");
                 mFreezeDoorAlarm.stopAll();
-                setFreezeDoorErr(false);
             }
             isDoorChange =true;
         }
         if(isDoorChange){
-            doorHashMap.put("fridge",bFridgeDoorNowStatus?1:0);
-            doorHashMap.put("freeze",bFreezeDoorNowStatus?1:0);
+            doorHashMap.put("fridge",mFridgeDoorHistoryStatus?1:0);
+            doorHashMap.put("freeze",mFreezeDoorHistoryStatus?1:0);
             String doorJson = JSON.toJSONString(doorHashMap);
             Intent intent = new Intent();
             intent.putExtra(ConstantUtil.DOOR_STATUS,doorJson);

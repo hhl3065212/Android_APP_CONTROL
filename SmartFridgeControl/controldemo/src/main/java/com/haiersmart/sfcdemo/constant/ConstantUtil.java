@@ -61,6 +61,7 @@ public class ConstantUtil {
     public static final String MODE_TIDBIT_OFF = "closeTidbitModel";//珍品关
     public static final String MODE_PURIFY_ON = "openPurifyModel";//净化开
     public static final String MODE_PURIFY_OFF = "closePurifyModel";//净化关
+    public static final String MODE_STERILIZE_ON = "openSterilizeModel";//杀菌模式
 
     //返回的key
     public static final String KEY_CONTROL_INFO = "ControlInfo";//识别key为“ControlInfo” 发送的数据为Serializable

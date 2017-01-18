@@ -78,7 +78,7 @@ public class ProtocolCommand {
                     data[5] = (byte)(0x0d);
                 }
                 break;
-            case SterilizeMode://SterilizeMode
+            case SterilizeSwitch://SterilizeMode
                 data = new byte[]{(byte)0xAA,(byte)0x55,(byte)0x04,(byte)0x01,(byte)0x4d,(byte)0x30,(byte)0x00};
                 if(value[0] == 1){
                     data[5] = (byte)(0x30);

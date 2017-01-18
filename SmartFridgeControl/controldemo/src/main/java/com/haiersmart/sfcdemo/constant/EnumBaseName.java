@@ -24,6 +24,7 @@ public enum EnumBaseName {
     freezeTargetTemp("freezeTargetTemp"),//
     changeTargetTemp("changeTargetTemp"),//
     SterilizeMode("SterilizeMode"),//
+    SterilizeSwitch("SterilizeSwitch"),//
 
     getDeviceId("getDeviceId"),//
     getAllProperty("getAllProperty"),

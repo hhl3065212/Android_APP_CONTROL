@@ -1,5 +1,6 @@
 package com.haiersmart.sfcontrol.service;
 
+import com.haiersmart.sfcontrol.constant.EnumBaseName;
 import com.haiersmart.sfcontrol.service.mbmodel.MainBoardEntry;
 
 import java.util.ArrayList;
@@ -88,8 +89,7 @@ public class ControlMainBoardInfo {
     }
     //冷藏门
     public int getFridgeDoorStatus() {
-        int res = searchStatusValue("fridgeDoorStatus");
-        return res;
+        return mMBParams.getMbsValueByName(EnumBaseName.fridgeDoorStatus.name());
     }
     //通信错误
     public int getCommunicationErr() {

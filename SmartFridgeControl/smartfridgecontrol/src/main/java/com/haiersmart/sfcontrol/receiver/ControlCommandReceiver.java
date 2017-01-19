@@ -125,6 +125,9 @@ public class ControlCommandReceiver extends BroadcastReceiver {
                 //杀菌模式
                 int sterilizeStep = intent.getIntExtra(ConstantUtil.MODE_UV,0);
                 sendTemperCmdToService(context, ConstantUtil.MODE_STERILIZE_ON,ConstantUtil.MODE_UV,sterilizeStep);
+            }else if(contentAction.equals(ConstantUtil.QUERY_STERILIZE_STATUS)){
+                //杀菌剩余时间
+                sendCommandToService(context, ConstantUtil.QUERY_STERILIZE_STATUS);
             }
         } else if (action.equals(ConstantWifiUtil.ACTION_MODECONTROL)) {
             String contentAction = intent.getStringExtra(ConstantWifiUtil.KEY_SENDCONTROL);

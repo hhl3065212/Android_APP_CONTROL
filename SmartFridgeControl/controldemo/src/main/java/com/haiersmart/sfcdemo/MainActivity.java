@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onDestroy() {
         super.onDestroy();
         stopRefreshUI();
+        stopSterilizeTimer();
         unregisterReceiver(receiveUpdateUI);
     }
 
@@ -160,20 +161,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     String jsonError = intent.getStringExtra(ConstantUtil.KEY_ERROR);
                     if (jsonError != null) {
                         JSONArray jsonArray = JSONArray.parseArray(jsonError);
-                        Log.i(TAG, "error jsonArray:" + jsonArray);
+//                        Log.i(TAG, "error jsonArray:" + jsonArray);
                     }
                     String jsonDoor = intent.getStringExtra(ConstantUtil.DOOR_STATUS);
                     if (jsonDoor != null) {
                         final JSONObject jsonObject = JSONObject.parseObject(jsonDoor);
-
                         Log.d(TAG, "door status jsonObject:" + jsonObject);
-
                     }
                     String jsonAlarm = intent.getStringExtra(ConstantUtil.DOOR_ALARM_STATUS);
                     if (jsonAlarm != null) {
                         JSONObject jsonObject = JSONObject.parseObject(jsonAlarm);
                         Log.i(TAG, "door alarm status jsonObject:" + jsonObject);
                         handleDoorAlarm(jsonObject);
+                    }
+                    String jsonSterilize = intent.getStringExtra(ConstantUtil.KEY_STERILIZE_STATUS);
+                    if (jsonSterilize != null) {
+                        JSONObject jsonObject = JSONObject.parseObject(jsonSterilize);
+                        Log.i(TAG, "sterilize status jsonObject:" + jsonObject);
+                        handleSterilizeStatus(jsonObject);
                     }
 
                 } else {
@@ -587,14 +592,43 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     btnSterilize9.setOn();
                     break;
             }
-            if (mModel.mSterilizeMode != 0) {
-                if (countsSterilize > 0) {
-                    countsSterilize--;
-                    SimpleDateFormat timeSterilize = new SimpleDateFormat("mm:ss");
-                    String strTimeSterilize = timeSterilize.format(new Date(countsSterilize * 1000));
-                    tvSterilizeRuntime.setText(strTimeSterilize);
-                }
+            if (mModel.mSterilizeMode != 0 && isSterilizeRun) {
+                SimpleDateFormat timeSterilize = new SimpleDateFormat("mm:ss");
+                String strTimeSterilize = timeSterilize.format(new Date(countsSterilize * 1000));
+                tvSterilizeRuntime.setText(strTimeSterilize);
             }
+        }
+    }
+    private Timer timerSterilize;
+    private TimerTask taskSterilize;
+    private boolean isSterilizeRun = false;
+    private void startSterilizeTimer(){
+        if(timerSterilize == null){
+            timerSterilize = new Timer();
+        }
+        if(taskSterilize == null){
+            taskSterilize = new TimerTask() {
+                @Override
+                public void run() {
+                    if(isSterilizeRun){
+                        if (countsSterilize > 0) {
+                            countsSterilize--;
+
+                        }
+                    }
+                }
+            };
+            timerSterilize.schedule(taskSterilize,0,1000);
+        }
+    }
+    private void stopSterilizeTimer(){
+        if(taskSterilize != null){
+            taskSterilize.cancel();
+            taskSterilize = null;
+        }
+        if(timerSterilize != null){
+            timerSterilize.cancel();
+            timerSterilize = null;
         }
     }
 
@@ -1081,10 +1115,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } else if (name.equals(EnumBaseName.SterilizeMode.name())) {
                 mModel.mSterilizeMode = value;
                 mModel.mDisableSterilize = disable;
+                if(value != 0){
+                    startSterilizeTimer();
+                }else {
+                    stopSterilizeTimer();
+                }
             } else if (name.equals(EnumBaseName.SterilizeSwitch.name())) {
                 if (value == 1) {
                     mModel.isSterilize = true;
-                    countsSterilize = 30 * 60;
+//                    countsSterilize = 30 * 60;
                 } else {
                     mModel.isSterilize = false;
                 }
@@ -1129,6 +1168,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             cancelAlarmWindow("变温");
         }
+    }
+
+    private void handleSterilizeStatus(JSONObject jsonObject) {
+        int time = (int) jsonObject.get("time");
+        countsSterilize = time;
+        if ((int) jsonObject.get("run") == 1) {
+            isSterilizeRun = true;
+        } else {
+            isSterilizeRun = false;
+        }
+
     }
 
     private void setTempRange(JSONObject jsonObject) {

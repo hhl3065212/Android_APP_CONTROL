@@ -116,6 +116,7 @@ public class ConstantUtil {
     public static final String MODE_STERILIZE_ON = "openSterilizeModel";//杀菌模式
 
 
+
     //返回的key
     public static final String KEY_MODE= "commandMode";
     public static final String KEY_READY= "serviceReady";
@@ -128,6 +129,7 @@ public class ConstantUtil {
     public static final String KEY_ALARM = "alarm";//报警key
     public static final String KEY_RANGE = "range";//温度控制范围
     public static final String KEY_INFO = "info";//温度控制范围
+    public static final String KEY_STERILIZE_STATUS = "sterilizeStatus";//杀菌剩余时间
 
 
 
@@ -140,6 +142,7 @@ public class ConstantUtil {
     public static final String QUERY_FRIDGE_TEMP_RANGE = "queryFridgeTempRange";
     public static final String QUERY_CHANGE_TEMP_RANGE = "queryChangeTempRange";
     public static final String QUERY_FREEZE_TEMP_RANGE = "queryFreezeTempRange";
+    public static final String QUERY_STERILIZE_STATUS = "querySterilizeStatus";//杀菌剩余时间
 
 
     public static final String KEY_SET_FRIDGE_LEVEL= "fridgelevel";

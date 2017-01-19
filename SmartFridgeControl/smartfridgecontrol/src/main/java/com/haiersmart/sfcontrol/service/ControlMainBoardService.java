@@ -164,6 +164,11 @@ public class ControlMainBoardService extends Service {
                         }
                     }
                     break;
+                    case ConstantUtil.QUERY_STERILIZE_STATUS://杀菌剩余时间
+                        if (mIsModelReady) {
+                            sendSterilizeStatus();
+                        }
+                        break;
                     case ConstantUtil.BOOT_COMPLETED: {
                         MyLogUtil.i(TAG, "boot completed received!");
                         handleBootEvent();
@@ -392,6 +397,17 @@ public class ControlMainBoardService extends Service {
         intent.putExtra(ConstantUtil.KEY_READY, mIsModelReady);
         sendBroadcast(intent);
         MyLogUtil.i(TAG, readyCounts + " sendControlCmdResponse main board is " + mIsModelReady);
+    }
+
+    public void sendSterilizeStatus(){
+        HashMap<String,Integer> sterilizeHashMap = new HashMap<>();
+        sterilizeHashMap.put("time",countsSterilizeRun);
+        sterilizeHashMap.put("run",nSterilizeRun);
+        String sterilizeJson = JSON.toJSONString(sterilizeHashMap);
+        Intent intent = new Intent();
+        intent.setAction(ConstantUtil.SERVICE_NOTICE);
+        intent.putExtra(ConstantUtil.KEY_STERILIZE_STATUS, sterilizeJson);
+        sendBroadcast(intent);
     }
 
     public void sendControlCmdResponse() {
@@ -800,19 +816,21 @@ public class ControlMainBoardService extends Service {
     /**
      * 杀菌功能启用这个
      */
-    private final int SterilizeRun = 10 * 60;//杀菌运行时间 默认30分钟 1800s
+    private final int SterilizeRun = 30 * 60;//杀菌运行时间 默认30分钟 1800s
     private final int[] SterilizeInterval = //杀菌循环时间
-            {0, 20 * 60, 4 * 60 * 60, 3 * 60 * 60, 4 * 60 * 60, 5 * 60 * 60, 6 * 60 * 60, 7 * 60 * 60, 8 * 60 * 60, 9 * 60 * 60};
+            {0, 6*60 * 60, 4 * 60 * 60, 3 * 60 * 60, 4 * 60 * 60, 5 * 60 * 60, 6 * 60 * 60, 7 * 60 * 60, 8 * 60 * 60, 9 * 60 * 60};
     private Timer timerSterilize;
     private TimerTask timerTaskSterilize;
     private int countsSterilizeInterval;
     private int countsSterilizeRun;
+    private int nSterilizeRun = 0;
 
     public void startSterilize(final int mode) {
         if (mode != 0) {
             final int timeSterilizeInterval = SterilizeInterval[mode];
             countsSterilizeRun = SterilizeRun;
             countsSterilizeInterval = 0;
+            nSterilizeRun = 0;
             mModel.sterilizeSwitchOn();
             long currentTime = System.currentTimeMillis();
             SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.STERILIZETIME, currentTime);
@@ -833,12 +851,21 @@ public class ControlMainBoardService extends Service {
                          * 倒计时时间到，停止杀菌
                          */
                         if (mBoardInfo.getFridgeDoorStatus() == 0) {
+                            if(nSterilizeRun == 0) {//运行状态改变发送广播
+                                nSterilizeRun = 1;
+                                sendSterilizeStatus();
+                            }
                             if (countsSterilizeRun > 0) {
                                 countsSterilizeRun--;
                                 MyLogUtil.i(TAG, "ster::countsSterilizeRun " + countsSterilizeRun);
                             } else if (countsSterilizeRun == 0) {
                                 countsSterilizeRun--;
                                 mModel.sterilizeSwitchOff();
+                            }
+                        }else {
+                            if(nSterilizeRun == 1) {//运行状态改变发送广播
+                                nSterilizeRun = 0;
+                                sendSterilizeStatus();//
                             }
                         }
                         /**

@@ -99,5 +99,8 @@ public class ConstantUtil {
 
     //门报警
     public static final String DOOR_ALARM_STATUS = "doorAlarmStatus";//门常开报警状态
+    //杀菌
+    public static final String QUERY_STERILIZE_STATUS = "querySterilizeStatus";//杀菌剩余时间
+    public static final String KEY_STERILIZE_STATUS = "sterilizeStatus";//杀菌剩余时间
 
 }

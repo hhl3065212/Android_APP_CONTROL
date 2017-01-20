@@ -330,7 +330,13 @@ public class FourSevenSixModel extends ModelBase{
             updateControlByEntry(sterilizeEntry);
             getControlDbMgr().updateEntry(sterilizeEntry);
             if(step != 0) {
-                mService.startSterilize(step);
+                mService.startSterilize(step,false);
+                if(sterilizeSwitchEntry.value == 0) {
+                    sterilizeSwitchEntry.value = 1;
+                    sterilizeSwitchEntry.disable = ConstantUtil.NO_WARNING;
+                    updateControlByEntry(sterilizeSwitchEntry);
+                    getControlDbMgr().updateEntry(sterilizeSwitchEntry);
+                }
             }
         }
         //广播档位和模式信息给上层

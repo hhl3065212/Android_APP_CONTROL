@@ -678,7 +678,7 @@ public class ControlMainBoardService extends Service {
         getControlDbMgr().queryByName(sterilizeEntry);
         //杀菌on
         if (sterilizeEntry.value != 0) {
-            startSterilize(sterilizeEntry.value);
+            startSterilize(sterilizeEntry.value,true);
         }
     }
 
@@ -707,6 +707,13 @@ public class ControlMainBoardService extends Service {
             startFreezeOnTime(false);
         }
         MyLogUtil.i(TAG, "handleServiceRestartEvent out");
+
+        FridgeControlEntry sterilizeEntry = new FridgeControlEntry(EnumBaseName.SterilizeMode.name());
+        getControlDbMgr().queryByName(sterilizeEntry);
+        //杀菌on
+        if (sterilizeEntry.value != 0) {
+            startSterilize(sterilizeEntry.value,false);
+        }
     }
 
     public void sendUserCommand(EnumBaseName enumBaseName, int value) {
@@ -819,22 +826,43 @@ public class ControlMainBoardService extends Service {
     private final int SterilizeRun = 30 * 60;//杀菌运行时间 默认30分钟 1800s
     private final int[] SterilizeInterval = //杀菌循环时间
             {0, 6*60 * 60, 4 * 60 * 60, 3 * 60 * 60, 4 * 60 * 60, 5 * 60 * 60, 6 * 60 * 60, 7 * 60 * 60, 8 * 60 * 60, 9 * 60 * 60};
+//    private final int SterilizeRun = 10 * 60;//杀菌运行时间 默认10分钟 1800s 测试用
+//    private final int[] SterilizeInterval = //杀菌循环时间 测试用
+//            {0, 60 * 60, 40 * 60, 30 * 60, 40 * 60, 50 * 60, 60 * 60, 70 * 60, 80 * 60, 90 * 60};
     private Timer timerSterilize;
     private TimerTask timerTaskSterilize;
     private int countsSterilizeInterval;
     private int countsSterilizeRun;
     private int nSterilizeRun = 0;
+    private int timeSterilizeInterval;
+    private void continueSterilize(){
+        long oldTime = (long) SpUtils.getInstance(ControlApplication.getInstance()).get(ConstantUtil.STERILIZETIME, (long) 1);
+        long currentTime = System.currentTimeMillis();
+        int detal = (int) ((currentTime - oldTime) / 1000);
+        countsSterilizeInterval = detal;
 
-    public void startSterilize(final int mode) {
-        if (mode != 0) {
-            final int timeSterilizeInterval = SterilizeInterval[mode];
+        FridgeControlEntry sterilizeEntry = new FridgeControlEntry(EnumBaseName.SterilizeSwitch.name());
+        getControlDbMgr().queryByName(sterilizeEntry);
+        if(sterilizeEntry.value ==1){
             countsSterilizeRun = SterilizeRun;
-            countsSterilizeInterval = 0;
+        }else {
+            countsSterilizeRun = -1;
+        }
+    }
+    public void startSterilize(final int mode,boolean reset) {
+        if (mode != 0) {
+            timeSterilizeInterval = SterilizeInterval[mode];
+            MyLogUtil.i(TAG, "ster::timeSterilizeInterval " + timeSterilizeInterval);
+            if(reset){
+                countsSterilizeRun = SterilizeRun;
+                countsSterilizeInterval = 0;
+                long currentTime = System.currentTimeMillis();
+                SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.STERILIZETIME, currentTime);
+                SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.STERILIZETIMEINTERVALCOUNT, countsSterilizeInterval);
+            }else {
+                continueSterilize();
+            }
             nSterilizeRun = 0;
-            mModel.sterilizeSwitchOn();
-            long currentTime = System.currentTimeMillis();
-            SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.STERILIZETIME, currentTime);
-            SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.STERILIZETIMEINTERVALCOUNT, countsSterilizeInterval);
 
             if (timerSterilize == null) {
                 timerSterilize = new Timer();
@@ -845,13 +873,13 @@ public class ControlMainBoardService extends Service {
                     public void run() {
 
                         countsSterilizeInterval++;
-                        MyLogUtil.i(TAG, "ster::countsSterilizeInterval " + countsSterilizeInterval);
+                        MyLogUtil.i(TAG, "ster::countsSterilizeInterval " + countsSterilizeInterval+" "+timeSterilizeInterval);
 
                         /**
-                         * 倒计时时间到，停止杀菌
+                         * 倒计时时间到，停止杀菌，如果有开门事件暂停倒计时
                          */
                         if (mBoardInfo.getFridgeDoorStatus() == 0) {
-                            if(nSterilizeRun == 0) {//运行状态改变发送广播
+                            if(nSterilizeRun == 0) {//运行状态改变发送恢复倒计时广播
                                 nSterilizeRun = 1;
                                 sendSterilizeStatus();
                             }
@@ -860,10 +888,10 @@ public class ControlMainBoardService extends Service {
                                 MyLogUtil.i(TAG, "ster::countsSterilizeRun " + countsSterilizeRun);
                             } else if (countsSterilizeRun == 0) {
                                 countsSterilizeRun--;
-                                mModel.sterilizeSwitchOff();
+                                mModel.sterilizeSwitchOff();//倒计时结束 发送关闭
                             }
                         }else {
-                            if(nSterilizeRun == 1) {//运行状态改变发送广播
+                            if(nSterilizeRun == 1) {//运行状态改变发送暂停倒计时广播
                                 nSterilizeRun = 0;
                                 sendSterilizeStatus();//
                             }
@@ -901,7 +929,7 @@ public class ControlMainBoardService extends Service {
     }
 
     public void stopSterilize() {
-        mModel.sterilizeSwitchOff();
+//        mModel.sterilizeSwitchOff();
         if (timerTaskSterilize != null) {
             timerTaskSterilize.cancel();
             timerTaskSterilize = null;

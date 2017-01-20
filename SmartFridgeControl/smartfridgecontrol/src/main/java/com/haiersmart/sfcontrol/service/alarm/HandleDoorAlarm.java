@@ -10,6 +10,7 @@
 package com.haiersmart.sfcontrol.service.alarm;
 
 import android.content.Intent;
+import android.os.PowerManager;
 
 import com.alibaba.fastjson.JSON;
 import com.haiersmart.sfcontrol.application.ControlApplication;
@@ -135,6 +136,13 @@ public abstract class HandleDoorAlarm {
      * 开始门报警定时
      */
     public void startAlarmTimer(){
+        //开门亮屏
+        PowerManager pm = (PowerManager) ControlApplication.getInstance().getSystemService(ControlApplication.POWER_SERVICE);
+        PowerManager.WakeLock wakeLock = pm.newWakeLock(
+                PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.ON_AFTER_RELEASE, "DoorOpen");
+        wakeLock.acquire();
+        wakeLock.release();
+        //开启报警计时
         startOpenDoorTimer();
     }
 

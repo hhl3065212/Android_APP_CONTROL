@@ -48,7 +48,7 @@ public class FridgeControlDbMgr {
 
     public void init() {
         List<FridgeControlEntry> checkList = query();
-        if (checkList.size() == 17) {
+        if (checkList.size() == 13) {
             return;
         }
         for (FridgeControlEntry entry : checkList) {

@@ -1115,17 +1115,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } else if (name.equals(EnumBaseName.SterilizeMode.name())) {
                 mModel.mSterilizeMode = value;
                 mModel.mDisableSterilize = disable;
-                if(value != 0){
-                    startSterilizeTimer();
-                }else {
-                    stopSterilizeTimer();
-                }
+//                if(value != 0){
+//                    startSterilizeTimer();
+//                }else {
+//                    stopSterilizeTimer();
+//                }
             } else if (name.equals(EnumBaseName.SterilizeSwitch.name())) {
                 if (value == 1) {
                     mModel.isSterilize = true;
+                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_STERILIZE_STATUS);
+                    startSterilizeTimer();
 //                    countsSterilize = 30 * 60;
                 } else {
                     mModel.isSterilize = false;
+                    stopSterilizeTimer();
                 }
             }
         }
@@ -1172,7 +1175,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void handleSterilizeStatus(JSONObject jsonObject) {
         int time = (int) jsonObject.get("time");
-        countsSterilize = time;
+        if(time > 0) {
+            countsSterilize = time;
+        }else {
+            countsSterilize = 0;
+        }
         if ((int) jsonObject.get("run") == 1) {
             isSterilizeRun = true;
         } else {

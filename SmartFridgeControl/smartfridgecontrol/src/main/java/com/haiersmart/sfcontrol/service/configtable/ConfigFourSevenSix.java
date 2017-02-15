@@ -69,7 +69,20 @@ public class ConfigFourSevenSix {
     // TODO: 2016/11/15 如果有调试信息，请增加
     private void initDebug() {
         protocolDebugConfig = new ArrayList<>();
-        //        protocolDebugConfig.add(new ProtocolConfigBase("no",1,0,0));
+        protocolDebugConfig.add(new ProtocolConfigBase(EnumBaseName.fridgeRealTemp.name(),1,7,16,380));//冷藏实际温度
+        protocolDebugConfig.add(new ProtocolConfigBase(EnumBaseName.freezeRealTemp.name(),1,13,16,380));//冷冻实际温度
+        protocolDebugConfig.add(new ProtocolConfigBase(EnumBaseName.freezeDefrostRealTemp.name(),1,15,16,380));//冷冻化霜实际温度
+        protocolDebugConfig.add(new ProtocolConfigBase(EnumBaseName.envRealTemp.name(),1,17,16,380));//环境实际温度
+        protocolDebugConfig.add(new ProtocolConfigBase(EnumBaseName.envRealHum.name(),1,35,8));//变温实际湿度
+        protocolDebugConfig.add(new ProtocolConfigBase(EnumBaseName.freezeFanVoltage.name(),1,36,8));//冷冻风机电压
+        protocolDebugConfig.add(new ProtocolConfigBase(EnumBaseName.pressorOneFreq.name(),1,40,8));//压机1频率
+        protocolDebugConfig.add(new ProtocolConfigBase(EnumBaseName.fridgeAirDoor.name(),1,42,0));//冷藏风门
+        protocolDebugConfig.add(new ProtocolConfigBase(EnumBaseName.defrostHeater.name(),1,44,0));//化霜加热丝
+        protocolDebugConfig.add(new ProtocolConfigBase(EnumBaseName.verticalBridgeHeater.name(),1,44,1));//竖梁加热丝
+        protocolDebugConfig.add(new ProtocolConfigBase(EnumBaseName.fridgeLight.name(),1,45,0));//冷藏灯
+        protocolDebugConfig.add(new ProtocolConfigBase(EnumBaseName.freezeLight.name(),1,45,1));//冷冻室灯
+        protocolDebugConfig.add(new ProtocolConfigBase(EnumBaseName.handleLight.name(),1,45,2));//把手灯
+        protocolDebugConfig.add(new ProtocolConfigBase(EnumBaseName.testMode.name(),1,48,8));//T模式
     }
 
     public ArrayList<ProtocolConfigBase> getProtocolConfig() {

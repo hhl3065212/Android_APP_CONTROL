@@ -169,14 +169,8 @@ public abstract class MainBoardBase {
     private void initDebugClass() {
         for (ProtocolConfigBase protocolConfigBase : mProtocolConfigDebug) {
             int direction = protocolConfigBase.getDirection();
-            if (direction == 0) {
-                mainBoardControl.add(new MainBoardEntry(
-                        protocolConfigBase.getName(), 0,
-                        protocolConfigBase.getStartByte(),
-                        protocolConfigBase.getByteShift(),
-                        protocolConfigBase.getDiffValue()));
-            } else if (direction == 1) {
-                mainBoardStatus.add(new MainBoardEntry(
+            if (direction == 1) {
+                mainBoardDebug.add(new MainBoardEntry(
                         protocolConfigBase.getName(), 0,
                         protocolConfigBase.getStartByte(),
                         protocolConfigBase.getByteShift(),

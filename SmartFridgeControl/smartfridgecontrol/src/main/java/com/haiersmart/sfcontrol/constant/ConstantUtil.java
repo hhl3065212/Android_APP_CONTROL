@@ -45,6 +45,8 @@ public class ConstantUtil {
     public static final String BCD658_MODEL = "BCD-658WDIBU1";
     public static final String BCD630_MODEL = "BCD-630";
     public static final String BCD476_MODEL = "BCD-476WDICU1";
+    public static final String BCD480_MODEL = "BCD-480WLDCPU1";
+    public static final String BCD475_MODEL = "BCD-475WDIDU1";
 
     /**
      * fridge typeid
@@ -56,6 +58,7 @@ public class ConstantUtil {
     public static final String BCD630_SN = "111c12002400081001010061800259430000000000";
     public static final String BCD658_SN = "111c12002400081001010061800259430000000000";
     public static final String BCD476_SN = "111c12002400081001010061800347460000000000";
+    public static final String BCD480_SN = "111c12002400081001020061800502000000000000";
 
     /**
      * broadcast

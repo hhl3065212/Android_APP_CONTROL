@@ -155,8 +155,8 @@ public class ControlMainBoardService extends Service {
                     {
                         if (mIsModelReady) {
                             int sterilizeStep = intent.getIntExtra(ConstantUtil.MODE_UV, 0);
+                            MyLogUtil.d("str::sterilizeStep = "+sterilizeStep);
                             mModel.setSterilizeMode(sterilizeStep);
-                            MyLogUtil.d("printSerialString", "change target");
                             sendQuery();
                         } else {
                             MyLogUtil.i(TAG, "onStartCommand action changed to QUERY_CONTROL_READY due to init not finished");
@@ -564,9 +564,10 @@ public class ControlMainBoardService extends Service {
                     }
                 }
             };
+            timerColdOn.schedule(taskColdOn, 10000, 10000);
         }
         //        sColdOnFuture = (RunnableScheduledFuture<?>) sExService.scheduleAtFixedRate(coldOnRunnable,10,10, TimeUnit.SECONDS);//10s周期
-        timerColdOn.schedule(taskColdOn, 10000, 10000);
+//        timerColdOn.schedule(taskColdOn, 10000, 10000);
     }
 
     public void stopColdOnTime() {
@@ -639,8 +640,9 @@ public class ControlMainBoardService extends Service {
                     }
                 }
             };
+            timerFreezeOn.schedule(taskFreezeOn, 10000, 10000);
         }
-        timerFreezeOn.schedule(taskFreezeOn, 10000, 10000);
+
     }
 
     public void stopFreezeOnTime() {
@@ -854,6 +856,7 @@ public class ControlMainBoardService extends Service {
             timeSterilizeInterval = SterilizeInterval[mode];
             MyLogUtil.i(TAG, "ster::timeSterilizeInterval " + timeSterilizeInterval);
             if(reset){
+                MyLogUtil.i(TAG,"ster::reset");
                 countsSterilizeRun = SterilizeRun;
                 countsSterilizeInterval = 0;
                 long currentTime = System.currentTimeMillis();

@@ -164,7 +164,7 @@ public class ControlCommandReceiver extends BroadcastReceiver {
                     }
                 }
                 if (strs[0].equals(ConstantWifiUtil.MODE_UV)) {
-
+                    sendTemperCmdToService(context, ConstantUtil.MODE_STERILIZE_ON,ConstantUtil.MODE_UV,Integer.valueOf(strs[1]));
                 }
                 if (strs[0].equals(ConstantWifiUtil.TEMPER_SETCOLD)) {//温度控制命令
                     if (strs[1].equalsIgnoreCase("OFF")) {

@@ -4,6 +4,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -623,8 +625,17 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                 }
                 break;
             case R.id.title_debug_status_code:
+                PackageManager manager = getApplicationContext().getPackageManager();
+                PackageInfo info;
+                String tftVersion = "none";
+                try {
+                    info = manager.getPackageInfo(getApplicationContext().getPackageName(), 0);
+                    tftVersion = info.versionName;
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
                 Intent intent = new Intent(this,FactoryStatusActivity.class);
-                intent.putExtra("version","debug1.0");
+                intent.putExtra("version",tftVersion);
                 startActivity(intent);
                 break;
         }

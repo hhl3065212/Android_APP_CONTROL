@@ -272,6 +272,9 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
         }
     }
     private void startTimerTask(){
+        if(mTimer == null){
+            mTimer = new Timer();
+        }
         if(mTimerTask == null){
             mTimerTask = new TimerTask() {
                 @Override
@@ -279,11 +282,8 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                     mHandler.sendEmptyMessage(0x02);
                 }
             };
+            mTimer.schedule(mTimerTask,0,200);
         }
-        if(mTimer == null){
-            mTimer = new Timer();
-        }
-        mTimer.schedule(mTimerTask,0,200);
     }
     private void stopTimerTask(){
         if(mTimerTask != null){

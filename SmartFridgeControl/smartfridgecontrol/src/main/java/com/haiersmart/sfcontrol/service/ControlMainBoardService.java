@@ -113,6 +113,11 @@ public class ControlMainBoardService extends Service {
                         if (mModel != null) {
                             int temperCold = intent.getIntExtra(ConstantUtil.KEY_SET_FRIDGE_LEVEL, 0);
                             MyLogUtil.i(TAG, "onStartCommand TEMPER_SETCOLD temperCold=" + temperCold);
+                            if(temperCold < mMBParams.getTargetTempRange().getFridgeMinValue()){
+                                temperCold = mMBParams.getTargetTempRange().getFridgeMinValue();
+                            }else if(temperCold > mMBParams.getTargetTempRange().getFridgeMaxValue()){
+                                temperCold = mMBParams.getTargetTempRange().getFridgeMaxValue();
+                            }
                             mModel.setCold(temperCold);
                             MyLogUtil.d("printSerialString", "fridge target");
                             sendQuery();
@@ -127,6 +132,11 @@ public class ControlMainBoardService extends Service {
                     {
                         if (mModel != null) {
                             int temperCold = intent.getIntExtra(ConstantUtil.KEY_SET_FREEZE_LEVEL, 0);
+                            if(temperCold < mMBParams.getTargetTempRange().getFreezeMinValue()){
+                                temperCold = mMBParams.getTargetTempRange().getFreezeMinValue();
+                            }else if(temperCold > mMBParams.getTargetTempRange().getFreezeMaxValue()){
+                                temperCold = mMBParams.getTargetTempRange().getFreezeMaxValue();
+                            }
                             mModel.setFreeze(temperCold);
                             MyLogUtil.d("printSerialString", "freeze target");
                             sendQuery();
@@ -141,6 +151,11 @@ public class ControlMainBoardService extends Service {
                     {
                         if (mIsModelReady) {
                             int temperCold = intent.getIntExtra(ConstantUtil.KEY_SET_COLD_LEVEL, 0);
+                            if(temperCold < mMBParams.getTargetTempRange().getChangeMinValue()){
+                                temperCold = mMBParams.getTargetTempRange().getChangeMinValue();
+                            }else if(temperCold > mMBParams.getTargetTempRange().getChangeMaxValue()){
+                                temperCold = mMBParams.getTargetTempRange().getChangeMaxValue();
+                            }
                             mModel.setCustomArea(temperCold);
                             MyLogUtil.d("printSerialString", "change target");
                             sendQuery();

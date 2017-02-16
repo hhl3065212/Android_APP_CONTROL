@@ -4,12 +4,15 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.0"
 
+    def int vCode = 0;
+    def String vNameCode = '0' + (vCode+100);
+
     defaultConfig {
         applicationId "com.haiersmart.sfcdemo"
         minSdkVersion 22
         targetSdkVersion 25
-        versionCode 1
-        versionName "BXC_DEMO_0100"
+        versionCode vCode
+        versionName 'BXC_DEMO_' + vNameCode
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -18,6 +21,17 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    // 自定义输出配置
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+//                def fileName = "UerbT_v${variant.versionName}_${releaseTime()}_${variant.flavorName}.apk"
+                def fileName = "${variant.versionName}.apk"
+                output.outputFile = new File(outputFile.parent, fileName)
+            }
         }
     }
 }

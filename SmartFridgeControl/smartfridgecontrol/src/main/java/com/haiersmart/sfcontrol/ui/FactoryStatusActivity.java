@@ -78,7 +78,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
     TextView tvEnvRealTemp, tvEnvRealHum, tvFridgeReal, tvFreezeReal, tvChangeReal, tvFreezeDefrostTemp;
     TextView tvFreezeFanVol, tvPressOneFreq, tvFridgeAirDoor, tvChangeAirDoor, tvDefrostHeater, tvChangeHeater, tvFridgeLight
             ,tvVerticalBridgeHeater,tvFreezeLight,tvHandleLight;
-    Button btnReturn, btnResetEnter,btnTestMode;
+    Button btnReturn, btnResetEnter,btnTestMode,btnMipiCamera;
     MyMarketButton btnMarket;
     MyTestAudioButton btnRecord, btnPlayAll, btnPlayLeft, btnPlayRight;
     TextView tvRecord, tvPlayAll, tvPlayLeft, tvPlayRight;
@@ -108,6 +108,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
         mFridgeModel = mMBParam.getFridgeType();
         mFridgeType = this.getIntent().getStringExtra("model");
         mTftVersion = this.getIntent().getStringExtra("version");
+        MyLogUtil.i(TAG,"model mFridgeType:"+mFridgeType+" mFridgeModel:"+mFridgeModel+" mTftVersion:"+mTftVersion);
         if (mFridgeType == null || mFridgeType == "") {
             mFridgeType = mFridgeModel;
         }
@@ -245,6 +246,8 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
         btnMarket.setOnClickListener(this);
         btnTestMode = (Button) findViewById(R.id.btn_factory_test_mode);
         btnTestMode.setOnClickListener(this);
+        btnMipiCamera = (Button) findViewById(R.id.btn_factory_mipi_camera);
+        btnMipiCamera.setOnClickListener(this);
 
         btnRecord = (MyTestAudioButton) findViewById(R.id.linear_factory_record);
         btnPlayAll = (MyTestAudioButton) findViewById(R.id.linear_factory_play_all);
@@ -302,7 +305,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             rbtVersion.setVisibility(View.VISIBLE);
             rbtReset.setVisibility(View.VISIBLE);
             rbtStatus.setVisibility(View.VISIBLE);
-            rbtCamera.setVisibility(View.GONE);
+            rbtCamera.setVisibility(View.VISIBLE);
             rbtTP.setVisibility(View.VISIBLE);
             rbtAudio.setVisibility(View.VISIBLE);
             rbtMarket.setVisibility(View.VISIBLE);
@@ -448,6 +451,9 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             case R.id.btn_factory_test_mode:
                 int testMode = mMBParam.getMbdValueByName(EnumBaseName.testMode.name());
                 mPowerSerialOpt.sendCmdById(EnumBaseName.testMode, testMode+1);
+                break;
+            case R.id.btn_factory_mipi_camera:
+                startActivity(new Intent(this, CameraMipiActivity.class));
                 break;
             default:
                 setLinearContent(v.getId());

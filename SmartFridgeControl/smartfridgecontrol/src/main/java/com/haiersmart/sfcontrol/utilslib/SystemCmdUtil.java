@@ -12,6 +12,7 @@ package com.haiersmart.sfcontrol.utilslib;
 import android.util.Log;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -91,5 +92,37 @@ public class SystemCmdUtil {
             result = "ERR.JE";
         }
         return result;
+    }
+    public static boolean RootCCTCommand(String command)
+    {
+        Process process = null;
+        DataOutputStream os = null;
+        try
+        {
+            process = Runtime.getRuntime().exec("cct");
+            os = new DataOutputStream(process.getOutputStream());
+            os.writeBytes(command + "\n");
+            os.writeBytes("exit\n");
+            os.flush();
+            process.waitFor();
+        } catch (Exception e)
+        {
+            Log.d("C300_DBG" , e.getMessage());
+            return false;
+        } finally
+        {
+            try
+            {
+                if (os != null)
+                {
+                    os.close();
+                }
+                process.destroy();
+            } catch (Exception e)
+            {
+            }
+        }
+        Log.d("C300_DBG", "CCTCommand ");
+        return true;
     }
 }

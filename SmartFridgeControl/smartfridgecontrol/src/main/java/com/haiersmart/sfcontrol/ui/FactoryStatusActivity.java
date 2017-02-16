@@ -302,7 +302,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             rbtVersion.setVisibility(View.VISIBLE);
             rbtReset.setVisibility(View.VISIBLE);
             rbtStatus.setVisibility(View.VISIBLE);
-            rbtCamera.setVisibility(View.VISIBLE);
+            rbtCamera.setVisibility(View.GONE);
             rbtTP.setVisibility(View.VISIBLE);
             rbtAudio.setVisibility(View.VISIBLE);
             rbtMarket.setVisibility(View.VISIBLE);
@@ -850,7 +850,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
                         public void run() {
                             super.run();
                             SystemClock.sleep(1000);
-                            SystemCmdUtil.runCMD("pm clear com.haiersmart.sfnation");
+                            SystemCmdUtil.RootCCTCommand("pm clear com.haiersmart.sfnation");
                             SystemCmdUtil.runCMD("pm clear " + getPackageName());
                         }
                     }.start();

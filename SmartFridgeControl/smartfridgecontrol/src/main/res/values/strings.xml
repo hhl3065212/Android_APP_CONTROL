@@ -88,5 +88,6 @@
     <string name="title_factory_verticalBridge_heater">竖梁加热丝</string>
     <string name="title_factory_freeze_light">冷冻灯</string>
     <string name="title_factory_handle_light">把手灯</string>
+    <string name="title_factory_test_mode">T 模式</string>
 
 </resources>

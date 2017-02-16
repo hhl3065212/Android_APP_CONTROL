@@ -69,7 +69,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
     LinearLayout llFridgeDoor, llFreezeDoor, llChangeDoor, llInsideDoor;
     LinearLayout llEnvRealTemp, llEnvRealHum, llFridgeReal, llFreezeReal, llChangeReal, llFreezeDefrostTemp;
     LinearLayout llFreezeFanVol, llPressOneFreq, llFridgeAirDoor, llChangeAirDoor, llDefrostHeater, llChangeHeater, llFridgeLight
-            ,llVerticalBridgeHeater,llFreezeLight,llHandleLight;
+            ,llVerticalBridgeHeater,llFreezeLight,llHandleLight,llTestMode;
     TextView tvEnvTemp, tvEnvHum, tvFridge, tvFreeze, tvChange, tvDefrostSensor, tvFreezeDefrost,
             tvFreezeFan, tvFreezeDefrostSensor;
     TextView tvFridgeDoor, tvCommunication, tvPir, tvWifi, tvFreezeDoor, tvChangeDoor, tvInsidDoor;
@@ -78,7 +78,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
     TextView tvEnvRealTemp, tvEnvRealHum, tvFridgeReal, tvFreezeReal, tvChangeReal, tvFreezeDefrostTemp;
     TextView tvFreezeFanVol, tvPressOneFreq, tvFridgeAirDoor, tvChangeAirDoor, tvDefrostHeater, tvChangeHeater, tvFridgeLight
             ,tvVerticalBridgeHeater,tvFreezeLight,tvHandleLight;
-    Button btnReturn, btnResetEnter;
+    Button btnReturn, btnResetEnter,btnTestMode;
     MyMarketButton btnMarket;
     MyTestAudioButton btnRecord, btnPlayAll, btnPlayLeft, btnPlayRight;
     TextView tvRecord, tvPlayAll, tvPlayLeft, tvPlayRight;
@@ -189,6 +189,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
         llVerticalBridgeHeater = (LinearLayout) findViewById(R.id.linear_factory_verticalBridge_heater);
         llFreezeLight = (LinearLayout) findViewById(R.id.linear_factory_freeze_light);
         llHandleLight = (LinearLayout) findViewById(R.id.linear_factory_handle_light);
+        llTestMode = (LinearLayout) findViewById(R.id.linear_factory_test_mode);
 
         tvEnvTemp = (TextView) findViewById(R.id.text_factory_env_temp);
         tvEnvHum = (TextView) findViewById(R.id.text_factory_env_hum);
@@ -242,6 +243,8 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
         btnResetEnter.setOnClickListener(this);
         btnMarket = (MyMarketButton) findViewById(R.id.btn_factory_market);
         btnMarket.setOnClickListener(this);
+        btnTestMode = (Button) findViewById(R.id.btn_factory_test_mode);
+        btnTestMode.setOnClickListener(this);
 
         btnRecord = (MyTestAudioButton) findViewById(R.id.linear_factory_record);
         btnPlayAll = (MyTestAudioButton) findViewById(R.id.linear_factory_play_all);
@@ -366,6 +369,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             llFridgeLight.setVisibility(View.VISIBLE);
             llFreezeLight.setVisibility(View.VISIBLE);
             llHandleLight.setVisibility(View.VISIBLE);
+            llTestMode.setVisibility(View.VISIBLE);
         }
     }
 
@@ -440,6 +444,10 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
                     mPowerSerialOpt.sendCmdById(EnumBaseName.marketDemo, 1);
                     btnMarket.setOn();
                 }
+                break;
+            case R.id.btn_factory_test_mode:
+                int testMode = mMBParam.getMbdValueByName(EnumBaseName.testMode.name());
+                mPowerSerialOpt.sendCmdById(EnumBaseName.testMode, testMode+1);
                 break;
             default:
                 setLinearContent(v.getId());
@@ -842,7 +850,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
                         public void run() {
                             super.run();
                             SystemClock.sleep(1000);
-
+                            SystemCmdUtil.runCMD("pm clear com.haiersmart.sfnation");
                             SystemCmdUtil.runCMD("pm clear " + getPackageName());
                         }
                     }.start();
@@ -871,7 +879,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
         if(mMBParam.getMbdValueByName(EnumBaseName.pressorOneFreq.toString()) == 0){
             tvPressOneFreq.setText(getResources().getString(R.string.text_door_close));
         }else {
-            tvPressOneFreq.setText(mMBParam.getMbdValueByName(EnumBaseName.pressorOneFreq.toString()));
+            tvPressOneFreq.setText(mMBParam.getMbdValueByName(EnumBaseName.pressorOneFreq.toString())+"");
         }
 
         if(mMBParam.getMbdValueByName(EnumBaseName.fridgeAirDoor.toString()) == 0){
@@ -914,6 +922,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
         }else {
             tvHandleLight.setText(getResources().getString(R.string.text_door_open));
         }
+        btnTestMode.setText(getResources().getString(R.string.title_factory_test_mode)+" "+mMBParam.getMbdValueByName(EnumBaseName.testMode.name()));
     }
 
 }

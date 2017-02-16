@@ -8,8 +8,8 @@ android {
         applicationId "com.haiersmart.sfcontrol"
         minSdkVersion 18
         targetSdkVersion 23
-        versionCode 5
-        versionName 'BXC_0005_0000'
+        versionCode 6
+        versionName 'BXC_0006_0000'
     }
     buildTypes {
         release {

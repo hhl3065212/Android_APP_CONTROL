@@ -113,9 +113,9 @@ public class ControlMainBoardService extends Service {
                         if (mModel != null) {
                             int temperCold = intent.getIntExtra(ConstantUtil.KEY_SET_FRIDGE_LEVEL, 0);
                             MyLogUtil.i(TAG, "onStartCommand TEMPER_SETCOLD temperCold=" + temperCold);
-                            if(temperCold < mMBParams.getTargetTempRange().getFridgeMinValue()){
+                            if (temperCold < mMBParams.getTargetTempRange().getFridgeMinValue()) {
                                 temperCold = mMBParams.getTargetTempRange().getFridgeMinValue();
-                            }else if(temperCold > mMBParams.getTargetTempRange().getFridgeMaxValue()){
+                            } else if (temperCold > mMBParams.getTargetTempRange().getFridgeMaxValue()) {
                                 temperCold = mMBParams.getTargetTempRange().getFridgeMaxValue();
                             }
                             mModel.setCold(temperCold);
@@ -132,9 +132,9 @@ public class ControlMainBoardService extends Service {
                     {
                         if (mModel != null) {
                             int temperCold = intent.getIntExtra(ConstantUtil.KEY_SET_FREEZE_LEVEL, 0);
-                            if(temperCold < mMBParams.getTargetTempRange().getFreezeMinValue()){
+                            if (temperCold < mMBParams.getTargetTempRange().getFreezeMinValue()) {
                                 temperCold = mMBParams.getTargetTempRange().getFreezeMinValue();
-                            }else if(temperCold > mMBParams.getTargetTempRange().getFreezeMaxValue()){
+                            } else if (temperCold > mMBParams.getTargetTempRange().getFreezeMaxValue()) {
                                 temperCold = mMBParams.getTargetTempRange().getFreezeMaxValue();
                             }
                             mModel.setFreeze(temperCold);
@@ -151,9 +151,9 @@ public class ControlMainBoardService extends Service {
                     {
                         if (mIsModelReady) {
                             int temperCold = intent.getIntExtra(ConstantUtil.KEY_SET_COLD_LEVEL, 0);
-                            if(temperCold < mMBParams.getTargetTempRange().getChangeMinValue()){
+                            if (temperCold < mMBParams.getTargetTempRange().getChangeMinValue()) {
                                 temperCold = mMBParams.getTargetTempRange().getChangeMinValue();
-                            }else if(temperCold > mMBParams.getTargetTempRange().getChangeMaxValue()){
+                            } else if (temperCold > mMBParams.getTargetTempRange().getChangeMaxValue()) {
                                 temperCold = mMBParams.getTargetTempRange().getChangeMaxValue();
                             }
                             mModel.setCustomArea(temperCold);
@@ -170,7 +170,7 @@ public class ControlMainBoardService extends Service {
                     {
                         if (mIsModelReady) {
                             int sterilizeStep = intent.getIntExtra(ConstantUtil.MODE_UV, 0);
-                            MyLogUtil.d("str::sterilizeStep = "+sterilizeStep);
+                            MyLogUtil.d("str::sterilizeStep = " + sterilizeStep);
                             mModel.setSterilizeMode(sterilizeStep);
                             sendQuery();
                         } else {
@@ -414,10 +414,10 @@ public class ControlMainBoardService extends Service {
         MyLogUtil.i(TAG, readyCounts + " sendControlCmdResponse main board is " + mIsModelReady);
     }
 
-    public void sendSterilizeStatus(){
-        HashMap<String,Integer> sterilizeHashMap = new HashMap<>();
-        sterilizeHashMap.put("time",countsSterilizeRun);
-        sterilizeHashMap.put("run",nSterilizeRun);
+    public void sendSterilizeStatus() {
+        HashMap<String, Integer> sterilizeHashMap = new HashMap<>();
+        sterilizeHashMap.put("time", countsSterilizeRun);
+        sterilizeHashMap.put("run", nSterilizeRun);
         String sterilizeJson = JSON.toJSONString(sterilizeHashMap);
         Intent intent = new Intent();
         intent.setAction(ConstantUtil.SERVICE_NOTICE);
@@ -513,6 +513,8 @@ public class ControlMainBoardService extends Service {
     //    public static final long FREEZETIME = 60 * 60;
     private static long coldCount = 0;
     private static long freezeCount = 0;
+    private static final long COLD_OVER_TIME = 24 * 60 * 60;
+    private static final long FREEZE_OVER_TIME = 3 * 24 * 60 * 60;
     private ScheduledExecutorService sExService = Executors.newScheduledThreadPool(2);
     private RunnableFuture<?> sColdOnFuture;
     private RunnableFuture<?> sFreezeOnFuture;
@@ -529,10 +531,10 @@ public class ControlMainBoardService extends Service {
         MyLogUtil.i(TAG, "startColdOnTime Count");
         if (reset) {
             coldCount = 0;
-            SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.COLDTIME, System.currentTimeMillis() / 1l);
+            SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.COLDTIME, System.currentTimeMillis() / 1L);
         } else {
-            coldCount = (long) SpUtils.getInstance(ControlApplication.getInstance()).get(ConstantUtil.COLDCOUNT, 0l);
-            long oldTime = (long) SpUtils.getInstance(ControlApplication.getInstance()).get(ConstantUtil.COLDTIME, 0l);
+            coldCount = (long) SpUtils.getInstance(ControlApplication.getInstance()).get(ConstantUtil.COLDCOUNT, 0L);
+            long oldTime = (long) SpUtils.getInstance(ControlApplication.getInstance()).get(ConstantUtil.COLDTIME, 0L);
             long currentTime = System.currentTimeMillis();
             long delta = currentTime - oldTime;
             if (delta > 0) {
@@ -554,20 +556,28 @@ public class ControlMainBoardService extends Service {
                     coldCount++;
                     MyLogUtil.i(TAG, "coldOnRunnable coldCount=" + coldCount);
                     if (coldCount % 6 == 0) {//1min
-                        SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.COLDCOUNT, coldCount / 1l);
+                        SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.COLDCOUNT, coldCount / 1L);
                         //10min
                         //TODO:确认是否还需要校准时间
                         if (coldCount % 60 == 0) {
-                            long oldTime = (long) SpUtils.getInstance(ControlApplication.getInstance()).get(ConstantUtil.COLDTIME, 0l);
+                            long oldTime = (long) SpUtils.getInstance(ControlApplication.getInstance()).get(ConstantUtil.COLDTIME, 0L);
                             long currentTime = System.currentTimeMillis();
                             long delta = currentTime - oldTime;
-                            if (delta > 0) {
+                            if (delta > COLD_OVER_TIME) {
+                                if ((coldCount * 10) < COLDTIME) {
+                                    delta = currentTime - (coldCount * 10000);
+                                    SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.COLDTIME, delta / 1L);
+                                }
+                            } else if (delta > 0) {
                                 delta = delta / 10000;
                                 MyLogUtil.i(TAG, "cold delta count=" + delta);
                                 if (delta > coldCount) {
                                     coldCount = delta;
                                     MyLogUtil.i(TAG, "delta cold count=" + coldCount);
                                 }
+                            } else {
+                                delta = currentTime - (coldCount * 10000);
+                                SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.COLDTIME, delta / 1L);
                             }
                         }
                     }
@@ -582,7 +592,7 @@ public class ControlMainBoardService extends Service {
             timerColdOn.schedule(taskColdOn, 10000, 10000);
         }
         //        sColdOnFuture = (RunnableScheduledFuture<?>) sExService.scheduleAtFixedRate(coldOnRunnable,10,10, TimeUnit.SECONDS);//10s周期
-//        timerColdOn.schedule(taskColdOn, 10000, 10000);
+        //        timerColdOn.schedule(taskColdOn, 10000, 10000);
     }
 
     public void stopColdOnTime() {
@@ -606,10 +616,10 @@ public class ControlMainBoardService extends Service {
         //        sFreezeOnFuture = (RunnableScheduledFuture<?>) sExService.scheduleAtFixedRate(freezeOnRunnable,10,10, TimeUnit.SECONDS);//10s周期
         if (reset) {
             freezeCount = 0;
-            SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.FREEZETIME, System.currentTimeMillis() / 1l);
+            SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.FREEZETIME, System.currentTimeMillis() / 1L);
         } else {
-            freezeCount = (long) SpUtils.getInstance(ControlApplication.getInstance()).get(ConstantUtil.FREEZECOUNT, 0l);
-            long oldTime = (long) SpUtils.getInstance(ControlApplication.getInstance()).get(ConstantUtil.FREEZETIME, 0l);
+            freezeCount = (long) SpUtils.getInstance(ControlApplication.getInstance()).get(ConstantUtil.FREEZECOUNT, 0L);
+            long oldTime = (long) SpUtils.getInstance(ControlApplication.getInstance()).get(ConstantUtil.FREEZETIME, 0L);
             long currentTime = System.currentTimeMillis();
             long delta = currentTime - oldTime;
             if (delta > 0) {
@@ -631,20 +641,28 @@ public class ControlMainBoardService extends Service {
                     freezeCount++;
                     MyLogUtil.i(TAG, "freezeOnRunnable freezeCount=" + freezeCount);
                     if (freezeCount % 6 == 0) {//1min
-                        SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.FREEZECOUNT, freezeCount / 1l);
+                        SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.FREEZECOUNT, freezeCount / 1L);
                         //10min
                         //TODO:确认是否还需要校准时间
                         if (freezeCount % 60 == 0) {
-                            long oldTime = (long) SpUtils.getInstance(ControlApplication.getInstance()).get(ConstantUtil.FREEZETIME, 0l);
+                            long oldTime = (long) SpUtils.getInstance(ControlApplication.getInstance()).get(ConstantUtil.FREEZETIME, 0L);
                             long currentTime = System.currentTimeMillis();
                             long delta = currentTime - oldTime;
-                            if (delta > 0) {
+                            if (delta > FREEZE_OVER_TIME) {
+                                if ((freezeCount * 10) < FREEZETIME) {
+                                    delta = currentTime - (freezeCount * 10000);
+                                    SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.FREEZETIME, delta / 1L);
+                                }
+                            } else if (delta > 0) {
                                 delta = delta / 10000;
                                 MyLogUtil.i(TAG, "freeze delta count=" + delta);
                                 if (delta > freezeCount) {
                                     freezeCount = delta;
                                     MyLogUtil.i(TAG, "delta freeze count=" + freezeCount);
                                 }
+                            } else {
+                                delta = currentTime - (freezeCount * 10000);
+                                SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.FREEZETIME, delta / 1L);
                             }
                         }
                     }
@@ -695,7 +713,7 @@ public class ControlMainBoardService extends Service {
         getControlDbMgr().queryByName(sterilizeEntry);
         //杀菌on
         if (sterilizeEntry.value != 0) {
-            startSterilize(sterilizeEntry.value,true);
+            startSterilize(sterilizeEntry.value, true);
         }
     }
 
@@ -729,7 +747,7 @@ public class ControlMainBoardService extends Service {
         getControlDbMgr().queryByName(sterilizeEntry);
         //杀菌on
         if (sterilizeEntry.value != 0) {
-            startSterilize(sterilizeEntry.value,false);
+            startSterilize(sterilizeEntry.value, false);
         }
     }
 
@@ -842,17 +860,18 @@ public class ControlMainBoardService extends Service {
      */
     private final int SterilizeRun = 30 * 60;//杀菌运行时间 默认30分钟 1800s
     private final int[] SterilizeInterval = //杀菌循环时间
-            {0, 6*60 * 60, 4 * 60 * 60, 3 * 60 * 60, 4 * 60 * 60, 5 * 60 * 60, 6 * 60 * 60, 7 * 60 * 60, 8 * 60 * 60, 9 * 60 * 60};
-//    private final int SterilizeRun = 10 * 60;//杀菌运行时间 默认10分钟 1800s 测试用
-//    private final int[] SterilizeInterval = //杀菌循环时间 测试用
-//            {0, 60 * 60, 40 * 60, 30 * 60, 40 * 60, 50 * 60, 60 * 60, 70 * 60, 80 * 60, 90 * 60};
+            {0, 6 * 60 * 60, 4 * 60 * 60, 3 * 60 * 60, 4 * 60 * 60, 5 * 60 * 60, 6 * 60 * 60, 7 * 60 * 60, 8 * 60 * 60, 9 * 60 * 60};
+    //    private final int SterilizeRun = 10 * 60;//杀菌运行时间 默认10分钟 1800s 测试用
+    //    private final int[] SterilizeInterval = //杀菌循环时间 测试用
+    //            {0, 60 * 60, 40 * 60, 30 * 60, 40 * 60, 50 * 60, 60 * 60, 70 * 60, 80 * 60, 90 * 60};
     private Timer timerSterilize;
     private TimerTask timerTaskSterilize;
     private int countsSterilizeInterval;
     private int countsSterilizeRun;
     private int nSterilizeRun = 0;
     private int timeSterilizeInterval;
-    private void continueSterilize(){
+
+    private void continueSterilize() {
         long oldTime = (long) SpUtils.getInstance(ControlApplication.getInstance()).get(ConstantUtil.STERILIZETIME, (long) 1);
         long currentTime = System.currentTimeMillis();
         int detal = (int) ((currentTime - oldTime) / 1000);
@@ -860,24 +879,26 @@ public class ControlMainBoardService extends Service {
 
         FridgeControlEntry sterilizeEntry = new FridgeControlEntry(EnumBaseName.SterilizeSwitch.name());
         getControlDbMgr().queryByName(sterilizeEntry);
-        if(sterilizeEntry.value ==1){
+        if (sterilizeEntry.value == 1) {
             countsSterilizeRun = SterilizeRun;
-        }else {
+        } else {
             countsSterilizeRun = -1;
         }
     }
-    public void startSterilize(final int mode,boolean reset) {
+
+    public void startSterilize(final int mode, boolean reset) {
         if (mode != 0) {
             timeSterilizeInterval = SterilizeInterval[mode];
             MyLogUtil.i(TAG, "ster::timeSterilizeInterval " + timeSterilizeInterval);
-            if(reset){
-                MyLogUtil.i(TAG,"ster::reset");
+            if (reset) {
+                MyLogUtil.i(TAG, "ster::reset");
                 countsSterilizeRun = SterilizeRun;
                 countsSterilizeInterval = 0;
                 long currentTime = System.currentTimeMillis();
                 SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.STERILIZETIME, currentTime);
                 SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.STERILIZETIMEINTERVALCOUNT, countsSterilizeInterval);
-            }else {
+                mModel.sterilizeSwitchOn();
+            } else {
                 continueSterilize();
             }
             nSterilizeRun = 0;
@@ -891,13 +912,13 @@ public class ControlMainBoardService extends Service {
                     public void run() {
 
                         countsSterilizeInterval++;
-                        MyLogUtil.i(TAG, "ster::countsSterilizeInterval " + countsSterilizeInterval+" "+timeSterilizeInterval);
+                        MyLogUtil.i(TAG, "ster::countsSterilizeInterval " + countsSterilizeInterval + " " + timeSterilizeInterval);
 
                         /**
                          * 倒计时时间到，停止杀菌，如果有开门事件暂停倒计时
                          */
                         if (mBoardInfo.getFridgeDoorStatus() == 0) {
-                            if(nSterilizeRun == 0) {//运行状态改变发送恢复倒计时广播
+                            if (nSterilizeRun == 0) {//运行状态改变发送恢复倒计时广播
                                 nSterilizeRun = 1;
                                 sendSterilizeStatus();
                             }
@@ -908,8 +929,8 @@ public class ControlMainBoardService extends Service {
                                 countsSterilizeRun--;
                                 mModel.sterilizeSwitchOff();//倒计时结束 发送关闭
                             }
-                        }else {
-                            if(nSterilizeRun == 1) {//运行状态改变发送暂停倒计时广播
+                        } else {
+                            if (nSterilizeRun == 1) {//运行状态改变发送暂停倒计时广播
                                 nSterilizeRun = 0;
                                 sendSterilizeStatus();//
                             }
@@ -947,7 +968,7 @@ public class ControlMainBoardService extends Service {
     }
 
     public void stopSterilize() {
-//        mModel.sterilizeSwitchOff();
+        //        mModel.sterilizeSwitchOff();
         if (timerTaskSterilize != null) {
             timerTaskSterilize.cancel();
             timerTaskSterilize = null;

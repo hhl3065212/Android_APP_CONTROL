@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
 
-    def int vCode = 8;
+    def int vCode = 9;
     def String vNameCode = '000' + vCode;
 
     compileSdkVersion 23

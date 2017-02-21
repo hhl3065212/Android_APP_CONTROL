@@ -82,7 +82,7 @@ public class ControlMainBoardService extends Service {
             mIsServiceRestart = true;
         } else {
             String action = intent.getAction();
-            //            MyLogUtil.i(TAG, "onStartCommand action=" + action);
+//            MyLogUtil.i(TAG, "onStartCommand action=" + action);
             if (!TextUtils.isEmpty(action)) {
                 switch (action) {
                     case ConstantUtil.QUERY_CONTROL_READY://查询service是否准备好
@@ -98,7 +98,7 @@ public class ControlMainBoardService extends Service {
                         }
                         break;
                     case ConstantUtil.BROADCAST_ACTION_STATUS_BACK:
-                        //                MyLogUtil.d(TAG, "onStartCommand status back");
+
                         if (mIsModelReady) {
                             mModel.handleStatusDataResponse();
                         }
@@ -189,6 +189,21 @@ public class ControlMainBoardService extends Service {
                         handleBootEvent();
                     }
                     break;
+                    case ConstantUtil.QUERY_STATUS_CODE:
+                        MyLogUtil.d(TAG, "code::service recived queryStatusCode");
+                        if (mIsModelReady) {
+                            String code = mMBParams.getFrameDataString();
+                            MyLogUtil.d("code::code = " + code);
+                            Intent intentCode = new Intent();
+                            intentCode.setAction(ConstantUtil.SERVICE_NOTICE);
+                            intentCode.putExtra(ConstantUtil.KEY_STATUS_CODE, code);
+                            sendBroadcast(intentCode);
+
+                        } else {
+                            MyLogUtil.i(TAG, "code::onStartCommand action changed to QUERY_CONTROL_READY due to init not finished");
+                            sendControlReadyInfo();
+                        }
+                        break;
                     default:
                         if (mIsModelReady) {
                             handleActions(action);
@@ -537,13 +552,21 @@ public class ControlMainBoardService extends Service {
             long oldTime = (long) SpUtils.getInstance(ControlApplication.getInstance()).get(ConstantUtil.COLDTIME, 0L);
             long currentTime = System.currentTimeMillis();
             long delta = currentTime - oldTime;
-            if (delta > 0) {
+            if (delta > COLD_OVER_TIME) {
+                if ((coldCount * 10) < COLDTIME) {
+                    delta = currentTime - (coldCount * 10000);
+                    SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.COLDTIME, delta / 1L);
+                }
+            } else if (delta > 0) {
                 delta = delta / 10000;
                 MyLogUtil.i(TAG, "cold delta count=" + delta);
                 if (delta > coldCount) {
                     coldCount = delta;
                     MyLogUtil.i(TAG, "delta cold count=" + coldCount);
                 }
+            } else {
+                delta = currentTime - (coldCount * 10000);
+                SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.COLDTIME, delta / 1L);
             }
         }
         if (timerColdOn == null) {
@@ -622,13 +645,21 @@ public class ControlMainBoardService extends Service {
             long oldTime = (long) SpUtils.getInstance(ControlApplication.getInstance()).get(ConstantUtil.FREEZETIME, 0L);
             long currentTime = System.currentTimeMillis();
             long delta = currentTime - oldTime;
-            if (delta > 0) {
+            if (delta > FREEZE_OVER_TIME) {
+                if ((freezeCount * 10) < FREEZETIME) {
+                    delta = currentTime - (freezeCount * 10000);
+                    SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.FREEZETIME, delta / 1L);
+                }
+            } else if (delta > 0) {
                 delta = delta / 10000;
                 MyLogUtil.i(TAG, "freeze delta count=" + delta);
                 if (delta > freezeCount) {
                     freezeCount = delta;
                     MyLogUtil.i(TAG, "delta freeze count=" + freezeCount);
                 }
+            } else {
+                delta = currentTime - (freezeCount * 10000);
+                SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.FREEZETIME, delta / 1L);
             }
         }
         if (timerFreezeOn == null) {

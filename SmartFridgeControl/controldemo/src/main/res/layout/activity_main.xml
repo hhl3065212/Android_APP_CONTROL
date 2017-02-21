@@ -47,7 +47,7 @@
             <Button
                 android:id="@+id/btn_demo_return"
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="70dp"
                 android:text="@string/return_title"
                 android:textSize="@dimen/text_size_40"/>
 
@@ -58,11 +58,11 @@
     <LinearLayout
         android:id="@+id/linear_demo_status_code"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/fab_margin"
         android:background="@drawable/linear_layout"
         android:orientation="horizontal"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <TextView
             android:id="@+id/title_demo_status_code"
@@ -75,7 +75,9 @@
         <TextView
             android:id="@+id/text_demo_status_code"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:ellipsize="end"
             android:layout_marginLeft="@dimen/tab_margin"
             android:textSize="@dimen/text_size_32"/>
     </LinearLayout>
@@ -101,7 +103,6 @@
                 android:id="@+id/linear_demo_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/fab_margin"
                 android:orientation="vertical"
                 android:visibility="visible">
 

@@ -2,8 +2,8 @@ apply plugin: 'com.android.application'
 
 android {
 
-    def int vCode = 9;
-    def String vNameCode = '000' + vCode;
+    def int vCode = 10;
+    def String vNameCode = '00' + vCode;
 
     compileSdkVersion 23
     buildToolsVersion '23.0.2'

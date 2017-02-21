@@ -103,4 +103,7 @@ public class ConstantUtil {
     public static final String QUERY_STERILIZE_STATUS = "querySterilizeStatus";//杀菌剩余时间
     public static final String KEY_STERILIZE_STATUS = "sterilizeStatus";//杀菌剩余时间
 
+    public static final String QUERY_STATUS_CODE = "queryStatusCode";//查询状态码
+    public static final String KEY_STATUS_CODE = "statusCode";//状态码
+
 }

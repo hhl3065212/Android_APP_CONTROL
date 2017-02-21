@@ -65,7 +65,7 @@ public class PowerProcessData {
     public PowerProcessData() throws IOException {
         mSerialData = SerialData.getInstance();
         mPowerSerialOpt = PowerSerialOpt.getInstance();
-        sendGetIdCmd();
+        sendGetIdCmd();//启动后发送查询主控板id命令
         mTimerThread = new TimerThread();
         mTimerThread.start();
     }

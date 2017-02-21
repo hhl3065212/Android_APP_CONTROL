@@ -133,19 +133,21 @@ public class ConstantUtil {
     public static final String KEY_RANGE = "range";//温度控制范围
     public static final String KEY_INFO = "info";//温度控制范围
     public static final String KEY_STERILIZE_STATUS = "sterilizeStatus";//杀菌剩余时间
+    public static final String KEY_STATUS_CODE = "statusCode";//状态码
 
 
 
-    public static final String QUERY_CONTROL_READY= "queryControlReady";
-    public static final String QUERY_FRIDGE_INFO= "queryFridgeInfo";
-    public static final String QUERY_CONTROL_INFO = "queryControlInfo";
-    public static final String QUERY_TEMPER_INFO = "queryTemperInfo";
-    public static final String QUERY_ERROR_INFO = "queryErrorInfo";
-    public static final String QUERY_TEMP_RANGE = "queryTempRange";
-    public static final String QUERY_FRIDGE_TEMP_RANGE = "queryFridgeTempRange";
-    public static final String QUERY_CHANGE_TEMP_RANGE = "queryChangeTempRange";
-    public static final String QUERY_FREEZE_TEMP_RANGE = "queryFreezeTempRange";
+    public static final String QUERY_CONTROL_READY= "queryControlReady";//
+    public static final String QUERY_FRIDGE_INFO= "queryFridgeInfo";//
+    public static final String QUERY_CONTROL_INFO = "queryControlInfo";//
+    public static final String QUERY_TEMPER_INFO = "queryTemperInfo";//
+    public static final String QUERY_ERROR_INFO = "queryErrorInfo";//
+    public static final String QUERY_TEMP_RANGE = "queryTempRange";//查询温度范围
+    public static final String QUERY_FRIDGE_TEMP_RANGE = "queryFridgeTempRange";//
+    public static final String QUERY_CHANGE_TEMP_RANGE = "queryChangeTempRange";//
+    public static final String QUERY_FREEZE_TEMP_RANGE = "queryFreezeTempRange";//查询冷冻温度范围
     public static final String QUERY_STERILIZE_STATUS = "querySterilizeStatus";//杀菌剩余时间
+    public static final String QUERY_STATUS_CODE = "queryStatusCode";//查询状态码
 
 
     public static final String KEY_SET_FRIDGE_LEVEL= "fridgelevel";

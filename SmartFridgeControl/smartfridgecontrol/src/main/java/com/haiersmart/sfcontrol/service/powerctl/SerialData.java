@@ -164,8 +164,9 @@ public class SerialData {
             mCurrentModel = ConstantUtil.BCD401_MODEL;
             mMainBoard = new MainBoardFourZeroOne();
         } else if (typeId.equals(ConstantUtil.BCD658_SN)) {
-            MyLogUtil.i(TAG, "fridge mode:401");
+            MyLogUtil.i(TAG, "fridge mode:658");
             mCurrentModel = ConstantUtil.BCD658_MODEL;
+            // TODO: 2017/2/20  
             mMainBoard = new MainBoardFourZeroOne();
         }else {
             MyLogUtil.i(TAG, "fridge mode:default 251");

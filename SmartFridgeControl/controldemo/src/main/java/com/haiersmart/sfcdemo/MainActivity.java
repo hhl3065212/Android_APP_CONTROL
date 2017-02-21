@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private MyTestButton btnSmart, btnHoliday, btnQuickCold, btnQuickFreeze, btnFridgeSwitch, btnTidbit, btnPurify;
     private SeekBar skbFridge, skbFreeze, skbChange;
     private ImageView imvQrCode;
+    private String statusCode = "no status code!";
 
     private int countsSterilize = 0;
 
@@ -179,6 +180,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         JSONObject jsonObject = JSONObject.parseObject(jsonSterilize);
                         Log.i(TAG, "sterilize status jsonObject:" + jsonObject);
                         handleSterilizeStatus(jsonObject);
+                    }
+                    statusCode = intent.getStringExtra(ConstantUtil.KEY_STATUS_CODE);
+                    if(statusCode != null){
+                        Log.i(TAG,"statusCode:"+statusCode);
+                        tvStatusCode.setText(statusCode);
                     }
 
                 } else {
@@ -393,7 +399,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     mHandler.sendEmptyMessage(0x02);
                 }
             };
-            mTimer.schedule(mTimerTask, 0, 300);
+            mTimer.schedule(mTimerTask, 0, 1000);
         }
     }
 
@@ -435,6 +441,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Date date = new Date(System.currentTimeMillis());
         String strTime = simpleDateFormat.format(date);
         tvTime.setText(strTime);
+        sendUserCommond(ConstantUtil.KEY_MODE,ConstantUtil.QUERY_STATUS_CODE);
         //        tvTest.setText(mNetRunnable.getNtpHost()+"\n"+mNetRunnable.getTimeoutCounts()+":"+mNetRunnable.getRequestCounts()
         //                +"\n"+mNetRunnable.getTimeStamp()+"\n"+mNetRunnable.getTime());
         if (mModel.mFridgeModel.equals(ConstantUtil.BCD251_MODEL)) {

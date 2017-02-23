@@ -120,7 +120,8 @@ public class MainBoardFourZeroOne extends MainBoardBase{
             isDoorChange = true;
         }
         if(isDoorChange){
-            doorHashMap.put("fridge",mFridgeDoorHistoryStatus?1:0);
+            doorHashMap.put("fridge",bFridgeDoorNowStatus?1:0);
+            doorHashMap.put("door",bFridgeDoorNowStatus?1:0);
             String doorJson = JSON.toJSONString(doorHashMap);
             Intent intent = new Intent();
             intent.putExtra(ConstantUtil.DOOR_STATUS,doorJson);

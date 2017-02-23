@@ -95,7 +95,9 @@ public class PowerProcessData {
     public void sendMarketCmd(int value){
         mPowerSerialOpt.sendCmdById(EnumBaseName.marketDemo,(byte)value);
     }
-
+    public void sendCmd(EnumBaseName enumBaseName,int value){
+        mPowerSerialOpt.sendCmdById(enumBaseName,(byte)value);
+    }
     public boolean isTimerThreadSwitch() {
         return TimerThreadSwitch;
     }

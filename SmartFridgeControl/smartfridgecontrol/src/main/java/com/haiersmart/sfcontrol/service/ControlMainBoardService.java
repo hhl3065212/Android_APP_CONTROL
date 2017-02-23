@@ -78,11 +78,11 @@ public class ControlMainBoardService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent == null) {
             //while system auto restart this service, this case should be run
-            MyLogUtil.i(TAG, "onStartCommand intent=NULL to handle quick cold or freeze timer event!");
+            MyLogUtil.i(TAG, "handleActions onStartCommand intent=NULL to handle quick cold or freeze timer event!");
             mIsServiceRestart = true;
         } else {
             String action = intent.getAction();
-//            MyLogUtil.i(TAG, "onStartCommand action=" + action);
+            MyLogUtil.i(TAG, "onStartCommand handleActions=" + action);
             if (!TextUtils.isEmpty(action)) {
                 switch (action) {
                     case ConstantUtil.QUERY_CONTROL_READY://查询service是否准备好
@@ -205,6 +205,7 @@ public class ControlMainBoardService extends Service {
                         }
                         break;
                     default:
+                        MyLogUtil.d(TAG, "handleActions service recived queryStatusCode");
                         if (mIsModelReady) {
                             handleActions(action);
                         } else {
@@ -276,6 +277,7 @@ public class ControlMainBoardService extends Service {
 
 
     private void handleActions(String action, int... value) {
+        MyLogUtil.d(TAG,"handleActions action:"+action);
 
         switch (action) {
             case ConstantUtil.MODE_SMART_ON://智能开
@@ -368,6 +370,12 @@ public class ControlMainBoardService extends Service {
             case ConstantUtil.MODE_PURIFY_OFF:
                 mModel.purifyOff();
                 sendQuery();
+                break;
+            case ConstantUtil.FRIDGE_LIGHT_ON:
+                mProcessData.sendCmd(EnumBaseName.coldLightMode,1);
+                break;
+            case ConstantUtil.FRIDGE_LIGHT_OFF:
+                mProcessData.sendCmd(EnumBaseName.coldLightMode,0);
                 break;
             default:
                 break;

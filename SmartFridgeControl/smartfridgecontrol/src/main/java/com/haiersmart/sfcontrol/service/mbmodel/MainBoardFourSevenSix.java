@@ -142,6 +142,7 @@ public class MainBoardFourSevenSix extends MainBoardBase{
         boolean bFridgeDoorNowStatus = getMainBoardStatusByName("fridgeDoorStatus")==1;
         boolean bFreezeDoorNowStatus = getMainBoardStatusByName("freezeDoorStatus")==1;
         HashMap<String,Integer> doorHashMap = new HashMap<>();
+        int doorStatus;
 
         if(bFridgeDoorNowStatus != mFridgeDoorHistoryStatus){
             mFridgeDoorHistoryStatus = bFridgeDoorNowStatus;
@@ -166,8 +167,14 @@ public class MainBoardFourSevenSix extends MainBoardBase{
             isDoorChange =true;
         }
         if(isDoorChange){
-            doorHashMap.put("fridge",mFridgeDoorHistoryStatus?1:0);
-            doorHashMap.put("freeze",mFreezeDoorHistoryStatus?1:0);
+            if(!bFridgeDoorNowStatus && !bFreezeDoorNowStatus){
+                doorStatus = 0;
+            }else {
+                doorStatus = 1;
+            }
+            doorHashMap.put("fridge",bFridgeDoorNowStatus?1:0);
+            doorHashMap.put("freeze",bFreezeDoorNowStatus?1:0);
+            doorHashMap.put("door",doorStatus);
             String doorJson = JSON.toJSONString(doorHashMap);
             Intent intent = new Intent();
             intent.putExtra(ConstantUtil.DOOR_STATUS,doorJson);

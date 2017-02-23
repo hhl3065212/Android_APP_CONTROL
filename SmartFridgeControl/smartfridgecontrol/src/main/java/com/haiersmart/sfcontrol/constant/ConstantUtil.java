@@ -118,6 +118,9 @@ public class ConstantUtil {
     public static final String MODE_PURIFY_OFF = "closePurifyModel";//净化关
     public static final String MODE_STERILIZE_ON = "openSterilizeModel";//杀菌模式
 
+    public static final String FRIDGE_LIGHT_ON = "openFridgeLight";//冷藏灯开
+    public static final String FRIDGE_LIGHT_OFF = "closeFridgeLight";//冷藏灯关
+
 
 
     //返回的key

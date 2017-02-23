@@ -129,8 +129,15 @@ public class ControlCommandReceiver extends BroadcastReceiver {
                 //杀菌剩余时间
                 sendCommandToService(context, ConstantUtil.QUERY_STERILIZE_STATUS);
             }else if(contentAction.equals(ConstantUtil.QUERY_STATUS_CODE)){
+                //状态码
                 MyLogUtil.d(TAG,"contentAction into :"+contentAction);
                 sendCommandToService(context,ConstantUtil.QUERY_STATUS_CODE);
+            }else if(contentAction.equals(ConstantUtil.FRIDGE_LIGHT_ON)){
+                //冷藏灯开
+                sendCommandToService(context,ConstantUtil.FRIDGE_LIGHT_ON);
+            }else if(contentAction.equals(ConstantUtil.FRIDGE_LIGHT_OFF)){
+                //冷藏灯关
+                sendCommandToService(context,ConstantUtil.FRIDGE_LIGHT_OFF);
             }
         } else if (action.equals(ConstantWifiUtil.ACTION_MODECONTROL)) {
             String contentAction = intent.getStringExtra(ConstantWifiUtil.KEY_SENDCONTROL);

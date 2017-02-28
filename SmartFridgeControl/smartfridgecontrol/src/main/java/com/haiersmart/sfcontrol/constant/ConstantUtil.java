@@ -121,6 +121,9 @@ public class ConstantUtil {
     public static final String FRIDGE_LIGHT_ON = "openFridgeLight";//冷藏灯开
     public static final String FRIDGE_LIGHT_OFF = "closeFridgeLight";//冷藏灯关
 
+    public static final String HANDLE_LIGHT_ON = "openHandleLight";//把手灯开
+    public static final String HANDLE_LIGHT_OFF = "closeHandleLight";//把手灯关
+
 
 
     //返回的key

@@ -9,11 +9,6 @@
  */
 package com.haiersmart.sfcontrol.service.mbmodel;
 
-import android.content.Intent;
-
-import com.alibaba.fastjson.JSON;
-import com.haiersmart.sfcontrol.application.ControlApplication;
-import com.haiersmart.sfcontrol.constant.ConstantUtil;
 import com.haiersmart.sfcontrol.constant.EnumBaseName;
 import com.haiersmart.sfcontrol.database.FridgeControlEntry;
 import com.haiersmart.sfcontrol.service.alarm.HandleDoorAlarm;
@@ -48,6 +43,10 @@ public class MainBoardFourSevenSix extends MainBoardBase{
     private HandleDoorAlarm mFridgeDoorAlarm;
     /** 冷冻门开门报警操作 */
     private HandleDoorAlarm mFreezeDoorAlarm;
+
+    public MainBoardFourSevenSix() {
+        super();
+    }
 
 
     @Override
@@ -175,11 +174,7 @@ public class MainBoardFourSevenSix extends MainBoardBase{
             doorHashMap.put("fridge",bFridgeDoorNowStatus?1:0);
             doorHashMap.put("freeze",bFreezeDoorNowStatus?1:0);
             doorHashMap.put("door",doorStatus);
-            String doorJson = JSON.toJSONString(doorHashMap);
-            Intent intent = new Intent();
-            intent.putExtra(ConstantUtil.DOOR_STATUS,doorJson);
-            intent.setAction(ConstantUtil.SERVICE_NOTICE);
-            ControlApplication.getInstance().sendBroadcast(intent);
+            sendDoorStatusBroadcast(doorHashMap);
         }
     }
 

@@ -66,6 +66,16 @@
                 <action android:name="com.haier.tft.control.pcb"/>
             </intent-filter>
         </receiver>
+
+        <receiver
+            android:name="com.haier.tft.wifimodule.wifimodule.CommandDataReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.haier.tft.control.broadcast" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
     </application>
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>

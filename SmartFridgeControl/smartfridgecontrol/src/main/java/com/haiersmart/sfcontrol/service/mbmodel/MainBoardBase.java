@@ -9,16 +9,24 @@
  */
 package com.haiersmart.sfcontrol.service.mbmodel;
 
+import android.content.Intent;
+
+import com.alibaba.fastjson.JSON;
+import com.haiersmart.sfcontrol.application.ControlApplication;
+import com.haiersmart.sfcontrol.constant.ConstantUtil;
 import com.haiersmart.sfcontrol.constant.EnumBaseName;
 import com.haiersmart.sfcontrol.database.FridgeControlDbMgr;
 import com.haiersmart.sfcontrol.database.FridgeControlEntry;
+import com.haiersmart.sfcontrol.service.ControlMainBoardService;
 import com.haiersmart.sfcontrol.service.configtable.ProtocolCommand;
 import com.haiersmart.sfcontrol.service.configtable.ProtocolConfigBase;
 import com.haiersmart.sfcontrol.service.configtable.TargetTempRange;
 import com.haiersmart.sfcontrol.utilslib.MyLogUtil;
 import com.haiersmart.sfcontrol.utilslib.PrintUtil;
+import com.haiersmart.sfcontrol.utilslib.RemoteUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static com.haiersmart.sfcontrol.constant.EnumBaseName.changeTargetTemp;
 
@@ -44,6 +52,7 @@ public abstract class MainBoardBase {
     ArrayList<FridgeControlEntry> dbFridgeControlCancel;//数据库中需要取消设置的类
     ArrayList<FridgeControlEntry> dbFridgeControlSet;//数据库中需要设置的类
     public boolean testDoor = false;//
+    ControlMainBoardService mService;
 
     public MainBoardBase() {
     }
@@ -696,6 +705,20 @@ public abstract class MainBoardBase {
 
         }
         return frame;
+    }
+
+    /**
+     * 发送门状态广播
+     * @param doorHashMap 门状态map
+     */
+    void sendDoorStatusBroadcast(HashMap<String, Integer> doorHashMap){
+        MyLogUtil.d("printSerialString", "door");
+        String doorJson = JSON.toJSONString(doorHashMap);
+        Intent intent = new Intent();
+        intent.putExtra(ConstantUtil.DOOR_STATUS,doorJson);
+        intent.setAction(ConstantUtil.SERVICE_NOTICE);
+        ControlApplication.getInstance().sendBroadcast(intent);
+        RemoteUtil.sendQuery();
     }
 
 }

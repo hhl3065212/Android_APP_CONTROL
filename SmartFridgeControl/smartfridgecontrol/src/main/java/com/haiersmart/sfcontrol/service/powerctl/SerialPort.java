@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.Log;
 
 import com.haiersmart.sfcontrol.application.ControlApplication;
 import com.haiersmart.sfcontrol.utilslib.MyLogUtil;
@@ -92,6 +93,7 @@ public class SerialPort {
         strModel = mIService.getSystemModel();
         strVersion = mIService.getSystemModel() + "_" + mIService.getSystemVersion() + "_" + mIService.getSystemCustom();
         //        strModel = "XD";
+        Log.i(TAG,"SystemModel:"+strModel);
         if (strModel.indexOf("XD") >= 0) {
             mSerialPortNum = 3;
             mFd = SerialOpen(mSerialPortDevice[mSerialPortNum], mBaudRate);

@@ -138,6 +138,12 @@ public class ControlCommandReceiver extends BroadcastReceiver {
             }else if(contentAction.equals(ConstantUtil.FRIDGE_LIGHT_OFF)){
                 //冷藏灯关
                 sendCommandToService(context,ConstantUtil.FRIDGE_LIGHT_OFF);
+            }else if(contentAction.equals(ConstantUtil.HANDLE_LIGHT_ON)){
+                //把手灯开
+                sendCommandToService(context,ConstantUtil.HANDLE_LIGHT_ON);
+            }else if(contentAction.equals(ConstantUtil.HANDLE_LIGHT_OFF)){
+                //把手灯关
+                sendCommandToService(context,ConstantUtil.HANDLE_LIGHT_OFF);
             }
         } else if (action.equals(ConstantWifiUtil.ACTION_MODECONTROL)) {
             String contentAction = intent.getStringExtra(ConstantWifiUtil.KEY_SENDCONTROL);

@@ -5,12 +5,11 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
+import com.haier.tft.wifimodule.HaierWifiModule;
 import com.haiersmart.sfcontrol.application.ControlApplication;
 import com.haiersmart.sfcontrol.constant.ConstantUtil;
-import com.haiersmart.sfcontrol.constant.ConstantWifiUtil;
 import com.haiersmart.sfcontrol.constant.EnumBaseName;
 import com.haiersmart.sfcontrol.database.DBOperation;
 import com.haiersmart.sfcontrol.database.FridgeControlDbMgr;
@@ -21,7 +20,7 @@ import com.haiersmart.sfcontrol.service.model.ModelBase;
 import com.haiersmart.sfcontrol.service.model.ModelFactory;
 import com.haiersmart.sfcontrol.service.powerctl.PowerProcessData;
 import com.haiersmart.sfcontrol.utilslib.MyLogUtil;
-import com.haiersmart.sfcontrol.utilslib.PrintUtil;
+import com.haiersmart.sfcontrol.utilslib.RemoteUtil;
 import com.haiersmart.sfcontrol.utilslib.SpUtils;
 
 import java.io.IOException;
@@ -120,7 +119,7 @@ public class ControlMainBoardService extends Service {
                             }
                             mModel.setCold(temperCold);
                             MyLogUtil.d("printSerialString", "fridge target");
-                            sendQuery();
+                            RemoteUtil.sendQuery();
                         } else {
                             MyLogUtil.i(TAG, "onStartCommand action changed to QUERY_CONTROL_READY due to init not finished");
                             sendControlReadyInfo();
@@ -139,7 +138,7 @@ public class ControlMainBoardService extends Service {
                             }
                             mModel.setFreeze(temperCold);
                             MyLogUtil.d("printSerialString", "freeze target");
-                            sendQuery();
+                            RemoteUtil.sendQuery();
                         } else {
                             MyLogUtil.i(TAG, "onStartCommand action changed to QUERY_CONTROL_READY due to init not finished");
                             sendControlReadyInfo();
@@ -158,7 +157,7 @@ public class ControlMainBoardService extends Service {
                             }
                             mModel.setCustomArea(temperCold);
                             MyLogUtil.d("printSerialString", "change target");
-                            sendQuery();
+                            RemoteUtil.sendQuery();
                         } else {
                             MyLogUtil.i(TAG, "onStartCommand action changed to QUERY_CONTROL_READY due to init not finished");
                             sendControlReadyInfo();
@@ -172,7 +171,7 @@ public class ControlMainBoardService extends Service {
                             int sterilizeStep = intent.getIntExtra(ConstantUtil.MODE_UV, 0);
                             MyLogUtil.d("str::sterilizeStep = " + sterilizeStep);
                             mModel.setSterilizeMode(sterilizeStep);
-                            sendQuery();
+                            RemoteUtil.sendQuery();
                         } else {
                             MyLogUtil.i(TAG, "onStartCommand action changed to QUERY_CONTROL_READY due to init not finished");
                             sendControlReadyInfo();
@@ -238,10 +237,14 @@ public class ControlMainBoardService extends Service {
         stopColdOnTime();
         stopFreezeOnTime();
         stopSterilize();
+        // 停止海尔的控制服务。
+                HaierWifiModule.getInstance().stop();
     }
 
     public void initService() {
         MyLogUtil.i(TAG, "kill initService");
+        // 启动海尔的控制服务。
+        HaierWifiModule.createInstance(this).start();
         //Create Database
         mDBHandle = DBOperation.getInstance();
 
@@ -284,57 +287,57 @@ public class ControlMainBoardService extends Service {
                 MyLogUtil.i(TAG, "handleActions smartOn");
                 mModel.smartOn();
                 MyLogUtil.d("printSerialString", "smartOn");
-                sendQuery();
+                RemoteUtil.sendQuery();
                 break;
             case ConstantUtil.MODE_SMART_OFF://智能关
                 MyLogUtil.i(TAG, "handleActions smartOff");
                 mModel.smartOff();
                 MyLogUtil.d("printSerialString", "smartOff");
-                sendQuery();
+                RemoteUtil.sendQuery();
                 break;
             case ConstantUtil.MODE_FREEZE_ON://速冻开
                 mModel.freezeOn();
                 startFreezeOnTime(true);
                 MyLogUtil.d("printSerialString", "quick freeze on");
-                sendQuery();
+                RemoteUtil.sendQuery();
                 break;
             case ConstantUtil.MODE_FREEZE_OFF://速冻关
                 mModel.freezeOff();
                 stopFreezeOnTime();
                 MyLogUtil.d("printSerialString", "quick freeze off");
-                sendQuery();
+                RemoteUtil.sendQuery();
                 break;
             case ConstantUtil.MODE_HOLIDAY_ON://假日开
                 mModel.holidayOn();
                 MyLogUtil.d("printSerialString", "holiday on");
-                sendQuery();
+                RemoteUtil.sendQuery();
                 break;
             case ConstantUtil.MODE_HOLIDAY_OFF://假日关
                 mModel.holidayOff();
                 MyLogUtil.d("printSerialString", "holiday off");
-                sendQuery();
+                RemoteUtil.sendQuery();
                 break;
             case ConstantUtil.MODE_COLD_ON://变温开
                 mModel.coldOn();
                 startColdOnTime(true);
                 MyLogUtil.d("printSerialString", "quick cold on");
-                sendQuery();
+                RemoteUtil.sendQuery();
                 break;
             case ConstantUtil.MODE_COLD_OFF://变温关
                 mModel.coldOff();
                 stopColdOnTime();
                 MyLogUtil.d("printSerialString", "quick cold off");
-                sendQuery();
+                RemoteUtil.sendQuery();
                 break;
             case ConstantUtil.REFRIGERATOR_OPEN://冷藏开
                 mModel.refrigeratorOpen();
                 MyLogUtil.d("printSerialString", "fridge on");
-                sendQuery();
+                RemoteUtil.sendQuery();
                 break;
             case ConstantUtil.REFRIGERATOR_CLOSE://冷藏关
                 mModel.refrigeratorClose();
                 MyLogUtil.d("printSerialString", "fridge off");
-                sendQuery();
+                RemoteUtil.sendQuery();
                 break;
             case ConstantUtil.QUERY_FRIDGE_INFO:
                 sendFridgeInfoResponse();
@@ -353,29 +356,35 @@ public class ControlMainBoardService extends Service {
                 break;
             case ConstantUtil.KEY_QUERY:
                 MyLogUtil.d("printSerialString", "query");
-                sendQuery();
+                RemoteUtil.sendQuery();
                 break;
             case ConstantUtil.MODE_TIDBIT_ON:
                 mModel.tidbitOn();
-                sendQuery();
+                RemoteUtil.sendQuery();
                 break;
             case ConstantUtil.MODE_TIDBIT_OFF:
                 mModel.tidbitOff();
-                sendQuery();
+                RemoteUtil.sendQuery();
                 break;
             case ConstantUtil.MODE_PURIFY_ON:
                 mModel.purifyOn();
-                sendQuery();
+                RemoteUtil.sendQuery();
                 break;
             case ConstantUtil.MODE_PURIFY_OFF:
                 mModel.purifyOff();
-                sendQuery();
+                RemoteUtil.sendQuery();
                 break;
             case ConstantUtil.FRIDGE_LIGHT_ON:
                 mProcessData.sendCmd(EnumBaseName.coldLightMode,1);
                 break;
             case ConstantUtil.FRIDGE_LIGHT_OFF:
                 mProcessData.sendCmd(EnumBaseName.coldLightMode,0);
+                break;
+            case ConstantUtil.HANDLE_LIGHT_ON:
+                mProcessData.sendCmd(EnumBaseName.handleLightMode,1);
+                break;
+            case ConstantUtil.HANDLE_LIGHT_OFF:
+                mProcessData.sendCmd(EnumBaseName.handleLightMode,0);
                 break;
             default:
                 break;
@@ -866,33 +875,33 @@ public class ControlMainBoardService extends Service {
                 mModel.getControlEntries();
         }
         MyLogUtil.d("printSerialString", "6");
-        sendQuery();
+        RemoteUtil.sendQuery();
     }
 
-    public void sendQuery() {
-        Intent intent = new Intent();
-        intent.setAction(ConstantWifiUtil.ACTION_CONTROL);
-        intent.putExtra(ConstantWifiUtil.KEY_GETSTATE, getQueryResult());
-        byte[] bytes = mMBParams.getDataBaseToBytes();
-        if (bytes != null) {
-            intent.putExtra(ConstantWifiUtil.KEY_GETBYTES, bytes);
-        }
-        MyLogUtil.i("printSerialString", PrintUtil.BytesToString(bytes, 16));
-        intent.putExtra(ConstantWifiUtil.KEY_TYPE_ID, mMBParams.getTypeId());
-        MyLogUtil.i("printSerialString", mMBParams.getFridgeId());
-        sendBroadcast(intent);
-        Log.d(TAG, "send query");
-    }
-
-    private HashMap getQueryResult() {
-        HashMap<String, String> stateList = new HashMap<>();
-        FridgeControlEntry fridgeControlEntry = new FridgeControlEntry(EnumBaseName.SterilizeMode.toString());
-        mDBHandle.getControlDbMgr().queryByName(fridgeControlEntry);
-        int valueSterilization = fridgeControlEntry.value;
-        stateList.put(ConstantWifiUtil.QUERY_GOOD_FOOD, "65278");
-        stateList.put(ConstantWifiUtil.QUERY_UV, "" + valueSterilization);
-        return stateList;
-    }
+//    public void sendQuery() {
+//        Intent intent = new Intent();
+//        intent.setAction(ConstantWifiUtil.ACTION_CONTROL);
+//        intent.putExtra(ConstantWifiUtil.KEY_GETSTATE, getQueryResult());
+//        byte[] bytes = mMBParams.getDataBaseToBytes();
+//        if (bytes != null) {
+//            intent.putExtra(ConstantWifiUtil.KEY_GETBYTES, bytes);
+//        }
+//        MyLogUtil.i("printSerialString", PrintUtil.BytesToString(bytes, 16));
+//        intent.putExtra(ConstantWifiUtil.KEY_TYPE_ID, mMBParams.getTypeId());
+//        MyLogUtil.i("printSerialString", mMBParams.getFridgeId());
+//        sendBroadcast(intent);
+//        Log.d(TAG, "send query");
+//    }
+//
+//    private HashMap getQueryResult() {
+//        HashMap<String, String> stateList = new HashMap<>();
+//        FridgeControlEntry fridgeControlEntry = new FridgeControlEntry(EnumBaseName.SterilizeMode.toString());
+//        mDBHandle.getControlDbMgr().queryByName(fridgeControlEntry);
+//        int valueSterilization = fridgeControlEntry.value;
+//        stateList.put(ConstantWifiUtil.QUERY_GOOD_FOOD, "65278");
+//        stateList.put(ConstantWifiUtil.QUERY_UV, "" + valueSterilization);
+//        return stateList;
+//    }
 
     /**
      * 杀菌功能启用这个

@@ -6,6 +6,7 @@ import com.haiersmart.sfcontrol.database.FridgeControlEntry;
 import com.haiersmart.sfcontrol.database.FridgeStatusEntry;
 import com.haiersmart.sfcontrol.service.ControlMainBoardService;
 import com.haiersmart.sfcontrol.utilslib.MyLogUtil;
+import com.haiersmart.sfcontrol.utilslib.RemoteUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -394,7 +395,7 @@ public class TwoFiveOneModel extends ModelBase {
         if(isTempChanged) {
             mService.notifyTemperChanged(mShowTempEntryList);
             MyLogUtil.d("printSerialString","temper");
-            mService.sendQuery();
+            RemoteUtil.sendQuery();
         }
         MyLogUtil.v(TAG,"handleTemperInfoResponse out");
     }
@@ -459,7 +460,7 @@ public class TwoFiveOneModel extends ModelBase {
         if(isErrOccurred) {
             mService.notifyErrorOccurred(mErrorEntryList);
             MyLogUtil.d("printSerialString","error");
-            mService.sendQuery();
+            RemoteUtil.sendQuery();
         }
     }
 

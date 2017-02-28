@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center">
+
+    <RelativeLayout
+        android:layout_width="436dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/white_bg_corner_10">
+
+        <TextView
+            android:id="@+id/pop_title_pni"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:textStyle="bold"
+            android:textColor="@color/black2"
+            android:layout_marginTop="20dp"
+            android:text="提示"
+            android:textSize="@dimen/text_size_40" />
+        <LinearLayout
+            android:id="@+id/pop_content_ll_pni"
+            android:orientation="vertical"
+            android:layout_below="@id/pop_title_pni"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/pop_update_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/tab_margin"
+                android:layout_marginRight="@dimen/tab_margin"
+                android:gravity="left"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:textColor="@color/black"
+                android:textSize="@dimen/text_size_40" />
+        </LinearLayout>
+
+
+
+        <Button
+            android:id="@+id/button_ok"
+            android:layout_below="@id/pop_content_ll_pni"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="30dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/btn_black_nocorner"
+            android:text="确定"
+            android:textColor="@drawable/btn_myfamily_font_pop_sure"
+            android:textSize="@dimen/text_size_36" />
+       <!-- <Button
+            android:id="@+id/button_cancel"
+            android:layout_width="@dimen/x150"
+            android:layout_height="@dimen/y50"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="@dimen/x50"
+            android:layout_marginTop="@dimen/y304"
+            android:background="@drawable/btn_myfamily_qx"
+            android:text="@string/myfamily4444"
+            android:textColor="@drawable/btn_myfamily_font_pop_qx"
+            android:textSize="@dimen/text_size_20" />-->
+        <!--<Button
+            android:id="@+id/button_yes"
+            android:layout_below="@id/pop_content_ll_pni"
+            android:layout_width="@dimen/x150"
+            android:layout_height="@dimen/y50"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/y30"
+            android:layout_marginTop="@dimen/y30"
+            android:background="@drawable/btn_myfamily_sure"
+            android:text="@string/myfamily4445"
+            android:textColor="@drawable/btn_myfamily_font_pop_sure"
+            android:visibility="gone"
+            android:textSize="@dimen/text_size_20" />-->
+        <ImageView
+            android:id="@+id/pop_img_xx"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            android:scaleType="fitCenter"
+            android:padding="10dp"
+            android:src="@mipmap/imgxx"
+            />
+
+    </RelativeLayout>
+
+</LinearLayout>

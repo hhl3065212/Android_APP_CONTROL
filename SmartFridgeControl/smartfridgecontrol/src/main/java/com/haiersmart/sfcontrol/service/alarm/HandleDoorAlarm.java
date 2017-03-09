@@ -163,11 +163,7 @@ public abstract class HandleDoorAlarm {
         MyLogUtil.i(TAG, "Door alarm status is " + stringBuffer.toString());
         doorHashMap.remove(mContent);
         doorHashMap.put(mContent, 1);
-        String doorAlarm = JSON.toJSONString(doorHashMap);
-        Intent intent = new Intent();
-        intent.putExtra(ConstantUtil.DOOR_ALARM_STATUS,doorAlarm);
-        intent.setAction(ConstantUtil.SERVICE_NOTICE);
-        ControlApplication.getInstance().sendBroadcast(intent);
+        sendDoorAlarmBroadcast(doorHashMap);
         setDoorErr(true);
     }
 
@@ -179,15 +175,20 @@ public abstract class HandleDoorAlarm {
             MyLogUtil.i(TAG, "Door alarm status is " + stringBuffer.toString());
             doorHashMap.remove(mContent);
             doorHashMap.put(mContent, 0);
-            String doorAlarm = JSON.toJSONString(doorHashMap);
-            Intent intent = new Intent();
-            intent.putExtra(ConstantUtil.DOOR_ALARM_STATUS,doorAlarm);
-            intent.setAction(ConstantUtil.SERVICE_NOTICE);
-            ControlApplication.getInstance().sendBroadcast(intent);
+            sendDoorAlarmBroadcast(doorHashMap);
             setDoorErr(false);
         }
     }
+    private void sendDoorAlarmBroadcast(HashMap<String, Integer> doorHashMap){
+        String doorAlarm = JSON.toJSONString(doorHashMap);
+
+        Intent intent = new Intent();
+        intent.putExtra(ConstantUtil.DOOR_ALARM_STATUS,doorAlarm);
+        intent.setAction(ConstantUtil.SERVICE_NOTICE);
+        ControlApplication.getInstance().sendBroadcast(intent);
+    }
 
     public abstract void setDoorErr(boolean b);
+
 
 }

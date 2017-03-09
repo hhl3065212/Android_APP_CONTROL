@@ -1,15 +1,16 @@
 package com.haiersmart.sfcdemo;
 
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
+import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -31,6 +32,8 @@ import com.haiersmart.sfcdemo.constant.TypeIdUtil;
 import com.haiersmart.sfcdemo.draw.AlarmWindow;
 import com.haiersmart.sfcdemo.draw.MyTestButton;
 import com.haiersmart.sfcdemo.model.FridgeModel;
+import com.haiersmart.sfcontrol.ControlService;
+import com.haiersmart.sfcontrol.ICallback;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -38,8 +41,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    private static final String TAG = "MainActivity";
+public class AidlActivity extends AppCompatActivity implements View.OnClickListener {
+    private static final String TAG = "AidlActivity";
     private Context mContext;
 
     private static FridgeModel mModel = new FridgeModel();
@@ -69,17 +72,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private AlarmWindow alarmWindow;
 
+    private ControlService mService;
+    ServiceConnection connection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            mService = ControlService.Stub.asInterface(service);
+            try {
+                mService.registerCallback(mCallback);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            startQueryType();
+        }
 
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            try {
+                mService.unregisterCallback(mCallback);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_aidl);
         mContext = getApplicationContext();
-        //        Intent intent = new Intent();
-        //        intent.setComponent(new ComponentName("com.haiersmart.sfcontrol", "com.haiersmart.sfcontrol.service.ControlMainBoardService"));
-        //        startService(intent);
-        registerBroadcast();
+
+        Intent serviceIntent = new Intent();
+        ComponentName componentName = new ComponentName(
+                "com.haiersmart.sfcontrol",
+                "com.haiersmart.sfcontrol.service.ControlMainBoardService");
+        serviceIntent.setComponent(componentName);
+        bindService(serviceIntent, connection, Context.BIND_AUTO_CREATE);
+//        registerBroadcast();
         findView();
         //        startQueryType();
     }
@@ -88,12 +116,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         if (isReady) {
-            sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_CONTROL_READY);
-            startRefreshUI();
+//            startRefreshUI();
         } else {
-            Intent intent = new Intent();
-            intent.setComponent(new ComponentName("com.haiersmart.sfcontrol", "com.haiersmart.sfcontrol.service.ControlMainBoardService"));
-            startService(intent);
             startQueryType();
         }
         //        registerBroadcast();
@@ -102,129 +126,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onPause() {
         super.onPause();
-        stopRefreshUI();
+//        stopRefreshUI();
         //        unregisterReceiver(receiveUpdateUI);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        stopRefreshUI();
+//        stopRefreshUI();
         stopSterilizeTimer();
-        unregisterReceiver(receiveUpdateUI);
+        unbindService(connection);
     }
 
-    private void registerBroadcast() {
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(ConstantUtil.SERVICE_NOTICE);
-        registerReceiver(receiveUpdateUI, intentFilter);
-    }
 
-    private BroadcastReceiver receiveUpdateUI = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            Log.i(TAG, "BroadcastReceiver receiveUpdateUI action=" + action);
-            if (action.equals(ConstantUtil.SERVICE_NOTICE)) {
-                boolean ready = intent.getBooleanExtra(ConstantUtil.KEY_READY, isServiceReady);
-                if (isServiceReady != ready) {
-                    isServiceReady = ready;
-                    if (isServiceReady) {
-                        stopQueryType();
-                        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_FRIDGE_INFO);
-                    } else {
-                        startQueryType();
-                    }
-                }
-                if (isReady) {
-                    String jsonRange = intent.getStringExtra(ConstantUtil.KEY_RANGE);
-                    if (jsonRange != null) {
-                        JSONObject jsonObject = JSONObject.parseObject(jsonRange);
-                        Log.i(TAG, "jsonRange is:" + jsonRange);
-                        setTempRange(jsonObject);
-                        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_TEMPER_INFO);
-                        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_CONTROL_INFO);
-                        startRefreshUI();
-                    }
-                    String jsonControl = intent.getStringExtra(ConstantUtil.KEY_CONTROL_INFO);
-                    if (jsonControl != null) {
-                        JSONArray jsonArray = JSONArray.parseArray(jsonControl);
-                        updateModeLevel(jsonArray);
-                        refreshUI();
-                    }
-                    String jsonTemper = intent.getStringExtra(ConstantUtil.KEY_TEMPER);
-                    if (jsonTemper != null) {
-                        JSONArray jsonArray = JSONArray.parseArray(jsonTemper);
-                        updateShowTemp(jsonArray);
-                        refreshUI();
-                    }
-                    String jsonError = intent.getStringExtra(ConstantUtil.KEY_ERROR);
-                    if (jsonError != null) {
-                        JSONArray jsonArray = JSONArray.parseArray(jsonError);
-//                        Log.i(TAG, "error jsonArray:" + jsonArray);
-                    }
-                    String jsonDoor = intent.getStringExtra(ConstantUtil.DOOR_STATUS);
-                    if (jsonDoor != null) {
-                        final JSONObject jsonObject = JSONObject.parseObject(jsonDoor);
-                        Log.d(TAG, "door status jsonObject:" + jsonObject);
-                    }
-                    String jsonAlarm = intent.getStringExtra(ConstantUtil.DOOR_ALARM_STATUS);
-                    if (jsonAlarm != null) {
-                        JSONObject jsonObject = JSONObject.parseObject(jsonAlarm);
-                        Log.i(TAG, "door alarm status jsonObject:" + jsonObject);
-                        handleDoorAlarm(jsonObject);
-                    }
-                    String jsonSterilize = intent.getStringExtra(ConstantUtil.KEY_STERILIZE_STATUS);
-                    if (jsonSterilize != null) {
-                        JSONObject jsonObject = JSONObject.parseObject(jsonSterilize);
-                        Log.i(TAG, "sterilize status jsonObject:" + jsonObject);
-                        handleSterilizeStatus(jsonObject);
-                    }
-                    statusCode = intent.getStringExtra(ConstantUtil.KEY_STATUS_CODE);
-                    if(statusCode != null){
-                        Log.i(TAG,"statusCode:"+statusCode);
-                        tvStatusCode.setText(statusCode);
-                    }
-
-                } else {
-                    String jsonInfo = intent.getStringExtra(ConstantUtil.KEY_INFO);
-                    if (jsonInfo != null) {
-                        JSONObject jsonObject = JSONObject.parseObject(jsonInfo);
-                        Log.i(TAG, "jsonInfo is:" + jsonInfo);
-                        String id = (String) jsonObject.get(ConstantUtil.KEY_TYPE_ID);
-                        String type = (String) jsonObject.get(ConstantUtil.KEY_FRIDGE_TYPE);
-                        mModel.mFridgeModel = type;
-                        mModel.mTypeId = id;
-                        setModel();
-                    }
-                }
-            }
-        }
-    };
-
-    private void sendUserCommond(String key, String content) {
-        Log.i(TAG, "kill content = " + content);
-        Intent intent = new Intent();
-        intent.setAction(ConstantUtil.COMMAND_TO_SERVICE);
-        intent.putExtra(key, content);
-        sendBroadcast(intent);
-    }
-
-    private void sendUserCommond(String keyOne, String contentOne, String keyTwo, int contentTwo) {
-        Intent intent = new Intent();
-        intent.setAction(ConstantUtil.COMMAND_TO_SERVICE);
-        intent.putExtra(keyOne, contentOne);
-        intent.putExtra(keyTwo, contentTwo);
-        sendBroadcast(intent);
-    }
-
-    private void sendUserCommond(String key, int value) {
-        Intent intent = new Intent();
-        intent.setAction(ConstantUtil.COMMAND_TO_SERVICE);
-        intent.putExtra(key, value);
-        sendBroadcast(intent);
-    }
 
     private void findView() {
         lineEnvTemp = (LinearLayout) findViewById(R.id.linear_demo_env_temp);
@@ -280,13 +194,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         skbFridge = (SeekBar) findViewById(R.id.skb_demo_fridge);
         skbFreeze = (SeekBar) findViewById(R.id.skb_demo_freeze);
         skbChange = (SeekBar) findViewById(R.id.skb_demo_change);
-        listenerSeekBar();
+
 
         imvQrCode = (ImageView) findViewById(R.id.imv_demo_test);
 
     }
 
-    private void setView() {
+    private void setView() throws RemoteException {
+        listenerSeekBar();
         switch (mModel.mFridgeModel) {
             case ConstantUtil.BCD251_MODEL:
                 lineFridgeTemp.setVisibility(View.VISIBLE);
@@ -340,10 +255,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         isReady = true;
         tvTest.setText("使用馨小厨APP扫码绑定");
         QrCodeUtil.createQRCode(imvQrCode, TypeIdUtil.getCode(mContext, mModel.mTypeId), 300);
-        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_TEMP_RANGE);
+
+//        startRefreshUI();
     }
 
-    private void setModel() {
+    private void setModel() throws RemoteException {
         //        if(mModel.mFridgeModel != null) {
         //        mModel.mFridgeModel = ConstantUtil.BCD251_MODEL;
         if (mModel.mFridgeModel.equals(ConstantUtil.BCD251_MODEL)) {
@@ -359,9 +275,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void startQueryType() {
-        Intent intent = new Intent();
-        intent.setComponent(new ComponentName("com.haiersmart.sfcontrol", "com.haiersmart.sfcontrol.service.ControlMainBoardService"));
-        startService(intent);
         if (mTimer == null) {
             mTimer = new Timer();
         }
@@ -373,7 +286,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     mHandler.sendEmptyMessage(0x01);
                 }
             };
-            mTimer.schedule(mWaitTask, 1000, 1000);
+            mTimer.schedule(mWaitTask, 0, 500);
         }
     }
 
@@ -423,27 +336,70 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 0x01:
-                    if (!isServiceReady) {
-                        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_CONTROL_READY);
-                        Log.i(TAG, "sendControlCmdResponse main board is ready?");
-                        //                    mWaitTask.cancel();
+                    try {
+                        isServiceReady = mService.getIsReady();
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                    if (isServiceReady) {
+                        stopQueryType();
+                        try {
+                            mModel.mTypeId = mService.getHardId();
+                            Log.i(TAG,"mModel.mTypeId = "+mModel.mTypeId);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            mModel.mFridgeModel = mService.getHardType();
+                            Log.i(TAG,"mModel.mFridgeModel = "+mModel.mFridgeModel);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            setModel();
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            setTempRange();
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+
                     }
                     break;
                 case 0x02:
-                    refreshUI();
+                    updateSterilizeTime();
+                    break;
+                case 0x03:
+                    handleDoorStatus();
+                    break;
+                case 0x04:
+                    handleDoorAlarm();
+                    break;
+                case 0x05:
+                    updateShowTemp(showTempStatus);
+                    break;
+                case 0x06:
+                    try {
+                        updateModeLevel(modeStauts);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                     break;
             }
         }
 
     };
 
-    private void refreshUI() {
+    private void refreshUI() throws RemoteException {
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = new Date(System.currentTimeMillis());
         String strTime = simpleDateFormat.format(date);
         tvTime.setText(strTime);
-        sendUserCommond(ConstantUtil.KEY_MODE,ConstantUtil.QUERY_STATUS_CODE);
+        tvStatusCode.setText(mService.getHardStatusCoder());
+        updateModeLevel(mService.getModeInfo());
         //        tvTest.setText(mNetRunnable.getNtpHost()+"\n"+mNetRunnable.getTimeoutCounts()+":"+mNetRunnable.getRequestCounts()
         //                +"\n"+mNetRunnable.getTimeStamp()+"\n"+mNetRunnable.getTime());
         if (mModel.mFridgeModel.equals(ConstantUtil.BCD251_MODEL)) {
@@ -608,6 +564,58 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     }
+
+    private void updateSterilize(){
+        switch (mModel.mSterilizeMode) {
+            case 0:
+                tvSterilizeRuntime.setText("30:00");
+                setSterilizeButtonOff();
+                break;
+            case 1:
+                setSterilizeButtonOff();
+                btnSterilizeSmart.setOn();
+                break;
+            case 2:
+                setSterilizeButtonOff();
+                btnSterilizeStrong.setOn();
+                break;
+            case 3:
+                setSterilizeButtonOff();
+                btnSterilize3.setOn();
+                break;
+            case 4:
+                setSterilizeButtonOff();
+                btnSterilize4.setOn();
+                break;
+            case 5:
+                setSterilizeButtonOff();
+                btnSterilize5.setOn();
+                break;
+            case 6:
+                setSterilizeButtonOff();
+                btnSterilize6.setOn();
+                break;
+            case 7:
+                setSterilizeButtonOff();
+                btnSterilize7.setOn();
+                break;
+            case 8:
+                setSterilizeButtonOff();
+                btnSterilize8.setOn();
+                break;
+            case 9:
+                setSterilizeButtonOff();
+                btnSterilize9.setOn();
+                break;
+        }
+    }
+    private void updateSterilizeTime(){
+        if (mModel.mSterilizeMode != 0 && isSterilizeRun) {
+            SimpleDateFormat timeSterilize = new SimpleDateFormat("mm:ss");
+            String strTimeSterilize = timeSterilize.format(new Date(countsSterilize * 1000));
+            tvSterilizeRuntime.setText(strTimeSterilize);
+        }
+    }
     private Timer timerSterilize;
     private TimerTask taskSterilize;
     private boolean isSterilizeRun = false;
@@ -622,7 +630,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     if(isSterilizeRun){
                         if (countsSterilize > 0) {
                             countsSterilize--;
-
+                            mHandler.sendEmptyMessage(0x02);
                         }
                     }
                 }
@@ -639,6 +647,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             timerSterilize.cancel();
             timerSterilize = null;
         }
+        countsSterilize = 0;
     }
 
     private void setSterilizeButtonOff() {
@@ -662,9 +671,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(View v) {
                 if (v.getId() == idButton) {
                     if (btnSmart.isPress()) {
-                        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_SMART_OFF);
+                        try {
+                            mService.setSmartMode(false);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
                     } else {
-                        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_SMART_ON);
+                        try {
+                            mService.setSmartMode(true);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
@@ -681,9 +698,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(View v) {
                 if (v.getId() == idButton) {
                     if (btnHoliday.isPress()) {
-                        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_HOLIDAY_OFF);
+                        try {
+                            mService.setHolidayMode(false);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
                     } else {
-                        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_HOLIDAY_ON);
+                        try {
+                            mService.setHolidayMode(true);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
@@ -700,9 +725,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(View v) {
                 if (v.getId() == idButton) {
                     if (btnQuickCold.isPress()) {
-                        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_COLD_OFF);
+                        try {
+                            mService.setQuickColdMode(false);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
                     } else {
-                        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_COLD_ON);
+                        try {
+                            mService.setQuickColdMode(true);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
@@ -734,9 +767,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(View v) {
                 if (v.getId() == idButton) {
                     if (btnQuickFreeze.isPress()) {
-                        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_FREEZE_OFF);
+                        try {
+                            mService.setQuickFreezeMode(false);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
                     } else {
-                        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_FREEZE_ON);
+                        try {
+                            mService.setQuickFreezeMode(true);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
@@ -753,9 +794,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(View v) {
                 if (v.getId() == idButton) {
                     if (btnFridgeSwitch.isPress()) {
-                        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.REFRIGERATOR_CLOSE);
+                        try {
+                            mService.setFridgeSwitch(false);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
                     } else {
-                        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.REFRIGERATOR_OPEN);
+                        try {
+                            mService.setFridgeSwitch(true);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
@@ -790,9 +839,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(View v) {
                 if (v.getId() == idButton) {
                     if (btnTidbit.isPress()) {
-                        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_TIDBIT_OFF);
+                        try {
+                            mService.setTidbitMode(false);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
                     } else {
-                        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_TIDBIT_ON);
+                        try {
+                            mService.setTidbitMode(true);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
@@ -808,9 +865,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(View v) {
                 if (v.getId() == idButton) {
                     if (btnPurify.isPress()) {
-                        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_PURIFY_OFF);
+                        try {
+                            mService.setPurifyMode(false);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
                     } else {
-                        sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_PURIFY_ON);
+                        try {
+                            mService.setPurifyMode(true);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
@@ -824,7 +889,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 finish();
                 break;
             case R.id.title_demo_status_code:
-                Intent intentActivity = new Intent(this,AidlActivity.class);
+                Intent intentActivity = new Intent(this,MainActivity.class);
                 startActivity(intentActivity);
                 finish();
                 break;
@@ -851,82 +916,172 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_demo_sterilize_smart:
                 if (btnSterilizeSmart.isPress()) {
                     tvSterilizeInterval.setText("00:00");
-                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_STERILIZE_ON, ConstantUtil.MODE_UV, 0);
+                    try {
+                        String res = mService.setSterilizeMode(0);
+
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     tvSterilizeInterval.setText("06:00");
-                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_STERILIZE_ON, ConstantUtil.MODE_UV, 1);
+                    try {
+                        String res = mService.setSterilizeMode(1);
+
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                 }
                 break;
             case R.id.btn_demo_sterilize_strong:
                 if (btnSterilizeStrong.isPress()) {
                     tvSterilizeInterval.setText("00:00");
-                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_STERILIZE_ON, ConstantUtil.MODE_UV, 0);
+                    try {
+                        String res = mService.setSterilizeMode(0);
+
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     tvSterilizeInterval.setText("04:00");
-                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_STERILIZE_ON, ConstantUtil.MODE_UV, 2);
+                    try {
+                        String res = mService.setSterilizeMode(2);
+
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                 }
                 break;
             case R.id.btn_demo_sterilize_3:
                 if (btnSterilize3.isPress()) {
                     tvSterilizeInterval.setText("00:00");
-                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_STERILIZE_ON, ConstantUtil.MODE_UV, 0);
+                    try {
+                        String res = mService.setSterilizeMode(0);
+
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     tvSterilizeInterval.setText("03:00");
-                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_STERILIZE_ON, ConstantUtil.MODE_UV, 3);
+                    try {
+                        String res = mService.setSterilizeMode(3);
+
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                 }
                 break;
             case R.id.btn_demo_sterilize_4:
                 if (btnSterilize4.isPress()) {
                     tvSterilizeInterval.setText("00:00");
-                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_STERILIZE_ON, ConstantUtil.MODE_UV, 0);
+                    try {
+                        String res = mService.setSterilizeMode(0);
+
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     tvSterilizeInterval.setText("04:00");
-                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_STERILIZE_ON, ConstantUtil.MODE_UV, 4);
+                    try {
+                        String res = mService.setSterilizeMode(4);
+
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                 }
                 break;
             case R.id.btn_demo_sterilize_5:
                 if (btnSterilize5.isPress()) {
                     tvSterilizeInterval.setText("00:00");
-                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_STERILIZE_ON, ConstantUtil.MODE_UV, 0);
+                    try {
+                        String res = mService.setSterilizeMode(0);
+
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     tvSterilizeInterval.setText("05:00");
-                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_STERILIZE_ON, ConstantUtil.MODE_UV, 5);
+                    try {
+                        String res = mService.setSterilizeMode(5);
+
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                 }
                 break;
             case R.id.btn_demo_sterilize_6:
                 if (btnSterilize6.isPress()) {
                     tvSterilizeInterval.setText("00:00");
-                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_STERILIZE_ON, ConstantUtil.MODE_UV, 0);
+                    try {
+                        String res = mService.setSterilizeMode(0);
+
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     tvSterilizeInterval.setText("06:00");
-                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_STERILIZE_ON, ConstantUtil.MODE_UV, 6);
+                    try {
+                        String res = mService.setSterilizeMode(6);
+
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                 }
                 break;
             case R.id.btn_demo_sterilize_7:
                 if (btnSterilize7.isPress()) {
                     tvSterilizeInterval.setText("00:00");
-                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_STERILIZE_ON, ConstantUtil.MODE_UV, 0);
+                    try {
+                        String res = mService.setSterilizeMode(0);
+
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     tvSterilizeInterval.setText("07:00");
-                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_STERILIZE_ON, ConstantUtil.MODE_UV, 7);
+                    try {
+                        String res = mService.setSterilizeMode(7);
+
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                 }
                 break;
             case R.id.btn_demo_sterilize_8:
                 if (btnSterilize8.isPress()) {
                     tvSterilizeInterval.setText("00:00");
-                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_STERILIZE_ON, ConstantUtil.MODE_UV, 0);
+                    try {
+                        String res = mService.setSterilizeMode(0);
+
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     tvSterilizeInterval.setText("08:00");
-                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_STERILIZE_ON, ConstantUtil.MODE_UV, 8);
+                    try {
+                        String res = mService.setSterilizeMode(8);
+
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                 }
                 break;
             case R.id.btn_demo_sterilize_9:
                 if (btnSterilize9.isPress()) {
                     tvSterilizeInterval.setText("00:00");
-                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_STERILIZE_ON, ConstantUtil.MODE_UV, 0);
+                    try {
+                        String res = mService.setSterilizeMode(0);
+
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     tvSterilizeInterval.setText("09:00");
-                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.MODE_STERILIZE_ON, ConstantUtil.MODE_UV, 9);
+                    try {
+                        String res = mService.setSterilizeMode(9);
+
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                 }
                 break;
         }
@@ -947,8 +1102,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 int progress = seekBar.getProgress();
-                sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.TEMPER_SETCOLD,
-                        ConstantUtil.KEY_SET_FRIDGE_LEVEL, progress + mModel.mFridgeMin);
+                try {
+                    String res = mService.setFridgeTemp(progress + mModel.mFridgeMin);
+
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
             }
         });
         skbFridge.setOnTouchListener(new View.OnTouchListener() {
@@ -984,8 +1143,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 int progress = seekBar.getProgress();
-                sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.TEMPER_SETFREEZE,
-                        ConstantUtil.KEY_SET_FREEZE_LEVEL, progress + mModel.mFreezeMin);
+                try {
+                    String res = mService.setFreezeTemp(progress + mModel.mFreezeMin);
+
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
             }
         });
         skbFreeze.setOnTouchListener(new View.OnTouchListener() {
@@ -1022,8 +1185,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 int progress = seekBar.getProgress();
-                sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.TEMPER_SETCUSTOMAREA,
-                        ConstantUtil.KEY_SET_COLD_LEVEL, progress + mModel.mChangeMin);
+                try {
+                    String res = mService.setChangeTemp(progress + mModel.mChangeMin);
+
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
             }
         });
         skbChange.setOnTouchListener(new View.OnTouchListener() {
@@ -1047,7 +1214,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-    private void updateShowTemp(JSONArray jsonArray) {
+    private String showTempStatus = new String();
+    private void updateShowTemp(String showTempJson) {
+        JSONArray jsonArray = JSONArray.parseArray(showTempJson);
         Log.i(TAG, "show temp jsonArray:" + jsonArray);
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -1062,16 +1231,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mModel.mChangeShow = value;
             }
         }
+        tvFridgeTemp.setText(mModel.mFridgeShow + " ℃");
+        tvFreezeTemp.setText(mModel.mFreezeShow + " ℃");
+        tvChangeTemp.setText(mModel.mChangeShow + " ℃");
+
     }
 
-    private void updateModeLevel(JSONArray jsonArray) {
+    private String modeStauts = new String();
+    private void updateModeLevel(String modeJson) throws RemoteException {
+        JSONArray jsonArray = JSONArray.parseArray(modeJson);
         Log.i(TAG, "mode level jsonArray:" + jsonArray);
         for (int i = 0; i < jsonArray.size(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             String name = (String) jsonObject.get("name");
             int value = (int) jsonObject.get("value");
             String disable = (String) jsonObject.get("disable");
-            Log.i(TAG, i + " name:" + name + " value:" + value + " disable:" + disable);
+//            Log.i(TAG, i + " name:" + name + " value:" + value + " disable:" + disable);
             if (name.equals(EnumBaseName.fridgeTargetTemp.toString())) {
                 mModel.mFridgeTarget = value;
                 mModel.mDisableFridge = disable;
@@ -1106,16 +1281,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     tvChangeTarget.setText(mModel.mDisableChange);
                 }
             } else if (name.equals(EnumBaseName.smartMode.toString())) {
-                mModel.isSmart = (value == 1) ? true : false;
+                if(value==1){
+                    mModel.isSmart = true;
+                    btnSmart.setOn();
+                }else {
+                    mModel.isSmart = false;
+                    btnSmart.setOff();
+                }
                 mModel.mDisableSmart = disable;
             } else if (name.equals(EnumBaseName.holidayMode.toString())) {
-                mModel.isHoliday = (value == 1) ? true : false;
+                if(value==1){
+                    mModel.isHoliday = true;
+                    btnHoliday.setOn();
+                }else {
+                    mModel.isHoliday = false;
+                    btnHoliday.setOff();
+                }
                 mModel.mDisableHoliday = disable;
             } else if (name.equals(EnumBaseName.quickColdMode.toString())) {
-                mModel.isQuickCold = (value == 1) ? true : false;
+                if(value==1){
+                    mModel.isQuickCold = true;
+                    btnQuickCold.setOn();
+                }else {
+                    mModel.isQuickCold = false;
+                    btnQuickCold.setOff();
+                }
                 mModel.mDisableQuickCold = disable;
             } else if (name.equals(EnumBaseName.quickFreezeMode.toString())) {
-                mModel.isQuickFreeze = (value == 1) ? true : false;
+                if(value==1){
+                    mModel.isQuickFreeze = true;
+                    btnQuickFreeze.setOn();
+                }else {
+                    mModel.isQuickFreeze = false;
+                    btnQuickFreeze.setOff();
+                }
                 mModel.mDisableQuickFreeze = disable;
             } else if (name.equals(EnumBaseName.fridgeSwitch.toString())) {
                 mModel.isFridgeOpen = (value == 1) ? true : false;
@@ -1129,15 +1328,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } else if (name.equals(EnumBaseName.SterilizeMode.name())) {
                 mModel.mSterilizeMode = value;
                 mModel.mDisableSterilize = disable;
-//                if(value != 0){
-//                    startSterilizeTimer();
-//                }else {
-//                    stopSterilizeTimer();
-//                }
+                updateSterilize();
             } else if (name.equals(EnumBaseName.SterilizeSwitch.name())) {
                 if (value == 1) {
                     mModel.isSterilize = true;
-                    sendUserCommond(ConstantUtil.KEY_MODE, ConstantUtil.QUERY_STERILIZE_STATUS);
+                    if(mService.getSterilizeRemanTime() > 0) {
+                        countsSterilize = mService.getSterilizeRemanTime();
+                    }else {
+                        countsSterilize = 0;
+                    }
+                    isSterilizeRun = mService.getSterilizeRunStatus();
                     startSterilizeTimer();
 //                    countsSterilize = 30 * 60;
                 } else {
@@ -1148,7 +1348,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void handleDoorAlarm(JSONObject jsonObject) {
+    private String alarmStauts = new String();
+    private void handleDoorAlarm() {
+        JSONObject jsonObject = JSONObject.parseObject(alarmStauts);
+        Log.i(TAG, "alarm jsonObject:" + jsonObject);
         Integer value = (Integer) jsonObject.get("fridge");
         if (value == null || value == 0) {
             cancelAlarmWindow("冷藏");
@@ -1169,25 +1372,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void handleDoorStatus(JSONObject jsonObject) {
-        if ((int) jsonObject.get("fridge") == 1) {
-            popAlarmWindow("冷藏");
-        } else {
-            cancelAlarmWindow("冷藏");
-        }
-        if ((int) jsonObject.get("freeze") == 1) {
-            popAlarmWindow("冷冻");
-        } else {
-            cancelAlarmWindow("冷冻");
-        }
-        if ((int) jsonObject.get("change") == 1) {
-            popAlarmWindow("变温");
-        } else {
-            cancelAlarmWindow("变温");
-        }
+    private String doorStauts = new String();
+    private void handleDoorStatus() {
+        JSONObject jsonObject = JSONObject.parseObject(doorStauts);
+        Log.i(TAG, "door jsonObject:" + jsonObject);
+
     }
 
-    private void handleSterilizeStatus(JSONObject jsonObject) {
+    private void handleSterilizeStatus(String SterilizeJson) {
+        JSONObject jsonObject = JSONObject.parseObject(SterilizeJson);
         int time = (int) jsonObject.get("time");
         if(time > 0) {
             countsSterilize = time;
@@ -1202,7 +1395,53 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    private void setTempRange(JSONObject jsonObject) {
+    private ICallback mCallback = new ICallback.Stub(){
+
+        @Override
+        public void notifyShowTemp(String showTemp) throws RemoteException {
+//            updateShowTemp(showTemp);
+            showTempStatus = showTemp;
+            mHandler.sendEmptyMessage(0x05);
+        }
+
+        @Override
+        public void notifyErrorInfo(String errorInfo) throws RemoteException {
+
+        }
+
+        @Override
+        public void notifyDoorStatus(String doorStatus) throws RemoteException {
+            doorStauts = doorStatus;
+            mHandler.sendEmptyMessage(0x03);
+//            handleDoorStatus(doorStatus);
+        }
+
+        @Override
+        public void notifyDooralarm(String doorAlarm) throws RemoteException {
+            alarmStauts = doorAlarm;
+            mHandler.sendEmptyMessage(0x04);
+//            handleDoorAlarm(doorAlarm);
+        }
+
+        @Override
+        public void notifySterilizeRun(String run) throws RemoteException {
+            handleSterilizeStatus(run);
+        }
+
+        @Override
+        public void notifyMode(String mode) throws RemoteException {
+            modeStauts = mode;
+            mHandler.sendEmptyMessage(0x06);
+//            updateModeLevel(mode);
+        }
+
+    };
+
+    private void setTempRange() throws RemoteException {
+
+        String jsonRange = mService.getTempRange();
+        JSONObject jsonObject = JSONObject.parseObject(jsonRange);
+        Log.i(TAG,"jsonRange = "+jsonRange);
         mModel.mFridgeMin = (Integer) jsonObject.get("fridgeMinValue");
         mModel.mFridgeMax = (Integer) jsonObject.get("fridgeMaxValue");
         mModel.mFreezeMin = (Integer) jsonObject.get("freezeMinValue");
@@ -1213,6 +1452,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         skbFridge.setMax(mModel.mFridgeMax - mModel.mFridgeMin);
         skbChange.setMax(mModel.mChangeMax - mModel.mChangeMin);
         skbFreeze.setMax(mModel.mFreezeMax - mModel.mFreezeMin);
+        updateModeLevel(mService.getModeInfo());
+        updateShowTemp(mService.getShowTemp());
     }
 
     private void popAlarmWindow(String show) {

@@ -4,10 +4,13 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.haier.tft.wifimodule.HaierWifiModule;
+import com.haiersmart.sfcontrol.ControlService;
+import com.haiersmart.sfcontrol.ICallback;
 import com.haiersmart.sfcontrol.application.ControlApplication;
 import com.haiersmart.sfcontrol.constant.ConstantUtil;
 import com.haiersmart.sfcontrol.constant.EnumBaseName;
@@ -33,6 +36,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.RunnableFuture;
 import java.util.concurrent.ScheduledExecutorService;
 
+
 public class ControlMainBoardService extends Service {
     static final String TAG = "ControlMainBoardService";
     private DBOperation mDBHandle;
@@ -52,8 +56,10 @@ public class ControlMainBoardService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         MyLogUtil.i(TAG, "Bind Service");
-        return new CmbBinder();
+//        return new CmbBinder();
+        return new ControlServiceImpl();
     }
+
 
     public class CmbBinder extends Binder {
         public ControlMainBoardService getService() {
@@ -451,6 +457,8 @@ public class ControlMainBoardService extends Service {
         sterilizeHashMap.put("time", countsSterilizeRun);
         sterilizeHashMap.put("run", nSterilizeRun);
         String sterilizeJson = JSON.toJSONString(sterilizeHashMap);
+        notifySterilizeRun(sterilizeJson);
+
         Intent intent = new Intent();
         intent.setAction(ConstantUtil.SERVICE_NOTICE);
         intent.putExtra(ConstantUtil.KEY_STERILIZE_STATUS, sterilizeJson);
@@ -459,33 +467,29 @@ public class ControlMainBoardService extends Service {
 
     public void sendControlCmdResponse() {
         MyLogUtil.d(TAG, "sendControlCmdResponse in");
+        String controlJson = JSON.toJSONString(mModel.getControlEntries());
+        notifyMode(controlJson);
         Intent intent = new Intent();
         intent.setAction(ConstantUtil.SERVICE_NOTICE);
-        //        intent.putExtra(ConstantUtil.KEY_CONTROL_INFO,(Serializable)mModel.getControlEntries());
-        String controlJson = JSON.toJSONString(mModel.getControlEntries());
         intent.putExtra(ConstantUtil.KEY_CONTROL_INFO, controlJson);
         sendBroadcast(intent);
         MyLogUtil.d(TAG, "sendControlCmdResponse out");
     }
 
     public void notifyTemperChanged(ArrayList<FridgeStatusEntry> statusEntries) {
+        String statusJson = JSON.toJSONString(statusEntries);
+        notifyShowTemp(statusJson);
         Intent intent = new Intent();
         intent.setAction(ConstantUtil.SERVICE_NOTICE);
-        //        MyLogUtil.i(TAG,"notifyTemperChanged statusEntries.size="+statusEntries.size());
-        //        intent.putExtra(ConstantUtil.KEY_TEMPER,(Serializable)statusEntries);
-        //        Bundle bundle = new Bundle();
-        //        intent.putExtra("key",bundle);
-        //        bundle.putSerializable(ConstantUtil.KEY_TEMPER, (Serializable)statusEntries);
-        String statusJson = JSON.toJSONString(statusEntries); // [{"id":123,“name”：“”，“value”，}, {{"id":123,“name”：“”，“value”，}, {  }]
         intent.putExtra(ConstantUtil.KEY_TEMPER, statusJson);
         sendBroadcast(intent);
     }
 
     public void notifyErrorOccurred(List<FridgeStatusEntry> statusEntries) {
+        String controlJson = JSON.toJSONString(statusEntries);
+        notifyErrorInfo(controlJson);
         Intent intent = new Intent();
         intent.setAction(ConstantUtil.SERVICE_NOTICE);
-        //        intent.putExtra(ConstantUtil.KEY_ERROR,(Serializable)statusEntries);
-        String controlJson = JSON.toJSONString(statusEntries);
         intent.putExtra(ConstantUtil.KEY_ERROR, controlJson);
         sendBroadcast(intent);
     }
@@ -545,8 +549,8 @@ public class ControlMainBoardService extends Service {
     //    public static final long FREEZETIME = 60 * 60;
     private static long coldCount = 0;
     private static long freezeCount = 0;
-    private static final long COLD_OVER_TIME = 24 * 60 * 60;
-    private static final long FREEZE_OVER_TIME = 3 * 24 * 60 * 60;
+    private static final long COLD_OVER_TIME = 24 * 60 * 60 *1000;//ms  24h
+    private static final long FREEZE_OVER_TIME = 3 * 24 * 60 * 60 *1000;//ms 3d
     private ScheduledExecutorService sExService = Executors.newScheduledThreadPool(2);
     private RunnableFuture<?> sColdOnFuture;
     private RunnableFuture<?> sFreezeOnFuture;
@@ -560,10 +564,11 @@ public class ControlMainBoardService extends Service {
      * @param reset ture:重新开始计时 false:继续计时
      */
     public void startColdOnTime(boolean reset) {
-        MyLogUtil.i(TAG, "startColdOnTime Count");
+        MyLogUtil.i(TAG, "coldtime sta startColdOnTime Count");
         if (reset) {
             coldCount = 0;
             SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.COLDTIME, System.currentTimeMillis() / 1L);
+            MyLogUtil.i(TAG, "coldtime sta cold time=" + System.currentTimeMillis());
         } else {
             coldCount = (long) SpUtils.getInstance(ControlApplication.getInstance()).get(ConstantUtil.COLDCOUNT, 0L);
             long oldTime = (long) SpUtils.getInstance(ControlApplication.getInstance()).get(ConstantUtil.COLDTIME, 0L);
@@ -571,18 +576,21 @@ public class ControlMainBoardService extends Service {
             long delta = currentTime - oldTime;
             if (delta > COLD_OVER_TIME) {
                 if ((coldCount * 10) < COLDTIME) {
+                    MyLogUtil.i(TAG, "coldtime sta cold delta count coldtime=" + coldCount);
                     delta = currentTime - (coldCount * 10000);
+                    MyLogUtil.i(TAG, "coldtime sta cold time=" + delta);
                     SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.COLDTIME, delta / 1L);
                 }
             } else if (delta > 0) {
                 delta = delta / 10000;
-                MyLogUtil.i(TAG, "cold delta count=" + delta);
+                MyLogUtil.i(TAG, "coldtime sta cold delta count=" + delta);
                 if (delta > coldCount) {
                     coldCount = delta;
-                    MyLogUtil.i(TAG, "delta cold count=" + coldCount);
+                    MyLogUtil.i(TAG, "coldtime sta delta cold count=" + coldCount);
                 }
             } else {
                 delta = currentTime - (coldCount * 10000);
+                MyLogUtil.i(TAG, "coldtime sta cold time xiao=" + delta);
                 SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.COLDTIME, delta / 1L);
             }
         }
@@ -594,7 +602,7 @@ public class ControlMainBoardService extends Service {
                 @Override
                 public void run() {
                     coldCount++;
-                    MyLogUtil.i(TAG, "coldOnRunnable coldCount=" + coldCount);
+                    MyLogUtil.i(TAG, "coldtime coldOnRunnable coldCount=" + coldCount);
                     if (coldCount % 6 == 0) {//1min
                         SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.COLDCOUNT, coldCount / 1L);
                         //10min
@@ -605,25 +613,28 @@ public class ControlMainBoardService extends Service {
                             long delta = currentTime - oldTime;
                             if (delta > COLD_OVER_TIME) {
                                 if ((coldCount * 10) < COLDTIME) {
+                                    MyLogUtil.i(TAG, "coldtime cold delta count coldtime=" + coldCount);
                                     delta = currentTime - (coldCount * 10000);
+                                    MyLogUtil.i(TAG, "coldtime cold time=" + delta);
                                     SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.COLDTIME, delta / 1L);
                                 }
                             } else if (delta > 0) {
                                 delta = delta / 10000;
-                                MyLogUtil.i(TAG, "cold delta count=" + delta);
+                                MyLogUtil.i(TAG, "coldtime cold delta count=" + delta);
                                 if (delta > coldCount) {
                                     coldCount = delta;
-                                    MyLogUtil.i(TAG, "delta cold count=" + coldCount);
+                                    MyLogUtil.i(TAG, "coldtime delta cold count=" + coldCount);
                                 }
                             } else {
                                 delta = currentTime - (coldCount * 10000);
+                                MyLogUtil.i(TAG, "coldtime cold time xiao=" + delta);
                                 SpUtils.getInstance(ControlApplication.getInstance()).put(ConstantUtil.COLDTIME, delta / 1L);
                             }
                         }
                     }
 
                     if ((coldCount * 10) >= COLDTIME) {
-                        MyLogUtil.i(TAG, "stop cold count =" + coldCount);
+                        MyLogUtil.i(TAG, "coldtime stop cold count =" + coldCount);
                         stopColdOnTime();
                         mModel.coldOff();
                     }
@@ -949,7 +960,7 @@ public class ControlMainBoardService extends Service {
             } else {
                 continueSterilize();
             }
-            nSterilizeRun = 0;
+            nSterilizeRun = 1;
 
             if (timerSterilize == null) {
                 timerSterilize = new Timer();
@@ -1025,6 +1036,402 @@ public class ControlMainBoardService extends Service {
             timerSterilize.cancel();
             timerSterilize = null;
         }
+    }
+
+
+
+
+    public void handleDoorEvents() {
+        String doorJson = mMBParams.handleDoorEvents();
+        if(doorJson != null) {
+            notifyDoorStatus(doorJson);
+            Intent intent = new Intent();
+            intent.putExtra(ConstantUtil.DOOR_STATUS, doorJson);
+            intent.setAction(ConstantUtil.SERVICE_NOTICE);
+            ControlApplication.getInstance().sendBroadcast(intent);
+            RemoteUtil.sendQuery();
+        }
+    }
+
+
+    private ArrayList<ICallback> mCallback = new ArrayList<>();
+    public void notifyShowTemp(String temperJson){
+        for(ICallback iCallback:mCallback){
+            try {
+                iCallback.notifyShowTemp(temperJson);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    public void notifyErrorInfo(String errofJson){
+        for(ICallback iCallback:mCallback){
+            try {
+                iCallback.notifyErrorInfo(errofJson);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void notifyMode(String mode){
+        for(ICallback iCallback:mCallback){
+            try {
+                iCallback.notifyMode(mode);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void notifySterilizeRun(String run){
+        for(ICallback iCallback:mCallback){
+            try {
+                iCallback.notifySterilizeRun(run);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    public void notifyDoorStatus(String doorJson){
+        for(ICallback iCallback:mCallback){
+            try {
+                iCallback.notifyDoorStatus(doorJson);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    public class ControlServiceImpl extends ControlService.Stub {
+        private final String TAG = "ControlService";
+
+        @Override
+        public boolean getIsReady() throws RemoteException {
+            return mIsModelReady;
+        }
+
+        @Override
+        public String getHardId() throws RemoteException {
+            return mMBParams.getTypeId();
+        }
+
+        @Override
+        public String getHardType() throws RemoteException {
+            return mMBParams.getFridgeType();
+        }
+
+        @Override
+        public int getTempFridgeMin() throws RemoteException {
+            return mMBParams.getTargetTempRange().getFridgeMinValue();
+        }
+
+        @Override
+        public int getTempFreezeMin() throws RemoteException {
+            return mMBParams.getTargetTempRange().getFreezeMinValue();
+        }
+
+        @Override
+        public int getTempChangeMin() throws RemoteException {
+            return mMBParams.getTargetTempRange().getChangeMinValue();
+        }
+
+        @Override
+        public int getTempFridgeMax() throws RemoteException {
+            return mMBParams.getTargetTempRange().getFridgeMaxValue();
+        }
+
+        @Override
+        public int getTempFreezeMax() throws RemoteException {
+            return mMBParams.getTargetTempRange().getFreezeMaxValue();
+        }
+
+        @Override
+        public int getTempChangeMax() throws RemoteException {
+            return mMBParams.getTargetTempRange().getChangeMaxValue();
+        }
+
+        @Override
+        public String getTempRange() throws RemoteException {
+            HashMap<String, Integer> hashMapRange = new HashMap<>();
+            hashMapRange.put("fridgeMinValue", mMBParams.getTargetTempRange().getFridgeMinValue());
+            hashMapRange.put("fridgeMaxValue", mMBParams.getTargetTempRange().getFridgeMaxValue());
+            hashMapRange.put("freezeMinValue", mMBParams.getTargetTempRange().getFreezeMinValue());
+            hashMapRange.put("freezeMaxValue", mMBParams.getTargetTempRange().getFreezeMaxValue());
+            hashMapRange.put("changeMinValue", mMBParams.getTargetTempRange().getChangeMinValue());
+            hashMapRange.put("changeMaxValue", mMBParams.getTargetTempRange().getChangeMaxValue());
+            String rangeJson = JSON.toJSONString(hashMapRange);
+            MyLogUtil.i(TAG,"rangeJson:"+rangeJson);
+            return rangeJson;
+        }
+
+        @Override
+        public boolean getSterilizeRunStatus() throws RemoteException {
+            return (nSterilizeRun==1);
+        }
+
+        @Override
+        public int getSterilizeRemanTime() throws RemoteException {
+            return countsSterilizeRun;
+        }
+
+        @Override
+        public String getHardStatusCoder() throws RemoteException {
+            return mMBParams.getFrameDataString();
+        }
+
+        @Override
+        public int getFridgeShowTemp() throws RemoteException {
+            return mMBParams.getMbsValueByName(EnumBaseName.fridgeShowTemp.name());
+        }
+
+        @Override
+        public int getFreezeShowTemp() throws RemoteException {
+            return mMBParams.getMbsValueByName(EnumBaseName.freezeShowTemp.name());
+        }
+
+        @Override
+        public int getChangeShowTemp() throws RemoteException {
+            return mMBParams.getMbsValueByName(EnumBaseName.changeShowTemp.name());
+
+        }
+
+        @Override
+        public String getShowTemp() throws RemoteException {
+            String temperJson = JSON.toJSONString(mModel.getTempEntries());
+            MyLogUtil.i(TAG,"temperJson:"+temperJson);
+            return temperJson;
+        }
+
+        @Override
+        public String getModeInfo() throws RemoteException {
+            String controlJson = JSON.toJSONString(mModel.getControlEntries());
+            MyLogUtil.i(TAG,"controlJson:"+controlJson);
+            return controlJson;
+        }
+
+        @Override
+        public String setFridgeTemp(int temp) throws RemoteException {
+            if (mModel != null) {
+                int temperCold = temp;
+                MyLogUtil.i(TAG, "onStartCommand TEMPER_SETCOLD temperCold=" + temperCold);
+                if (temperCold < mMBParams.getTargetTempRange().getFridgeMinValue()) {
+                    temperCold = mMBParams.getTargetTempRange().getFridgeMinValue();
+                } else if (temp > mMBParams.getTargetTempRange().getFridgeMaxValue()) {
+                    temperCold = mMBParams.getTargetTempRange().getFridgeMaxValue();
+                }
+                mModel.setCold(temperCold);
+                MyLogUtil.d("printSerialString", "fridge target");
+            }
+            RemoteUtil.sendQuery();
+            return getModeInfo();
+        }
+
+        @Override
+        public String setFreezeTemp(int temp) throws RemoteException {
+            if (mModel != null) {
+                int temperCold = temp;
+                if (temperCold < mMBParams.getTargetTempRange().getFreezeMinValue()) {
+                    temperCold = mMBParams.getTargetTempRange().getFreezeMinValue();
+                } else if (temperCold > mMBParams.getTargetTempRange().getFreezeMaxValue()) {
+                    temperCold = mMBParams.getTargetTempRange().getFreezeMaxValue();
+                }
+                mModel.setFreeze(temperCold);
+                MyLogUtil.d("printSerialString", "freeze target");
+            }
+            RemoteUtil.sendQuery();
+            return getModeInfo();
+        }
+
+        @Override
+        public String setChangeTemp(int temp) throws RemoteException {
+            if (mIsModelReady) {
+                int temperCold = temp;
+                if (temperCold < mMBParams.getTargetTempRange().getChangeMinValue()) {
+                    temperCold = mMBParams.getTargetTempRange().getChangeMinValue();
+                } else if (temperCold > mMBParams.getTargetTempRange().getChangeMaxValue()) {
+                    temperCold = mMBParams.getTargetTempRange().getChangeMaxValue();
+                }
+                mModel.setCustomArea(temperCold);
+                MyLogUtil.d("printSerialString", "change target");
+            }
+            RemoteUtil.sendQuery();
+            return getModeInfo();
+        }
+
+        @Override
+        public String setSmartMode(boolean b) throws RemoteException {
+            if(b) {
+                mModel.smartOn();
+            }else {
+                mModel.smartOff();
+            }
+            RemoteUtil.sendQuery();
+            return getModeInfo();
+        }
+
+        @Override
+        public String setHolidayMode(boolean b) throws RemoteException {
+            if(b) {
+                mModel.holidayOn();
+            }else {
+                mModel.holidayOff();
+            }
+            RemoteUtil.sendQuery();
+            return getModeInfo();
+        }
+
+        @Override
+        public String setQuickFreezeMode(boolean b) throws RemoteException {
+            if(b) {
+                mModel.freezeOn();
+                startFreezeOnTime(true);
+            }else {
+                stopFreezeOnTime();
+                mModel.freezeOff();
+            }
+            RemoteUtil.sendQuery();
+            return getModeInfo();
+        }
+
+        @Override
+        public String setQuickColdMode(boolean b) throws RemoteException {
+            if(b) {
+                mModel.coldOn();
+                startColdOnTime(true);
+            }else {
+                stopColdOnTime();
+                mModel.coldOff();
+            }
+            RemoteUtil.sendQuery();
+            return getModeInfo();
+        }
+
+        @Override
+        public String setFridgeSwitch(boolean b) throws RemoteException {
+            if(b) {
+                mModel.refrigeratorOpen();
+            }else {
+                mModel.refrigeratorClose();
+            }
+            RemoteUtil.sendQuery();
+            return getModeInfo();
+        }
+
+        @Override
+        public String setSterilizeMode(int step) throws RemoteException {
+            mModel.setSterilizeMode(step);
+            RemoteUtil.sendQuery();
+            return getModeInfo();
+        }
+
+        @Override
+        public String setTidbitMode(boolean b) throws RemoteException {
+            if(b) {
+                mModel.tidbitOn();
+            }else {
+                mModel.tidbitOff();
+            }
+            RemoteUtil.sendQuery();
+            return getModeInfo();
+        }
+
+        @Override
+        public String setPurifyMode(boolean b) throws RemoteException {
+            if(b) {
+                mModel.purifyOn();
+            }else {
+                mModel.purifyOff();
+            }
+            RemoteUtil.sendQuery();
+            return getModeInfo();
+        }
+
+        @Override
+        public void setFridgeLight(boolean b) throws RemoteException {
+            mProcessData.sendCmd(EnumBaseName.coldLightMode,b?1:0);
+        }
+
+        @Override
+        public void setHandleLight(boolean b) throws RemoteException {
+            mProcessData.sendCmd(EnumBaseName.handleLightMode,b?1:0);
+        }
+
+        @Override
+        public int getFridgeTargetTemp() throws RemoteException {
+            return mModel.getControlEntryByName(EnumBaseName.fridgeTargetTemp).value;
+        }
+
+        @Override
+        public int getFreezeTargetTemp() throws RemoteException {
+            return mModel.getControlEntryByName(EnumBaseName.freezeTargetTemp).value;
+        }
+
+        @Override
+        public int getChangeTargetTemp() throws RemoteException {
+            return mModel.getControlEntryByName(EnumBaseName.changeTargetTemp).value;
+        }
+
+        @Override
+        public boolean getSmartMode() throws RemoteException {
+            return mModel.getControlEntryByName(EnumBaseName.smartMode).value==1;
+        }
+
+        @Override
+        public boolean getHolidayMode() throws RemoteException {
+            return mModel.getControlEntryByName(EnumBaseName.holidayMode).value==1;
+        }
+
+        @Override
+        public boolean getQuickFreezeMode() throws RemoteException {
+            return mModel.getControlEntryByName(EnumBaseName.quickFreezeMode).value==1;
+        }
+
+        @Override
+        public boolean getQuickColdMode() throws RemoteException {
+            return mModel.getControlEntryByName(EnumBaseName.quickColdMode).value==1;
+        }
+
+        @Override
+        public boolean getFridgeSwitch() throws RemoteException {
+            return mModel.getControlEntryByName(EnumBaseName.fridgeSwitch).value==1;
+        }
+
+        @Override
+        public int getSterilizeMode() throws RemoteException {
+            return mModel.getControlEntryByName(EnumBaseName.SterilizeMode).value;
+        }
+
+        @Override
+        public boolean getSterilizeSwitch() throws RemoteException {
+            return mModel.getControlEntryByName(EnumBaseName.SterilizeSwitch).value==1;
+        }
+
+        @Override
+        public boolean getTidbitMode() throws RemoteException {
+            return mModel.getControlEntryByName(EnumBaseName.tidbitMode).value==1;
+        }
+
+        @Override
+        public boolean getPurifyMode() throws RemoteException {
+            return mModel.getControlEntryByName(EnumBaseName.purifyMode).value==1;
+        }
+
+        @Override
+        public void registerCallback(ICallback cb) throws RemoteException {
+            if(cb != null){
+                mCallback.add(cb);
+            }
+        }
+
+        @Override
+        public void unregisterCallback(ICallback cb) throws RemoteException {
+            if(cb != null){
+                mCallback.remove(cb);
+            }
+        }
+
     }
 
 

@@ -9,6 +9,7 @@
  */
 package com.haiersmart.sfcontrol.service.mbmodel;
 
+import com.alibaba.fastjson.JSON;
 import com.haiersmart.sfcontrol.constant.EnumBaseName;
 import com.haiersmart.sfcontrol.database.FridgeControlEntry;
 import com.haiersmart.sfcontrol.service.alarm.HandleDoorAlarm;
@@ -140,7 +141,7 @@ public class MainBoardTwoFiveOne extends MainBoardBase {
 
 
     @Override
-    public void handleDoorEvents() {
+    public String handleDoorEvents() {
         boolean isDoorChange = false;
         boolean bFridgeDoorNowStatus = getMainBoardStatusByName("fridgeDoorStatus")==1;
 //        boolean bFridgeDoorNowStatus = testDoor;
@@ -160,7 +161,10 @@ public class MainBoardTwoFiveOne extends MainBoardBase {
         if(isDoorChange){
             doorHashMap.put("fridge",bFridgeDoorNowStatus?1:0);
             doorHashMap.put("door",bFridgeDoorNowStatus?1:0);
-            sendDoorStatusBroadcast(doorHashMap);
+            String doorJson = JSON.toJSONString(doorHashMap);
+            return doorJson;
+        }else {
+            return null;
         }
     }
 

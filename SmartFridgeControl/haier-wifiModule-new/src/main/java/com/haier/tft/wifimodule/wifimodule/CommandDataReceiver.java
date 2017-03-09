@@ -92,6 +92,7 @@ public class CommandDataReceiver extends BroadcastReceiver {
              Log.i("sdk","get data from pcb");
 			sendData = intent.getByteArrayExtra("getBytes");
 			HashMap datamap = (HashMap)intent.getSerializableExtra("getState");
+			Log.i("sdk","get data from pcb datamap:"+datamap);
 
 //		/**
 			/**

@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.os.RemoteException;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -18,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.haiersmart.sfcontrol.ControlService;
 import com.haiersmart.sfcontrol.R;
 import com.haiersmart.sfcontrol.constant.ConstantUtil;
 import com.haiersmart.sfcontrol.constant.EnumBaseName;
@@ -61,6 +63,7 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
     private SeekBar skbFridge,skbFreeze,skbChange;
 
     private int onclickCounts = 0;
+    private ControlService mService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,9 +102,10 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             MyLogUtil.v(TAG, "ControlMainBoardService onServiceConnected");
-            mIsBound = true;
-            ControlMainBoardService.CmbBinder binder = (ControlMainBoardService.CmbBinder) service;
-            mControlService = binder.getService();
+//            mIsBound = true;
+//            ControlMainBoardService.CmbBinder binder = (ControlMainBoardService.CmbBinder) service;
+//            mControlService = binder.getService();
+            mService = ControlService.Stub.asInterface(service);
             startWaitTask();
         }
 
@@ -145,7 +149,7 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
         listenerSeekBar();
 
     }
-    private void setView(){
+    private void setView() throws RemoteException {
         initSeekBar();
         switch (mModel){
             case BCD251_MODEL:
@@ -202,7 +206,7 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                 break;
         }
     }
-    private void initSeekBar(){
+    private void initSeekBar() throws RemoteException {
         mTargetTempRange = mMainBoardParameters.getTargetTempRange();
         mFridgeMin = mTargetTempRange.getFridgeMinValue();
         mFreezeMin = mTargetTempRange.getFreezeMinValue();
@@ -214,13 +218,10 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
         skbFridge.setMax(mFridgeMax-mFridgeMin);
         skbFreeze.setMax(mFreezeMax-mFreezeMin);
         skbChange.setMax(mChangeMax-mChangeMin);
-        FridgeControlEntry fridgeControlEntry;
-        fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.fridgeTargetTemp);
-        int fridgeTarget = fridgeControlEntry.value;
-        fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.freezeTargetTemp);
-        int freezeTarget = fridgeControlEntry.value;
-        fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.changeTargetTemp);
-        int changeTarget = fridgeControlEntry.value;
+
+        int fridgeTarget = mService.getFridgeTargetTemp();
+        int freezeTarget = mService.getFreezeTargetTemp();
+        int changeTarget = mService.getChangeTargetTemp();
         skbFridge.setProgress(fridgeTarget-mFridgeMin);
         skbFreeze.setProgress(freezeTarget-mFreezeMin);
         skbChange.setProgress(changeTarget-mChangeMin);
@@ -228,7 +229,7 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
         tvFreezeTarget.setText(freezeTarget+" ℃");
         tvChangeTarget.setText(changeTarget+" ℃");
     }
-    private void setModel(){
+    private void setModel() throws RemoteException {
         if(mSerialData.isSerialDataReady()) {
             stopWaitTask();
             mModel = mSerialData.getCurrentModel();
@@ -301,16 +302,24 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
         public void handleMessage(Message msg){
             switch (msg.what){
                 case 0x01:
-                    setModel();
+                    try {
+                        setModel();
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case 0x02:
-                    refreshUI();
+                    try {
+                        refreshUI();
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                     break;
             }
         }
 
     };
-    private void refreshUI(){
+    private void refreshUI() throws RemoteException {
         tvStatusCode.setText(mMainBoardParameters.getFrameDataString());
         FridgeControlEntry fridgeControlEntry;
         switch (mModel){
@@ -425,26 +434,26 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                 tvEnvTemp.setText(getStatusValueByName(EnumBaseName.envShowTemp)+" ℃");
                 tvFridgeTemp.setText(getStatusValueByName(EnumBaseName.fridgeShowTemp)+" ℃");
                 tvFreezeTemp.setText(getStatusValueByName(EnumBaseName.freezeShowTemp)+" ℃");
-                fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.smartMode);
-                if(fridgeControlEntry.value == 1){
+
+                if(mService.getSmartMode()){
                     btnSmart.setOn();
                 }else {
                     btnSmart.setOff();
                 }
-                fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.holidayMode);
-                if(fridgeControlEntry.value == 1){
+
+                if(mService.getHolidayMode()){
                     btnHoliday.setOn();
                 }else {
                     btnHoliday.setOff();
                 }
-                fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.quickColdMode);
-                if(fridgeControlEntry.value == 1){
+
+                if(mService.getQuickColdMode()){
                     btnQuickCold.setOn();
                 }else {
                     btnQuickCold.setOff();
                 }
-                fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.quickFreezeMode);
-                if(fridgeControlEntry.value == 1){
+
+                if(mService.getQuickFreezeMode()){
                     btnQuickFreeze.setOn();
                 }else {
                     btnQuickFreeze.setOff();
@@ -474,10 +483,19 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                 if(v.getId() == idButton){
                     if(btnSmart.isPress()){
 //                        btnSmart.setOff();
-                        mControlService.sendUserCommand(EnumBaseName.smartMode,0);
+//                        mControlService.sendUserCommand(EnumBaseName.smartMode,0);
+                        try {
+                            mService.setSmartMode(false);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
                     }else {
 //                        btnSmart.setOn();
-                        mControlService.sendUserCommand(EnumBaseName.smartMode,1);
+                        try {
+                            mService.setSmartMode(true);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }

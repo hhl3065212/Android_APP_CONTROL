@@ -277,7 +277,7 @@ public class SerialData {
             case (byte) 0x02: //用户状态帧
                 if (mMainBoard != null) {
                     mMainBoard.updataMainBoardParameters(ReceiveBuff);
-                    mMainBoard.handleDoorEvents();
+//                    mMainBoard.handleDoorEvents();
                 }
                 MyLogUtil.i(TAG, "ProcData status BROADCAST_ACTION_STATUS_BACK");
                 //TODO: write observer mode by self, consider application context maybe make OOM
@@ -365,5 +365,9 @@ public class SerialData {
 
     public void setDoorStauts(boolean b) {
         mMainBoard.testDoor = b;
+    }
+
+    public String handleDoorEvents(){
+        return mMainBoard.handleDoorEvents();
     }
 }

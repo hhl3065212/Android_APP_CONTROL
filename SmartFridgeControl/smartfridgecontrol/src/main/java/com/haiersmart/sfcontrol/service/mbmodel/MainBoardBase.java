@@ -17,7 +17,6 @@ import com.haiersmart.sfcontrol.constant.ConstantUtil;
 import com.haiersmart.sfcontrol.constant.EnumBaseName;
 import com.haiersmart.sfcontrol.database.FridgeControlDbMgr;
 import com.haiersmart.sfcontrol.database.FridgeControlEntry;
-import com.haiersmart.sfcontrol.service.ControlMainBoardService;
 import com.haiersmart.sfcontrol.service.configtable.ProtocolCommand;
 import com.haiersmart.sfcontrol.service.configtable.ProtocolConfigBase;
 import com.haiersmart.sfcontrol.service.configtable.TargetTempRange;
@@ -52,7 +51,6 @@ public abstract class MainBoardBase {
     ArrayList<FridgeControlEntry> dbFridgeControlCancel;//数据库中需要取消设置的类
     ArrayList<FridgeControlEntry> dbFridgeControlSet;//数据库中需要设置的类
     public boolean testDoor = false;//
-    ControlMainBoardService mService;
 
     public MainBoardBase() {
     }
@@ -79,7 +77,7 @@ public abstract class MainBoardBase {
     /**
      * 冰箱门事件，包括开关门，开门报警
      */
-    public abstract void handleDoorEvents();
+    public abstract String handleDoorEvents();
 
     /**
      * 更新调试状态码到调试类 帧类型为0xff
@@ -714,11 +712,13 @@ public abstract class MainBoardBase {
     void sendDoorStatusBroadcast(HashMap<String, Integer> doorHashMap){
         MyLogUtil.d("printSerialString", "door");
         String doorJson = JSON.toJSONString(doorHashMap);
+
         Intent intent = new Intent();
         intent.putExtra(ConstantUtil.DOOR_STATUS,doorJson);
         intent.setAction(ConstantUtil.SERVICE_NOTICE);
         ControlApplication.getInstance().sendBroadcast(intent);
         RemoteUtil.sendQuery();
     }
+
 
 }

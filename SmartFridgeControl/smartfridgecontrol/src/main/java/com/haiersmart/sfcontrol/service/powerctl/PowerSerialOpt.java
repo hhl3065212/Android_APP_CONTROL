@@ -50,8 +50,9 @@ public class PowerSerialOpt {
     public static synchronized PowerSerialOpt getInstance() throws IOException {
         if (instance == null) {
             synchronized (PowerSerialOpt.class) {
-                if (instance == null)
+                if (instance == null) {
                     instance = new PowerSerialOpt();
+                }
             }
         }
         return instance;

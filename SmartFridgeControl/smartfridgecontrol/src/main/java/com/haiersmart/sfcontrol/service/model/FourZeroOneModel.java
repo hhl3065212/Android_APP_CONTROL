@@ -275,6 +275,7 @@ public class FourZeroOneModel extends ModelBase {
         }
         // 错误故障信息处理
         handleErrorInfoResponse();
+        mService.handleDoorEvents();
     }
 
     private void handleTemperInfoResponse() {

@@ -147,4 +147,8 @@ public class MainBoardParameters {
     public String getOSType(){
         return mSerialData.getmOSType();
     }
+
+    public String handleDoorEvents(){
+        return mSerialData.handleDoorEvents();
+    }
 }

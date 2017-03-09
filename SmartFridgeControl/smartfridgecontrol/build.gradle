@@ -2,11 +2,11 @@ apply plugin: 'com.android.application'
 
 android {
 
-    def int vCode = 11;
+    def int vCode = 12;
     def String vNameCode = '00' + vCode;
 
     compileSdkVersion 23
-    buildToolsVersion '23.0.2'
+    buildToolsVersion '25.0.0'
     defaultConfig {
         applicationId "com.haiersmart.sfcontrol"
         minSdkVersion 18

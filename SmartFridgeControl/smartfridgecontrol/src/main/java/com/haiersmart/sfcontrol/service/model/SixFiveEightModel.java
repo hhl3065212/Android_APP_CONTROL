@@ -20,17 +20,19 @@ import com.haiersmart.sfcontrol.utilslib.RemoteUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.haiersmart.sfcontrol.constant.EnumBaseName.fridgeShowTemp;
+
 /**
  * <p>function: </p>
- * <p>description:  476上层模型service</p>
+ * <p>description:  658上层模型service</p>
  * history:  1. 2017/1/16
  * Author: Holy.Han
  * modification:
  */
-public class FourSevenSixModel extends ModelBase{
+public class SixFiveEightModel extends ModelBase{
     protected final String TAG = "FourSevenSixModel";
 
-    FourSevenSixModel(ControlMainBoardService service) {
+    SixFiveEightModel(ControlMainBoardService service) {
         super(service);
     }
 
@@ -49,33 +51,51 @@ public class FourSevenSixModel extends ModelBase{
         mControlEntries.add(controlEntryList.get(1));//1 假日模式
         mControlEntries.add(controlEntryList.get(3));//2 速冷模式
         mControlEntries.add(controlEntryList.get(4));//3 速冻模式
+        mControlEntries.add(controlEntryList.get(6));//7 冷藏开关
         mControlEntries.add(controlEntryList.get(8));//4 冷藏档位模式
         mControlEntries.add(controlEntryList.get(9));//5 冷冻档位模式
-        mControlEntries.add(controlEntryList.get(11));//6 杀菌模式
-        mControlEntries.add(controlEntryList.get(12));//7 杀菌开关
+        mControlEntries.add(controlEntryList.get(10));//6 变温档位模式
+        mControlEntries.add(controlEntryList.get(13));//8 人感
         MyLogUtil.i(TAG, "initControlEntries out");
     }
 
     private void initTempStatusEntries() {
         mShowTempEntryList = new ArrayList<FridgeStatusEntry>();
-        mShowTempEntryList.add(new FridgeStatusEntry(EnumBaseName.fridgeShowTemp.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.envTempSensorErr.name())));
-        mShowTempEntryList.add(new FridgeStatusEntry(EnumBaseName.freezeShowTemp.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.envTempSensorErr.name())));
+        mShowTempEntryList.add(new FridgeStatusEntry(fridgeShowTemp.name(), getMainBoardInfo().searchStatusValueBoard(fridgeShowTemp.name())));
+        mShowTempEntryList.add(new FridgeStatusEntry(EnumBaseName.freezeShowTemp.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.freezeShowTemp.name())));
+        mShowTempEntryList.add(new FridgeStatusEntry(EnumBaseName.changeShowTemp.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.changeShowTemp.name())));
     }
     private void initErrorStatusEntries() {
         mErrorEntryList = new ArrayList<FridgeStatusEntry>();
-        mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.envTempSensorErr.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.envTempSensorErr.name())));//环境温度传感器故障
+
+        mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.envTempSensorErr.name(),getMainBoardInfo().searchStatusValueBoard(EnumBaseName.envTempSensorErr.name())));//环境温度传感器故障
         mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.fridgeSensorErr.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.fridgeSensorErr.name())));//冷藏温度传感器故障
+        mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.fridgeDefrostSensorErr.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.fridgeDefrostSensorErr.name())));//冷藏化霜传感器故障
         mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.freezeSensorErr.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.freezeSensorErr.name())));//冷冻温度传感器故障
-        mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.defrostSensorErr.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.defrostSensorErr.name())));//化霜传感器故障
+        mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.changeSensorErr.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.changeSensorErr.name())));//变温温度传感器故障
+        mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.changeDefrostSensorErr.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.changeDefrostSensorErr.name())));//变温化霜传感器故障
+        mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.freezeDefrostSensorErr.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.freezeDefrostSensorErr.name())));//冷冻化霜传感器故障
+        mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.freezeFanErr.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.freezeFanErr.name())));//冷冻风机故障
+        mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.coldFanErr.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.coldFanErr.name())));//冷却风机故障
         mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.freezeDefrostErr.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.freezeDefrostErr.name())));//冷冻化霜故障
         mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.envHumSensorErr.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.envHumSensorErr.name())));//环境湿度传感器故障
-        mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.freezeFanErr.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.freezeFanErr.name())));//冷冻风机故障
+        mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.fridgeDefrostErr.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.fridgeDefrostErr.name())));//冷藏化霜故障
+        mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.pirErr.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.pirErr.name())));//人感故障
+        mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.alsErr.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.alsErr.name())));//光感故障
+        mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.fridgeFanErr.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.fridgeFanErr.name())));//冷藏风机故障
+        mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.changeDefrostErr.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.changeDefrostErr.name())));//变温化霜故障
+        mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.changeFanErr.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.changeFanErr.name())));//变温风机故障
+        mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.dryAreaSensorErr.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.dryAreaSensorErr.name())));//干区传感器故障
 
         //以下不是从主控板获取
         mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.communicationErr.name(),getMainBoardInfo().searchStatusValueBoard(EnumBaseName.communicationErr.name())));//通信错误
         mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.communicationOverTime.name(),getMainBoardInfo().searchStatusValueBoard(EnumBaseName.communicationOverTime.name())));//通信超时
-        mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.fridgeDoorErr.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.fridgeDoorErr.name())));//冷藏门报警
+        mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.fridgeDoorErr.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.fridgeDoorErr.name())));//冷藏左门报警
+        mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.fridgeRightDoorErr.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.fridgeRightDoorErr.name())));//冷藏右门报警
         mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.freezeDoorErr.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.freezeDoorErr.name())));//冷冻门报警
+        mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.changeDoorErr.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.changeDoorErr.name())));//变温门报警
+        mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.insideDoorErr.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.insideDoorErr.name())));//门中门报警
+
     }
 
     @Override
@@ -107,6 +127,15 @@ public class FourSevenSixModel extends ModelBase{
                 //update database
                 getControlDbMgr().updateValueByName(EnumBaseName.holidayMode, 0);
             }
+            //如果冷藏关闭，设置open
+            FridgeControlEntry fridgeCloseEntry = getControlEntryByName(EnumBaseName.fridgeSwitch);
+            if(fridgeCloseEntry.value == 0) {
+                fridgeCloseEntry.value = 1;
+            }
+            //设置冷藏开关不可调节
+            fridgeCloseEntry.disable = ConstantUtil.SMART_ON_REFRIGERATOR_CLOSE_WARNING;
+            updateControlByEntry(fridgeCloseEntry);
+            getControlDbMgr().updateEntry(fridgeCloseEntry);
 
             //进智能cmd
             smartEntry.value = 1;
@@ -140,6 +169,12 @@ public class FourSevenSixModel extends ModelBase{
             //恢复冷冻档位并设置可调节
             setControlDisableByName(EnumBaseName.freezeTargetTemp, ConstantUtil.NO_WARNING);
             getControlDbMgr().updateDisableByName(EnumBaseName.freezeTargetTemp, ConstantUtil.NO_WARNING);
+            //恢复冷藏关闭可调节
+            FridgeControlEntry fridgeCloseEntry = getControlEntryByName(EnumBaseName.fridgeSwitch);
+            fridgeCloseEntry.value = 1;
+            fridgeCloseEntry.disable = ConstantUtil.NO_WARNING;
+            updateControlByEntry(fridgeCloseEntry);
+            getControlDbMgr().updateEntry(fridgeCloseEntry);
         }
         //广播档位和模式信息给上层
         mService.sendControlCmdResponse();
@@ -206,6 +241,16 @@ public class FourSevenSixModel extends ModelBase{
                 //update database
                 getControlDbMgr().updateValueByName(EnumBaseName.holidayMode, 0);
             }
+            //如果冷藏关闭，设置open
+            FridgeControlEntry fridgeCloseEntry = getControlEntryByName(EnumBaseName.fridgeSwitch);
+            if(fridgeCloseEntry.value == 0) {
+                fridgeCloseEntry.value = 1;
+            }
+            //设置冷藏开关不可调节
+            fridgeCloseEntry.disable = ConstantUtil.CLOD_ON_SET_TEMPER_WARNING;
+            updateControlByEntry(fridgeCloseEntry);
+            getControlDbMgr().updateEntry(fridgeCloseEntry);
+
             //进速冷
             coldEntry.value = 1;
             coldEntry.disable = ConstantUtil.NO_WARNING;
@@ -228,9 +273,16 @@ public class FourSevenSixModel extends ModelBase{
             coldEntry.disable = ConstantUtil.NO_WARNING;
             updateControlByEntry(coldEntry);
             getControlDbMgr().updateEntry(coldEntry);
-            //设置变温档位enable,档位值显示
+            //设置冷藏档位enable,档位值显示
             setControlDisableByName(EnumBaseName.fridgeTargetTemp, ConstantUtil.NO_WARNING);
             getControlDbMgr().updateDisableByName(EnumBaseName.fridgeTargetTemp, ConstantUtil.NO_WARNING);
+
+            //恢复冷藏关闭可调节
+            FridgeControlEntry fridgeCloseEntry = getControlEntryByName(EnumBaseName.fridgeSwitch);
+            fridgeCloseEntry.value = 1;
+            fridgeCloseEntry.disable = ConstantUtil.NO_WARNING;
+            updateControlByEntry(fridgeCloseEntry);
+            getControlDbMgr().updateEntry(fridgeCloseEntry);
         }
         //广播档位和模式信息给上层
         mService.sendControlCmdResponse();
@@ -255,6 +307,15 @@ public class FourSevenSixModel extends ModelBase{
     }
 
     @Override
+    public void setCustomArea(int customTemper) {
+        FridgeControlEntry changeLevelEntry = getControlEntryByName(EnumBaseName.changeTargetTemp);
+        changeLevelEntry.value = customTemper;
+        updateControlByEntry(changeLevelEntry);
+        getControlDbMgr().updateValue(changeLevelEntry);
+        mService.sendControlCmdResponse();
+    }
+
+    @Override
     public void holidayOn() {
         FridgeControlEntry holidayEntry = getControlEntryByName(EnumBaseName.holidayMode);
         if(holidayEntry.value == 0) {
@@ -270,7 +331,7 @@ public class FourSevenSixModel extends ModelBase{
                 setControlDisableByName(EnumBaseName.freezeTargetTemp, ConstantUtil.NO_WARNING);
                 getControlDbMgr().updateDisableByName(EnumBaseName.freezeTargetTemp, ConstantUtil.NO_WARNING);
             }
-
+            //检查速冷模式
             FridgeControlEntry coldEntry = getControlEntryByName(EnumBaseName.quickColdMode);
             if (coldEntry.value == 1) {
                 mService.stopColdOnTime();
@@ -279,6 +340,16 @@ public class FourSevenSixModel extends ModelBase{
                 //update database
                 getControlDbMgr().updateValueByName(EnumBaseName.quickColdMode, 0);
             }
+
+            //设置冷藏开关不可调节
+            FridgeControlEntry fridgeCloseEntry = getControlEntryByName(EnumBaseName.fridgeSwitch);
+            //如果冷藏关闭，设置open
+            if(fridgeCloseEntry.value == 0) {
+                fridgeCloseEntry.value = 1;
+            }
+            fridgeCloseEntry.disable = ConstantUtil.HOLIDAY_ON_REFRIGERATOR_CLOSE_WARNING;
+            updateControlByEntry(fridgeCloseEntry);
+            getControlDbMgr().updateEntry(fridgeCloseEntry);
 
             //设置冷藏档位不可调节
             setControlDisableByName(EnumBaseName.fridgeTargetTemp, ConstantUtil.HOLIDAY_ON_SET_TEMPER_WARNING);
@@ -305,6 +376,13 @@ public class FourSevenSixModel extends ModelBase{
             updateControlByEntry(holidayEntry);
             getControlDbMgr().updateEntry(holidayEntry);
 
+            //恢复冷藏关闭可调节
+            FridgeControlEntry fridgeCloseEntry = getControlEntryByName(EnumBaseName.fridgeSwitch);
+            fridgeCloseEntry.value = 1;
+            fridgeCloseEntry.disable = ConstantUtil.NO_WARNING;
+            updateControlByEntry(fridgeCloseEntry);
+            getControlDbMgr().updateEntry(fridgeCloseEntry);
+
             //恢复冷藏档位设置
             setControlDisableByName(EnumBaseName.fridgeTargetTemp, ConstantUtil.NO_WARNING);
             getControlDbMgr().updateDisableByName(EnumBaseName.fridgeTargetTemp, ConstantUtil.NO_WARNING);
@@ -316,63 +394,28 @@ public class FourSevenSixModel extends ModelBase{
     }
 
     @Override
-    public void setSterilizeMode(int step){
-        FridgeControlEntry sterilizeEntry = getControlEntryByName(EnumBaseName.SterilizeMode);
-        FridgeControlEntry sterilizeSwitchEntry = getControlEntryByName(EnumBaseName.SterilizeSwitch);
-        if(sterilizeEntry.value != step) {
-            if(step == 0){
-                mService.stopSterilize();
-                if(sterilizeSwitchEntry.value == 1) {
-                    sterilizeSwitchEntry.value = 0;
-                    sterilizeSwitchEntry.disable = ConstantUtil.NO_WARNING;
-                    updateControlByEntry(sterilizeSwitchEntry);
-                    getControlDbMgr().updateEntry(sterilizeSwitchEntry);
-                }
-            }
-            sterilizeEntry.value = step;
-            sterilizeEntry.disable = ConstantUtil.NO_WARNING;
-            updateControlByEntry(sterilizeEntry);
-            getControlDbMgr().updateEntry(sterilizeEntry);
-            if(step != 0) {
-                mService.startSterilize(step,true);
-                if(sterilizeSwitchEntry.value == 0) {
-                    sterilizeSwitchEntry.value = 1;
-                    sterilizeSwitchEntry.disable = ConstantUtil.NO_WARNING;
-                    updateControlByEntry(sterilizeSwitchEntry);
-                    getControlDbMgr().updateEntry(sterilizeSwitchEntry);
-                }
-            }
+    public void pirSwitchOn() {
+        FridgeControlEntry pirEntry = getControlEntryByName(EnumBaseName.pirSwitch);
+        if(pirEntry.value == 0) {
+            pirEntry.value = 1;
+            pirEntry.disable = ConstantUtil.NO_WARNING;
+            updateControlByEntry(pirEntry);
+            getControlDbMgr().updateEntry(pirEntry);
         }
         //广播档位和模式信息给上层
         mService.sendControlCmdResponse();
     }
-
-
     @Override
-    public void sterilizeSwitchOn(){
-        FridgeControlEntry sterilizeSwitchEntry = getControlEntryByName(EnumBaseName.SterilizeSwitch);
-        if(sterilizeSwitchEntry.value == 0) {
-            sterilizeSwitchEntry.value = 1;
-            sterilizeSwitchEntry.disable = ConstantUtil.NO_WARNING;
-            updateControlByEntry(sterilizeSwitchEntry);
-            getControlDbMgr().updateEntry(sterilizeSwitchEntry);
+    public void pirSwitchOff() {
+        FridgeControlEntry pirEntry = getControlEntryByName(EnumBaseName.pirSwitch);
+        if(pirEntry.value == 1) {
+            pirEntry.value = 0;
+            pirEntry.disable = ConstantUtil.NO_WARNING;
+            updateControlByEntry(pirEntry);
+            getControlDbMgr().updateEntry(pirEntry);
         }
         //广播档位和模式信息给上层
         mService.sendControlCmdResponse();
-        MyLogUtil.i(TAG,"ster::sterilizeSwitchOn");
-    }
-    @Override
-    public void sterilizeSwitchOff(){
-        FridgeControlEntry sterilizeSwitchEntry = getControlEntryByName(EnumBaseName.SterilizeSwitch);
-        if(sterilizeSwitchEntry.value == 1) {
-            sterilizeSwitchEntry.value = 0;
-            sterilizeSwitchEntry.disable = ConstantUtil.NO_WARNING;
-            updateControlByEntry(sterilizeSwitchEntry);
-            getControlDbMgr().updateEntry(sterilizeSwitchEntry);
-        }
-        //广播档位和模式信息给上层
-        mService.sendControlCmdResponse();
-        MyLogUtil.i(TAG,"ster::sterilizeSwitchOff");
     }
 
     @Override

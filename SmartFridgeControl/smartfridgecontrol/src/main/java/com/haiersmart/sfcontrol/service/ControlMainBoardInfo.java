@@ -1,9 +1,6 @@
 package com.haiersmart.sfcontrol.service;
 
 import com.haiersmart.sfcontrol.constant.EnumBaseName;
-import com.haiersmart.sfcontrol.service.mbmodel.MainBoardEntry;
-
-import java.util.ArrayList;
 
 /**
  * Created by tingting on 2016/11/1.
@@ -160,34 +157,17 @@ public class ControlMainBoardInfo {
 
 
     private int searchControlValue(String funcName){
-        int res = -1;
-        ArrayList<MainBoardEntry> entryList = mMBParams.getMainBoardControl();
-        int tableLength = entryList.size();
-        String tempName = "";
-        for(int i=0; i<tableLength; i++) {
-            tempName = entryList.get(i).getName();
-            if( tempName == funcName ) {
-                res = entryList.get(i).getValue();
-                break;
-            }
-        }
-        return res;
+        return mMBParams.getMbcValueByName(funcName);
     }
 
     private int searchStatusValue(String funcName){
-        int res = -1;
-        ArrayList<MainBoardEntry> entryList = mMBParams.getMainBoardStatus();
-        int tableLength = entryList.size();
-        String tempName = "";
-        for(int i=0; i<tableLength; i++) {
-            tempName = entryList.get(i).getName();
-            if( tempName.equals(funcName) ) {
-                res = entryList.get(i).getValue();
-                break;
-            }
-        }
-        return res;
+        return mMBParams.getMbsValueByName(funcName);
     }
-
+    public int searchControlValueBoard(String funcName){
+        return mMBParams.getMbcValueByName(funcName);
+    }
+    public int searchStatusValueBoard(String funcName){
+        return mMBParams.getMbsValueByName(funcName);
+    }
 
 }

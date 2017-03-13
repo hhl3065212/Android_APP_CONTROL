@@ -138,6 +138,9 @@ public class PowerSerialOpt {
                             //超时处理
                             if(SendCnt>=3){
                                 mSerialData.setCommunicationOverTime(true);
+                                MyLogUtil.i(TAG, "CommunicationOverTime status BROADCAST_ACTION_STATUS_BACK");
+                                //TODO: write observer mode by self, consider application context maybe make OOM
+                                ControlApplication.getInstance().sendBroadcastToService(ConstantUtil.BROADCAST_ACTION_STATUS_BACK);
                                 //如果是查询id命令无响应特殊处理
                                 if(mSendByte[3]==0x70){
                                     vainTypeId = true;

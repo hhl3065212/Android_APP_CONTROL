@@ -144,4 +144,7 @@ public abstract class ModelBase {
 
     public void sterilizeSwitchOn(){}
     public void sterilizeSwitchOff(){}
+
+    public void pirSwitchOn(){}
+    public void pirSwitchOff(){}
 }

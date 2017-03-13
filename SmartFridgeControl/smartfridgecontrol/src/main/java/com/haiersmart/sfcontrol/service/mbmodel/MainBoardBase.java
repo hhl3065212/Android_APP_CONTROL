@@ -665,6 +665,30 @@ public abstract class MainBoardBase {
     }
 
     /**
+     * 设置冷藏右门报警
+     * @param b
+     */
+    void setFridgeRightDoorErr(boolean b) {
+        if (b) {
+            setMainBoardStatusByName(EnumBaseName.fridgeRightDoorErr.name(), 1);
+        } else {
+            setMainBoardStatusByName(EnumBaseName.fridgeRightDoorErr.name(), 0);
+        }
+    }
+
+    /**
+     * 设置门中门报警
+     * @param b
+     */
+    void setInsideDoorErr(boolean b) {
+        if (b) {
+            setMainBoardStatusByName(EnumBaseName.insideDoorErr.name(), 1);
+        } else {
+            setMainBoardStatusByName(EnumBaseName.insideDoorErr.name(), 0);
+        }
+    }
+
+    /**
      * 为互联互通模块准备状态码
      * 状态码和数据库信息保持一致，从底板获得状态码后，重新把数据库信息反算回状态码，其他位置保持不变
      * @param get 底板返回的状态码

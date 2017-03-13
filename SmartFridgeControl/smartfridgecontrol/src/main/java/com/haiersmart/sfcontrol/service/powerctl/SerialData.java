@@ -8,6 +8,7 @@ import com.haiersmart.sfcontrol.service.mbmodel.MainBoardEntry;
 import com.haiersmart.sfcontrol.service.mbmodel.MainBoardFourSevenSix;
 import com.haiersmart.sfcontrol.service.mbmodel.MainBoardFourZeroOne;
 import com.haiersmart.sfcontrol.service.mbmodel.MainBoardInfo;
+import com.haiersmart.sfcontrol.service.mbmodel.MainBoardSixFiveEight;
 import com.haiersmart.sfcontrol.service.mbmodel.MainBoardTwoFiveOne;
 import com.haiersmart.sfcontrol.service.mbmodel.MainBoardTwoFiveSix;
 import com.haiersmart.sfcontrol.utilslib.DeviceUtil;
@@ -166,8 +167,7 @@ public class SerialData {
         } else if (typeId.equals(ConstantUtil.BCD658_SN)) {
             MyLogUtil.i(TAG, "fridge mode:658");
             mCurrentModel = ConstantUtil.BCD658_MODEL;
-            // TODO: 2017/2/20  
-            mMainBoard = new MainBoardFourZeroOne();
+            mMainBoard = new MainBoardSixFiveEight();
         }else {
             MyLogUtil.i(TAG, "fridge mode:default 251");
             mCurrentModel = ConstantUtil.BCD251_MODEL;

@@ -12,7 +12,7 @@ public class ProtocolCommand {
     public static byte[] PackCmdFrame(EnumBaseName cmd, byte... value){
         byte[] data;
         switch (cmd){
-            case getAllProperty:
+            case getAllProperty://查询状态码
                 data = new byte[]{(byte)0xaa,(byte)0x55,(byte)0x04,(byte)0x01,(byte)0x4d,(byte)0x01,(byte) 0x00};
                 break;
             case smartMode:   //人工智慧 value 1:打开  0:关闭
@@ -31,7 +31,7 @@ public class ProtocolCommand {
                     data[5] = (byte)(0x07);
                 }
                 break;
-            case quickFreezeMode:  //进入速冻
+            case quickFreezeMode:  //进入速冻 value 1:打开  0:关闭
                 data = new byte[]{(byte) 0xAA, (byte) 0x55, (byte) 0x04, (byte) 0x01, (byte) 0x4d, (byte) 0x08, (byte) 0x00};
                 if(value[0] == 1){
                     data[5] = (byte)(0x08);
@@ -39,7 +39,7 @@ public class ProtocolCommand {
                     data[5] = (byte)(0x09);
                 }
                 break;
-            case quickColdMode:    //进入速冷
+            case quickColdMode:    //进入速冷 value 1:打开  0:关闭
                 data = new byte[]{(byte) 0xAA, (byte) 0x55, (byte) 0x04, (byte) 0x01, (byte) 0x4d, (byte) 0x0a, (byte) 0x00};
                 if(value[0] == 1){
                     data[5] = (byte)(0x0a);
@@ -67,7 +67,7 @@ public class ProtocolCommand {
                     data[5] = (byte)(0x47);
                 }
                 break;
-            case getDeviceId://
+            case getDeviceId://获取 设备识别码
                 data = new byte[]{(byte)0xAA,(byte)0x55,(byte)0x02,(byte)0x70,(byte)0x00};
                 break;
             case purifyMode://净化
@@ -78,7 +78,7 @@ public class ProtocolCommand {
                     data[5] = (byte)(0x0d);
                 }
                 break;
-            case SterilizeSwitch://SterilizeMode
+            case SterilizeSwitch://杀菌 value 1:打开  0:关闭
                 data = new byte[]{(byte)0xAA,(byte)0x55,(byte)0x04,(byte)0x01,(byte)0x4d,(byte)0x30,(byte)0x00};
                 if(value[0] == 1){
                     data[5] = (byte)(0x30);
@@ -86,7 +86,7 @@ public class ProtocolCommand {
                     data[5] = (byte)(0x31);
                 }
                 break;
-            case marketDemo://marketDemo
+            case marketDemo://商场演示 value 1:打开  0:关闭
                 data = new byte[]{(byte)0xAA,(byte)0x55,(byte)0x04,(byte)0x01,(byte)0x4d,(byte)0x29,(byte)0x00};
                 if(value[0] == 1){
                     data[5] = (byte)(0x29);
@@ -94,14 +94,14 @@ public class ProtocolCommand {
                     data[5] = (byte)(0x2a);
                 }
                 break;
-            case getDebug:
+            case getDebug://获得冰箱调试信息
                 data = new byte[]{(byte)0xaa,(byte)0x55,(byte)0x04,(byte)0xff,(byte)0x8d,(byte)0x01,(byte) 0x00};
                 break;
-            case testMode:
+            case testMode://T模式 0-15
                 data = new byte[]{(byte)0xaa,(byte)0x55,(byte)0x05,(byte)0xff,(byte)0x9d,(byte)0x01,(byte) 0x00,(byte) 0x00};
                 data[6] = value[0];
                 break;
-            case coldLightMode://coldLightMode
+            case coldLightMode://冷藏灯 value 1:打开  0:关闭
                 data = new byte[]{(byte)0xAA,(byte)0x55,(byte)0x04,(byte)0x01,(byte)0x4d,(byte)0x16,(byte)0x00};
                 if(value[0] == 1){
                     data[5] = (byte)(0x16);
@@ -109,7 +109,7 @@ public class ProtocolCommand {
                     data[5] = (byte)(0x17);
                 }
                 break;
-            case handleLightMode://handleLightMode
+            case handleLightMode://把手灯 value 1:打开  0:关闭
                 data = new byte[]{(byte)0xAA,(byte)0x55,(byte)0x04,(byte)0x01,(byte)0x4d,(byte)0x27,(byte)0x00};
                 if(value[0] == 1){
                     data[5] = (byte)(0x27);
@@ -117,7 +117,39 @@ public class ProtocolCommand {
                     data[5] = (byte)(0x28);
                 }
                 break;
-            default:
+            case pirSwitch://人感开关 value 1:打开  0:关闭
+                data = new byte[]{(byte)0xAA,(byte)0x55,(byte)0x04,(byte)0x01,(byte)0x4d,(byte)0x27,(byte)0x00};
+                if(value[0] == 1){
+                    data[5] = (byte)(0x27);
+                }else {
+                    data[5] = (byte)(0x28);
+                }
+                break;
+            case fridgeTopLight://冷藏顶灯 value 1:打开  0:关闭
+                data = new byte[]{(byte)0xAA,(byte)0x55,(byte)0x06,(byte)0x01,(byte)0x5d,(byte)0x0c,(byte)0x00,(byte)0x00,(byte)0x00};
+                if(value[0] == 1){
+                    data[7] = (byte)(0x01);
+                }else {
+                    data[7] = (byte)(0x00);
+                }
+                break;
+            case fridgeBackLight://冷藏背灯 value 1:打开  0:关闭
+                data = new byte[]{(byte)0xAA,(byte)0x55,(byte)0x06,(byte)0x01,(byte)0x5d,(byte)0x0d,(byte)0x00,(byte)0x00,(byte)0x00};
+                if(value[0] == 1){
+                    data[7] = (byte)(0x01);
+                }else {
+                    data[7] = (byte)(0x00);
+                }
+                break;
+            case insideDoor://门中门 value 1:打开  0:关闭
+                data = new byte[]{(byte)0xAA,(byte)0x55,(byte)0x06,(byte)0x01,(byte)0x5d,(byte)0x0e,(byte)0x00,(byte)0x00,(byte)0x00};
+                if(value[0] == 1){
+                    data[7] = (byte)(0x01);
+                }else {
+                    data[7] = (byte)(0x00);
+                }
+                break;
+            default://查询状态码
                 data = new byte[]{(byte)0xaa,(byte)0x55,(byte)0x04,(byte)0x01,(byte)0x4d,(byte)0x01,(byte) 0x00};
                 break;
         }

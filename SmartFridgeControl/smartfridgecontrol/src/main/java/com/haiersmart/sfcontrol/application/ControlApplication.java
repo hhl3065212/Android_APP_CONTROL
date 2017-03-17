@@ -6,11 +6,7 @@ import android.content.Intent;
 
 import com.haiersmart.sfcontrol.constant.ConstantUtil;
 import com.haiersmart.sfcontrol.service.ControlMainBoardService;
-import com.haiersmart.sfcontrol.ui.DoorAlarmActivity;
 import com.haiersmart.sfcontrol.utilslib.MyLogUtil;
-
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Created by tingting on 2016/9/28.
@@ -18,7 +14,7 @@ import java.util.List;
 public class ControlApplication extends Application {
     public static Context mContext;
     private static ControlApplication mInstance = null;
-    private List<DoorAlarmActivity> mList = new LinkedList<DoorAlarmActivity>();
+
     private final static String TAG = "ControlApplication";
 
     @Override
@@ -53,26 +49,5 @@ public class ControlApplication extends Application {
         mContext.sendBroadcast(intent);
     }
 
-    public void addDoorAlarmActivity(DoorAlarmActivity activity) {
-        MyLogUtil.i(TAG, "addDoorAlarmActivity");
-        mList.add(activity);
-    }
 
-    public void removeDoorAlarmActivity(DoorAlarmActivity activity) {
-        MyLogUtil.i(TAG, "removeDoorAlarmActivity");
-        mList.remove(activity);
-    }
-
-    public void exitDoorAlarmActivity() {
-        try {
-            for (DoorAlarmActivity activity : mList) {
-                if (activity != null) {
-                    activity.finish();
-                    removeDoorAlarmActivity(activity);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }

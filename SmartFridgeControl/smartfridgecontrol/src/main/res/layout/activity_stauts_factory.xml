@@ -288,7 +288,7 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
                 android:padding="@dimen/tab_margin"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <LinearLayout
                     android:layout_width="@dimen/auto_width"
@@ -465,6 +465,7 @@
                             android:textColor="@color/black2"
                             android:textSize="@dimen/text_size_40"/>
                     </LinearLayout>
+
                     <LinearLayout
                         android:id="@+id/linear_factory_freeze_defrost_sensor"
                         android:layout_width="match_parent"
@@ -478,7 +479,7 @@
                             android:id="@+id/title_factory_freeze_defrost_sensor"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/title_factory_defrost_sensor"
+                            android:text="@string/title_factory_freeze_defrost_sensor"
                             android:textColor="@color/black2"
                             android:textSize="@dimen/text_size_40"/>
 
@@ -546,6 +547,222 @@
                             android:textSize="@dimen/text_size_40"/>
                     </LinearLayout>
 
+                    <LinearLayout
+                        android:id="@+id/linear_factory_fridge_defrost_sensor"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/fab_margin"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/fab_margin"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/title_factory_fridge_defrost_sensor"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_factory_fridge_defrost_sensor"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+
+                        <TextView
+                            android:id="@+id/text_factory_fridge_defrost_sensor"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/tab_margin"
+                            android:text="@string/text_factory_error"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/linear_factory_change_defrost_sensor"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/fab_margin"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/fab_margin"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/title_factory_change_defrost_sensor"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_factory_change_defrost_sensor"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+
+                        <TextView
+                            android:id="@+id/text_factory_change_defrost_sensor"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/tab_margin"
+                            android:text="@string/text_factory_error"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/linear_factory_fridge_defrost"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/fab_margin"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/fab_margin"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/title_factory_fridge_defrost"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_factory_fridge_defrost"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+
+                        <TextView
+                            android:id="@+id/text_factory_fridge_defrost"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/tab_margin"
+                            android:text="@string/text_factory_error"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/linear_factory_change_defrost"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/fab_margin"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/fab_margin"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/title_factory_change_defrost"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_factory_change_defrost"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+
+                        <TextView
+                            android:id="@+id/text_factory_change_defrost"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/tab_margin"
+                            android:text="@string/text_factory_error"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/linear_factory_fridge_fan"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/fab_margin"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/fab_margin"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/title_factory_fridge_fan"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_factory_fridge_fan"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+
+                        <TextView
+                            android:id="@+id/text_factory_fridge_fan"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/tab_margin"
+                            android:text="@string/text_factory_error"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/linear_factory_change_fan"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/fab_margin"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/fab_margin"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/title_factory_change_fan"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_factory_change_fan"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+
+                        <TextView
+                            android:id="@+id/text_factory_change_fan"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/tab_margin"
+                            android:text="@string/text_factory_error"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/linear_factory_cold_fan"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/fab_margin"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/fab_margin"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/title_factory_cold_fan"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_factory_cold_fan"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+
+                        <TextView
+                            android:id="@+id/text_factory_cold_fan"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/tab_margin"
+                            android:text="@string/text_factory_error"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/linear_factory_dry_sensor"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/fab_margin"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/fab_margin"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/title_factory_dry_sensor"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_factory_dry_sensor"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+
+                        <TextView
+                            android:id="@+id/text_factory_dry_sensor"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/tab_margin"
+                            android:text="@string/text_factory_error"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+                    </LinearLayout>
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -588,6 +805,61 @@
                             android:textColor="@color/black2"
                             android:textSize="@dimen/text_size_40"/>
                     </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/linear_factory_fridge_left_door"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/fab_margin"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/fab_margin"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/title_factory_fridge_left_door"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_factory_fridge_left_door"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+
+                        <TextView
+                            android:id="@+id/text_factory_fridge_left_door"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/tab_margin"
+                            android:text="@string/text_door_open"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/linear_factory_fridge_right_door"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/fab_margin"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/fab_margin"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/title_factory_fridge_right_door"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_factory_fridge_right_door"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+
+                        <TextView
+                            android:id="@+id/text_factory_fridge_right_door"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/tab_margin"
+                            android:text="@string/text_door_open"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+                    </LinearLayout>
+
                     <LinearLayout
                         android:id="@+id/linear_factory_freeze_door"
                         android:layout_width="match_parent"
@@ -614,6 +886,7 @@
                             android:textColor="@color/black2"
                             android:textSize="@dimen/text_size_40"/>
                     </LinearLayout>
+
                     <LinearLayout
                         android:id="@+id/linear_factory_change_door"
                         android:layout_width="match_parent"
@@ -640,6 +913,7 @@
                             android:textColor="@color/black2"
                             android:textSize="@dimen/text_size_40"/>
                     </LinearLayout>
+
                     <LinearLayout
                         android:id="@+id/linear_factory_inside_door"
                         android:layout_width="match_parent"
@@ -917,24 +1191,27 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
                 android:visibility="gone">
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="100dp"
                     android:layout_marginTop="100dp"
-                    android:orientation="horizontal"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
                     <com.haiersmart.sfcontrol.draw.MyMarketButton
                         android:id="@+id/btn_factory_market"
                         android:layout_width="50dp"
                         android:layout_height="50dp"/>
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/tab_margin"
-                        android:textSize="@dimen/text_size_60"
+                        android:text="商场演示"
                         android:textColor="@color/black2"
-                        android:text="商场演示"/>
+                        android:textSize="@dimen/text_size_60"/>
                 </LinearLayout>
 
 
@@ -946,12 +1223,13 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
                 android:visibility="gone">
-
+                <!--温度传感器-->
                 <LinearLayout
                     android:layout_width="@dimen/auto_width"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:orientation="vertical">
+
                     <TextView
                         android:id="@+id/title_factory_debug_sensor"
                         android:layout_width="match_parent"
@@ -959,7 +1237,7 @@
                         android:text="@string/title_factory_sensor"
                         android:textColor="@color/black2"
                         android:textSize="@dimen/text_size_40"/>
-
+                    <!--冷藏实际温度-->
                     <LinearLayout
                         android:id="@+id/linear_factory_fridge_real_temp"
                         android:layout_width="match_parent"
@@ -986,7 +1264,7 @@
                             android:textColor="@color/black2"
                             android:textSize="@dimen/text_size_40"/>
                     </LinearLayout>
-
+                    <!--冷冻实际温度-->
                     <LinearLayout
                         android:id="@+id/linear_factory_freeze_real_temp"
                         android:layout_width="match_parent"
@@ -1013,7 +1291,7 @@
                             android:textColor="@color/black2"
                             android:textSize="@dimen/text_size_40"/>
                     </LinearLayout>
-
+                    <!--变温实际温度-->
                     <LinearLayout
                         android:id="@+id/linear_factory_change_real_temp"
                         android:layout_width="match_parent"
@@ -1040,7 +1318,7 @@
                             android:textColor="@color/black2"
                             android:textSize="@dimen/text_size_40"/>
                     </LinearLayout>
-
+                    <!--环境实际温度-->
                     <LinearLayout
                         android:id="@+id/linear_factory_env_real_temp"
                         android:layout_width="match_parent"
@@ -1067,7 +1345,34 @@
                             android:textColor="@color/black2"
                             android:textSize="@dimen/text_size_40"/>
                     </LinearLayout>
+                    <!--冷藏化霜实际温度-->
+                    <LinearLayout
+                        android:id="@+id/linear_factory_fridge_defrost_real_temp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/fab_margin"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/fab_margin"
+                        android:visibility="gone">
 
+                        <TextView
+                            android:id="@+id/title_factory_fridge_defrost_real_temp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_factory_fridge_defrost_real_temp"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+
+                        <TextView
+                            android:id="@+id/text_factory_fridge_defrost_real_temp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/tab_margin"
+                            android:text="25℃"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+                    </LinearLayout>
+                    <!--冷冻化霜实际温度-->
                     <LinearLayout
                         android:id="@+id/linear_factory_freeze_defrost_real_temp"
                         android:layout_width="match_parent"
@@ -1094,6 +1399,61 @@
                             android:textColor="@color/black2"
                             android:textSize="@dimen/text_size_40"/>
                     </LinearLayout>
+                    <!--变温化霜实际温度-->
+                    <LinearLayout
+                        android:id="@+id/linear_factory_change_defrost_real_temp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/fab_margin"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/fab_margin"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/title_factory_change_defrost_real_temp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_factory_change_defrost_real_temp"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+
+                        <TextView
+                            android:id="@+id/text_factory_change_defrost_real_temp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/tab_margin"
+                            android:text="25℃"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+                    </LinearLayout>
+                    <!--干区实际温度-->
+                    <LinearLayout
+                        android:id="@+id/linear_factory_dry_area_real_temp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/fab_margin"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/fab_margin"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/title_factory_dry_area_real_temp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_factory_dry_area_real_temp"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+
+                        <TextView
+                            android:id="@+id/text_factory_dry_area_real_temp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/tab_margin"
+                            android:text="25℃"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+                    </LinearLayout>
+                    <!--环境实际湿度-->
                     <LinearLayout
                         android:id="@+id/linear_factory_env_real_hum"
                         android:layout_width="match_parent"
@@ -1120,15 +1480,17 @@
                             android:textColor="@color/black2"
                             android:textSize="@dimen/text_size_40"/>
                     </LinearLayout>
+                    <!--T模式-->
                     <LinearLayout
                         android:id="@+id/linear_factory_test_mode"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/fab_margin"
                         android:layout_marginRight="@dimen/tab_margin"
+                        android:layout_marginTop="@dimen/fab_margin"
                         android:orientation="horizontal"
                         android:paddingLeft="@dimen/fab_margin"
                         android:visibility="visible">
+
                         <Button
                             android:id="@+id/btn_factory_test_mode"
                             android:layout_width="match_parent"
@@ -1138,12 +1500,13 @@
                             android:textSize="@dimen/text_size_40"/>
                     </LinearLayout>
                 </LinearLayout>
-
+                <!--状态-->
                 <LinearLayout
                     android:layout_width="@dimen/auto_width"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:orientation="vertical">
+
                     <TextView
                         android:id="@+id/title_factory_debug_status"
                         android:layout_width="match_parent"
@@ -1151,7 +1514,34 @@
                         android:text="@string/title_factory_status"
                         android:textColor="@color/black2"
                         android:textSize="@dimen/text_size_40"/>
+                    <!--冷藏风机电压-->
+                    <LinearLayout
+                        android:id="@+id/linear_factory_fridge_fan_voltage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/fab_margin"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/fab_margin"
+                        android:visibility="visible">
 
+                        <TextView
+                            android:id="@+id/title_factory_fridge_fan_voltage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_factory_fridge_fan_voltage"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+
+                        <TextView
+                            android:id="@+id/text_factory_fridge_fan_voltage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/tab_margin"
+                            android:text="25℃"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+                    </LinearLayout>
+                    <!--冷冻风机电压-->
                     <LinearLayout
                         android:id="@+id/linear_factory_freeze_fan_voltage"
                         android:layout_width="match_parent"
@@ -1178,7 +1568,61 @@
                             android:textColor="@color/black2"
                             android:textSize="@dimen/text_size_40"/>
                     </LinearLayout>
+                    <!--变温风机电压-->
+                    <LinearLayout
+                        android:id="@+id/linear_factory_change_fan_voltage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/fab_margin"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/fab_margin"
+                        android:visibility="visible">
 
+                        <TextView
+                            android:id="@+id/title_factory_change_fan_voltage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_factory_change_fan_voltage"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+
+                        <TextView
+                            android:id="@+id/text_factory_change_fan_voltage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/tab_margin"
+                            android:text="25℃"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+                    </LinearLayout>
+                    <!--冷却风机电压-->
+                    <LinearLayout
+                        android:id="@+id/linear_factory_cold_fan_voltage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/fab_margin"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/fab_margin"
+                        android:visibility="visible">
+
+                        <TextView
+                            android:id="@+id/title_factory_cold_fan_voltage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_factory_cold_fan_voltage"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+
+                        <TextView
+                            android:id="@+id/text_factory_cold_fan_voltage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/tab_margin"
+                            android:text="25℃"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+                    </LinearLayout>
+                    <!--压机1频率-->
                     <LinearLayout
                         android:id="@+id/linear_factory_press_one_freq"
                         android:layout_width="match_parent"
@@ -1205,7 +1649,7 @@
                             android:textColor="@color/black2"
                             android:textSize="@dimen/text_size_40"/>
                     </LinearLayout>
-
+                    <!--冷藏室风门-->
                     <LinearLayout
                         android:id="@+id/linear_factory_fridge_air_door"
                         android:layout_width="match_parent"
@@ -1232,7 +1676,7 @@
                             android:textColor="@color/black2"
                             android:textSize="@dimen/text_size_40"/>
                     </LinearLayout>
-
+                    <!--变温室风门-->
                     <LinearLayout
                         android:id="@+id/linear_factory_change_air_door"
                         android:layout_width="match_parent"
@@ -1259,7 +1703,61 @@
                             android:textColor="@color/black2"
                             android:textSize="@dimen/text_size_40"/>
                     </LinearLayout>
+                    <!--风门-->
+                    <LinearLayout
+                        android:id="@+id/linear_factory_air_door"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/fab_margin"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/fab_margin"
+                        android:visibility="gone">
 
+                        <TextView
+                            android:id="@+id/title_factory_air_door"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_factory_air_door"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+
+                        <TextView
+                            android:id="@+id/text_factory_air_door"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/tab_margin"
+                            android:text="25℃"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+                    </LinearLayout>
+                    <!--风门阀门-->
+                    <LinearLayout
+                        android:id="@+id/linear_factory_air_door_valve"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/fab_margin"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/fab_margin"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/title_factory_air_door_valve"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_factory_air_door_valve"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+
+                        <TextView
+                            android:id="@+id/text_factory_air_door_valve"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/tab_margin"
+                            android:text="25℃"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+                    </LinearLayout>
+                    <!--化霜加热丝-->
                     <LinearLayout
                         android:id="@+id/linear_factory_defrost_heater"
                         android:layout_width="match_parent"
@@ -1286,7 +1784,61 @@
                             android:textColor="@color/black2"
                             android:textSize="@dimen/text_size_40"/>
                     </LinearLayout>
+                    <!--冷藏室加热丝-->
+                    <LinearLayout
+                        android:id="@+id/linear_factory_fridge_heater"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/fab_margin"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/fab_margin"
+                        android:visibility="gone">
 
+                        <TextView
+                            android:id="@+id/title_factory_fridge_heater"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_factory_fridge_heater"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+
+                        <TextView
+                            android:id="@+id/text_factory_fridge_heater"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/tab_margin"
+                            android:text="25℃"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+                    </LinearLayout>
+                    <!--冷冻室加热丝-->
+                    <LinearLayout
+                        android:id="@+id/linear_factory_freeze_heater"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/fab_margin"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/fab_margin"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/title_factory_freeze_heater"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_factory_freeze_heater"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+
+                        <TextView
+                            android:id="@+id/text_factory_freeze_heater"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/tab_margin"
+                            android:text="25℃"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+                    </LinearLayout>
+                    <!--变温室加热丝-->
                     <LinearLayout
                         android:id="@+id/linear_factory_change_heater"
                         android:layout_width="match_parent"
@@ -1313,6 +1865,61 @@
                             android:textColor="@color/black2"
                             android:textSize="@dimen/text_size_40"/>
                     </LinearLayout>
+                    <!--风门加热丝-->
+                    <LinearLayout
+                        android:id="@+id/linear_factory_air_door_heater"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/fab_margin"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/fab_margin"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/title_factory_air_door_heater"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_factory_air_door_heater"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+
+                        <TextView
+                            android:id="@+id/text_factory_air_door_heater"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/tab_margin"
+                            android:text="25℃"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+                    </LinearLayout>
+                    <!--门边框加热丝-->
+                    <LinearLayout
+                        android:id="@+id/linear_factory_door_border_heater"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/fab_margin"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/fab_margin"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/title_factory_door_border_heater"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_factory_door_border_heater"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+
+                        <TextView
+                            android:id="@+id/text_factory_door_border_heater"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/tab_margin"
+                            android:text="25℃"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+                    </LinearLayout>
+                    <!--竖梁加热丝-->
                     <LinearLayout
                         android:id="@+id/linear_factory_verticalBridge_heater"
                         android:layout_width="match_parent"
@@ -1339,7 +1946,7 @@
                             android:textColor="@color/black2"
                             android:textSize="@dimen/text_size_40"/>
                     </LinearLayout>
-
+                    <!--冷藏灯-->
                     <LinearLayout
                         android:id="@+id/linear_factory_fridge_light"
                         android:layout_width="match_parent"
@@ -1366,6 +1973,7 @@
                             android:textColor="@color/black2"
                             android:textSize="@dimen/text_size_40"/>
                     </LinearLayout>
+                    <!--冷冻灯-->
                     <LinearLayout
                         android:id="@+id/linear_factory_freeze_light"
                         android:layout_width="match_parent"
@@ -1392,6 +2000,88 @@
                             android:textColor="@color/black2"
                             android:textSize="@dimen/text_size_40"/>
                     </LinearLayout>
+                    <!--变温灯-->
+                    <LinearLayout
+                        android:id="@+id/linear_factory_change_light"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/fab_margin"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/fab_margin"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/title_factory_change_light"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_factory_change_light"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+
+                        <TextView
+                            android:id="@+id/text_factory_change_light"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/tab_margin"
+                            android:text="25℃"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+                    </LinearLayout>
+                    <!--冷藏顶灯-->
+                    <LinearLayout
+                        android:id="@+id/linear_factory_fridge_top_light"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/fab_margin"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/fab_margin"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/title_factory_fridge_top_light"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_factory_fridge_top_light"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+
+                        <TextView
+                            android:id="@+id/text_factory_fridge_top_light"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/tab_margin"
+                            android:text="25℃"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+                    </LinearLayout>
+                    <!--冷藏背灯-->
+                    <LinearLayout
+                        android:id="@+id/linear_factory_fridge_back_light"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/fab_margin"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/fab_margin"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/title_factory_fridge_back_light"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_factory_fridge_back_light"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+
+                        <TextView
+                            android:id="@+id/text_factory_fridge_back_light"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/tab_margin"
+                            android:text="25℃"
+                            android:textColor="@color/black2"
+                            android:textSize="@dimen/text_size_40"/>
+                    </LinearLayout>
+                    <!--把手灯-->
                     <LinearLayout
                         android:id="@+id/linear_factory_handle_light"
                         android:layout_width="match_parent"

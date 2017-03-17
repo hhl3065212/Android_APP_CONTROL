@@ -47,13 +47,13 @@ public class ConfigSixFiveEight {
         protocolConfig.add(new ProtocolConfigBase(EnumBaseName.pirSwitch.name(), 0, 22, 6));//人感开关
 //
         protocolConfig.add(new ProtocolConfigBase(EnumBaseName.forceDelete.name(), 1, 19, 7));//强制删除
-        protocolConfig.add(new ProtocolConfigBase(EnumBaseName.fridgeTopLight.name(), 1, 23, 4));//冷藏顶灯
-        protocolConfig.add(new ProtocolConfigBase(EnumBaseName.fridgeBackLight.name(), 1, 23, 5));//冷藏背灯
+//        protocolConfig.add(new ProtocolConfigBase(EnumBaseName.fridgeTopLight.name(), 1, 23, 4));//冷藏顶灯
+//        protocolConfig.add(new ProtocolConfigBase(EnumBaseName.fridgeBackLight.name(), 1, 23, 5));//冷藏背灯
 //
         protocolConfig.add(new ProtocolConfigBase(EnumBaseName.fridgeDoorStatus.name(), 1, 22, 0));//冷藏左门
         protocolConfig.add(new ProtocolConfigBase(EnumBaseName.freezeDoorStatus.name(), 1, 22, 1));//冷冻门
         protocolConfig.add(new ProtocolConfigBase(EnumBaseName.changeDoorStatus.name(), 1, 22, 2));//变温门
-        protocolConfig.add(new ProtocolConfigBase(EnumBaseName.fridgeDoorStatus.name(), 1, 24, 1));//冷藏右门
+        protocolConfig.add(new ProtocolConfigBase(EnumBaseName.fridgeRightDoorStatus.name(), 1, 24, 1));//冷藏右门
         protocolConfig.add(new ProtocolConfigBase(EnumBaseName.insideDoorStatus.name(), 1, 23, 6));//门中门
 
         protocolConfig.add(new ProtocolConfigBase(EnumBaseName.pirStatus.name(), 1, 23, 3));//人感状态
@@ -115,10 +115,10 @@ public class ConfigSixFiveEight {
         protocolDebugConfig.add(new ProtocolConfigBase(EnumBaseName.airDoorHeater.name(),1,44,3));//风门加热丝
         protocolDebugConfig.add(new ProtocolConfigBase(EnumBaseName.verticalBridgeHeater.name(),1,44,4));//竖梁加热丝
         protocolDebugConfig.add(new ProtocolConfigBase(EnumBaseName.doorBorderHeater.name(),1,44,5));//门边框加热丝
-        protocolDebugConfig.add(new ProtocolConfigBase(EnumBaseName.fridgeLight.name(),1,45,0));//冷藏室背灯
-        protocolDebugConfig.add(new ProtocolConfigBase(EnumBaseName.handleLight.name(),1,45,1));//冷藏室顶灯
+        protocolDebugConfig.add(new ProtocolConfigBase(EnumBaseName.fridgeBackLight.name(),1,45,0));//冷藏室背灯
+        protocolDebugConfig.add(new ProtocolConfigBase(EnumBaseName.fridgeTopLight.name(),1,45,1));//冷藏室顶灯
         protocolDebugConfig.add(new ProtocolConfigBase(EnumBaseName.freezeLight.name(),1,45,2));//冷冻室灯
-        protocolDebugConfig.add(new ProtocolConfigBase(EnumBaseName.handleLight.name(),1,45,3));//变温室灯
+        protocolDebugConfig.add(new ProtocolConfigBase(EnumBaseName.changeLight.name(),1,45,3));//变温室灯
         protocolDebugConfig.add(new ProtocolConfigBase(EnumBaseName.testMode.name(),1,48,8));//T模式
     }
 

@@ -63,21 +63,36 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
     private String mFridgeModel, mTftVersion, mOsVersion, mFridgeType;
     RadioButton rbtVersion, rbtReset, rbtStatus, rbtCamera, rbtTP, rbtAudio, rbtMarket, rbtDebug;
     LinearLayout llVersion, llReset, llStatus, llCamera, llTP, llAudio, llMarket, llDebug;
-    LinearLayout llEnvTemp, llEnvHum, llFridge, llFreeze, llChange, llDefrostSensor, llFreezeDefrost,
-            llFreezeFan, llFreezeDefrostSensor;
-    LinearLayout llFridgeDoor, llFreezeDoor, llChangeDoor, llInsideDoor;
-    LinearLayout llEnvRealTemp, llEnvRealHum, llFridgeReal, llFreezeReal, llChangeReal, llFreezeDefrostTemp;
-    LinearLayout llFreezeFanVol, llPressOneFreq, llFridgeAirDoor, llChangeAirDoor, llDefrostHeater, llChangeHeater, llFridgeLight
-            ,llVerticalBridgeHeater,llFreezeLight,llHandleLight,llTestMode;
-    TextView tvEnvTemp, tvEnvHum, tvFridge, tvFreeze, tvChange, tvDefrostSensor, tvFreezeDefrost,
-            tvFreezeFan, tvFreezeDefrostSensor;
-    TextView tvFridgeDoor, tvCommunication, tvPir, tvWifi, tvFreezeDoor, tvChangeDoor, tvInsidDoor;
+    LinearLayout llEnvTemp, llEnvHum, llFridge, llFreeze, llChange, llDefrostSensor, llColdFan,
+            llFridgeDefrost, llFridgeFan, llFridgeDefrostSensor,
+            llFreezeDefrost, llFreezeFan, llFreezeDefrostSensor,
+            llChangeDefrost, llChangeFan, llChangeDefrostSensor,
+            llDrySensor;
+    LinearLayout llFridgeDoor, llFreezeDoor, llChangeDoor, llInsideDoor, llFridgeLeftDoor, llFridgeRightDoor;
+    LinearLayout llEnvRealTemp, llEnvRealHum, llFridgeReal, llFreezeReal, llChangeReal,
+            llFreezeDefrostTemp, llFridgeDefrostTemp, llChangeDefrostTemp, llDryAreaRealTemp;
+    LinearLayout llFreezeFanVol, llPressOneFreq, llFridgeAirDoor, llChangeAirDoor, llDefrostHeater,
+            llChangeHeater, llFridgeLight, llVerticalBridgeHeater, llFreezeLight, llHandleLight,
+            llTestMode, llFridgeFanVol, llChangeFanVol, llColdFanVol, llAirDoor, llAirDoorValve,
+            llFridgeHeater, llFreezeHeater, llAirDoorHeater, llDoorBorderHeater,
+            llFridgeTopLight, llFridgeBackLight, llChangeLight;
+    TextView tvEnvTemp, tvEnvHum, tvFridge, tvFreeze, tvChange, tvDefrostSensor, tvColdFan,
+            tvFridgeDefrost, tvFridgeFan, tvFridgeDefrostSensor,
+            tvFreezeDefrost, tvFreezeFan, tvFreezeDefrostSensor,
+            tvChangeDefrost, tvChangeFan, tvChangeDefrostSensor,
+            tvDrySensor;
+    TextView tvFridgeDoor, tvCommunication, tvPir, tvWifi, tvFreezeDoor, tvChangeDoor, tvInsideDoor,
+            tvFridgeLeftDoor, tvFridgeRightDoor;
     TextView tvFridgeModel, tvTftVersion, tvOsVersion, tvMac, tvTP;
     TextView tvTftVersionTitle, tvOsVersionTitle, tvMacTitle;
-    TextView tvEnvRealTemp, tvEnvRealHum, tvFridgeReal, tvFreezeReal, tvChangeReal, tvFreezeDefrostTemp;
-    TextView tvFreezeFanVol, tvPressOneFreq, tvFridgeAirDoor, tvChangeAirDoor, tvDefrostHeater, tvChangeHeater, tvFridgeLight
-            ,tvVerticalBridgeHeater,tvFreezeLight,tvHandleLight;
-    Button btnReturn, btnResetEnter,btnTestMode,btnMipiCamera;
+    TextView tvEnvRealTemp, tvEnvRealHum, tvFridgeReal, tvFreezeReal, tvChangeReal,
+            tvFreezeDefrostTemp, tvFridgeDefrostTemp, tvChangeDefrostTemp, tvDryAreaRealTemp;
+    TextView tvFreezeFanVol, tvPressOneFreq, tvFridgeAirDoor, tvChangeAirDoor, tvDefrostHeater,
+            tvChangeHeater, tvFridgeLight, tvVerticalBridgeHeater, tvFreezeLight, tvHandleLight,
+            tvFridgeFanVol, tvChangeFanVol, tvColdFanVol, tvAirDoor, tvAirDoorValve,
+            tvFridgeHeater, tvFreezeHeater, tvAirDoorHeater, tvDoorBorderHeater,
+            tvFridgeTopLight, tvFridgeBackLight, tvChangeLight;
+    Button btnReturn, btnResetEnter, btnTestMode, btnMipiCamera;
     MyMarketButton btnMarket;
     MyTestAudioButton btnRecord, btnPlayAll, btnPlayLeft, btnPlayRight;
     TextView tvRecord, tvPlayAll, tvPlayLeft, tvPlayRight;
@@ -107,7 +122,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
         mFridgeModel = mMBParam.getFridgeType();
         mFridgeType = this.getIntent().getStringExtra("model");
         mTftVersion = this.getIntent().getStringExtra("version");
-        MyLogUtil.i(TAG,"model mFridgeType:"+mFridgeType+" mFridgeModel:"+mFridgeModel+" mTftVersion:"+mTftVersion);
+        MyLogUtil.i(TAG, "model mFridgeType:" + mFridgeType + " mFridgeModel:" + mFridgeModel + " mTftVersion:" + mTftVersion);
         if (mFridgeType == null || mFridgeType == "") {
             mFridgeType = mFridgeModel;
         }
@@ -172,24 +187,50 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
         llFreezeDoor = (LinearLayout) findViewById(R.id.linear_factory_freeze_door);
         llChangeDoor = (LinearLayout) findViewById(R.id.linear_factory_change_door);
         llInsideDoor = (LinearLayout) findViewById(R.id.linear_factory_inside_door);
+        llFridgeLeftDoor = (LinearLayout) findViewById(R.id.linear_factory_fridge_left_door);
+        llFridgeRightDoor = (LinearLayout) findViewById(R.id.linear_factory_fridge_right_door);
+        llFridgeDefrostSensor = (LinearLayout) findViewById(R.id.linear_factory_fridge_defrost_sensor);
+        llFridgeDefrost = (LinearLayout) findViewById(R.id.linear_factory_fridge_defrost);
+        llFridgeFan = (LinearLayout) findViewById(R.id.linear_factory_fridge_fan);
+        llChangeDefrostSensor = (LinearLayout) findViewById(R.id.linear_factory_change_defrost_sensor);
+        llChangeDefrost = (LinearLayout) findViewById(R.id.linear_factory_change_defrost);
+        llChangeFan = (LinearLayout) findViewById(R.id.linear_factory_change_fan);
+        llColdFan = (LinearLayout) findViewById(R.id.linear_factory_cold_fan);
+        llDrySensor = (LinearLayout) findViewById(R.id.linear_factory_dry_sensor);
 
         llEnvRealTemp = (LinearLayout) findViewById(R.id.linear_factory_env_real_temp);
         llEnvRealHum = (LinearLayout) findViewById(R.id.linear_factory_env_real_hum);
         llFridgeReal = (LinearLayout) findViewById(R.id.linear_factory_fridge_real_temp);
         llFreezeReal = (LinearLayout) findViewById(R.id.linear_factory_freeze_real_temp);
         llChangeReal = (LinearLayout) findViewById(R.id.linear_factory_change_real_temp);
+        llFridgeDefrostTemp = (LinearLayout) findViewById(R.id.linear_factory_fridge_defrost_real_temp);
         llFreezeDefrostTemp = (LinearLayout) findViewById(R.id.linear_factory_freeze_defrost_real_temp);
+        llChangeDefrostTemp = (LinearLayout) findViewById(R.id.linear_factory_change_defrost_real_temp);
+        llDryAreaRealTemp = (LinearLayout) findViewById(R.id.linear_factory_dry_area_real_temp);
+        llFridgeFanVol = (LinearLayout) findViewById(R.id.linear_factory_fridge_fan_voltage);
         llFreezeFanVol = (LinearLayout) findViewById(R.id.linear_factory_freeze_fan_voltage);
+        llChangeFanVol = (LinearLayout) findViewById(R.id.linear_factory_change_fan_voltage);
+        llColdFanVol = (LinearLayout) findViewById(R.id.linear_factory_cold_fan_voltage);
         llPressOneFreq = (LinearLayout) findViewById(R.id.linear_factory_press_one_freq);
         llFridgeAirDoor = (LinearLayout) findViewById(R.id.linear_factory_fridge_air_door);
         llChangeAirDoor = (LinearLayout) findViewById(R.id.linear_factory_change_air_door);
+        llAirDoor = (LinearLayout) findViewById(R.id.linear_factory_air_door);
+        llAirDoorValve = (LinearLayout) findViewById(R.id.linear_factory_air_door_valve);
         llDefrostHeater = (LinearLayout) findViewById(R.id.linear_factory_defrost_heater);
+        llFridgeHeater = (LinearLayout) findViewById(R.id.linear_factory_fridge_heater);
+        llFreezeHeater = (LinearLayout) findViewById(R.id.linear_factory_freeze_heater);
         llChangeHeater = (LinearLayout) findViewById(R.id.linear_factory_change_heater);
-        llFridgeLight = (LinearLayout) findViewById(R.id.linear_factory_fridge_light);
+        llAirDoorHeater = (LinearLayout) findViewById(R.id.linear_factory_air_door_heater);
+        llDoorBorderHeater = (LinearLayout) findViewById(R.id.linear_factory_door_border_heater);
         llVerticalBridgeHeater = (LinearLayout) findViewById(R.id.linear_factory_verticalBridge_heater);
+        llFridgeLight = (LinearLayout) findViewById(R.id.linear_factory_fridge_light);
         llFreezeLight = (LinearLayout) findViewById(R.id.linear_factory_freeze_light);
         llHandleLight = (LinearLayout) findViewById(R.id.linear_factory_handle_light);
+        llChangeLight = (LinearLayout) findViewById(R.id.linear_factory_change_light);
+        llFridgeTopLight = (LinearLayout) findViewById(R.id.linear_factory_fridge_top_light);
+        llFridgeBackLight = (LinearLayout) findViewById(R.id.linear_factory_fridge_back_light);
         llTestMode = (LinearLayout) findViewById(R.id.linear_factory_test_mode);
+
 
         tvEnvTemp = (TextView) findViewById(R.id.text_factory_env_temp);
         tvEnvHum = (TextView) findViewById(R.id.text_factory_env_hum);
@@ -206,14 +247,27 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
         tvFreezeDefrostSensor = (TextView) findViewById(R.id.text_factory_freeze_defrost_sensor);
         tvFreezeDoor = (TextView) findViewById(R.id.text_factory_freeze_door);
         tvChangeDoor = (TextView) findViewById(R.id.text_factory_change_door);
-        tvInsidDoor = (TextView) findViewById(R.id.text_factory_inside_door);
+        tvInsideDoor = (TextView) findViewById(R.id.text_factory_inside_door);
+        tvFridgeLeftDoor = (TextView) findViewById(R.id.text_factory_fridge_left_door);
+        tvFridgeRightDoor = (TextView) findViewById(R.id.text_factory_fridge_right_door);
+        tvFridgeDefrostSensor = (TextView) findViewById(R.id.text_factory_fridge_defrost_sensor);
+        tvFridgeDefrost = (TextView) findViewById(R.id.text_factory_fridge_defrost);
+        tvFridgeFan = (TextView) findViewById(R.id.text_factory_fridge_fan);
+        tvChangeDefrostSensor = (TextView) findViewById(R.id.text_factory_change_defrost_sensor);
+        tvChangeDefrost = (TextView) findViewById(R.id.text_factory_change_defrost);
+        tvChangeFan = (TextView) findViewById(R.id.text_factory_change_fan);
+        tvColdFan = (TextView) findViewById(R.id.text_factory_cold_fan);
+        tvDrySensor = (TextView) findViewById(R.id.text_factory_dry_sensor);
 
         tvEnvRealTemp = (TextView) findViewById(R.id.text_factory_env_real_temp);
         tvEnvRealHum = (TextView) findViewById(R.id.text_factory_env_real_hum);
         tvFridgeReal = (TextView) findViewById(R.id.text_factory_fridge_real_temp);
         tvFreezeReal = (TextView) findViewById(R.id.text_factory_freeze_real_temp);
         tvChangeReal = (TextView) findViewById(R.id.text_factory_change_real_temp);
+        tvFridgeDefrostTemp = (TextView) findViewById(R.id.text_factory_fridge_defrost_real_temp);
         tvFreezeDefrostTemp = (TextView) findViewById(R.id.text_factory_freeze_defrost_real_temp);
+        tvChangeDefrostTemp = (TextView) findViewById(R.id.text_factory_change_defrost_real_temp);
+        tvDryAreaRealTemp = (TextView) findViewById(R.id.text_factory_dry_area_real_temp);
         tvFreezeFanVol = (TextView) findViewById(R.id.text_factory_freeze_fan_voltage);
         tvPressOneFreq = (TextView) findViewById(R.id.text_factory_press_one_freq);
         tvFridgeAirDoor = (TextView) findViewById(R.id.text_factory_fridge_air_door);
@@ -224,6 +278,18 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
         tvVerticalBridgeHeater = (TextView) findViewById(R.id.text_factory_verticalBridge_heater);
         tvFreezeLight = (TextView) findViewById(R.id.text_factory_freeze_light);
         tvHandleLight = (TextView) findViewById(R.id.text_factory_handle_light);
+        tvFridgeFanVol = (TextView) findViewById(R.id.text_factory_fridge_fan_voltage);
+        tvChangeFanVol = (TextView) findViewById(R.id.text_factory_change_fan_voltage);
+        tvColdFanVol = (TextView) findViewById(R.id.text_factory_cold_fan_voltage);
+        tvAirDoor = (TextView) findViewById(R.id.text_factory_air_door);
+        tvAirDoorValve = (TextView) findViewById(R.id.text_factory_air_door_valve);
+        tvFridgeHeater = (TextView) findViewById(R.id.text_factory_fridge_heater);
+        tvFreezeHeater = (TextView) findViewById(R.id.text_factory_freeze_heater);
+        tvAirDoorHeater = (TextView) findViewById(R.id.text_factory_air_door_heater);
+        tvDoorBorderHeater = (TextView) findViewById(R.id.text_factory_door_border_heater);
+        tvFridgeTopLight = (TextView) findViewById(R.id.text_factory_fridge_top_light);
+        tvFridgeBackLight = (TextView) findViewById(R.id.text_factory_fridge_back_light);
+        tvChangeLight = (TextView) findViewById(R.id.text_factory_change_light);
 
         tvFridgeModel = (TextView) findViewById(R.id.text_factory_fridge_model);
         tvTftVersion = (TextView) findViewById(R.id.text_factory_tft_version);
@@ -309,6 +375,16 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             rbtAudio.setVisibility(View.VISIBLE);
             rbtMarket.setVisibility(View.VISIBLE);
             rbtDebug.setVisibility(View.VISIBLE);
+        } else if (mFridgeModel.equals(ConstantUtil.BCD658_MODEL)) {
+            //            tvFridgeModel.setText(mFridgeModel);
+            rbtVersion.setVisibility(View.VISIBLE);
+            rbtReset.setVisibility(View.VISIBLE);
+            rbtStatus.setVisibility(View.VISIBLE);
+            rbtCamera.setVisibility(View.VISIBLE);
+            rbtTP.setVisibility(View.VISIBLE);
+            rbtAudio.setVisibility(View.VISIBLE);
+            rbtMarket.setVisibility(View.VISIBLE);
+            rbtDebug.setVisibility(View.VISIBLE);
         }
         initStatusView();
         initDebugView();
@@ -350,6 +426,28 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             llFreezeFan.setVisibility(View.VISIBLE);
             llFridgeDoor.setVisibility(View.VISIBLE);
             llFreezeDoor.setVisibility(View.VISIBLE);
+        } else if (mFridgeModel.equals(ConstantUtil.BCD658_MODEL)) {
+            llEnvTemp.setVisibility(View.VISIBLE);
+            llEnvHum.setVisibility(View.VISIBLE);
+            llFridge.setVisibility(View.VISIBLE);
+            llFreeze.setVisibility(View.VISIBLE);
+            llChange.setVisibility(View.VISIBLE);
+            llFreezeDefrostSensor.setVisibility(View.VISIBLE);
+            llFreezeDefrost.setVisibility(View.VISIBLE);
+            llFreezeFan.setVisibility(View.VISIBLE);
+            llFridgeDefrostSensor.setVisibility(View.VISIBLE);
+            llFridgeDefrost.setVisibility(View.VISIBLE);
+            llFridgeFan.setVisibility(View.VISIBLE);
+            llChangeDefrostSensor.setVisibility(View.VISIBLE);
+            llChangeDefrost.setVisibility(View.VISIBLE);
+            llChangeFan.setVisibility(View.VISIBLE);
+            llColdFan.setVisibility(View.VISIBLE);
+            llDrySensor.setVisibility(View.VISIBLE);
+            llFridgeLeftDoor.setVisibility(View.VISIBLE);
+            llFridgeRightDoor.setVisibility(View.VISIBLE);
+            llFreezeDoor.setVisibility(View.VISIBLE);
+            llChangeDoor.setVisibility(View.VISIBLE);
+            llInsideDoor.setVisibility(View.VISIBLE);
         }
     }
 
@@ -371,6 +469,38 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             llFridgeLight.setVisibility(View.VISIBLE);
             llFreezeLight.setVisibility(View.VISIBLE);
             llHandleLight.setVisibility(View.VISIBLE);
+            llTestMode.setVisibility(View.VISIBLE);
+        } else if (mFridgeModel.equals(ConstantUtil.BCD658_MODEL)) {
+            llEnvRealTemp.setVisibility(View.VISIBLE);
+            llEnvRealHum.setVisibility(View.VISIBLE);
+            llFridgeReal.setVisibility(View.VISIBLE);
+            llFreezeReal.setVisibility(View.VISIBLE);
+            llChangeReal.setVisibility(View.VISIBLE);
+            llFridgeDefrostTemp.setVisibility(View.VISIBLE);
+            llFreezeDefrostTemp.setVisibility(View.VISIBLE);
+            llChangeDefrostTemp.setVisibility(View.VISIBLE);
+            llDryAreaRealTemp.setVisibility(View.VISIBLE);
+
+            llFridgeFanVol.setVisibility(View.VISIBLE);
+            llFreezeFanVol.setVisibility(View.VISIBLE);
+            llChangeFanVol.setVisibility(View.VISIBLE);
+            llColdFanVol.setVisibility(View.VISIBLE);
+            llPressOneFreq.setVisibility(View.VISIBLE);
+
+            llAirDoor.setVisibility(View.VISIBLE);
+            llAirDoorValve.setVisibility(View.VISIBLE);
+
+            llFridgeHeater.setVisibility(View.VISIBLE);
+            llFreezeHeater.setVisibility(View.VISIBLE);
+            llChangeHeater.setVisibility(View.VISIBLE);
+            llAirDoorHeater.setVisibility(View.VISIBLE);
+            llVerticalBridgeHeater.setVisibility(View.VISIBLE);
+            llDoorBorderHeater.setVisibility(View.VISIBLE);
+
+            llFridgeTopLight.setVisibility(View.VISIBLE);
+            llFridgeBackLight.setVisibility(View.VISIBLE);
+            llFreezeLight.setVisibility(View.VISIBLE);
+            llChangeLight.setVisibility(View.VISIBLE);
             llTestMode.setVisibility(View.VISIBLE);
         }
     }
@@ -436,10 +566,16 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
                 }
                 break;
             case R.id.btn_factory_reset:
-                popResetPassWin();
-//                SystemClock.sleep(500);
-//                SystemCmdUtil.RootCCTCommand("pm clear com.haiersmart.sfnation");
-//                SystemCmdUtil.runCMD("pm clear " + getPackageName());
+                new Thread() {
+                    @Override
+                    public void run() {
+                        super.run();
+                        //                            SystemClock.sleep(1000);
+                        SystemCmdUtil.RootCCTCommand("pm clear com.haiersmart.sfnation");
+                        SystemCmdUtil.runCMD("pm clear " + getPackageName());
+                    }
+                }.start();
+//                popResetPassWin();
                 break;
             case R.id.btn_factory_market:
                 if (btnMarket.isPress()) {
@@ -452,7 +588,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
                 break;
             case R.id.btn_factory_test_mode:
                 int testMode = mMBParam.getMbdValueByName(EnumBaseName.testMode.name());
-                mPowerSerialOpt.sendCmdById(EnumBaseName.testMode, testMode+1);
+                mPowerSerialOpt.sendCmdById(EnumBaseName.testMode, testMode + 1);
                 break;
             case R.id.btn_factory_mipi_camera:
                 startActivity(new Intent(this, CameraMipiActivity.class));
@@ -546,6 +682,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             mTimer.schedule(mTimerTask, 0, 300);
         }
     }
+
     private void startDebugTimer() {
         MyLogUtil.i(TAG, "startTimer");
         if (mTimer == null) {
@@ -691,6 +828,94 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
                 tvFreezeDoor.setText(getResources().getString(R.string.text_door_open));
                 tvFreezeDoor.setTextColor(getResources().getColor(R.color.black2));
             }
+            if (mMBParam.getMbsValueByName(EnumBaseName.changeDoorStatus.toString()) == 0) {
+                tvChangeDoor.setText(getResources().getString(R.string.text_door_close));
+                tvChangeDoor.setTextColor(getResources().getColor(R.color.black2));
+            } else {
+                tvChangeDoor.setText(getResources().getString(R.string.text_door_open));
+                tvChangeDoor.setTextColor(getResources().getColor(R.color.black2));
+            }
+            if (mMBParam.getMbsValueByName(EnumBaseName.insideDoorStatus.toString()) == 0) {
+                tvInsideDoor.setText(getResources().getString(R.string.text_door_close));
+                tvInsideDoor.setTextColor(getResources().getColor(R.color.black2));
+            } else {
+                tvInsideDoor.setText(getResources().getString(R.string.text_door_open));
+                tvInsideDoor.setTextColor(getResources().getColor(R.color.black2));
+            }
+            if (mMBParam.getMbsValueByName(EnumBaseName.fridgeDoorStatus.toString()) == 0) {
+                tvFridgeLeftDoor.setText(getResources().getString(R.string.text_door_close));
+                tvFridgeLeftDoor.setTextColor(getResources().getColor(R.color.black2));
+            } else {
+                tvFridgeLeftDoor.setText(getResources().getString(R.string.text_door_open));
+                tvFridgeLeftDoor.setTextColor(getResources().getColor(R.color.black2));
+            }
+            if (mMBParam.getMbsValueByName(EnumBaseName.fridgeRightDoorStatus.toString()) == 0) {
+                tvFridgeRightDoor.setText(getResources().getString(R.string.text_door_close));
+                tvFridgeRightDoor.setTextColor(getResources().getColor(R.color.black2));
+            } else {
+                tvFridgeRightDoor.setText(getResources().getString(R.string.text_door_open));
+                tvFridgeRightDoor.setTextColor(getResources().getColor(R.color.black2));
+            }
+
+            if (mMBParam.getMbsValueByName(EnumBaseName.fridgeDefrostSensorErr.toString()) == 0) {
+                tvFridgeDefrostSensor.setText(getResources().getString(R.string.text_factory_normal));
+                tvFridgeDefrostSensor.setTextColor(getResources().getColor(R.color.black2));
+            } else {
+                tvFridgeDefrostSensor.setText(getResources().getString(R.string.text_factory_error));
+                tvFridgeDefrostSensor.setTextColor(getResources().getColor(R.color.red));
+            }
+            if (mMBParam.getMbsValueByName(EnumBaseName.fridgeDefrostErr.toString()) == 0) {
+                tvFridgeDefrost.setText(getResources().getString(R.string.text_factory_normal));
+                tvFridgeDefrost.setTextColor(getResources().getColor(R.color.black2));
+            } else {
+                tvFridgeDefrost.setText(getResources().getString(R.string.text_factory_error));
+                tvFridgeDefrost.setTextColor(getResources().getColor(R.color.red));
+            }
+            if (mMBParam.getMbsValueByName(EnumBaseName.fridgeFanErr.name()) == 0) {
+                tvFridgeFan.setText(getResources().getString(R.string.text_factory_normal));
+                tvFridgeFan.setTextColor(getResources().getColor(R.color.black2));
+            } else {
+                tvFridgeFan.setText(getResources().getString(R.string.text_factory_error));
+                tvFridgeFan.setTextColor(getResources().getColor(R.color.red));
+            }
+
+            if (mMBParam.getMbsValueByName(EnumBaseName.changeDefrostSensorErr.toString()) == 0) {
+                tvChangeDefrostSensor.setText(getResources().getString(R.string.text_factory_normal));
+                tvChangeDefrostSensor.setTextColor(getResources().getColor(R.color.black2));
+            } else {
+                tvChangeDefrostSensor.setText(getResources().getString(R.string.text_factory_error));
+                tvChangeDefrostSensor.setTextColor(getResources().getColor(R.color.red));
+            }
+            if (mMBParam.getMbsValueByName(EnumBaseName.changeDefrostErr.toString()) == 0) {
+                tvChangeDefrost.setText(getResources().getString(R.string.text_factory_normal));
+                tvChangeDefrost.setTextColor(getResources().getColor(R.color.black2));
+            } else {
+                tvChangeDefrost.setText(getResources().getString(R.string.text_factory_error));
+                tvChangeDefrost.setTextColor(getResources().getColor(R.color.red));
+            }
+            if (mMBParam.getMbsValueByName(EnumBaseName.changeFanErr.name()) == 0) {
+                tvChangeFan.setText(getResources().getString(R.string.text_factory_normal));
+                tvChangeFan.setTextColor(getResources().getColor(R.color.black2));
+            } else {
+                tvChangeFan.setText(getResources().getString(R.string.text_factory_error));
+                tvChangeFan.setTextColor(getResources().getColor(R.color.red));
+            }
+
+            if (mMBParam.getMbsValueByName(EnumBaseName.coldFanErr.name()) == 0) {
+                tvColdFan.setText(getResources().getString(R.string.text_factory_normal));
+                tvColdFan.setTextColor(getResources().getColor(R.color.black2));
+            } else {
+                tvColdFan.setText(getResources().getString(R.string.text_factory_error));
+                tvColdFan.setTextColor(getResources().getColor(R.color.red));
+            }
+            if (mMBParam.getMbsValueByName(EnumBaseName.dryAreaSensorErr.name()) == 0) {
+                tvDrySensor.setText(getResources().getString(R.string.text_factory_normal));
+                tvDrySensor.setTextColor(getResources().getColor(R.color.black2));
+            } else {
+                tvDrySensor.setText(getResources().getString(R.string.text_factory_error));
+                tvDrySensor.setTextColor(getResources().getColor(R.color.red));
+            }
+
             tvCommunication.setText(getResources().getString(R.string.text_factory_normal));
             tvCommunication.setTextColor(getResources().getColor(R.color.black2));
             //        tvWifi = (TextView)findViewById(R.id.text_factory_wifi);
@@ -707,14 +932,42 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             tvChange.setTextColor(getResources().getColor(R.color.red));
             tvDefrostSensor.setText(getResources().getString(R.string.text_factory_error));
             tvDefrostSensor.setTextColor(getResources().getColor(R.color.red));
-            tvFreezeDefrost.setText(getResources().getString(R.string.text_factory_error));
-            tvFreezeDefrost.setTextColor(getResources().getColor(R.color.red));
-            tvFreezeFan.setText(getResources().getString(R.string.text_factory_error));
-            tvFreezeFan.setTextColor(getResources().getColor(R.color.red));
             tvFridgeDoor.setText(getResources().getString(R.string.text_factory_error));
             tvFridgeDoor.setTextColor(getResources().getColor(R.color.red));
+            tvFreezeDoor.setText(getResources().getString(R.string.text_factory_error));
+            tvFreezeDoor.setTextColor(getResources().getColor(R.color.red));
+            tvChangeDoor.setText(getResources().getString(R.string.text_factory_error));
+            tvChangeDoor.setTextColor(getResources().getColor(R.color.red));
+            tvInsideDoor.setText(getResources().getString(R.string.text_factory_error));
+            tvInsideDoor.setTextColor(getResources().getColor(R.color.red));
+            tvFridgeLeftDoor.setText(getResources().getString(R.string.text_factory_error));
+            tvFridgeLeftDoor.setTextColor(getResources().getColor(R.color.red));
+            tvFridgeRightDoor.setText(getResources().getString(R.string.text_factory_error));
+            tvFridgeRightDoor.setTextColor(getResources().getColor(R.color.red));
             tvCommunication.setText(getResources().getString(R.string.text_factory_error));
             tvCommunication.setTextColor(getResources().getColor(R.color.red));
+            tvFridgeDefrostSensor.setText(getResources().getString(R.string.text_factory_error));
+            tvFridgeDefrostSensor.setTextColor(getResources().getColor(R.color.red));
+            tvFreezeDefrostSensor.setText(getResources().getString(R.string.text_factory_error));
+            tvFreezeDefrostSensor.setTextColor(getResources().getColor(R.color.red));
+            tvChangeDefrostSensor.setText(getResources().getString(R.string.text_factory_error));
+            tvChangeDefrostSensor.setTextColor(getResources().getColor(R.color.red));
+            tvFridgeDefrost.setText(getResources().getString(R.string.text_factory_error));
+            tvFridgeDefrost.setTextColor(getResources().getColor(R.color.red));
+            tvFreezeDefrost.setText(getResources().getString(R.string.text_factory_error));
+            tvFreezeDefrost.setTextColor(getResources().getColor(R.color.red));
+            tvChangeDefrost.setText(getResources().getString(R.string.text_factory_error));
+            tvChangeDefrost.setTextColor(getResources().getColor(R.color.red));
+            tvFridgeFan.setText(getResources().getString(R.string.text_factory_error));
+            tvFridgeFan.setTextColor(getResources().getColor(R.color.red));
+            tvFreezeFan.setText(getResources().getString(R.string.text_factory_error));
+            tvFreezeFan.setTextColor(getResources().getColor(R.color.red));
+            tvChangeFan.setText(getResources().getString(R.string.text_factory_error));
+            tvChangeFan.setTextColor(getResources().getColor(R.color.red));
+            tvColdFan.setText(getResources().getString(R.string.text_factory_error));
+            tvColdFan.setTextColor(getResources().getColor(R.color.red));
+            tvDrySensor.setText(getResources().getString(R.string.text_factory_error));
+            tvDrySensor.setTextColor(getResources().getColor(R.color.red));
         }
         setPirContent();
         setWifiContent();
@@ -846,7 +1099,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
     }
 
     private void popResetPassWin() {
-//        final PopWindowNormalInput normalInput = new PopWindowNormalInput(this, "密码", "提醒！恢复出厂设置后，本地账户信息将被清除。", "请输入恢复出厂设置密码");
+        //        final PopWindowNormalInput normalInput = new PopWindowNormalInput(this, "密码", "提醒！恢复出厂设置后，本地账户信息将被清除。", "请输入恢复出厂设置密码");
         final PopWindowNormal normalInput = new PopWindowNormal(this,
                 "提醒！", "恢复出厂设置后，本地账户信息，网络连接信息将被清除，冰箱设置恢复默认。");
         normalInput.showDialog();
@@ -859,14 +1112,14 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
                         @Override
                         public void run() {
                             super.run();
-//                            SystemClock.sleep(1000);
+                            //                            SystemClock.sleep(1000);
                             SystemCmdUtil.RootCCTCommand("pm clear com.haiersmart.sfnation");
                             SystemCmdUtil.runCMD("pm clear " + getPackageName());
                         }
                     }.start();
                 } else {
                     normalInput.setContentText("密码错误！请重新输入。");
-//                    normalInput.setmEdittext("");
+                    //                    normalInput.setmEdittext("");
                 }
             }
 
@@ -878,61 +1131,109 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
     }
 
     private void refreshDebugUI() {
-        tvEnvRealTemp.setText((float)mMBParam.getMbdValueByName(EnumBaseName.envRealTemp.toString())/10+"℃");
-        tvFridgeReal.setText((float)mMBParam.getMbdValueByName(EnumBaseName.fridgeRealTemp.toString())/10+"℃");
-        tvFreezeReal.setText((float)mMBParam.getMbdValueByName(EnumBaseName.freezeRealTemp.toString())/10+"℃");
-        tvChangeReal.setText((float)mMBParam.getMbdValueByName(EnumBaseName.changeRealTemp.toString())/10+"℃");
-        tvFreezeDefrostTemp.setText((float)mMBParam.getMbdValueByName(EnumBaseName.freezeDefrostRealTemp.toString())/10+"℃");
-        tvEnvRealHum.setText(mMBParam.getMbdValueByName(EnumBaseName.envRealHum.toString())+"%");
+        tvEnvRealTemp.setText((float) mMBParam.getMbdValueByName(EnumBaseName.envRealTemp.toString()) / 10 + "℃");
+        tvFridgeReal.setText((float) mMBParam.getMbdValueByName(EnumBaseName.fridgeRealTemp.toString()) / 10 + "℃");
+        tvFreezeReal.setText((float) mMBParam.getMbdValueByName(EnumBaseName.freezeRealTemp.toString()) / 10 + "℃");
+        tvChangeReal.setText((float) mMBParam.getMbdValueByName(EnumBaseName.changeRealTemp.toString()) / 10 + "℃");
+        tvFridgeDefrostTemp.setText((float) mMBParam.getMbdValueByName(EnumBaseName.fridgeDefrostRealTemp.toString()) / 10 + "℃");
+        tvFreezeDefrostTemp.setText((float) mMBParam.getMbdValueByName(EnumBaseName.freezeDefrostRealTemp.toString()) / 10 + "℃");
+        tvChangeDefrostTemp.setText((float) mMBParam.getMbdValueByName(EnumBaseName.changeDefrostRealTemp.toString()) / 10 + "℃");
+        tvDryAreaRealTemp.setText((float) mMBParam.getMbdValueByName(EnumBaseName.dryAreaRealTemp.toString()) / 10 + "℃");
+        tvEnvRealHum.setText(mMBParam.getMbdValueByName(EnumBaseName.envRealHum.toString()) + "%");
 
-        tvFreezeFanVol.setText(mMBParam.getMbdValueByName(EnumBaseName.freezeFanVoltage.toString())+"V");
-        if(mMBParam.getMbdValueByName(EnumBaseName.pressorOneFreq.toString()) == 0){
+        tvFridgeFanVol.setText(mMBParam.getMbdValueByName(EnumBaseName.fridgeFanVoltage.toString()) + "V");
+        tvFreezeFanVol.setText(mMBParam.getMbdValueByName(EnumBaseName.freezeFanVoltage.toString()) + "V");
+        tvChangeFanVol.setText(mMBParam.getMbdValueByName(EnumBaseName.changeFanVoltage.toString()) + "V");
+        tvColdFanVol.setText(mMBParam.getMbdValueByName(EnumBaseName.coldFanVoltage.toString()) + "V");
+        if (mMBParam.getMbdValueByName(EnumBaseName.pressorOneFreq.toString()) == 0) {
             tvPressOneFreq.setText(getResources().getString(R.string.text_door_close));
-        }else {
-            tvPressOneFreq.setText(mMBParam.getMbdValueByName(EnumBaseName.pressorOneFreq.toString())+"");
+        } else {
+            tvPressOneFreq.setText(mMBParam.getMbdValueByName(EnumBaseName.pressorOneFreq.toString()) + "");
         }
 
-        if(mMBParam.getMbdValueByName(EnumBaseName.fridgeAirDoor.toString()) == 0){
+        if (mMBParam.getMbdValueByName(EnumBaseName.fridgeAirDoor.toString()) == 0) {
             tvFridgeAirDoor.setText(getResources().getString(R.string.text_door_close));
-        }else {
+        } else {
             tvFridgeAirDoor.setText(getResources().getString(R.string.text_door_open));
         }
-        if(mMBParam.getMbdValueByName(EnumBaseName.changeAirDoor.toString()) == 0){
+        if (mMBParam.getMbdValueByName(EnumBaseName.changeAirDoor.toString()) == 0) {
             tvChangeAirDoor.setText(getResources().getString(R.string.text_door_close));
-        }else {
+        } else {
             tvChangeAirDoor.setText(getResources().getString(R.string.text_door_open));
         }
-        if(mMBParam.getMbdValueByName(EnumBaseName.defrostHeater.toString()) == 0){
+        if (mMBParam.getMbdValueByName(EnumBaseName.airDoor.toString()) == 0) {
+            tvAirDoor.setText(getResources().getString(R.string.text_door_close));
+        } else {
+            tvAirDoor.setText(getResources().getString(R.string.text_door_open));
+        }
+        tvAirDoorValve.setText(mMBParam.getMbdValueByName(EnumBaseName.airDoorValve.toString())+"");
+
+        if (mMBParam.getMbdValueByName(EnumBaseName.defrostHeater.toString()) == 0) {
             tvDefrostHeater.setText(getResources().getString(R.string.text_door_close));
-        }else {
+        } else {
             tvDefrostHeater.setText(getResources().getString(R.string.text_door_open));
         }
-        if(mMBParam.getMbdValueByName(EnumBaseName.changeHeater.toString()) == 0){
+        if (mMBParam.getMbdValueByName(EnumBaseName.fridgeHeater.toString()) == 0) {
+            tvFridgeHeater.setText(getResources().getString(R.string.text_door_close));
+        } else {
+            tvFridgeHeater.setText(getResources().getString(R.string.text_door_open));
+        }
+        if (mMBParam.getMbdValueByName(EnumBaseName.freezeHeater.toString()) == 0) {
+            tvFreezeHeater.setText(getResources().getString(R.string.text_door_close));
+        } else {
+            tvFreezeHeater.setText(getResources().getString(R.string.text_door_open));
+        }
+        if (mMBParam.getMbdValueByName(EnumBaseName.changeHeater.toString()) == 0) {
             tvChangeHeater.setText(getResources().getString(R.string.text_door_close));
-        }else {
+        } else {
             tvChangeHeater.setText(getResources().getString(R.string.text_door_open));
         }
-        if(mMBParam.getMbdValueByName(EnumBaseName.fridgeLight.toString()) == 0){
+        if (mMBParam.getMbdValueByName(EnumBaseName.airDoorHeater.toString()) == 0) {
+            tvAirDoorHeater.setText(getResources().getString(R.string.text_door_close));
+        } else {
+            tvAirDoorHeater.setText(getResources().getString(R.string.text_door_open));
+        }
+        if (mMBParam.getMbdValueByName(EnumBaseName.doorBorderHeater.toString()) == 0) {
+            tvDoorBorderHeater.setText(getResources().getString(R.string.text_door_close));
+        } else {
+            tvDoorBorderHeater.setText(getResources().getString(R.string.text_door_open));
+        }
+        if (mMBParam.getMbdValueByName(EnumBaseName.fridgeLight.toString()) == 0) {
             tvFridgeLight.setText(getResources().getString(R.string.text_door_close));
-        }else {
+        } else {
             tvFridgeLight.setText(getResources().getString(R.string.text_door_open));
         }
-        if(mMBParam.getMbdValueByName(EnumBaseName.verticalBridgeHeater.toString()) == 0){
+        if (mMBParam.getMbdValueByName(EnumBaseName.verticalBridgeHeater.toString()) == 0) {
             tvVerticalBridgeHeater.setText(getResources().getString(R.string.text_door_close));
-        }else {
+        } else {
             tvVerticalBridgeHeater.setText(getResources().getString(R.string.text_door_open));
         }
-        if(mMBParam.getMbdValueByName(EnumBaseName.freezeLight.toString()) == 0){
+        if (mMBParam.getMbdValueByName(EnumBaseName.freezeLight.toString()) == 0) {
             tvFreezeLight.setText(getResources().getString(R.string.text_door_close));
-        }else {
+        } else {
             tvFreezeLight.setText(getResources().getString(R.string.text_door_open));
         }
-        if(mMBParam.getMbdValueByName(EnumBaseName.handleLight.toString()) == 0){
+        if (mMBParam.getMbdValueByName(EnumBaseName.handleLight.toString()) == 0) {
             tvHandleLight.setText(getResources().getString(R.string.text_door_close));
-        }else {
+        } else {
             tvHandleLight.setText(getResources().getString(R.string.text_door_open));
         }
-        btnTestMode.setText(getResources().getString(R.string.title_factory_test_mode)+" "+mMBParam.getMbdValueByName(EnumBaseName.testMode.name()));
+        if (mMBParam.getMbdValueByName(EnumBaseName.fridgeTopLight.toString()) == 0) {
+            tvFridgeTopLight.setText(getResources().getString(R.string.text_door_close));
+        } else {
+            tvFridgeTopLight.setText(getResources().getString(R.string.text_door_open));
+        }
+        if (mMBParam.getMbdValueByName(EnumBaseName.fridgeBackLight.toString()) == 0) {
+            tvFridgeBackLight.setText(getResources().getString(R.string.text_door_close));
+        } else {
+            tvFridgeBackLight.setText(getResources().getString(R.string.text_door_open));
+        }
+        if (mMBParam.getMbdValueByName(EnumBaseName.changeLight.toString()) == 0) {
+            tvChangeLight.setText(getResources().getString(R.string.text_door_close));
+        } else {
+            tvChangeLight.setText(getResources().getString(R.string.text_door_open));
+        }
+        btnTestMode.setText(getResources().getString(R.string.title_factory_test_mode) + " " + mMBParam.getMbdValueByName(EnumBaseName.testMode.name()));
     }
 
 }

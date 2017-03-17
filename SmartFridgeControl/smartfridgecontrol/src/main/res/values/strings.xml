@@ -49,14 +49,15 @@
     <string name="title_factory_change">变温室传感器</string>
     <string name="title_factory_defrost_sensor">化霜传感器</string>
     <string name="text_factory_normal">正常</string>
-    <string name="title_factory_freeze_defrost">冷冻化霜</string>
-    <string name="title_factory_freeze_fan">冷冻风机</string>
+
     <string name="text_factory_error">ERROR</string>
     <string name="title_factory_status">状态</string>
     <string name="title_factory_fridge_door">冷藏室门</string>
     <string name="title_factory_freeze_door">冷冻室门</string>
     <string name="title_factory_change_door">变温室门</string>
     <string name="title_factory_inside_door">门中门</string>
+    <string name="title_factory_fridge_left_door">左冷藏室门</string>
+    <string name="title_factory_fridge_right_door">右冷藏室门</string>
     <string name="title_factory_communication">通信状态</string>
     <string name="title_factory_pir">人感状态</string>
     <string name="text_factory_has_person">有人</string>
@@ -76,20 +77,50 @@
     <string name="title_factory_freeze_real_temp">冷冻实际温度</string>
     <string name="title_factory_change_real_temp">变温实际温度</string>
     <string name="title_factory_env_real_temp">环境实际温度</string>
+    <string name="title_factory_fridge_defrost_real_temp">冷藏化霜实际温度</string>
     <string name="title_factory_freeze_defrost_real_temp">冷冻化霜实际温度</string>
+    <string name="title_factory_change_defrost_real_temp">变温化霜实际温度</string>
+    <string name="title_factory_dry_area_real_temp">干区实际温度</string>
 
+    <string name="title_factory_fridge_fan_voltage">冷藏风机电压</string>
     <string name="title_factory_freeze_fan_voltage">冷冻风机电压</string>
+    <string name="title_factory_change_fan_voltage">变温风机电压</string>
+    <string name="title_factory_cold_fan_voltage">冷却风机电压</string>
     <string name="title_factory_press_one_freq">压机1频率</string>
     <string name="title_factory_fridge_air_door">冷藏室风门</string>
     <string name="title_factory_change_air_door">变温室风门</string>
+    <string name="title_factory_air_door">风门</string>
+    <string name="title_factory_air_door_valve">风门阀门</string>
     <string name="title_factory_defrost_heater">化霜加热丝</string>
+    <string name="title_factory_fridge_heater">冷藏室加热丝</string>
+    <string name="title_factory_freeze_heater">冷冻室加热丝</string>
     <string name="title_factory_change_heater">变温室加热丝</string>
-    <string name="title_factory_fridge_light">冷藏灯</string>
+    <string name="title_factory_air_door_heater">风门加热丝</string>
+    <string name="title_factory_door_border_heater">门边框加热丝</string>
     <string name="title_factory_verticalBridge_heater">竖梁加热丝</string>
+    <string name="title_factory_fridge_top_light">冷藏顶灯</string>
+    <string name="title_factory_fridge_back_light">冷藏背灯</string>
+    <string name="title_factory_fridge_light">冷藏背灯</string>
     <string name="title_factory_freeze_light">冷冻灯</string>
+    <string name="title_factory_change_light">变温灯</string>
     <string name="title_factory_handle_light">把手灯</string>
     <string name="title_factory_test_mode">T 模式</string>
     <string name="txt_btn_camera_mipi">主摄像头</string>
     <string name="text_factory_mipi_camera">主摄像头</string>
+
+    <string name="title_factory_fridge_defrost_sensor">冷藏化霜传感器</string>
+    <string name="title_factory_freeze_defrost_sensor">冷冻化霜传感器</string>
+    <string name="title_factory_change_defrost_sensor">变温化霜传感器</string>
+
+    <string name="title_factory_fridge_defrost">冷藏化霜</string>
+    <string name="title_factory_freeze_defrost">冷冻化霜</string>
+    <string name="title_factory_change_defrost">变温化霜</string>
+
+    <string name="title_factory_fridge_fan">冷藏风机</string>
+    <string name="title_factory_freeze_fan">冷冻风机</string>
+    <string name="title_factory_change_fan">变温风机</string>
+    <string name="title_factory_cold_fan">冷却风机</string>
+
+    <string name="title_factory_dry_sensor">干区传感器</string>
 
 </resources>

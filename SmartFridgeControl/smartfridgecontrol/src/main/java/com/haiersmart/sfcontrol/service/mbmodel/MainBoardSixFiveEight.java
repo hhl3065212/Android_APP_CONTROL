@@ -13,7 +13,7 @@ import com.alibaba.fastjson.JSON;
 import com.haiersmart.sfcontrol.constant.EnumBaseName;
 import com.haiersmart.sfcontrol.database.FridgeControlEntry;
 import com.haiersmart.sfcontrol.service.alarm.HandleDoorAlarm;
-import com.haiersmart.sfcontrol.service.configtable.ConfigFourSevenSix;
+import com.haiersmart.sfcontrol.service.configtable.ConfigSixFiveEight;
 import com.haiersmart.sfcontrol.utilslib.MyLogUtil;
 
 import java.util.ArrayList;
@@ -76,9 +76,9 @@ public class MainBoardSixFiveEight extends MainBoardBase{
 
     @Override
     public void initConfig() {
-        ConfigFourSevenSix mConfigFourSevenSix = new ConfigFourSevenSix();
-        mProtocolConfigStatus = mConfigFourSevenSix.getProtocolConfig();
-        mProtocolConfigDebug = mConfigFourSevenSix.getProtocolDebugConfig();
+        ConfigSixFiveEight mConfigSixFiveEight = new ConfigSixFiveEight();
+        mProtocolConfigStatus = mConfigSixFiveEight.getProtocolConfig();
+        mProtocolConfigDebug = mConfigSixFiveEight.getProtocolDebugConfig();
         mFridgeDoorAlarm = new HandleDoorAlarm(mFridgeDoorAlarmStartTime,mFridgeDoorAlarmStopTime,"fridge"){
             @Override
             public void setDoorErr(boolean b) {

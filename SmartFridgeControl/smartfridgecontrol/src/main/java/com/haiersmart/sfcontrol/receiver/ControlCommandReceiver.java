@@ -177,6 +177,22 @@ public class ControlCommandReceiver extends BroadcastReceiver {
                         sendCommandToService(context, ConstantUtil.MODE_PURIFY_ON);
                     } else if (strs[1].equals(ConstantWifiUtil.MODE_CLEAN_OFF)) {
                         sendCommandToService(context, ConstantUtil.MODE_PURIFY_OFF);
+                    }else if (strs[1].equals(ConstantUtil.PIR_ON)){
+                        sendCommandToService(context, ConstantUtil.PIR_ON);
+                    }else if (strs[1].equals(ConstantUtil.PIR_OFF)){
+                        sendCommandToService(context, ConstantUtil.PIR_OFF);
+                    }else if (strs[1].equals(ConstantUtil.FRIDGE_TOP_LIGHT_ON)){
+                        sendCommandToService(context, ConstantUtil.FRIDGE_TOP_LIGHT_ON);
+                    }else if (strs[1].equals(ConstantUtil.FRIDGE_TOP_LIGHT_OFF)){
+                        sendCommandToService(context, ConstantUtil.FRIDGE_TOP_LIGHT_OFF);
+                    }else if (strs[1].equals(ConstantUtil.FRIDGE_BACK_LIGHT_ON)){
+                        sendCommandToService(context, ConstantUtil.FRIDGE_BACK_LIGHT_ON);
+                    }else if (strs[1].equals(ConstantUtil.FRIDGE_BACK_LIGHT_OFF)){
+                        sendCommandToService(context, ConstantUtil.FRIDGE_BACK_LIGHT_OFF);
+                    }else if (strs[1].equals(ConstantUtil.INSIDE_DOOR_ON)){
+                        sendCommandToService(context, ConstantUtil.INSIDE_DOOR_ON);
+                    }else if (strs[1].equals(ConstantUtil.INSIDE_DOOR_OFF)){
+                        sendCommandToService(context, ConstantUtil.INSIDE_DOOR_OFF);
                     }
                 }
                 if (strs[0].equals(ConstantWifiUtil.MODE_UV)) {

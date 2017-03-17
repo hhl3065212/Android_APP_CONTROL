@@ -15,7 +15,6 @@ import com.haiersmart.sfcontrol.database.FridgeControlEntry;
 import com.haiersmart.sfcontrol.database.FridgeStatusEntry;
 import com.haiersmart.sfcontrol.service.ControlMainBoardService;
 import com.haiersmart.sfcontrol.utilslib.MyLogUtil;
-import com.haiersmart.sfcontrol.utilslib.RemoteUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -392,6 +391,43 @@ public class SixFiveEightModel extends ModelBase{
         //广播档位和模式信息给上层
         mService.sendControlCmdResponse();
     }
+    @Override
+    public void refrigeratorOpen(){
+        FridgeControlEntry fridgeCloseEntry = getControlEntryByName(EnumBaseName.fridgeSwitch);
+        if(fridgeCloseEntry.value == 0) {
+            //冷藏开
+            fridgeCloseEntry.value = 1;
+            fridgeCloseEntry.disable = ConstantUtil.NO_WARNING;
+            updateControlByEntry(fridgeCloseEntry);
+            getControlDbMgr().updateValue(fridgeCloseEntry);
+            MyLogUtil.d(TAG,"refrigeratorOpen modedebug fridgeSwitch disable="+getControlEntryByName(EnumBaseName.fridgeSwitch).disable);
+            //冷藏档位可调节
+            setControlDisableByName(EnumBaseName.fridgeTargetTemp, ConstantUtil.NO_WARNING);
+            getControlDbMgr().updateDisableByName(EnumBaseName.fridgeTargetTemp, ConstantUtil.NO_WARNING);
+            MyLogUtil.d(TAG,"refrigeratorOpen modedebug fridgeTargetTemp disable="+getControlEntryByName(EnumBaseName.fridgeTargetTemp).disable);
+        }
+        //广播档位和模式信息给上层
+        mService.sendControlCmdResponse();
+
+    }
+
+    @Override
+    public void refrigeratorClose(){
+        FridgeControlEntry fridgeCloseEntry = getControlEntryByName(EnumBaseName.fridgeSwitch);
+        if(fridgeCloseEntry.value == 1) {
+            fridgeCloseEntry.value = 0;
+            fridgeCloseEntry.disable = ConstantUtil.NO_WARNING;
+            updateControlByEntry(fridgeCloseEntry);
+            getControlDbMgr().updateValue(fridgeCloseEntry);
+            MyLogUtil.d(TAG,"refrigeratorClose modedebug fridgeSwitch disable="+getControlEntryByName(EnumBaseName.fridgeSwitch).disable);
+            //冷藏档位不可调节
+            setControlDisableByName(EnumBaseName.fridgeTargetTemp, ConstantUtil.REFRIGERATOR_CLOSE_ON_SET_TEMPER_WARNING);
+            getControlDbMgr().updateDisableByName(EnumBaseName.fridgeTargetTemp, ConstantUtil.REFRIGERATOR_CLOSE_ON_SET_TEMPER_WARNING);
+            MyLogUtil.d(TAG,"refrigeratorClose modedebug fridgeTargetTemp disable="+getControlEntryByName(EnumBaseName.fridgeTargetTemp).disable);
+        }
+        //广播档位和模式信息给上层
+        mService.sendControlCmdResponse();
+    }
 
     @Override
     public void pirSwitchOn() {
@@ -434,41 +470,41 @@ public class SixFiveEightModel extends ModelBase{
 
     }
 
-    private void handleTemperInfoResponse() {
-        MyLogUtil.v(TAG, "handleTemperInfoResponse in");
-        Boolean isTempChanged = false;
-
-        for(FridgeStatusEntry fridgeStatusEntry:mShowTempEntryList){
-            int showTemp = getMainBoardInfo().searchStatusValueBoard(fridgeStatusEntry.name);
-            if(fridgeStatusEntry.value != showTemp){
-                fridgeStatusEntry.value = showTemp;
-                isTempChanged = true;
-            }
-        }
-
-        if (isTempChanged) {
-            mService.notifyTemperChanged(mShowTempEntryList);
-            MyLogUtil.d("printSerialString", "temper");
-            RemoteUtil.sendQuery();
-        }
-        MyLogUtil.v(TAG, "handleTemperInfoResponse out");
-    }
-
-    private void handleErrorInfoResponse() {
-        Boolean isErrOccurred = false;
-
-        for(FridgeStatusEntry fridgeStatusEntry:mErrorEntryList) {
-            int errorMessage = getMainBoardInfo().searchStatusValueBoard(fridgeStatusEntry.name);
-            if (fridgeStatusEntry.value != errorMessage) {
-                fridgeStatusEntry.value = errorMessage;
-                isErrOccurred = true;
-            }
-        }
-
-        if (isErrOccurred) {
-            mService.notifyErrorOccurred(mErrorEntryList);
-            MyLogUtil.d("printSerialString", "error");
-            RemoteUtil.sendQuery();
-        }
-    }
+//    private void handleTemperInfoResponse() {
+//        MyLogUtil.v(TAG, "handleTemperInfoResponse in");
+//        Boolean isTempChanged = false;
+//
+//        for(FridgeStatusEntry fridgeStatusEntry:mShowTempEntryList){
+//            int showTemp = getMainBoardInfo().searchStatusValueBoard(fridgeStatusEntry.name);
+//            if(fridgeStatusEntry.value != showTemp){
+//                fridgeStatusEntry.value = showTemp;
+//                isTempChanged = true;
+//            }
+//        }
+//
+//        if (isTempChanged) {
+//            mService.notifyTemperChanged(mShowTempEntryList);
+//            MyLogUtil.d("printSerialString", "temper");
+//            RemoteUtil.sendQuery();
+//        }
+//        MyLogUtil.v(TAG, "handleTemperInfoResponse out");
+//    }
+//
+//    private void handleErrorInfoResponse() {
+//        Boolean isErrOccurred = false;
+//
+//        for(FridgeStatusEntry fridgeStatusEntry:mErrorEntryList) {
+//            int errorMessage = getMainBoardInfo().searchStatusValueBoard(fridgeStatusEntry.name);
+//            if (fridgeStatusEntry.value != errorMessage) {
+//                fridgeStatusEntry.value = errorMessage;
+//                isErrOccurred = true;
+//            }
+//        }
+//
+//        if (isErrOccurred) {
+//            mService.notifyErrorOccurred(mErrorEntryList);
+//            MyLogUtil.d("printSerialString", "error");
+//            RemoteUtil.sendQuery();
+//        }
+//    }
 }

@@ -45,7 +45,7 @@ public class SerialPort {
     private FileOutputStream mFileOutputStream;
     private boolean isReady = false;
     private int mSerialPortNum = 0;
-    private final String[] mSerialPortDevice = {"", "/dev/ttyMFD1", "/dev/ttyMT1", "/dev/ttyS0"};
+    private final String[] mSerialPortDevice = {"", "/dev/ttyMFD1", "/dev/ttyMT1", "/dev/ttyS0", "/dev/ttyAMA3", "/dev/ttyS1"};
     private final int mBaudRate = 4800;
     private String strModel;
     private String strVersion;
@@ -103,7 +103,10 @@ public class SerialPort {
         } else if (strModel.indexOf("UG") >= 0) {
             mSerialPortNum = 2;
             mFd = SerialOpen(mSerialPortDevice[mSerialPortNum], mBaudRate);
-        } else {
+        } else if (strModel.indexOf("HLT") >=0) {
+            mSerialPortNum = 4;
+            mFd = SerialOpen(mSerialPortDevice[mSerialPortNum], mBaudRate);
+        }else {
             mSerialPortNum = 1;
             mFd = SerialOpen(mSerialPortDevice[mSerialPortNum], mBaudRate);
             if (mFd == null) {
@@ -112,6 +115,14 @@ public class SerialPort {
                 if (mFd == null) {
                     mSerialPortNum = 3;
                     mFd = SerialOpen(mSerialPortDevice[mSerialPortNum], mBaudRate);
+                    if (mFd == null) {
+                        mSerialPortNum = 4;
+                        mFd = SerialOpen(mSerialPortDevice[mSerialPortNum], mBaudRate);
+                        if (mFd == null) {
+                            mSerialPortNum = 5;
+                            mFd = SerialOpen(mSerialPortDevice[mSerialPortNum], mBaudRate);
+                        }
+                    }
                 }
             }
         }

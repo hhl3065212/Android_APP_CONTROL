@@ -386,11 +386,29 @@ public class ControlMainBoardService extends Service {
             case ConstantUtil.FRIDGE_LIGHT_OFF:
                 mProcessData.sendCmd(EnumBaseName.coldLightMode,0);
                 break;
-            case ConstantUtil.HANDLE_LIGHT_ON:
-                mProcessData.sendCmd(EnumBaseName.handleLightMode,1);
+            case ConstantUtil.PIR_ON:
+                mProcessData.sendCmd(EnumBaseName.pirSwitch,1);
                 break;
-            case ConstantUtil.HANDLE_LIGHT_OFF:
-                mProcessData.sendCmd(EnumBaseName.handleLightMode,0);
+            case ConstantUtil.PIR_OFF:
+                mProcessData.sendCmd(EnumBaseName.pirSwitch,0);
+                break;
+            case ConstantUtil.FRIDGE_TOP_LIGHT_ON:
+                mProcessData.sendCmd(EnumBaseName.fridgeTopLight,1);
+                break;
+            case ConstantUtil.FRIDGE_TOP_LIGHT_OFF:
+                mProcessData.sendCmd(EnumBaseName.fridgeTopLight,0);
+                break;
+            case ConstantUtil.FRIDGE_BACK_LIGHT_ON:
+                mProcessData.sendCmd(EnumBaseName.fridgeBackLight,1);
+                break;
+            case ConstantUtil.FRIDGE_BACK_LIGHT_OFF:
+                mProcessData.sendCmd(EnumBaseName.fridgeBackLight,0);
+                break;
+            case ConstantUtil.INSIDE_DOOR_ON:
+                mProcessData.sendCmd(EnumBaseName.insideDoor,1);
+                break;
+            case ConstantUtil.INSIDE_DOOR_OFF:
+                mProcessData.sendCmd(EnumBaseName.insideDoor,0);
                 break;
             default:
                 break;
@@ -1359,6 +1377,31 @@ public class ControlMainBoardService extends Service {
         }
 
         @Override
+        public void setFridgeTopLight(boolean b) throws RemoteException {
+            mProcessData.sendCmd(EnumBaseName.fridgeTopLight,b?1:0);
+        }
+
+        @Override
+        public String setPirSwitch(boolean b) throws RemoteException {
+            if(b) {
+                mModel.pirSwitchOn();
+            }else {
+                mModel.pirSwitchOff();
+            }
+            return getModeInfo();
+        }
+
+        @Override
+        public void setFridgeBackLight(boolean b) throws RemoteException {
+            mProcessData.sendCmd(EnumBaseName.fridgeBackLight,b?1:0);
+        }
+
+        @Override
+        public void setInsideDoor(boolean b) throws RemoteException {
+            mProcessData.sendCmd(EnumBaseName.insideDoor,b?1:0);
+        }
+
+        @Override
         public int getFridgeTargetTemp() throws RemoteException {
             return mModel.getControlEntryByName(EnumBaseName.fridgeTargetTemp).value;
         }
@@ -1416,6 +1459,11 @@ public class ControlMainBoardService extends Service {
         @Override
         public boolean getPurifyMode() throws RemoteException {
             return mModel.getControlEntryByName(EnumBaseName.purifyMode).value==1;
+        }
+
+        @Override
+        public boolean getPirSwitch() throws RemoteException {
+            return mModel.getControlEntryByName(EnumBaseName.pirSwitch).value==1;
         }
 
         @Override

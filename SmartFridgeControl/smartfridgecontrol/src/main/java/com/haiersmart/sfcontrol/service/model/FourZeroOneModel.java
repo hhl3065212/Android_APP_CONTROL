@@ -15,7 +15,6 @@ import com.haiersmart.sfcontrol.database.FridgeControlEntry;
 import com.haiersmart.sfcontrol.database.FridgeStatusEntry;
 import com.haiersmart.sfcontrol.service.ControlMainBoardService;
 import com.haiersmart.sfcontrol.utilslib.MyLogUtil;
-import com.haiersmart.sfcontrol.utilslib.RemoteUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,22 +55,26 @@ public class FourZeroOneModel extends ModelBase {
 
     private void initTempStatusEntries() {
         mShowTempEntryList = new ArrayList<FridgeStatusEntry>();
-        mShowTempEntryList.add(new FridgeStatusEntry("fridgeShowTemp", getMainBoardInfo().getFridgeShowTemp()));
-        mShowTempEntryList.add(new FridgeStatusEntry("freezeShowTemp", getMainBoardInfo().getFreezeShowTemp()));
+        mShowTempEntryList.add(new FridgeStatusEntry(EnumBaseName.fridgeShowTemp.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.fridgeShowTemp.name())));
+        mShowTempEntryList.add(new FridgeStatusEntry(EnumBaseName.freezeShowTemp.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.freezeShowTemp.name())));
     }
 
     private void initErrorStatusEntries() {
         mErrorEntryList = new ArrayList<FridgeStatusEntry>();
-        mErrorEntryList.add(new FridgeStatusEntry("envRealTemp", getMainBoardInfo().getEnvRealTemp()));
-        mErrorEntryList.add(new FridgeStatusEntry("envShowHum", getMainBoardInfo().getEnvShowHum()));
-        mErrorEntryList.add(new FridgeStatusEntry("communicationOverTime", getMainBoardInfo().getCommunicationErr()));
-        mErrorEntryList.add(new FridgeStatusEntry("envTempSensorErr", getMainBoardInfo().getEnvTempSensorErr()));
-        mErrorEntryList.add(new FridgeStatusEntry("fridgeSensorErr", getMainBoardInfo().getFridgeSensorErr()));
-        mErrorEntryList.add(new FridgeStatusEntry("freezeSensorErr", getMainBoardInfo().getFreezeSensorErr()));
-        mErrorEntryList.add(new FridgeStatusEntry("envHumSensorErr", getMainBoardInfo().getEnvHumSensorErr()));
-        mErrorEntryList.add(new FridgeStatusEntry("freezeDefrostSensorErr", getMainBoardInfo().getFreezeDefrostSensorErr()));
-        mErrorEntryList.add(new FridgeStatusEntry("freezeDefrostErr", getMainBoardInfo().getFreezeDefrostErr()));
-        mErrorEntryList.add(new FridgeStatusEntry("freezeFanErr", getMainBoardInfo().getFreezeFanErr()));
+        mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.envTempSensorErr.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.envTempSensorErr.name())));//环境温度传感器故障
+        mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.fridgeSensorErr.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.fridgeSensorErr.name())));//冷藏温度传感器故障
+        mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.freezeSensorErr.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.freezeSensorErr.name())));//冷冻温度传感器故障
+        mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.envHumSensorErr.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.envHumSensorErr.name())));//湿度传感器故障
+        mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.freezeDefrostSensorErr.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.freezeDefrostSensorErr.name())));//化霜传感器故障
+        mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.freezeDefrostErr.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.freezeDefrostErr.name())));//冷冻化霜故障
+        mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.freezeFanErr.name(),getMainBoardInfo().searchStatusValueBoard(EnumBaseName.freezeFanErr.name())));//冷冻风机故障
+        mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.testMode.name(),getMainBoardInfo().searchStatusValueBoard(EnumBaseName.testMode.name())));//T模式
+
+        //以下不是从主控板获取
+        mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.communicationErr.name(),getMainBoardInfo().searchStatusValueBoard(EnumBaseName.communicationErr.name())));//通信错误
+        mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.communicationOverTime.name(),getMainBoardInfo().searchStatusValueBoard(EnumBaseName.communicationOverTime.name())));//通信超时
+        mErrorEntryList.add(new FridgeStatusEntry(EnumBaseName.fridgeDoorErr.name(), getMainBoardInfo().searchStatusValueBoard(EnumBaseName.fridgeDoorErr.name())));//冷藏门报警
+
     }
 
     @Override
@@ -278,92 +281,42 @@ public class FourZeroOneModel extends ModelBase {
         mService.handleDoorEvents();
     }
 
-    private void handleTemperInfoResponse() {
-        MyLogUtil.v(TAG, "handleTemperInfoResponse in");
-        Boolean isTempChanged = false;
-
-        int fridgeShowTemp = getMainBoardInfo().getFridgeShowTemp();
-        if (mShowTempEntryList.get(0).value != fridgeShowTemp) {
-            mShowTempEntryList.get(0).value = fridgeShowTemp;
-            isTempChanged = true;
-        }
-
-        int freezeTemp = getMainBoardInfo().getFreezeShowTemp();
-        if (mShowTempEntryList.get(1).value != freezeTemp) {
-            mShowTempEntryList.get(1).value = freezeTemp;
-            isTempChanged = true;
-        }
-
-        if (isTempChanged) {
-            mService.notifyTemperChanged(mShowTempEntryList);
-            MyLogUtil.d("printSerialString", "temper");
-            RemoteUtil.sendQuery();
-        }
-        MyLogUtil.v(TAG, "handleTemperInfoResponse out");
-    }
-
-
-    private void handleErrorInfoResponse() {
-        Boolean isErrOccurred = false;
-
-        int envRealTemp = getMainBoardInfo().getEnvRealTemp();
-        if (mErrorEntryList.get(0).value != envRealTemp) {
-            mErrorEntryList.get(0).value = envRealTemp;
-            isErrOccurred = true;
-        }
-
-        int envShowHum = getMainBoardInfo().getEnvShowHum();
-        if (mErrorEntryList.get(1).value != envShowHum) {
-            mErrorEntryList.get(1).value = envShowHum;
-            isErrOccurred = true;
-        }
-
-        int communicationOverTime = getMainBoardInfo().getCommunicationOverTime();
-        if (mErrorEntryList.get(2).value != communicationOverTime) {
-            mErrorEntryList.get(2).value = communicationOverTime;
-            isErrOccurred = true;
-        }
-
-        int envTempSensorErr = getMainBoardInfo().getEnvTempSensorErr();
-        if (mErrorEntryList.get(3).value != envTempSensorErr) {
-            mErrorEntryList.get(3).value = envTempSensorErr;
-            isErrOccurred = true;
-        }
-
-        int fridgeShowTempSensorErr = getMainBoardInfo().getFridgeSensorErr();
-        if (mErrorEntryList.get(4).value != fridgeShowTempSensorErr) {
-            mErrorEntryList.get(4).value = fridgeShowTempSensorErr;
-            isErrOccurred = true;
-        }
-
-        int freezeTempSensorErr = getMainBoardInfo().getFreezeSensorErr();
-        if (mErrorEntryList.get(5).value != freezeTempSensorErr) {
-            mErrorEntryList.get(5).value = freezeTempSensorErr;
-            isErrOccurred = true;
-        }
-
-
-        int freezerDefrostingSensorErr = getMainBoardInfo().getFreezeDefrostSensorErr();
-        if (mErrorEntryList.get(6).value != freezerDefrostingSensorErr) {
-            mErrorEntryList.get(6).value = freezerDefrostingSensorErr;
-            isErrOccurred = true;
-        }
-
-        int freezerDefrostingErr = getMainBoardInfo().getFreezeDefrostErr();
-        if (mErrorEntryList.get(7).value != freezerDefrostingErr) {
-            mErrorEntryList.get(7).value = freezerDefrostingErr;
-            isErrOccurred = true;
-        }
-        int freezeFanErr = getMainBoardInfo().getFreezeFanErr();
-        if (mErrorEntryList.get(8).value != freezeFanErr) {
-            mErrorEntryList.get(8).value = freezeFanErr;
-            isErrOccurred = true;
-        }
-
-        if (isErrOccurred) {
-            mService.notifyErrorOccurred(mErrorEntryList);
-            MyLogUtil.d("printSerialString", "error");
-            RemoteUtil.sendQuery();
-        }
-    }
+//    private void handleTemperInfoResponse() {
+//        MyLogUtil.v(TAG, "handleTemperInfoResponse in");
+//        Boolean isTempChanged = false;
+//
+//        for(FridgeStatusEntry fridgeStatusEntry:mShowTempEntryList){
+//            int showTemp = getMainBoardInfo().searchStatusValueBoard(fridgeStatusEntry.name);
+//            if(fridgeStatusEntry.value != showTemp){
+//                fridgeStatusEntry.value = showTemp;
+//                isTempChanged = true;
+//            }
+//        }
+//
+//        if (isTempChanged) {
+//            mService.notifyTemperChanged(mShowTempEntryList);
+//            MyLogUtil.d("printSerialString", "temper");
+//            RemoteUtil.sendQuery();
+//        }
+//        MyLogUtil.v(TAG, "handleTemperInfoResponse out");
+//    }
+//
+//
+//    private void handleErrorInfoResponse() {
+//        Boolean isErrOccurred = false;
+//
+//        for(FridgeStatusEntry fridgeStatusEntry:mErrorEntryList) {
+//            int errorMessage = getMainBoardInfo().searchStatusValueBoard(fridgeStatusEntry.name);
+//            if (fridgeStatusEntry.value != errorMessage) {
+//                fridgeStatusEntry.value = errorMessage;
+//                isErrOccurred = true;
+//            }
+//        }
+//
+//        if (isErrOccurred) {
+//            mService.notifyErrorOccurred(mErrorEntryList);
+//            MyLogUtil.d("printSerialString", "error");
+//            RemoteUtil.sendQuery();
+//        }
+//    }
 }

@@ -23,7 +23,6 @@ import com.haiersmart.sfcontrol.ControlService;
 import com.haiersmart.sfcontrol.R;
 import com.haiersmart.sfcontrol.constant.ConstantUtil;
 import com.haiersmart.sfcontrol.constant.EnumBaseName;
-import com.haiersmart.sfcontrol.database.FridgeControlEntry;
 import com.haiersmart.sfcontrol.draw.MyTestButton;
 import com.haiersmart.sfcontrol.service.ControlMainBoardService;
 import com.haiersmart.sfcontrol.service.MainBoardParameters;
@@ -38,8 +37,9 @@ import static com.haiersmart.sfcontrol.constant.ConstantUtil.BCD251_MODEL;
 import static com.haiersmart.sfcontrol.constant.ConstantUtil.BCD256_MODEL;
 import static com.haiersmart.sfcontrol.constant.ConstantUtil.BCD401_MODEL;
 import static com.haiersmart.sfcontrol.constant.ConstantUtil.BCD476_MODEL;
+import static com.haiersmart.sfcontrol.constant.ConstantUtil.BCD658_MODEL;
 
-public class DebugActivity extends AppCompatActivity implements View.OnClickListener{
+public class DebugActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "DebugActivity";
     private ControlMainBoardService mControlService;
     private boolean mIsBound = false;
@@ -48,19 +48,19 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
     private String mModel;
     private boolean isready = false;
     private TargetTempRange mTargetTempRange;
-    private int mFridgeMin,mFridgeMax,mFreezeMin,mFreezeMax,mChangeMin,mChangeMax;
+    private int mFridgeMin, mFridgeMax, mFreezeMin, mFreezeMax, mChangeMin, mChangeMax;
 
     private Timer mTimer;
-    private TimerTask mWaitTask,mTimerTask;
+    private TimerTask mWaitTask, mTimerTask;
 
-    private LinearLayout lineEnvTemp,lineEnvHum,lineFridgeTemp,lineFreezeTemp,lineChangeTemp,
-            lineFridgeTarget,lineFreezeTarget,lineChangeTarger;
-    private TextView tvFridgeModel,tvStatusCode,tvEnvTemp,tvEnvHum,tvFridgeTemp,tvFreezeTemp,tvChangeTemp,
-    tvFridgeTarget,tvFreezeTarget,tvChangeTarget;
+    private LinearLayout lineEnvTemp, lineEnvHum, lineFridgeTemp, lineFreezeTemp, lineChangeTemp,
+            lineFridgeTarget, lineFreezeTarget, lineChangeTarger;
+    private TextView tvFridgeModel, tvStatusCode, tvEnvTemp, tvEnvHum, tvFridgeTemp, tvFreezeTemp, tvChangeTemp,
+            tvFridgeTarget, tvFreezeTarget, tvChangeTarget;
     private TextView tvTitleStatusCode;
     private Button btnReturn;
-    private MyTestButton btnSmart,btnHoliday,btnQuickCold,btnQuickFreeze,btnFridgeClose,btnFridgeDoor,btnPurify;
-    private SeekBar skbFridge,skbFreeze,skbChange;
+    private MyTestButton btnSmart, btnHoliday, btnQuickCold, btnQuickFreeze, btnFridgeClose, btnFridgeDoor, btnPurify;
+    private SeekBar skbFridge, skbFreeze, skbChange;
 
     private int onclickCounts = 0;
     private ControlService mService;
@@ -73,14 +73,14 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
         mSerialData = SerialData.getInstance();
         mMainBoardParameters = MainBoardParameters.getInstance();
         findView();
-//        mTimer = new Timer();
-//        mTimer.schedule(mWaitTask,0,1000);
+        //        mTimer = new Timer();
+        //        mTimer.schedule(mWaitTask,0,1000);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if(isready) {
+        if (isready) {
             stopTimerTask();
         }
     }
@@ -88,13 +88,14 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onResume() {
         super.onResume();
-        if(isready){
+        if (isready) {
             startTimerTask();
         }
     }
 
     @Override
     protected void onDestroy() {
+        unbindService(conn);
         super.onDestroy();
     }
 
@@ -102,9 +103,9 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             MyLogUtil.v(TAG, "ControlMainBoardService onServiceConnected");
-//            mIsBound = true;
-//            ControlMainBoardService.CmbBinder binder = (ControlMainBoardService.CmbBinder) service;
-//            mControlService = binder.getService();
+            mIsBound = true;
+            //            ControlMainBoardService.CmbBinder binder = (ControlMainBoardService.CmbBinder) service;
+            //            mControlService = binder.getService();
             mService = ControlService.Stub.asInterface(service);
             startWaitTask();
         }
@@ -115,43 +116,45 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
             MyLogUtil.v(TAG, "ControlMainBoardService onServiceDisconnected");
         }
     };
-    private void findView(){
-        lineEnvTemp=(LinearLayout)findViewById(R.id.linear_debug_env_temp);
-        lineEnvHum=(LinearLayout)findViewById(R.id.linear_debug_env_hum);
-        lineFridgeTemp=(LinearLayout)findViewById(R.id.linear_debug_fridge_temp);
-        lineFreezeTemp=(LinearLayout)findViewById(R.id.linear_debug_freeze_temp);
-        lineChangeTemp=(LinearLayout)findViewById(R.id.linear_debug_change_temp);
-        lineFridgeTarget=(LinearLayout)findViewById(R.id.linear_debug_skb_fridge);
-        lineFreezeTarget=(LinearLayout)findViewById(R.id.linear_debug_skb_freeze);
-        lineChangeTarger=(LinearLayout)findViewById(R.id.linear_debug_skb_change);
 
-        tvFridgeModel = (TextView)findViewById(R.id.text_debug_fridge_model);
+    private void findView() {
+        lineEnvTemp = (LinearLayout) findViewById(R.id.linear_debug_env_temp);
+        lineEnvHum = (LinearLayout) findViewById(R.id.linear_debug_env_hum);
+        lineFridgeTemp = (LinearLayout) findViewById(R.id.linear_debug_fridge_temp);
+        lineFreezeTemp = (LinearLayout) findViewById(R.id.linear_debug_freeze_temp);
+        lineChangeTemp = (LinearLayout) findViewById(R.id.linear_debug_change_temp);
+        lineFridgeTarget = (LinearLayout) findViewById(R.id.linear_debug_skb_fridge);
+        lineFreezeTarget = (LinearLayout) findViewById(R.id.linear_debug_skb_freeze);
+        lineChangeTarger = (LinearLayout) findViewById(R.id.linear_debug_skb_change);
+
+        tvFridgeModel = (TextView) findViewById(R.id.text_debug_fridge_model);
         tvFridgeModel.setOnClickListener(this);
-        tvStatusCode = (TextView)findViewById(R.id.text_debug_status_code);
-        tvEnvTemp = (TextView)findViewById(R.id.text_debug_env_temp);
-        tvEnvHum = (TextView)findViewById(R.id.text_debug_env_hum);
-        tvFridgeTemp = (TextView)findViewById(R.id.text_debug_fridge_temp);
-        tvFreezeTemp = (TextView)findViewById(R.id.text_debug_freeze_temp);
-        tvChangeTemp = (TextView)findViewById(R.id.text_debug_change_temp);
-        tvFridgeTarget = (TextView)findViewById(R.id.text_debug_fridge_target);
-        tvFreezeTarget = (TextView)findViewById(R.id.text_debug_freeze_target);
-        tvChangeTarget = (TextView)findViewById(R.id.text_debug_change_target);
-        tvTitleStatusCode = (TextView)findViewById(R.id.title_debug_status_code);
+        tvStatusCode = (TextView) findViewById(R.id.text_debug_status_code);
+        tvEnvTemp = (TextView) findViewById(R.id.text_debug_env_temp);
+        tvEnvHum = (TextView) findViewById(R.id.text_debug_env_hum);
+        tvFridgeTemp = (TextView) findViewById(R.id.text_debug_fridge_temp);
+        tvFreezeTemp = (TextView) findViewById(R.id.text_debug_freeze_temp);
+        tvChangeTemp = (TextView) findViewById(R.id.text_debug_change_temp);
+        tvFridgeTarget = (TextView) findViewById(R.id.text_debug_fridge_target);
+        tvFreezeTarget = (TextView) findViewById(R.id.text_debug_freeze_target);
+        tvChangeTarget = (TextView) findViewById(R.id.text_debug_change_target);
+        tvTitleStatusCode = (TextView) findViewById(R.id.title_debug_status_code);
         tvTitleStatusCode.setOnClickListener(this);
 
 
-        btnReturn = (Button)findViewById(R.id.btn_debug_return);
+        btnReturn = (Button) findViewById(R.id.btn_debug_return);
         btnReturn.setOnClickListener(this);
 
-        skbFridge = (SeekBar)findViewById(R.id.skb_debug_fridge);
-        skbFreeze = (SeekBar)findViewById(R.id.skb_debug_freeze);
-        skbChange = (SeekBar)findViewById(R.id.skb_debug_change);
+        skbFridge = (SeekBar) findViewById(R.id.skb_debug_fridge);
+        skbFreeze = (SeekBar) findViewById(R.id.skb_debug_freeze);
+        skbChange = (SeekBar) findViewById(R.id.skb_debug_change);
         listenerSeekBar();
 
     }
+
     private void setView() throws RemoteException {
         initSeekBar();
-        switch (mModel){
+        switch (mModel) {
             case BCD251_MODEL:
                 lineEnvTemp.setVisibility(View.VISIBLE);
                 lineFridgeTemp.setVisibility(View.VISIBLE);
@@ -165,7 +168,6 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                 initQuickCold(R.id.btn_debug_center_left);
                 initQuickFreeze(R.id.btn_debug_center_right);
                 initFridgeClose(R.id.btn_debug_bottom_left);
-                initFridgeDoor(R.id.btn_debug_bottom_right);
                 break;
             case BCD256_MODEL:
                 lineEnvTemp.setVisibility(View.VISIBLE);
@@ -180,7 +182,6 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                 initQuickCold(R.id.btn_debug_center_left);
                 initQuickFreeze(R.id.btn_debug_center_right);
                 initFridgeClose(R.id.btn_debug_bottom_left);
-                initFridgeDoor(R.id.btn_debug_bottom_right);
                 break;
             case BCD401_MODEL:
                 lineEnvTemp.setVisibility(View.VISIBLE);
@@ -204,8 +205,24 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                 initQuickCold(R.id.btn_debug_center_left);
                 initQuickFreeze(R.id.btn_debug_center_right);
                 break;
+            case BCD658_MODEL:
+                lineEnvTemp.setVisibility(View.VISIBLE);
+                lineFridgeTemp.setVisibility(View.VISIBLE);
+                lineFreezeTemp.setVisibility(View.VISIBLE);
+                lineChangeTemp.setVisibility(View.VISIBLE);
+                lineFridgeTarget.setVisibility(View.VISIBLE);
+                lineFreezeTarget.setVisibility(View.VISIBLE);
+                lineChangeTarger.setVisibility(View.VISIBLE);
+                initSmart(R.id.btn_debug_top_left);
+                initHoliday(R.id.btn_debug_top_right);
+                initQuickCold(R.id.btn_debug_center_left);
+                initQuickFreeze(R.id.btn_debug_center_right);
+                initFridgeClose(R.id.btn_debug_bottom_left);
+                initPir(R.id.btn_debug_bottom_right);
+                break;
         }
     }
+
     private void initSeekBar() throws RemoteException {
         mTargetTempRange = mMainBoardParameters.getTargetTempRange();
         mFridgeMin = mTargetTempRange.getFridgeMinValue();
@@ -214,32 +231,35 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
         mFridgeMax = mTargetTempRange.getFridgeMaxValue();
         mFreezeMax = mTargetTempRange.getFreezeMaxValue();
         mChangeMax = mTargetTempRange.getChangeMaxValue();
-        MyLogUtil.i(TAG,mFridgeMax+","+mFridgeMin+","+mFreezeMax+","+mFreezeMin+","+mChangeMax+","+mChangeMin);
-        skbFridge.setMax(mFridgeMax-mFridgeMin);
-        skbFreeze.setMax(mFreezeMax-mFreezeMin);
-        skbChange.setMax(mChangeMax-mChangeMin);
+        MyLogUtil.i(TAG, mFridgeMax + "," + mFridgeMin + "," + mFreezeMax + "," + mFreezeMin + "," + mChangeMax + "," + mChangeMin);
+        skbFridge.setMax(mFridgeMax - mFridgeMin);
+        skbFreeze.setMax(mFreezeMax - mFreezeMin);
+        skbChange.setMax(mChangeMax - mChangeMin);
 
         int fridgeTarget = mService.getFridgeTargetTemp();
         int freezeTarget = mService.getFreezeTargetTemp();
         int changeTarget = mService.getChangeTargetTemp();
-        skbFridge.setProgress(fridgeTarget-mFridgeMin);
-        skbFreeze.setProgress(freezeTarget-mFreezeMin);
-        skbChange.setProgress(changeTarget-mChangeMin);
-        tvFridgeTarget.setText(fridgeTarget+" ℃");
-        tvFreezeTarget.setText(freezeTarget+" ℃");
-        tvChangeTarget.setText(changeTarget+" ℃");
+        skbFridge.setProgress(fridgeTarget - mFridgeMin);
+        skbFreeze.setProgress(freezeTarget - mFreezeMin);
+        skbChange.setProgress(changeTarget - mChangeMin);
+        tvFridgeTarget.setText(fridgeTarget + " ℃");
+        tvFreezeTarget.setText(freezeTarget + " ℃");
+        tvChangeTarget.setText(changeTarget + " ℃");
     }
+
     private void setModel() throws RemoteException {
-        if(mSerialData.isSerialDataReady()) {
+        if (mSerialData.isSerialDataReady()) {
             stopWaitTask();
             mModel = mSerialData.getCurrentModel();
-            if(mModel.equals(ConstantUtil.BCD251_MODEL)) {
+            if (mModel.equals(ConstantUtil.BCD251_MODEL)) {
                 tvFridgeModel.setText(mModel);
-            }else if(mModel.equals(ConstantUtil.BCD256_MODEL))            {
-                tvFridgeModel.setText(mModel+"/"+mModel+"(S)");
-            }else if(mModel.equals(ConstantUtil.BCD401_MODEL))            {
-                tvFridgeModel.setText(mModel+"/"+mModel+"(S)");
-            }else if(mModel.equals(BCD476_MODEL))            {
+            } else if (mModel.equals(ConstantUtil.BCD256_MODEL)) {
+                tvFridgeModel.setText(mModel + "/" + mModel + "(S)");
+            } else if (mModel.equals(ConstantUtil.BCD401_MODEL)) {
+                tvFridgeModel.setText(mModel + "/" + mModel + "(S)");
+            } else if (mModel.equals(BCD476_MODEL)) {
+                tvFridgeModel.setText(mModel);
+            } else if (mModel.equals(BCD658_MODEL)) {
                 tvFridgeModel.setText(mModel);
             }
             setView();
@@ -248,8 +268,9 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
             MyLogUtil.i(TAG, "fridge model is " + mModel);
         }
     }
-    private void startWaitTask(){
-        if(mWaitTask == null){
+
+    private void startWaitTask() {
+        if (mWaitTask == null) {
             mWaitTask = new TimerTask() {
                 @Override
                 public void run() {
@@ -257,41 +278,44 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                 }
             };
         }
-        if(mTimer == null){
+        if (mTimer == null) {
             mTimer = new Timer();
         }
-        mTimer.schedule(mWaitTask,0,1000);
+        mTimer.schedule(mWaitTask, 0, 1000);
     }
-    private void stopWaitTask(){
-        if(mWaitTask != null){
+
+    private void stopWaitTask() {
+        if (mWaitTask != null) {
             mWaitTask.cancel();
             mWaitTask = null;
         }
-        if(mTimer != null){
+        if (mTimer != null) {
             mTimer.cancel();
             mTimer = null;
         }
     }
-    private void startTimerTask(){
-        if(mTimer == null){
+
+    private void startTimerTask() {
+        if (mTimer == null) {
             mTimer = new Timer();
         }
-        if(mTimerTask == null){
+        if (mTimerTask == null) {
             mTimerTask = new TimerTask() {
                 @Override
                 public void run() {
                     mHandler.sendEmptyMessage(0x02);
                 }
             };
-            mTimer.schedule(mTimerTask,0,200);
+            mTimer.schedule(mTimerTask, 0, 200);
         }
     }
-    private void stopTimerTask(){
-        if(mTimerTask != null){
+
+    private void stopTimerTask() {
+        if (mTimerTask != null) {
             mTimerTask.cancel();
             mTimerTask = null;
         }
-        if(mTimer != null){
+        if (mTimer != null) {
             mTimer.cancel();
             mTimer = null;
         }
@@ -299,8 +323,8 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
 
     private Handler mHandler = new Handler() {
         @Override
-        public void handleMessage(Message msg){
-            switch (msg.what){
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
                 case 0x01:
                     try {
                         setModel();
@@ -319,160 +343,208 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
         }
 
     };
+
     private void refreshUI() throws RemoteException {
         tvStatusCode.setText(mMainBoardParameters.getFrameDataString());
-        FridgeControlEntry fridgeControlEntry;
-        switch (mModel){
+
+        switch (mModel) {
             case BCD251_MODEL:
-                tvEnvTemp.setText(getStatusValueByName(EnumBaseName.envShowTemp)+" ℃");
-                tvFridgeTemp.setText(getStatusValueByName(EnumBaseName.fridgeShowTemp)+" ℃");
-                tvFreezeTemp.setText(getStatusValueByName(EnumBaseName.freezeShowTemp)+" ℃");
-                tvChangeTemp.setText(getStatusValueByName(EnumBaseName.changeShowTemp)+" ℃");
-                fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.smartMode);
-                if(fridgeControlEntry.value == 1){
+                tvEnvTemp.setText(getStatusValueByName(EnumBaseName.envShowTemp) + " ℃");
+                tvFridgeTemp.setText(getStatusValueByName(EnumBaseName.fridgeShowTemp) + " ℃");
+                tvFreezeTemp.setText(getStatusValueByName(EnumBaseName.freezeShowTemp) + " ℃");
+                tvChangeTemp.setText(getStatusValueByName(EnumBaseName.changeShowTemp) + " ℃");
+
+                if (mService.getSmartMode()) {
                     btnSmart.setOn();
-                }else {
+                } else {
                     btnSmart.setOff();
                 }
-                fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.holidayMode);
-                if(fridgeControlEntry.value == 1){
+
+                if (mService.getHolidayMode()) {
                     btnHoliday.setOn();
-                }else {
+                } else {
                     btnHoliday.setOff();
                 }
-                fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.quickColdMode);
-                if(fridgeControlEntry.value == 1){
+
+                if (mService.getQuickColdMode()) {
                     btnQuickCold.setOn();
-                }else {
+                } else {
                     btnQuickCold.setOff();
                 }
-                fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.quickFreezeMode);
-                if(fridgeControlEntry.value == 1){
+
+                if (mService.getQuickFreezeMode()) {
                     btnQuickFreeze.setOn();
-                }else {
+                } else {
                     btnQuickFreeze.setOff();
                 }
-                fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.fridgeSwitch);
-//                MyLogUtil.i(TAG,"fridgeSwitch status is " +fridgeControlEntry.value);
-                if(fridgeControlEntry.value == 1){
+
+
+                if (mService.getFridgeSwitch()) {
                     btnFridgeClose.setOn();
                     btnFridgeClose.setText("冷藏开");
-                }else {
+                } else {
                     btnFridgeClose.setOff();
                     btnFridgeClose.setText("冷藏关");
                 }
                 break;
             case BCD256_MODEL:
-                tvEnvTemp.setText(getStatusValueByName(EnumBaseName.envShowTemp)+" ℃");
-                tvFridgeTemp.setText(getStatusValueByName(EnumBaseName.fridgeShowTemp)+" ℃");
-                tvFreezeTemp.setText(getStatusValueByName(EnumBaseName.freezeShowTemp)+" ℃");
-                tvChangeTemp.setText(getStatusValueByName(EnumBaseName.changeShowTemp)+" ℃");
-                fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.smartMode);
-                if(fridgeControlEntry.value == 1){
+                tvEnvTemp.setText(getStatusValueByName(EnumBaseName.envShowTemp) + " ℃");
+                tvFridgeTemp.setText(getStatusValueByName(EnumBaseName.fridgeShowTemp) + " ℃");
+                tvFreezeTemp.setText(getStatusValueByName(EnumBaseName.freezeShowTemp) + " ℃");
+                tvChangeTemp.setText(getStatusValueByName(EnumBaseName.changeShowTemp) + " ℃");
+                if (mService.getSmartMode()) {
                     btnSmart.setOn();
-                }else {
+                } else {
                     btnSmart.setOff();
                 }
-                fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.holidayMode);
-                if(fridgeControlEntry.value == 1){
+
+                if (mService.getHolidayMode()) {
                     btnHoliday.setOn();
-                }else {
+                } else {
                     btnHoliday.setOff();
                 }
-                fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.quickColdMode);
-                if(fridgeControlEntry.value == 1){
+
+                if (mService.getQuickColdMode()) {
                     btnQuickCold.setOn();
-                }else {
+                } else {
                     btnQuickCold.setOff();
                 }
-                fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.quickFreezeMode);
-                if(fridgeControlEntry.value == 1){
+
+                if (mService.getQuickFreezeMode()) {
                     btnQuickFreeze.setOn();
-                }else {
+                } else {
                     btnQuickFreeze.setOff();
                 }
-                fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.fridgeSwitch);
-                //                MyLogUtil.i(TAG,"fridgeSwitch status is " +fridgeControlEntry.value);
-                if(fridgeControlEntry.value == 1){
+
+                if (mService.getFridgeSwitch()) {
                     btnFridgeClose.setOn();
                     btnFridgeClose.setText("冷藏开");
-                }else {
+                } else {
                     btnFridgeClose.setOff();
                     btnFridgeClose.setText("冷藏关");
                 }
                 break;
             case BCD401_MODEL:
-                tvEnvTemp.setText(getStatusValueByName(EnumBaseName.envShowTemp)+" ℃");
-                tvFridgeTemp.setText(getStatusValueByName(EnumBaseName.fridgeShowTemp)+" ℃");
-                tvFreezeTemp.setText(getStatusValueByName(EnumBaseName.freezeShowTemp)+" ℃");
-                fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.smartMode);
-                if(fridgeControlEntry.value == 1){
+                tvEnvTemp.setText(getStatusValueByName(EnumBaseName.envShowTemp) + " ℃");
+                tvFridgeTemp.setText(getStatusValueByName(EnumBaseName.fridgeShowTemp) + " ℃");
+                tvFreezeTemp.setText(getStatusValueByName(EnumBaseName.freezeShowTemp) + " ℃");
+
+                if (mService.getSmartMode()) {
                     btnSmart.setOn();
-                }else {
+                } else {
                     btnSmart.setOff();
                 }
-                fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.purifyMode);
-                if(fridgeControlEntry.value == 1){
+
+                if (mService.getPurifyMode()) {
                     btnPurify.setOn();
-                }else {
+                } else {
                     btnPurify.setOff();
                 }
-                fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.quickColdMode);
-                if(fridgeControlEntry.value == 1){
+
+                if (mService.getQuickColdMode()) {
                     btnQuickCold.setOn();
-                }else {
+                } else {
                     btnQuickCold.setOff();
                 }
-                fridgeControlEntry = mControlService.getEntryByName(EnumBaseName.quickFreezeMode);
-                if(fridgeControlEntry.value == 1){
+
+                if (mService.getQuickFreezeMode()) {
                     btnQuickFreeze.setOn();
-                }else {
+                } else {
                     btnQuickFreeze.setOff();
                 }
                 break;
             case BCD476_MODEL:
-                tvEnvTemp.setText(getStatusValueByName(EnumBaseName.envShowTemp)+" ℃");
-                tvFridgeTemp.setText(getStatusValueByName(EnumBaseName.fridgeShowTemp)+" ℃");
-                tvFreezeTemp.setText(getStatusValueByName(EnumBaseName.freezeShowTemp)+" ℃");
+                tvEnvTemp.setText(getStatusValueByName(EnumBaseName.envShowTemp) + " ℃");
+                tvFridgeTemp.setText(getStatusValueByName(EnumBaseName.fridgeShowTemp) + " ℃");
+                tvFreezeTemp.setText(getStatusValueByName(EnumBaseName.freezeShowTemp) + " ℃");
 
-                if(mService.getSmartMode()){
+                if (mService.getSmartMode()) {
                     btnSmart.setOn();
-                }else {
+                } else {
                     btnSmart.setOff();
                 }
 
-                if(mService.getHolidayMode()){
+                if (mService.getHolidayMode()) {
                     btnHoliday.setOn();
-                }else {
+                } else {
                     btnHoliday.setOff();
                 }
 
-                if(mService.getQuickColdMode()){
+                if (mService.getQuickColdMode()) {
                     btnQuickCold.setOn();
-                }else {
+                } else {
                     btnQuickCold.setOff();
                 }
 
-                if(mService.getQuickFreezeMode()){
+                if (mService.getQuickFreezeMode()) {
                     btnQuickFreeze.setOn();
-                }else {
+                } else {
                     btnQuickFreeze.setOff();
+                }
+                break;
+            case BCD658_MODEL:
+                tvEnvTemp.setText(getStatusValueByName(EnumBaseName.envShowTemp) + " ℃");
+                tvFridgeTemp.setText(getStatusValueByName(EnumBaseName.fridgeShowTemp) + " ℃");
+                tvFreezeTemp.setText(getStatusValueByName(EnumBaseName.freezeShowTemp) + " ℃");
+                tvChangeTemp.setText(getStatusValueByName(EnumBaseName.changeShowTemp) + " ℃");
+
+                if (mService.getSmartMode()) {
+                    btnSmart.setOn();
+                } else {
+                    btnSmart.setOff();
+                }
+
+                if (mService.getHolidayMode()) {
+                    btnHoliday.setOn();
+                } else {
+                    btnHoliday.setOff();
+                }
+
+                if (mService.getQuickColdMode()) {
+                    btnQuickCold.setOn();
+                } else {
+                    btnQuickCold.setOff();
+                }
+
+                if (mService.getQuickFreezeMode()) {
+                    btnQuickFreeze.setOn();
+                } else {
+                    btnQuickFreeze.setOff();
+                }
+
+
+                if (mService.getFridgeSwitch()) {
+                    btnFridgeClose.setOn();
+                    btnFridgeClose.setText("冷藏开");
+                } else {
+                    btnFridgeClose.setOff();
+                    btnFridgeClose.setText("冷藏关");
+                }
+                if(mService.getPirSwitch()){
+                    btnFridgeDoor.setOn();
+                    btnFridgeDoor.setText("人感开");
+                }else {
+                    btnFridgeDoor.setOff();
+                    btnFridgeDoor.setText("人感关");
                 }
                 break;
         }
 
     }
-    private String getStatusValueByName(EnumBaseName enumBaseName){
+
+    private String getStatusValueByName(EnumBaseName enumBaseName) {
         return Integer.toString(mMainBoardParameters.getMbsValueByName(enumBaseName.toString()));
     }
+
     /*private String getControlValueByName(EnumBaseName enumBaseName){
         return Integer.toString(mMainBoardParameters.getMbcValueByName(enumBaseName.toString()));
     }*/
-    private int getControlValueByName(EnumBaseName enumBaseName){
+    private int getControlValueByName(EnumBaseName enumBaseName) {
         return mMainBoardParameters.getMbcValueByName(enumBaseName.toString());
     }
-    private void initSmart(final int idButton){
-        btnSmart = (MyTestButton)findViewById(idButton);
+
+    private void initSmart(final int idButton) {
+        btnSmart = (MyTestButton) findViewById(idButton);
         btnSmart.setText("智能");
         btnSmart.setEnabled(true);
 
@@ -480,17 +552,14 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
         btnSmart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(v.getId() == idButton){
-                    if(btnSmart.isPress()){
-//                        btnSmart.setOff();
-//                        mControlService.sendUserCommand(EnumBaseName.smartMode,0);
+                if (v.getId() == idButton) {
+                    if (btnSmart.isPress()) {
                         try {
                             mService.setSmartMode(false);
                         } catch (RemoteException e) {
                             e.printStackTrace();
                         }
-                    }else {
-//                        btnSmart.setOn();
+                    } else {
                         try {
                             mService.setSmartMode(true);
                         } catch (RemoteException e) {
@@ -501,113 +570,144 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
             }
         });
     }
-    private void initHoliday(final int idButton){
-        btnHoliday = (MyTestButton)findViewById(idButton);
+
+    private void initHoliday(final int idButton) {
+        btnHoliday = (MyTestButton) findViewById(idButton);
         btnHoliday.setText("假日");
         btnHoliday.setEnabled(true);
 
         btnHoliday.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(v.getId() == idButton){
-                    if(btnHoliday.isPress()){
-//                        btnHoliday.setOff();
-                        mControlService.sendUserCommand(EnumBaseName.holidayMode,0);
-                    }else {
-//                        btnHoliday.setOn();
-                        mControlService.sendUserCommand(EnumBaseName.holidayMode,1);
+                if (v.getId() == idButton) {
+                    if (btnHoliday.isPress()) {
+                        try {
+                            mService.setHolidayMode(false);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        try {
+                            mService.setHolidayMode(true);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
                     }
+
                 }
             }
         });
     }
-    private void initQuickCold(final int idButton){
-        btnQuickCold = (MyTestButton)findViewById(idButton);
+
+    private void initQuickCold(final int idButton) {
+        btnQuickCold = (MyTestButton) findViewById(idButton);
         btnQuickCold.setText("速冷");
         btnQuickCold.setEnabled(true);
 
         btnQuickCold.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(v.getId() == idButton){
-                    if(btnQuickCold.isPress()){
-//                        btnQuickCold.setOff();
-                        mControlService.sendUserCommand(EnumBaseName.quickColdMode,0);
-                    }else {
-//                        btnQuickCold.setOn();
-                        mControlService.sendUserCommand(EnumBaseName.quickColdMode,1);
+                if (v.getId() == idButton) {
+                    if (btnQuickCold.isPress()) {
+                        try {
+                            mService.setQuickColdMode(false);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        try {
+                            mService.setQuickColdMode(true);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
         });
     }
-    private void initQuickFreeze(final int idButton){
-        btnQuickFreeze = (MyTestButton)findViewById(idButton);
+
+    private void initQuickFreeze(final int idButton) {
+        btnQuickFreeze = (MyTestButton) findViewById(idButton);
         btnQuickFreeze.setText("速冻");
         btnQuickFreeze.setEnabled(true);
 
         btnQuickFreeze.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(v.getId() == idButton){
-                    if(btnQuickFreeze.isPress()){
-//                        btnQuickFreeze.setOff();
-                        mControlService.sendUserCommand(EnumBaseName.quickFreezeMode,0);
-                    }else {
-//                        btnQuickFreeze.setOn();
-                        mControlService.sendUserCommand(EnumBaseName.quickFreezeMode,1);
+                if (v.getId() == idButton) {
+                    if (btnQuickFreeze.isPress()) {
+                        try {
+                            mService.setQuickFreezeMode(false);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        try {
+                            mService.setQuickFreezeMode(true);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
         });
     }
-    private void initFridgeClose(final int idButton){
-        btnFridgeClose = (MyTestButton)findViewById(idButton);
-//        btnFridgeClose.setText("冷藏开关");
+
+    private void initFridgeClose(final int idButton) {
+        btnFridgeClose = (MyTestButton) findViewById(idButton);
+        //        btnFridgeClose.setText("冷藏开关");
         btnFridgeClose.setEnabled(true);
 
         btnFridgeClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(v.getId() == idButton){
-                    if(btnFridgeClose.isPress()){
-//                        btnFridgeClose.setOff();
-                        mControlService.sendUserCommand(EnumBaseName.fridgeSwitch,0);
-                    }else {
-//                        btnFridgeClose.setOn();
-                        mControlService.sendUserCommand(EnumBaseName.fridgeSwitch,1);
+                if (v.getId() == idButton) {
+                    if (btnFridgeClose.isPress()) {
+                        try {
+                            mService.setFridgeSwitch(false);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        try {
+                            mService.setFridgeSwitch(true);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
         });
     }
 
-    private void initFridgeDoor(final int idButton){
-        btnFridgeDoor = (MyTestButton)findViewById(idButton);
+    private void initPir(final int idButton) {
+        btnFridgeDoor = (MyTestButton) findViewById(idButton);
         btnFridgeDoor.setEnabled(true);
-        btnFridgeDoor.setOff();
-        btnFridgeDoor.setText("关门");
 
         btnFridgeDoor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(v.getId() == idButton){
-                    if(btnFridgeDoor.isPress()){
-                        btnFridgeDoor.setOff();
-                        btnFridgeDoor.setText("关门");
-                        mSerialData.setDoorStauts(false);
-                    }else {
-                        btnFridgeDoor.setOn();
-                        btnFridgeDoor.setText("开门");
-                        mSerialData.setDoorStauts(true);
+                if (v.getId() == idButton) {
+                    if (btnFridgeDoor.isPress()) {
+                        try {
+                            mService.setPirSwitch(false);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        try {
+                            mService.setPirSwitch(true);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
         });
     }
 
-    private void initPurify(final int idButton){
-        btnPurify = (MyTestButton)findViewById(idButton);
+    private void initPurify(final int idButton) {
+        btnPurify = (MyTestButton) findViewById(idButton);
         btnPurify.setText("净化");
         btnPurify.setEnabled(true);
 
@@ -615,13 +715,19 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
         btnPurify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(v.getId() == idButton){
-                    if(btnPurify.isPress()){
-                        //                        btnSmart.setOff();
-                        mControlService.sendUserCommand(EnumBaseName.purifyMode,0);
-                    }else {
-                        //                        btnSmart.setOn();
-                        mControlService.sendUserCommand(EnumBaseName.purifyMode,1);
+                if (v.getId() == idButton) {
+                    if (btnPurify.isPress()) {
+                        try {
+                            mService.setPurifyMode(false);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        try {
+                            mService.setPurifyMode(true);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
@@ -630,13 +736,13 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btn_debug_return:
                 finish();
                 break;
             case R.id.text_debug_fridge_model:
                 onclickCounts++;
-                if(onclickCounts > 5){
+                if (onclickCounts > 5) {
                     onclickCounts = 0;
                     Intent intent = new Intent(Settings.ACTION_SETTINGS);
                     startActivity(intent);
@@ -652,18 +758,18 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                 } catch (PackageManager.NameNotFoundException e) {
                     e.printStackTrace();
                 }
-                Intent intent = new Intent(this,FactoryStatusActivity.class);
-                intent.putExtra("version",tftVersion);
+                Intent intent = new Intent(this, FactoryStatusActivity.class);
+                intent.putExtra("version", tftVersion);
                 startActivity(intent);
                 break;
         }
     }
 
-    private void listenerSeekBar(){
+    private void listenerSeekBar() {
         skbFridge.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                tvFridgeTarget.setText(Integer.toString(progress+mFridgeMin)+" ℃");
+                tvFridgeTarget.setText(Integer.toString(progress + mFridgeMin) + " ℃");
             }
 
             @Override
@@ -674,16 +780,19 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 int progress = seekBar.getProgress();
-                if(mIsBound)
-                {
-                    mControlService.sendUserCommand(EnumBaseName.fridgeTargetTemp,progress+mFridgeMin);
+                if (mIsBound) {
+                    try {
+                        mService.setFridgeTemp(progress + mFridgeMin);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
         skbFreeze.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                tvFreezeTarget.setText(Integer.toString(progress+mFreezeMin)+" ℃");
+                tvFreezeTarget.setText(Integer.toString(progress + mFreezeMin) + " ℃");
             }
 
             @Override
@@ -694,15 +803,19 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 int progress = seekBar.getProgress();
-                if(mIsBound) {
-                    mControlService.sendUserCommand(EnumBaseName.freezeTargetTemp, progress + mFreezeMin);
+                if (mIsBound) {
+                    try {
+                        mService.setFreezeTemp(progress + mFreezeMin);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
         skbChange.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                tvChangeTarget.setText(Integer.toString(progress+mChangeMin)+" ℃");
+                tvChangeTarget.setText(Integer.toString(progress + mChangeMin) + " ℃");
             }
 
             @Override
@@ -713,8 +826,12 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 int progress = seekBar.getProgress();
-                if(mIsBound) {
-                    mControlService.sendUserCommand(EnumBaseName.changeTargetTemp, progress + mChangeMin);
+                if (mIsBound) {
+                    try {
+                        mService.setChangeTemp(progress + mChangeMin);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });

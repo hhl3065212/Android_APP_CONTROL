@@ -15,7 +15,6 @@ import com.haiersmart.sfcontrol.database.FridgeControlEntry;
 import com.haiersmart.sfcontrol.database.FridgeStatusEntry;
 import com.haiersmart.sfcontrol.service.ControlMainBoardService;
 import com.haiersmart.sfcontrol.utilslib.MyLogUtil;
-import com.haiersmart.sfcontrol.utilslib.RemoteUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -391,41 +390,41 @@ public class FourSevenSixModel extends ModelBase{
 
     }
 
-    private void handleTemperInfoResponse() {
-        MyLogUtil.v(TAG, "handleTemperInfoResponse in");
-        Boolean isTempChanged = false;
-
-        for(FridgeStatusEntry fridgeStatusEntry:mShowTempEntryList){
-            int showTemp = getMainBoardInfo().searchStatusValueBoard(fridgeStatusEntry.name);
-            if(fridgeStatusEntry.value != showTemp){
-                fridgeStatusEntry.value = showTemp;
-                isTempChanged = true;
-            }
-        }
-
-        if (isTempChanged) {
-            mService.notifyTemperChanged(mShowTempEntryList);
-            MyLogUtil.d("printSerialString", "temper");
-            RemoteUtil.sendQuery();
-        }
-        MyLogUtil.v(TAG, "handleTemperInfoResponse out");
-    }
-
-    private void handleErrorInfoResponse() {
-        Boolean isErrOccurred = false;
-
-        for(FridgeStatusEntry fridgeStatusEntry:mErrorEntryList) {
-            int errorMessage = getMainBoardInfo().searchStatusValueBoard(fridgeStatusEntry.name);
-            if (fridgeStatusEntry.value != errorMessage) {
-                fridgeStatusEntry.value = errorMessage;
-                isErrOccurred = true;
-            }
-        }
-
-        if (isErrOccurred) {
-            mService.notifyErrorOccurred(mErrorEntryList);
-            MyLogUtil.d("printSerialString", "error");
-            RemoteUtil.sendQuery();
-        }
-    }
+//    private void handleTemperInfoResponse() {
+//        MyLogUtil.v(TAG, "handleTemperInfoResponse in");
+//        Boolean isTempChanged = false;
+//
+//        for(FridgeStatusEntry fridgeStatusEntry:mShowTempEntryList){
+//            int showTemp = getMainBoardInfo().searchStatusValueBoard(fridgeStatusEntry.name);
+//            if(fridgeStatusEntry.value != showTemp){
+//                fridgeStatusEntry.value = showTemp;
+//                isTempChanged = true;
+//            }
+//        }
+//
+//        if (isTempChanged) {
+//            mService.notifyTemperChanged(mShowTempEntryList);
+//            MyLogUtil.d("printSerialString", "temper");
+//            RemoteUtil.sendQuery();
+//        }
+//        MyLogUtil.v(TAG, "handleTemperInfoResponse out");
+//    }
+//
+//    private void handleErrorInfoResponse() {
+//        Boolean isErrOccurred = false;
+//
+//        for(FridgeStatusEntry fridgeStatusEntry:mErrorEntryList) {
+//            int errorMessage = getMainBoardInfo().searchStatusValueBoard(fridgeStatusEntry.name);
+//            if (fridgeStatusEntry.value != errorMessage) {
+//                fridgeStatusEntry.value = errorMessage;
+//                isErrOccurred = true;
+//            }
+//        }
+//
+//        if (isErrOccurred) {
+//            mService.notifyErrorOccurred(mErrorEntryList);
+//            MyLogUtil.d("printSerialString", "error");
+//            RemoteUtil.sendQuery();
+//        }
+//    }
 }

@@ -133,9 +133,6 @@ public class MainBoardFourSevenSix extends MainBoardBase{
         }
     }
 
-
-
-
     @Override
     public String handleDoorEvents() {
         boolean isDoorChange = false;

@@ -124,6 +124,15 @@ public class ConstantUtil {
     public static final String HANDLE_LIGHT_ON = "openHandleLight";//把手灯开
     public static final String HANDLE_LIGHT_OFF = "closeHandleLight";//把手灯关
 
+    public static final String PIR_ON = "openPir";//人感开
+    public static final String PIR_OFF = "closePir";//人感关
+    public static final String FRIDGE_TOP_LIGHT_ON = "openFridgeTopLight";//冷藏顶灯开
+    public static final String FRIDGE_TOP_LIGHT_OFF = "closeFridgeTopLight";//冷藏顶灯关
+    public static final String FRIDGE_BACK_LIGHT_ON = "openFridgeBackLight";//冷藏背灯开
+    public static final String FRIDGE_BACK_LIGHT_OFF = "closeFridgeBackLight";//冷藏背关
+    public static final String INSIDE_DOOR_ON = "openInsideDoor";//门中门开
+    public static final String INSIDE_DOOR_OFF = "closeInsideDoor";//门中门关
+
 
 
     //返回的key

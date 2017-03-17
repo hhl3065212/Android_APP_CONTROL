@@ -43,6 +43,10 @@ interface ControlService {
     String setPurifyMode(boolean b);
     void setFridgeLight(boolean b);
     void setHandleLight(boolean b);
+    void setFridgeTopLight(boolean b);
+    String setPirSwitch(boolean b);
+    void setFridgeBackLight(boolean b);
+    void setInsideDoor(boolean b);
 
     int getFridgeTargetTemp();
     int getFreezeTargetTemp();
@@ -56,6 +60,7 @@ interface ControlService {
     boolean getSterilizeSwitch();
     boolean getTidbitMode();
     boolean getPurifyMode();
+    boolean getPirSwitch();
 
     void registerCallback(ICallback cb);
     void unregisterCallback(ICallback cb);

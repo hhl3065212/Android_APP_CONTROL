@@ -13,7 +13,7 @@ android {
         targetSdkVersion 23
 
         versionCode vCode
-        versionName 'BXC_' + vNameCode + '_' + '0000'
+        versionName 'BXC_000' + vNameCode + '_' + '0000'
     }
     buildTypes {
         release {

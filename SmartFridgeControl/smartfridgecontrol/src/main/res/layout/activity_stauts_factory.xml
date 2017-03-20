@@ -265,7 +265,7 @@
                 <TextView
                     android:id="@+id/title_factory_reset"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="150dp"
                     android:layout_marginTop="@dimen/tab_margin"
                     android:text="@string/title_factory_reset"
                     android:textColor="@color/black2"
@@ -288,7 +288,7 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
                 android:padding="@dimen/tab_margin"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="@dimen/auto_width"
@@ -303,7 +303,7 @@
                         android:text="@string/title_factory_sensor"
                         android:textColor="@color/black2"
                         android:textSize="@dimen/text_size_40"/>
-
+<!--环境温度-->
                     <LinearLayout
                         android:id="@+id/linear_factory_env_temp"
                         android:layout_width="match_parent"
@@ -330,7 +330,7 @@
                             android:textColor="@color/black2"
                             android:textSize="@dimen/text_size_40"/>
                     </LinearLayout>
-
+<!--环境湿度-->
                     <LinearLayout
                         android:id="@+id/linear_factory_env_hum"
                         android:layout_width="match_parent"
@@ -357,7 +357,7 @@
                             android:textColor="@color/black2"
                             android:textSize="@dimen/text_size_40"/>
                     </LinearLayout>
-
+<!--冷藏室-->
                     <LinearLayout
                         android:id="@+id/linear_factory_fridge"
                         android:layout_width="match_parent"
@@ -384,7 +384,7 @@
                             android:textColor="@color/black2"
                             android:textSize="@dimen/text_size_40"/>
                     </LinearLayout>
-
+<!--冷冻室-->
                     <LinearLayout
                         android:id="@+id/linear_factory_freeze"
                         android:layout_width="match_parent"
@@ -411,7 +411,7 @@
                             android:textColor="@color/black2"
                             android:textSize="@dimen/text_size_40"/>
                     </LinearLayout>
-
+<!--变温室-->
                     <LinearLayout
                         android:id="@+id/linear_factory_change"
                         android:layout_width="match_parent"
@@ -438,7 +438,7 @@
                             android:textColor="@color/black2"
                             android:textSize="@dimen/text_size_40"/>
                     </LinearLayout>
-
+<!--化霜传感器-->
                     <LinearLayout
                         android:id="@+id/linear_factory_defrost_sensor"
                         android:layout_width="match_parent"
@@ -465,7 +465,7 @@
                             android:textColor="@color/black2"
                             android:textSize="@dimen/text_size_40"/>
                     </LinearLayout>
-
+<!--冷冻化霜传感器-->
                     <LinearLayout
                         android:id="@+id/linear_factory_freeze_defrost_sensor"
                         android:layout_width="match_parent"
@@ -492,7 +492,7 @@
                             android:textColor="@color/black2"
                             android:textSize="@dimen/text_size_40"/>
                     </LinearLayout>
-
+<!--冷冻化霜-->
                     <LinearLayout
                         android:id="@+id/linear_factory_freeze_defrost"
                         android:layout_width="match_parent"
@@ -519,7 +519,7 @@
                             android:textColor="@color/black2"
                             android:textSize="@dimen/text_size_40"/>
                     </LinearLayout>
-
+<!--冷冻风扇-->
                     <LinearLayout
                         android:id="@+id/linear_factory_freeze_fan"
                         android:layout_width="match_parent"
@@ -546,7 +546,7 @@
                             android:textColor="@color/black2"
                             android:textSize="@dimen/text_size_40"/>
                     </LinearLayout>
-
+<!--冷藏化霜传感器-->
                     <LinearLayout
                         android:id="@+id/linear_factory_fridge_defrost_sensor"
                         android:layout_width="match_parent"
@@ -573,7 +573,7 @@
                             android:textColor="@color/black2"
                             android:textSize="@dimen/text_size_40"/>
                     </LinearLayout>
-
+<!--变温化霜传感器-->
                     <LinearLayout
                         android:id="@+id/linear_factory_change_defrost_sensor"
                         android:layout_width="match_parent"
@@ -600,7 +600,7 @@
                             android:textColor="@color/black2"
                             android:textSize="@dimen/text_size_40"/>
                     </LinearLayout>
-
+<!--冷藏化霜-->
                     <LinearLayout
                         android:id="@+id/linear_factory_fridge_defrost"
                         android:layout_width="match_parent"
@@ -627,7 +627,7 @@
                             android:textColor="@color/black2"
                             android:textSize="@dimen/text_size_40"/>
                     </LinearLayout>
-
+<!--变温化霜-->
                     <LinearLayout
                         android:id="@+id/linear_factory_change_defrost"
                         android:layout_width="match_parent"
@@ -654,7 +654,7 @@
                             android:textColor="@color/black2"
                             android:textSize="@dimen/text_size_40"/>
                     </LinearLayout>
-
+<!--冷藏风扇-->
                     <LinearLayout
                         android:id="@+id/linear_factory_fridge_fan"
                         android:layout_width="match_parent"
@@ -681,7 +681,7 @@
                             android:textColor="@color/black2"
                             android:textSize="@dimen/text_size_40"/>
                     </LinearLayout>
-
+<!--变温风扇-->
                     <LinearLayout
                         android:id="@+id/linear_factory_change_fan"
                         android:layout_width="match_parent"
@@ -708,7 +708,7 @@
                             android:textColor="@color/black2"
                             android:textSize="@dimen/text_size_40"/>
                     </LinearLayout>
-
+<!--冷却风扇-->
                     <LinearLayout
                         android:id="@+id/linear_factory_cold_fan"
                         android:layout_width="match_parent"
@@ -735,7 +735,7 @@
                             android:textColor="@color/black2"
                             android:textSize="@dimen/text_size_40"/>
                     </LinearLayout>
-
+<!--干区传感器-->
                     <LinearLayout
                         android:id="@+id/linear_factory_dry_sensor"
                         android:layout_width="match_parent"
@@ -1029,18 +1029,27 @@
                 android:id="@+id/linear_factory_camera"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:visibility="gone">
 
                 <Button
                     android:id="@+id/btn_factory_mipi_camera"
-                    android:layout_width="300dp"
+                    android:layout_width="400dp"
                     android:layout_height="100dp"
                     android:layout_marginTop="@dimen/tab_margin"
                     android:text="@string/text_factory_mipi_camera"
                     android:textColor="@color/black2"
                     android:textSize="@dimen/text_size_40"
                     android:visibility="visible"/>
+                <Button
+                    android:id="@+id/btn_factory_usb_camera"
+                    android:layout_width="400dp"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="@dimen/tab_margin"
+                    android:text="@string/text_factory_usb_camera"
+                    android:textColor="@color/black2"
+                    android:textSize="@dimen/text_size_40"
+                    android:visibility="gone"/>
 
             </LinearLayout>
             <!--TP校准-->
@@ -1522,7 +1531,7 @@
                         android:layout_marginTop="@dimen/fab_margin"
                         android:orientation="horizontal"
                         android:paddingLeft="@dimen/fab_margin"
-                        android:visibility="visible">
+                        android:visibility="gone">
 
                         <TextView
                             android:id="@+id/title_factory_fridge_fan_voltage"
@@ -1549,7 +1558,7 @@
                         android:layout_marginTop="@dimen/fab_margin"
                         android:orientation="horizontal"
                         android:paddingLeft="@dimen/fab_margin"
-                        android:visibility="visible">
+                        android:visibility="gone">
 
                         <TextView
                             android:id="@+id/title_factory_freeze_fan_voltage"
@@ -1576,7 +1585,7 @@
                         android:layout_marginTop="@dimen/fab_margin"
                         android:orientation="horizontal"
                         android:paddingLeft="@dimen/fab_margin"
-                        android:visibility="visible">
+                        android:visibility="gone">
 
                         <TextView
                             android:id="@+id/title_factory_change_fan_voltage"
@@ -1603,7 +1612,7 @@
                         android:layout_marginTop="@dimen/fab_margin"
                         android:orientation="horizontal"
                         android:paddingLeft="@dimen/fab_margin"
-                        android:visibility="visible">
+                        android:visibility="gone">
 
                         <TextView
                             android:id="@+id/title_factory_cold_fan_voltage"

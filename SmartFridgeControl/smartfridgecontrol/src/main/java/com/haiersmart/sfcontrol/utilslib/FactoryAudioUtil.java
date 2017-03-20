@@ -44,6 +44,8 @@ public class FactoryAudioUtil {
     private ProgressBar prbRecord, prbPlayAll, prbPlayLeft, prbPlayRight, prbCurrent;
     private TimerTask ttAudioRecord, ttAudioPlay;
     private Timer tAudioRecord, tAudioPlay;
+    private boolean mIsRecording = false;
+    private boolean mIsPlaying = false;
 
 
     public FactoryAudioUtil(MyTestAudioButton btnRecord, MyTestAudioButton btnPlayAll, MyTestAudioButton btnPlayLeft, MyTestAudioButton btnPlayRight, TextView tvRecord, TextView tvPlayAll, TextView tvPlayLeft, TextView tvPlayRight, ProgressBar prbRecord, ProgressBar prbPlayAll, ProgressBar prbPlayLeft, ProgressBar prbPlayRight) {
@@ -78,6 +80,10 @@ public class FactoryAudioUtil {
     }
 
     public void startAudioRecord() {
+        if(mIsPlaying||mIsRecording){
+            return;
+        }
+        mIsRecording = true;
         deleteAudioDir();
         if (mRecorder == null) {
             mRecorder = new MediaRecorder();
@@ -128,6 +134,7 @@ public class FactoryAudioUtil {
         btnRecord.setOff();
         prbRecord.setProgress(0);
         prbRecord.setSecondaryProgress(0);
+        mIsRecording = false;
     }
 
     private void startRecordTimes() {
@@ -157,8 +164,9 @@ public class FactoryAudioUtil {
                     prbRecord.setSecondaryProgress(e);
                 }
             };
+            tAudioRecord.schedule(ttAudioRecord, 30, 30);
         }
-        tAudioRecord.schedule(ttAudioRecord, 30, 30);
+//        tAudioRecord.schedule(ttAudioRecord, 30, 30);
     }
 
     private void stopRecordTimes() {
@@ -229,9 +237,13 @@ public class FactoryAudioUtil {
 
 
     public void startAudioPlay(final boolean left, final boolean right) {
+        if(mIsRecording||mIsPlaying){
+            return;
+        }
         if (mPlayer == null) {
             mPlayer = new MediaPlayer();
         }
+        mIsPlaying = true;
         if (isExistsAudioFile()) {
             try {
                 mPlayer.setDataSource(getFilename());
@@ -318,6 +330,7 @@ public class FactoryAudioUtil {
             mPlayer = null;
         }
         setStopPlayView(left, right);
+        mIsPlaying = false;
     }
 
     private void startPlayTimes(boolean left, boolean right) {
@@ -342,8 +355,9 @@ public class FactoryAudioUtil {
                     prbCurrent.setProgress(tmp);
                 }
             };
+            tAudioPlay.schedule(ttAudioPlay, 30, 30);
         }
-        tAudioPlay.schedule(ttAudioPlay, 30, 30);
+//        tAudioPlay.schedule(ttAudioPlay, 30, 30);
     }
 
     private void stopPlayTimes() {

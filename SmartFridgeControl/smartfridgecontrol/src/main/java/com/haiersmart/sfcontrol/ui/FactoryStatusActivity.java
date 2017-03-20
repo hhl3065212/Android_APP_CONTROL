@@ -93,12 +93,14 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             tvFridgeHeater, tvFreezeHeater, tvAirDoorHeater, tvDoorBorderHeater,
             tvFridgeTopLight, tvFridgeBackLight, tvChangeLight;
     Button btnReturn, btnResetEnter, btnTestMode, btnMipiCamera;
+    TextView tvReset;
     MyMarketButton btnMarket;
     MyTestAudioButton btnRecord, btnPlayAll, btnPlayLeft, btnPlayRight;
     TextView tvRecord, tvPlayAll, tvPlayLeft, tvPlayRight;
     ProgressBar prbRecord, prbPlayAll, prbPlayLeft, prbPlayRight;
     FactoryAudioUtil audioUtil;
     CheckBox chbMmarket;
+
 
     private Timer mTimer;
     private TimerTask mTimerTask;
@@ -302,6 +304,8 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
         tvMacTitle = (TextView) findViewById(R.id.title_factory_mac);
         tvMacTitle.setOnClickListener(this);
         tvTP = (TextView) findViewById(R.id.text_factory_TP);
+
+        tvReset = (TextView) findViewById(R.id.title_factory_reset);
 
         btnReturn = (Button) findViewById(R.id.btn_factory_return);
         btnReturn.setOnClickListener(this);
@@ -566,6 +570,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
                 }
                 break;
             case R.id.btn_factory_reset:
+                tvReset.setText("正在恢复出厂，请稍等！自动回到激活页面......");
                 new Thread() {
                     @Override
                     public void run() {

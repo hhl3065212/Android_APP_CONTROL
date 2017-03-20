@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
 
-    def int vCode = 14;
+    def int vCode = 15;
     def String vNameCode = '00' + vCode;
 
     compileSdkVersion 23
@@ -13,7 +13,7 @@ android {
         targetSdkVersion 23
 
         versionCode vCode
-        versionName 'BXC_000' + vNameCode + '_' + '0000'
+        versionName 'BXC_000_' + vNameCode + '_' + '0000'
     }
     buildTypes {
         release {

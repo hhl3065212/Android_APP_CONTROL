@@ -164,6 +164,14 @@
                     android:textColor="@color/black2"
                     android:textSize="@dimen/text_size_40"
                     android:visibility="visible"/>
+                <RadioButton
+                    android:id="@+id/gbtn_rfid_verify"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="RFID验证"
+                    android:textSize="35sp"
+                    android:visibility="visible"/>
             </RadioGroup>
         </LinearLayout>
         <!--内容-->
@@ -2119,6 +2127,43 @@
                     </LinearLayout>
 
                 </LinearLayout>
+            </LinearLayout>
+            <!--RFID验证-->
+            <LinearLayout
+                android:id="@+id/tft_rfid_linearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="visible">
+                <TextView
+                    android:id="@+id/tft_rfid_attention"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/x150"
+                    android:layout_marginTop="@dimen/text_size_60"
+                    android:text="@string/txt_tft_rfid_attention"
+                    android:textColor="@color/red"
+                    android:textSize="35sp"/>
+                <Button
+                    android:id="@+id/btn_rfid_verify"
+                    android:layout_width="200pt"
+                    android:layout_height="50pt"
+                    android:layout_marginLeft="@dimen/x150"
+                    android:layout_marginTop="10pt"
+                    android:text="@string/txt_tft_btn_rfid_verify"
+                    android:textColor="@color/back"
+                    android:textSize="35sp"
+                    android:visibility="visible"/>
+                <TextView
+                    android:id="@+id/tft_rfid_result"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/x150"
+                    android:layout_marginTop="10pt"
+                    android:text="@string/txt_tft_rfid_result"
+                    android:textColor="@color/back"
+                    android:textSize="35sp"/>
+
             </LinearLayout>
 
         </LinearLayout>

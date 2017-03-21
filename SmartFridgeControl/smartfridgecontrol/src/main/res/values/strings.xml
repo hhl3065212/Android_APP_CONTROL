@@ -124,4 +124,12 @@
 
     <string name="title_factory_dry_sensor">干区传感器</string>
 
+    <string name="txt_tft_rfid_attention">验证前提条件:\n往冷藏室、冷冻室分别放入一个或一个以上RFID标签！</string>
+    <string name="txt_tft_btn_rfid_verify">验证</string>
+    <string name="txt_tft_rfid_result">RFID验证结果：</string>
+    <string name="txt_tft_rfid_connect">RFID连接状态：</string>
+    <string name="txt_tft_rfid_antenna_1">RFID天线1状态：</string>
+    <string name="txt_tft_rfid_antenna_2">RFID天线2状态：</string>
+    <string name="txt_tft_rfid_antenna_3">RFID天线3状态：</string>
+
 </resources>

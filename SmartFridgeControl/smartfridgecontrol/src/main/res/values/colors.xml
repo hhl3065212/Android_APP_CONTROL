@@ -19,4 +19,5 @@
     <color name="transparent_half_half">#66000000</color>
     <color name="red">#ff0000</color>
     <color name="factory_dialog_btn">#888888</color>
+    <color name="back">#333</color>
 </resources>

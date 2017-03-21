@@ -57,11 +57,12 @@ import java.util.TimerTask;
 public class FactoryStatusActivity extends AppCompatActivity implements View.OnClickListener {
     private final String TAG = "FactoryStatusActivity";
     private final String PASSWORD = "lkjh";
+    private final static int REQUESTCODE = 1; // RFID Verify返回的结果码
 
     private MainBoardParameters mMBParam;
     private PowerSerialOpt mPowerSerialOpt;
     private String mFridgeModel, mTftVersion, mOsVersion, mFridgeType;
-    RadioButton rbtVersion, rbtReset, rbtStatus, rbtCamera, rbtTP, rbtAudio, rbtMarket, rbtDebug;
+    RadioButton rbtVersion, rbtReset, rbtStatus, rbtCamera, rbtTP, rbtAudio, rbtMarket, rbtDebug,mRBtnRFID;
     LinearLayout llVersion, llReset, llStatus, llCamera, llTP, llAudio, llMarket, llDebug;
     LinearLayout llEnvTemp, llEnvHum, llFridge, llFreeze, llChange, llDefrostSensor, llColdFan,
             llFridgeDefrost, llFridgeFan, llFridgeDefrostSensor,
@@ -76,6 +77,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             llTestMode, llFridgeFanVol, llChangeFanVol, llColdFanVol, llAirDoor, llAirDoorValve,
             llFridgeHeater, llFreezeHeater, llAirDoorHeater, llDoorBorderHeater,
             llFridgeTopLight, llFridgeBackLight, llChangeLight;
+    private LinearLayout tft_rfid_linearLayout;
     TextView tvEnvTemp, tvEnvHum, tvFridge, tvFreeze, tvChange, tvDefrostSensor, tvColdFan,
             tvFridgeDefrost, tvFridgeFan, tvFridgeDefrostSensor,
             tvFreezeDefrost, tvFreezeFan, tvFreezeDefrostSensor,
@@ -92,8 +94,9 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             tvFridgeFanVol, tvChangeFanVol, tvColdFanVol, tvAirDoor, tvAirDoorValve,
             tvFridgeHeater, tvFreezeHeater, tvAirDoorHeater, tvDoorBorderHeater,
             tvFridgeTopLight, tvFridgeBackLight, tvChangeLight;
-    Button btnReturn, btnResetEnter, btnTestMode, btnMipiCamera;
+    Button btnReturn, btnResetEnter, btnTestMode, btnMipiCamera, mBtnTftRFID;
     TextView tvReset;
+    TextView tft_rfid_result;
     MyMarketButton btnMarket;
     MyTestAudioButton btnRecord, btnPlayAll, btnPlayLeft, btnPlayRight;
     TextView tvRecord, tvPlayAll, tvPlayLeft, tvPlayRight;
@@ -149,6 +152,20 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
         setLinearContent(currentView);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        MyLogUtil.d(TAG, "onActivityResult ！");
+        if (resultCode == 2) {
+            if(requestCode == REQUESTCODE){
+                boolean res = false;
+                String rfidRes = data.getStringExtra("rfidResult");
+                tft_rfid_result.setText(rfidRes);
+                setLinearContent(R.id.gbtn_rfid_verify);
+            }
+        }
+    }
+
     private void findViews() {
         rbtVersion = (RadioButton) findViewById(R.id.rbt_factory_version);
         rbtReset = (RadioButton) findViewById(R.id.rbt_factory_reset);
@@ -158,6 +175,8 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
         rbtAudio = (RadioButton) findViewById(R.id.rbt_factory_audio);
         rbtMarket = (RadioButton) findViewById(R.id.rbt_factory_market);
         rbtDebug = (RadioButton) findViewById(R.id.rbt_factory_debug);
+        mRBtnRFID = (RadioButton) findViewById(R.id.gbtn_rfid_verify);
+
         rbtVersion.setOnClickListener(this);
         rbtReset.setOnClickListener(this);
         rbtStatus.setOnClickListener(this);
@@ -166,6 +185,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
         rbtAudio.setOnClickListener(this);
         rbtMarket.setOnClickListener(this);
         rbtDebug.setOnClickListener(this);
+        mRBtnRFID.setOnClickListener(this);
 
         llVersion = (LinearLayout) findViewById(R.id.linear_factory_version);
         llReset = (LinearLayout) findViewById(R.id.linear_factory_reset);
@@ -334,6 +354,11 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
         prbPlayAll = (ProgressBar) findViewById(R.id.prb_factory_play_all);
         prbPlayLeft = (ProgressBar) findViewById(R.id.prb_factory_play_left);
         prbPlayRight = (ProgressBar) findViewById(R.id.prb_factory_play_right);
+
+        tft_rfid_linearLayout = (LinearLayout) findViewById(R.id.tft_rfid_linearLayout);
+        mBtnTftRFID = (Button) findViewById(R.id.btn_rfid_verify);
+        mBtnTftRFID.setOnClickListener(this);
+        tft_rfid_result = (TextView) findViewById(R.id.tft_rfid_result);
     }
 
     private void initViews() {
@@ -359,6 +384,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             rbtAudio.setVisibility(View.VISIBLE);
             rbtMarket.setVisibility(View.GONE);
             rbtDebug.setVisibility(View.GONE);
+            mRBtnRFID.setVisibility(View.GONE);
         } else if (mFridgeModel.equals(ConstantUtil.BCD256_MODEL)) {
             tvFridgeModel.setText(mFridgeType + "/" + mFridgeType + "(S)");
             rbtVersion.setVisibility(View.VISIBLE);
@@ -369,6 +395,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             rbtAudio.setVisibility(View.VISIBLE);
             rbtMarket.setVisibility(View.GONE);
             rbtDebug.setVisibility(View.GONE);
+            mRBtnRFID.setVisibility(View.GONE);
         } else if (mFridgeModel.equals(ConstantUtil.BCD476_MODEL)) {
             //            tvFridgeModel.setText(mFridgeModel);
             rbtVersion.setVisibility(View.VISIBLE);
@@ -379,6 +406,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             rbtAudio.setVisibility(View.VISIBLE);
             rbtMarket.setVisibility(View.VISIBLE);
             rbtDebug.setVisibility(View.VISIBLE);
+            mRBtnRFID.setVisibility(View.VISIBLE);
         } else if (mFridgeModel.equals(ConstantUtil.BCD658_MODEL)) {
             //            tvFridgeModel.setText(mFridgeModel);
             rbtVersion.setVisibility(View.VISIBLE);
@@ -389,6 +417,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             rbtAudio.setVisibility(View.VISIBLE);
             rbtMarket.setVisibility(View.VISIBLE);
             rbtDebug.setVisibility(View.VISIBLE);
+            mRBtnRFID.setVisibility(View.GONE);
         }
         initStatusView();
         initDebugView();
@@ -598,6 +627,16 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             case R.id.btn_factory_mipi_camera:
                 startActivity(new Intent(this, CameraMipiActivity.class));
                 break;
+            case R.id.btn_rfid_verify:
+//                Intent rfidIntent = new Intent(TftActivity.this, RFIDVerifyActivity.class);
+                Intent rfidIntent = new Intent(Intent.ACTION_MAIN);
+                rfidIntent.setComponent(new ComponentName(
+                "com.haiersmart.sfnation",
+                "com.haiersmart.sfnation.ui.rfid.RFIDVerifyActivity"));
+                String rfidRes = "验证结果：";
+                rfidIntent.putExtra("rfidResult",rfidRes);
+                startActivityForResult(rfidIntent,REQUESTCODE);
+                break;
             default:
                 setLinearContent(v.getId());
                 break;
@@ -616,6 +655,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
         llAudio.setVisibility(View.GONE);
         llMarket.setVisibility(View.GONE);
         llDebug.setVisibility(View.GONE);
+        tft_rfid_linearLayout.setVisibility(View.GONE);
         switch (num) {
             case R.id.rbt_factory_version:
                 rbtVersion.setChecked(true);
@@ -665,6 +705,11 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
                 startDebugTimer();
                 llDebug.setVisibility(View.VISIBLE);
                 break;
+            case R.id.gbtn_rfid_verify:
+                mRBtnRFID.setChecked(true);
+                tft_rfid_linearLayout.setVisibility(View.VISIBLE);
+                break;
+
         }
     }
 

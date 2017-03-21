@@ -166,11 +166,13 @@
                     android:visibility="visible"/>
                 <RadioButton
                     android:id="@+id/gbtn_rfid_verify"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/auto_height"
                     android:layout_weight="1"
+                    android:background="@drawable/rbt_factory"
                     android:text="RFID验证"
-                    android:textSize="35sp"
+                    android:textColor="@color/black2"
+                    android:textSize="@dimen/text_size_40"
                     android:visibility="visible"/>
             </RadioGroup>
         </LinearLayout>

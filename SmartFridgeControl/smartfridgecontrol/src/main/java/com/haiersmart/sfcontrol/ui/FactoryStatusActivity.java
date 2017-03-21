@@ -364,7 +364,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
     private void initViews() {
         setLinearContent(R.id.rbt_factory_version);//
         tvFridgeModel.setText(mFridgeType);
-        if (mFridgeModel.equals(ConstantUtil.BCD251_MODEL)) {
+        if (mFridgeType.equals(ConstantUtil.BCD251_MODEL)) {
             //            tvFridgeModel.setText(mFridgeModel);
             rbtVersion.setVisibility(View.VISIBLE);
             rbtReset.setVisibility(View.VISIBLE);
@@ -374,7 +374,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             rbtAudio.setVisibility(View.VISIBLE);
             rbtMarket.setVisibility(View.GONE);
             rbtDebug.setVisibility(View.GONE);
-        } else if (mFridgeModel.equals(ConstantUtil.BCD401_MODEL)) {
+        } else if (mFridgeType.equals(ConstantUtil.BCD401_MODEL)) {
             tvFridgeModel.setText(mFridgeType + "/" + mFridgeType + "(S)");
             rbtVersion.setVisibility(View.VISIBLE);
             rbtReset.setVisibility(View.VISIBLE);
@@ -385,7 +385,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             rbtMarket.setVisibility(View.GONE);
             rbtDebug.setVisibility(View.GONE);
             mRBtnRFID.setVisibility(View.GONE);
-        } else if (mFridgeModel.equals(ConstantUtil.BCD256_MODEL)) {
+        } else if (mFridgeType.equals(ConstantUtil.BCD256_MODEL)) {
             tvFridgeModel.setText(mFridgeType + "/" + mFridgeType + "(S)");
             rbtVersion.setVisibility(View.VISIBLE);
             rbtReset.setVisibility(View.VISIBLE);
@@ -396,7 +396,18 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             rbtMarket.setVisibility(View.GONE);
             rbtDebug.setVisibility(View.GONE);
             mRBtnRFID.setVisibility(View.GONE);
-        } else if (mFridgeModel.equals(ConstantUtil.BCD476_MODEL)) {
+        } else if (mFridgeType.equals(ConstantUtil.BCD475_MODEL)) {
+            //            tvFridgeModel.setText(mFridgeModel);
+            rbtVersion.setVisibility(View.VISIBLE);
+            rbtReset.setVisibility(View.VISIBLE);
+            rbtStatus.setVisibility(View.VISIBLE);
+            rbtCamera.setVisibility(View.VISIBLE);
+            rbtTP.setVisibility(View.VISIBLE);
+            rbtAudio.setVisibility(View.VISIBLE);
+            rbtMarket.setVisibility(View.VISIBLE);
+            rbtDebug.setVisibility(View.VISIBLE);
+            mRBtnRFID.setVisibility(View.GONE);
+        } else if (mFridgeType.equals(ConstantUtil.BCD476_MODEL)) {
             //            tvFridgeModel.setText(mFridgeModel);
             rbtVersion.setVisibility(View.VISIBLE);
             rbtReset.setVisibility(View.VISIBLE);
@@ -407,7 +418,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             rbtMarket.setVisibility(View.VISIBLE);
             rbtDebug.setVisibility(View.VISIBLE);
             mRBtnRFID.setVisibility(View.VISIBLE);
-        } else if (mFridgeModel.equals(ConstantUtil.BCD658_MODEL)) {
+        }else if (mFridgeType.equals(ConstantUtil.BCD658_MODEL)) {
             //            tvFridgeModel.setText(mFridgeModel);
             rbtVersion.setVisibility(View.VISIBLE);
             rbtReset.setVisibility(View.VISIBLE);

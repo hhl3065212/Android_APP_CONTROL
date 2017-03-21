@@ -48,7 +48,7 @@ public class FridgeControlDbMgr {
 
     public void init() {
         List<FridgeControlEntry> checkList = query();
-        if (checkList.size() == 13) {
+        if (checkList.size() == 14) {
             return;
         }
         for (FridgeControlEntry entry : checkList) {
@@ -68,7 +68,7 @@ public class FridgeControlDbMgr {
         entries.add(new FridgeControlEntry("changeTargetTemp", 0, ConstantUtil.NO_WARNING));//10 变温目标温度
         entries.add(new FridgeControlEntry("SterilizeMode", 0, ConstantUtil.NO_WARNING));//11
         entries.add(new FridgeControlEntry("SterilizeSwitch", 0, ConstantUtil.NO_WARNING));//12
-        entries.add(new FridgeControlEntry("pirSwitch", 0, ConstantUtil.NO_WARNING));//13
+        entries.add(new FridgeControlEntry("pirSwitch", 1, ConstantUtil.NO_WARNING));//13
         add(entries);
     }
 

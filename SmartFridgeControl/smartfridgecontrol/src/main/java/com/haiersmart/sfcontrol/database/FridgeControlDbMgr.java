@@ -46,14 +46,8 @@ public class FridgeControlDbMgr {
     private FridgeControlDbMgr() {
     }
 
+
     public void init() {
-        List<FridgeControlEntry> checkList = query();
-        if (checkList.size() == 14) {
-            return;
-        }
-        for (FridgeControlEntry entry : checkList) {
-            deleteEntry(entry);
-        }
         ArrayList<FridgeControlEntry> entries = new ArrayList<FridgeControlEntry>();
         entries.add(new FridgeControlEntry("smartMode", 1, ConstantUtil.NO_WARNING));//0 智能模式
         entries.add(new FridgeControlEntry("holidayMode", 0, ConstantUtil.NO_WARNING));//1 假日模式
@@ -69,7 +63,27 @@ public class FridgeControlDbMgr {
         entries.add(new FridgeControlEntry("SterilizeMode", 0, ConstantUtil.NO_WARNING));//11
         entries.add(new FridgeControlEntry("SterilizeSwitch", 0, ConstantUtil.NO_WARNING));//12
         entries.add(new FridgeControlEntry("pirSwitch", 1, ConstantUtil.NO_WARNING));//13
-        add(entries);
+
+        List<FridgeControlEntry> checkList = query();
+        int dbSize=checkList.size();
+        int entriesSize = entries.size();
+        Log.d(TAG,"dbSize = "+dbSize+",entriesSize = "+entriesSize);
+        if(dbSize < 5){
+            for (FridgeControlEntry entry : checkList) {
+                deleteEntry(entry);
+            }
+        }
+        if (dbSize < entriesSize) {
+            for(int i=dbSize;i<entriesSize;i++){
+                Log.d(TAG,"insert name:"+entries.get(i).name);
+                insert(entries.get(i));
+            }
+        }else if(dbSize > entriesSize){
+            for(int i=entriesSize;i<dbSize;i++){
+                Log.d(TAG,"delete name:"+checkList.get(i).name);
+                deleteEntry(checkList.get(i));
+            }
+        }
     }
 
     private void add(List<FridgeControlEntry> entries) {

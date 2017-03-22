@@ -3,6 +3,7 @@ package com.haiersmart.sfcontrol.database;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
  * Created by tingting on 2016/9/28.
  */
 public class FridgeInfoDbMgr {
+    private static final String TAG = "FridgeInfoDbMgr";
     private static final String TABLE_NAME = "infodb";
     private static final String TEXT_TYPE = " VARCHAR";
     private static final String COMMA_SEP = ",";
@@ -44,19 +46,26 @@ public class FridgeInfoDbMgr {
     }
 
     public void init() {
-        List<FridgeInfoEntry>  checkList = query();
-        if(checkList.size() == 4) {
-            return;
-        }
-        for(FridgeInfoEntry entry:checkList) {
-            deleteEntry(entry);
-        }
         ArrayList<FridgeInfoEntry> entries = new ArrayList<FridgeInfoEntry>();
         entries.add(new FridgeInfoEntry("fridgeId",""));
         entries.add(new FridgeInfoEntry("fridgeVersion",""));
         entries.add(new FridgeInfoEntry("fridgeFactory",""));
         entries.add(new FridgeInfoEntry("fridgeSn",""));
-        add(entries);
+        List<FridgeInfoEntry>  checkList = query();
+        int dbSize=checkList.size();
+        int entriesSize = entries.size();
+        Log.d(TAG,"dbSize = "+dbSize+",entriesSize = "+entriesSize);
+        if(dbSize < 1){
+            for (FridgeInfoEntry entry : checkList) {
+                deleteEntry(entry);
+            }
+        }
+        if (dbSize < entriesSize) {
+            for(int i=checkList.size();i<entries.size();i++){
+                Log.d(TAG,"insert name:"+entries.get(i).name);
+                insert(entries.get(i));
+            }
+        }
     }
 
     private void add(List<FridgeInfoEntry> entries) {

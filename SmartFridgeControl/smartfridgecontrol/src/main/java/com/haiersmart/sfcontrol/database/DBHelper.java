@@ -7,7 +7,6 @@ import android.util.Log;
 
 import com.haiersmart.sfcontrol.application.ControlApplication;
 import com.haiersmart.sfcontrol.constant.ConstantUtil;
-import com.haiersmart.sfcontrol.utilslib.MyLogUtil;
 
 
 /**
@@ -65,8 +64,13 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int i, int i1) {
-        db.execSQL("drop table "+ConstantUtil.DB_TABLE_NAME_CONTROL+" if exists");
-        onCreate(db);
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
     }
+
+    //    @Override
+//    public void onUpgrade(SQLiteDatabase db, int i, int i1) {
+//        db.execSQL("drop table "+ConstantUtil.DB_NAME+" if exists");
+//        onCreate(db);
+//    }
 }

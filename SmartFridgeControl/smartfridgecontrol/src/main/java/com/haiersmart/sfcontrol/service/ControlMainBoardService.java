@@ -47,6 +47,7 @@ public class ControlMainBoardService extends Service {
     private ModelBase mModel;
     private boolean mIsModelReady = false;
     private boolean mIsServiceRestart = true;
+    private boolean mIsBoot = false;
     private static int readyCounts = 0;
 
 
@@ -99,6 +100,10 @@ public class ControlMainBoardService extends Service {
                         handleQueryData();
                         if (!mIsModelReady) {
                             mIsModelReady = true;
+                            if(mIsBoot){
+                                mIsBoot = false;
+                                handleBootEvent();
+                            }
                             //                            sendQuery();
                         }
                         break;
@@ -191,7 +196,10 @@ public class ControlMainBoardService extends Service {
                         break;
                     case ConstantUtil.BOOT_COMPLETED: {
                         MyLogUtil.i(TAG, "boot completed received!");
-                        handleBootEvent();
+                        mIsBoot = true;
+                        if(mIsModelReady){
+                            handleBootEvent();
+                        }
                     }
                     break;
                     case ConstantUtil.QUERY_STATUS_CODE:

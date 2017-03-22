@@ -27,6 +27,7 @@ import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import com.haiersmart.imagerecognition.CaptureImageFromUsbCamera;
 import com.haiersmart.sfcontrol.R;
 import com.haiersmart.sfcontrol.constant.ConstantUtil;
 import com.haiersmart.sfcontrol.constant.EnumBaseName;
@@ -62,7 +63,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
     private MainBoardParameters mMBParam;
     private PowerSerialOpt mPowerSerialOpt;
     private String mFridgeModel, mTftVersion, mOsVersion, mFridgeType;
-    RadioButton rbtVersion, rbtReset, rbtStatus, rbtCamera, rbtTP, rbtAudio, rbtMarket, rbtDebug,mRBtnRFID;
+    RadioButton rbtVersion, rbtReset, rbtStatus, rbtCamera, rbtTP, rbtAudio, rbtMarket, rbtDebug, mRBtnRFID;
     LinearLayout llVersion, llReset, llStatus, llCamera, llTP, llAudio, llMarket, llDebug;
     LinearLayout llEnvTemp, llEnvHum, llFridge, llFreeze, llChange, llDefrostSensor, llColdFan,
             llFridgeDefrost, llFridgeFan, llFridgeDefrostSensor,
@@ -94,7 +95,8 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             tvFridgeFanVol, tvChangeFanVol, tvColdFanVol, tvAirDoor, tvAirDoorValve,
             tvFridgeHeater, tvFreezeHeater, tvAirDoorHeater, tvDoorBorderHeater,
             tvFridgeTopLight, tvFridgeBackLight, tvChangeLight;
-    Button btnReturn, btnResetEnter, btnTestMode, btnMipiCamera, mBtnTftRFID;
+    Button btnReturn, btnResetEnter, btnTestMode, btnMipiCamera, mBtnTftRFID,
+            btnUsbCamera1, btnUsbCamera2, btnUsbCamera3, btnUsbCamera4, btnUsbCamera5;
     TextView tvReset;
     TextView tft_rfid_result;
     MyMarketButton btnMarket;
@@ -157,7 +159,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
         super.onActivityResult(requestCode, resultCode, data);
         MyLogUtil.d(TAG, "onActivityResult ！");
         if (resultCode == 2) {
-            if(requestCode == REQUESTCODE){
+            if (requestCode == REQUESTCODE) {
                 boolean res = false;
                 String rfidRes = data.getStringExtra("rfidResult");
                 tft_rfid_result.setText(rfidRes);
@@ -337,6 +339,16 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
         btnTestMode.setOnClickListener(this);
         btnMipiCamera = (Button) findViewById(R.id.btn_factory_mipi_camera);
         btnMipiCamera.setOnClickListener(this);
+        btnUsbCamera1 = (Button) findViewById(R.id.btn_factory_usb1_camera);
+        btnUsbCamera1.setOnClickListener(this);
+        btnUsbCamera2 = (Button) findViewById(R.id.btn_factory_usb2_camera);
+        btnUsbCamera2.setOnClickListener(this);
+        btnUsbCamera3 = (Button) findViewById(R.id.btn_factory_usb3_camera);
+        btnUsbCamera3.setOnClickListener(this);
+        btnUsbCamera4 = (Button) findViewById(R.id.btn_factory_usb4_camera);
+        btnUsbCamera4.setOnClickListener(this);
+        btnUsbCamera5 = (Button) findViewById(R.id.btn_factory_usb5_camera);
+        btnUsbCamera5.setOnClickListener(this);
 
         btnRecord = (MyTestAudioButton) findViewById(R.id.linear_factory_record);
         btnPlayAll = (MyTestAudioButton) findViewById(R.id.linear_factory_play_all);
@@ -418,7 +430,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             rbtMarket.setVisibility(View.VISIBLE);
             rbtDebug.setVisibility(View.VISIBLE);
             mRBtnRFID.setVisibility(View.VISIBLE);
-        }else if (mFridgeType.equals(ConstantUtil.BCD658_MODEL)) {
+        } else if (mFridgeType.equals(ConstantUtil.BCD658_MODEL)) {
             //            tvFridgeModel.setText(mFridgeModel);
             rbtVersion.setVisibility(View.VISIBLE);
             rbtReset.setVisibility(View.VISIBLE);
@@ -435,7 +447,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
     }
 
     private void initStatusView() {
-        if (mFridgeModel.equals(ConstantUtil.BCD251_MODEL)) {
+        if (mFridgeType.equals(ConstantUtil.BCD251_MODEL)) {
             llEnvTemp.setVisibility(View.VISIBLE);
             llFridge.setVisibility(View.VISIBLE);
             llFreeze.setVisibility(View.VISIBLE);
@@ -443,7 +455,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             llDefrostSensor.setVisibility(View.VISIBLE);
             llFreezeDefrost.setVisibility(View.VISIBLE);
             llFridgeDoor.setVisibility(View.VISIBLE);
-        } else if (mFridgeModel.equals(ConstantUtil.BCD401_MODEL)) {
+        } else if (mFridgeType.equals(ConstantUtil.BCD401_MODEL)) {
             llEnvTemp.setVisibility(View.VISIBLE);
             llFridge.setVisibility(View.VISIBLE);
             llFreeze.setVisibility(View.VISIBLE);
@@ -451,7 +463,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             llFreezeDefrost.setVisibility(View.VISIBLE);
             llFreezeFan.setVisibility(View.VISIBLE);
             llFridgeDoor.setVisibility(View.VISIBLE);
-        } else if (mFridgeModel.equals(ConstantUtil.BCD256_MODEL)) {
+        } else if (mFridgeType.equals(ConstantUtil.BCD256_MODEL)) {
             llEnvTemp.setVisibility(View.VISIBLE);
             llFridge.setVisibility(View.VISIBLE);
             llFreeze.setVisibility(View.VISIBLE);
@@ -460,7 +472,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             llFreezeDefrost.setVisibility(View.VISIBLE);
             llFreezeFan.setVisibility(View.VISIBLE);
             llFridgeDoor.setVisibility(View.VISIBLE);
-        } else if (mFridgeModel.equals(ConstantUtil.BCD476_MODEL)) {
+        } else if (mFridgeType.equals(ConstantUtil.BCD475_MODEL)) {
             llEnvTemp.setVisibility(View.VISIBLE);
             llEnvHum.setVisibility(View.VISIBLE);
             llFridge.setVisibility(View.VISIBLE);
@@ -470,7 +482,18 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             llFreezeFan.setVisibility(View.VISIBLE);
             llFridgeDoor.setVisibility(View.VISIBLE);
             llFreezeDoor.setVisibility(View.VISIBLE);
-        } else if (mFridgeModel.equals(ConstantUtil.BCD658_MODEL)) {
+            btnUsbCamera1.setVisibility(View.VISIBLE);
+        } else if (mFridgeType.equals(ConstantUtil.BCD476_MODEL)) {
+            llEnvTemp.setVisibility(View.VISIBLE);
+            llEnvHum.setVisibility(View.VISIBLE);
+            llFridge.setVisibility(View.VISIBLE);
+            llFreeze.setVisibility(View.VISIBLE);
+            llDefrostSensor.setVisibility(View.VISIBLE);
+            llFreezeDefrost.setVisibility(View.VISIBLE);
+            llFreezeFan.setVisibility(View.VISIBLE);
+            llFridgeDoor.setVisibility(View.VISIBLE);
+            llFreezeDoor.setVisibility(View.VISIBLE);
+        } else if (mFridgeType.equals(ConstantUtil.BCD658_MODEL)) {
             llEnvTemp.setVisibility(View.VISIBLE);
             llEnvHum.setVisibility(View.VISIBLE);
             llFridge.setVisibility(View.VISIBLE);
@@ -616,11 +639,16 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
                     public void run() {
                         super.run();
                         //                            SystemClock.sleep(1000);
-                        SystemCmdUtil.RootCCTCommand("pm clear com.haiersmart.sfnation");
-                        SystemCmdUtil.runCMD("pm clear " + getPackageName());
+                        SystemCmdUtil.RootCCTCommand("rm -rf /sdcard/video*.jpg");//清除工厂模式的照片
+                        SystemCmdUtil.RootCCTCommand("rm -rf /sdcard/*.png");//清除截图照片
+                        SystemCmdUtil.RootCCTCommand("rm -rf /sdcard/haier");//
+                        SystemCmdUtil.RootCCTCommand("rm -rf /sdcard/Android");//
+                        DeviceUtil.removeWifiNetwork(getApplicationContext());//
+                        SystemCmdUtil.RootCCTCommand("pm clear com.haiersmart.sfnation");//
+                        SystemCmdUtil.runCMD("pm clear " + getPackageName());//
                     }
                 }.start();
-//                popResetPassWin();
+                //                popResetPassWin();
                 break;
             case R.id.btn_factory_market:
                 if (btnMarket.isPress()) {
@@ -638,15 +666,21 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             case R.id.btn_factory_mipi_camera:
                 startActivity(new Intent(this, CameraMipiActivity.class));
                 break;
+            case R.id.btn_factory_usb1_camera:
+                startActivity(new Intent(this, CameraUsbActivity.class));
+                break;
+            case R.id.btn_factory_usb2_camera:
+                startActivity(new Intent(this, CameraUsbActivity.class));
+                break;
             case R.id.btn_rfid_verify:
-//                Intent rfidIntent = new Intent(TftActivity.this, RFIDVerifyActivity.class);
+                //                Intent rfidIntent = new Intent(TftActivity.this, RFIDVerifyActivity.class);
                 Intent rfidIntent = new Intent(Intent.ACTION_MAIN);
                 rfidIntent.setComponent(new ComponentName(
-                "com.haiersmart.sfnation",
-                "com.haiersmart.sfnation.ui.rfid.RFIDVerifyActivity"));
+                        "com.haiersmart.sfnation",
+                        "com.haiersmart.sfnation.ui.rfid.RFIDVerifyActivity"));
                 String rfidRes = "验证结果：";
-                rfidIntent.putExtra("rfidResult",rfidRes);
-                startActivityForResult(rfidIntent,REQUESTCODE);
+                rfidIntent.putExtra("rfidResult", rfidRes);
+                startActivityForResult(rfidIntent, REQUESTCODE);
                 break;
             default:
                 setLinearContent(v.getId());
@@ -685,6 +719,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             case R.id.rbt_factory_camera:
                 rbtCamera.setChecked(true);
                 llCamera.setVisibility(View.VISIBLE);
+                setUsbCameraButtun();
                 break;
             case R.id.rbt_factory_TP:
                 rbtTP.setChecked(true);
@@ -1227,7 +1262,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
         } else {
             tvAirDoor.setText(getResources().getString(R.string.text_door_open));
         }
-        tvAirDoorValve.setText(mMBParam.getMbdValueByName(EnumBaseName.airDoorValve.toString())+"");
+        tvAirDoorValve.setText(mMBParam.getMbdValueByName(EnumBaseName.airDoorValve.toString()) + "");
 
         if (mMBParam.getMbdValueByName(EnumBaseName.defrostHeater.toString()) == 0) {
             tvDefrostHeater.setText(getResources().getString(R.string.text_door_close));
@@ -1295,6 +1330,20 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             tvChangeLight.setText(getResources().getString(R.string.text_door_open));
         }
         btnTestMode.setText(getResources().getString(R.string.title_factory_test_mode) + " " + mMBParam.getMbdValueByName(EnumBaseName.testMode.name()));
+    }
+
+    private void setUsbCameraButtun() {
+        if (CaptureImageFromUsbCamera.mCheckCameraExist()) {
+            btnUsbCamera1.setText(getString(R.string.text_factory_usb_camera));
+            btnUsbCamera1.setEnabled(true);
+        } else {
+            btnUsbCamera1.setText(getString(R.string.text_factory_usb_camera_none));
+            btnUsbCamera1.setEnabled(false);
+        }
+    }
+
+    private void removeWifiDate(){
+
     }
 
 }

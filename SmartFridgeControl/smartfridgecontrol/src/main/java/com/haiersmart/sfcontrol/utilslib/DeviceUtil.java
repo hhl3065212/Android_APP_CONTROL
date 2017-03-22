@@ -15,10 +15,12 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.util.TypedValue;
 
 import java.lang.reflect.Field;
@@ -208,6 +210,18 @@ public class DeviceUtil {
         WifiManager wifi = (WifiManager)ctx.getSystemService(WIFI_SERVICE);
         List list = wifi.getScanResults();
         return list;
+    }
+    public static void removeWifiNetwork(Context ctx){
+        WifiManager wifi = (WifiManager)ctx.getSystemService(WIFI_SERVICE);
+        List<WifiConfiguration> wifiConfig = wifi.getConfiguredNetworks();
+        if(wifiConfig !=null){
+            for (WifiConfiguration wifiConfiguration:wifiConfig){
+                Log.d("delete wifi","wificonfig:"+wifiConfiguration.networkId
+                +","+wifiConfiguration.SSID);
+                wifi.removeNetwork(wifiConfiguration.networkId);
+            }
+            wifi.saveConfiguration();
+        }
     }
     public static int getPirUG() {
         String CommandPir = "cat /sys/class/switch/irda_status/state";

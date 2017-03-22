@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/tft_camera_mipi"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              tools:context="com.haiersmart.sfcontrol.ui.CameraUsbActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:id="@+id/tft_camera_usb_layout">
+
+        <com.haiersmart.imagerecognition.CaptureImageFromUsbCamera
+            android:id="@+id/tft_camera_usb_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-40pt"
+            android:orientation="horizontal"
+            android:id="@+id/tft_camera_usb_button_layout">
+            <TextView
+                android:id="@+id/txt_camera_mipi"
+                android:layout_width="150pt"
+                android:layout_height="40pt"
+                android:layout_marginLeft="100pt"
+                android:text="@string/text_factory_usb_camera"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="35sp"
+                android:visibility="visible"/>
+
+            <Button
+                android:id="@+id/btn_camera_usb_add"
+                android:layout_width="100pt"
+                android:layout_height="40pt"
+                android:layout_marginLeft="100pt"
+                android:text="+"
+                android:textColor="@color/back"
+                android:textSize="35sp"
+                android:visibility="gone"/>
+
+            <Button
+                android:id="@+id/btn_camera_usb_sub"
+                android:layout_width="100pt"
+                android:layout_height="40pt"
+                android:text="-"
+                android:textColor="@color/back"
+                android:textSize="35sp"
+                android:visibility="gone"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_camera_usb_ret"
+                    android:layout_width="100pt"
+                    android:layout_height="40pt"
+                    android:text="返回"
+                    android:textColor="@color/back"
+                    android:textSize="35sp"
+                    android:visibility="visible"/>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

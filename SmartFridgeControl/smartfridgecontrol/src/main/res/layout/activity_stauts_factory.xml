@@ -1052,11 +1052,47 @@
                     android:textSize="@dimen/text_size_40"
                     android:visibility="visible"/>
                 <Button
-                    android:id="@+id/btn_factory_usb_camera"
+                    android:id="@+id/btn_factory_usb1_camera"
                     android:layout_width="400dp"
                     android:layout_height="100dp"
                     android:layout_marginTop="@dimen/tab_margin"
-                    android:text="@string/text_factory_usb_camera"
+                    android:text="@string/text_factory_usb1_camera"
+                    android:textColor="@color/black2"
+                    android:textSize="@dimen/text_size_40"
+                    android:visibility="gone"/>
+                <Button
+                    android:id="@+id/btn_factory_usb2_camera"
+                    android:layout_width="400dp"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="@dimen/tab_margin"
+                    android:text="@string/text_factory_usb2_camera"
+                    android:textColor="@color/black2"
+                    android:textSize="@dimen/text_size_40"
+                    android:visibility="gone"/>
+                <Button
+                    android:id="@+id/btn_factory_usb3_camera"
+                    android:layout_width="400dp"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="@dimen/tab_margin"
+                    android:text="@string/text_factory_usb3_camera"
+                    android:textColor="@color/black2"
+                    android:textSize="@dimen/text_size_40"
+                    android:visibility="gone"/>
+                <Button
+                    android:id="@+id/btn_factory_usb4_camera"
+                    android:layout_width="400dp"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="@dimen/tab_margin"
+                    android:text="@string/text_factory_usb4_camera"
+                    android:textColor="@color/black2"
+                    android:textSize="@dimen/text_size_40"
+                    android:visibility="gone"/>
+                <Button
+                    android:id="@+id/btn_factory_usb5_camera"
+                    android:layout_width="400dp"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="@dimen/tab_margin"
+                    android:text="@string/text_factory_usb5_camera"
                     android:textColor="@color/black2"
                     android:textSize="@dimen/text_size_40"
                     android:visibility="gone"/>
@@ -2136,7 +2172,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:visibility="visible">
+                android:visibility="gone">
                 <TextView
                     android:id="@+id/tft_rfid_attention"
                     android:layout_width="wrap_content"

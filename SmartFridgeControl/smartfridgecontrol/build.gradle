@@ -18,7 +18,7 @@ android {
     signingConfigs {
         debug {
             storeFile file('control_keystore.jks')
-            keyAlias 'haiersmart'
+            keyAlias 'key0'
             keyPassword 'smarthard'
             storePassword 'smarthard'
         }

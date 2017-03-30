@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
 
-    def int vCode = 19;
+    def int vCode = 20;
     def String vNameCode = '00' + vCode;
 
     compileSdkVersion 23
@@ -14,6 +14,14 @@ android {
 
         versionCode vCode
         versionName 'BXC_000_' + vNameCode + '_' + '0000'
+    }
+    signingConfigs {
+        debug {
+            storeFile file('control_keystore.jks')
+            keyAlias 'haiersmart'
+            keyPassword 'smarthard'
+            storePassword 'smarthard'
+        }
     }
     buildTypes {
         release {

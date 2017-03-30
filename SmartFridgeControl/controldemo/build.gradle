@@ -5,7 +5,7 @@ android {
     buildToolsVersion "25.0.0"
 
     def int vCode = 0;
-    def String vNameCode = '0' + (vCode+100);
+    def String vNameCode = '0' + (vCode + 100);
 
     defaultConfig {
         applicationId "com.haiersmart.sfcdemo"
@@ -41,8 +41,9 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.0.1'
-    testCompile 'junit:junit:4.12'
-    compile 'com.alibaba:fastjson:1.2.21'
     compile files('libs/zxing.jar')
+    compile 'com.android.support:appcompat-v7:25.0.1'
+    compile 'com.alibaba:fastjson:1.2.21'
+    compile 'com.android.support.constraint:constraint-layout:+'
+    testCompile 'junit:junit:4.12'
 }

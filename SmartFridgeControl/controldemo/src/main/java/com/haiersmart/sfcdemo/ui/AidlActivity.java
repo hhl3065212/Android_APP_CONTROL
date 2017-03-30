@@ -1,4 +1,4 @@
-package com.haiersmart.sfcdemo;
+package com.haiersmart.sfcdemo.ui;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.haiersmart.sfcdemo.R;
 import com.haiersmart.sfcdemo.constant.ConstantUtil;
 import com.haiersmart.sfcdemo.constant.EnumBaseName;
 import com.haiersmart.sfcdemo.constant.QrCodeUtil;
@@ -54,7 +55,7 @@ public class AidlActivity extends AppCompatActivity implements View.OnClickListe
             lineFridgeTarget, lineFreezeTarget, lineChangeTarger, lineSterilize;
     private TextView tvFridgeModel, tvStatusCode, tvEnvTemp, tvEnvHum, tvFridgeTemp, tvFreezeTemp, tvChangeTemp,
             tvFridgeTarget, tvFreezeTarget, tvChangeTarget, tvTime, tvTest;
-    private Button btnReturn;
+    private Button btnReturn,btnWifi;
     private MyTestButton btnSterilizeSmart, btnSterilizeStrong, btnSterilize3, btnSterilize4, btnSterilize5,
             btnSterilize6, btnSterilize7, btnSterilize8, btnSterilize9;
     private TextView tvSterilizeRuntime, tvSterilizeInterval;
@@ -171,6 +172,8 @@ public class AidlActivity extends AppCompatActivity implements View.OnClickListe
 
         btnReturn = (Button) findViewById(R.id.btn_demo_return);
         btnReturn.setOnClickListener(this);
+        btnWifi = (Button) findViewById(R.id.btn_demo_wifi);
+        btnWifi.setOnClickListener(this);
 
         btnSterilizeSmart = (MyTestButton) findViewById(R.id.btn_demo_sterilize_smart);
         btnSterilizeStrong = (MyTestButton) findViewById(R.id.btn_demo_sterilize_strong);
@@ -882,11 +885,18 @@ public class AidlActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
+
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_demo_return:
                 finish();
+                break;
+            case R.id.btn_demo_wifi:
+//                Intent intentWifi = new Intent(this,WifiActivity.class);
+//                intentWifi.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                startActivity(intentWifi);
                 break;
             case R.id.title_demo_status_code:
                 Intent intentActivity = new Intent(this,MainActivity.class);

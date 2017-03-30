@@ -12,7 +12,7 @@ public class ConstantUtil {
     /**
      * 常量
      */
-    public static final boolean DEBUG = true;  //true debug版本 false 正式版本
+    public static final boolean DEBUG = false;  //true debug版本 false 正式版本
 
     public static final int SERVICE_RESTART_TIME = 5 * 1000;                //Service 重启间隔时间
     public static final int LUNBO_TIME = 15 * 1000;                //Service 重启间隔时间

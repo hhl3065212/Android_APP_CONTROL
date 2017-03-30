@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+    android:gravity="center">
+    <LinearLayout
+        android:id="@+id/linear_wifi_window"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:background="@color/gray2"
+        android:gravity="top"
+        android:padding="@dimen/tab_margin"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_40"
+            android:gravity="center"
+            android:text="密码"/>
+        <EditText
+            android:id="@+id/wifiDialogPsw"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_40"
+            android:gravity="center"
+            android:text="pass"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/wifiDialogCancel"
+                android:layout_width="@dimen/auto_width"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="@dimen/text_size_40"
+                android:text="取消"/>
+            <Button
+                android:id="@+id/wifiDialogCertain"
+                android:layout_width="@dimen/auto_width"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginLeft="@dimen/tab_margin"
+                android:textSize="@dimen/text_size_40"
+                android:text="确定"/>
+        </LinearLayout>
+
+        </LinearLayout>
+
+</LinearLayout>

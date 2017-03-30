@@ -1,4 +1,4 @@
-package com.haiersmart.sfcdemo;
+package com.haiersmart.sfcdemo.ui;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.haiersmart.sfcdemo.R;
 import com.haiersmart.sfcdemo.constant.ConstantUtil;
 import com.haiersmart.sfcdemo.constant.EnumBaseName;
 import com.haiersmart.sfcdemo.constant.QrCodeUtil;

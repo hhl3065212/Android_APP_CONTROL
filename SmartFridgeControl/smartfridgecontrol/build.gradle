@@ -17,10 +17,10 @@ android {
     }
     signingConfigs {
         debug {
-            storeFile file('control_keystore.jks')
-            keyAlias 'key0'
-            keyPassword 'smarthard'
-            storePassword 'smarthard'
+            storeFile file('debug.keystore')
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+            storePassword 'android'
         }
     }
     buildTypes {
@@ -28,7 +28,9 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             zipAlignEnabled true
+            signingConfig signingConfigs.debug
         }
+
     }
     productFlavors {
     }

@@ -43,7 +43,7 @@ public class ControlMainBoardService extends Service {
     private MainBoardParameters mMBParams;
     private PowerProcessData mProcessData;
     private ControlMainBoardInfo mBoardInfo;
-    private ModelFactory mModelFactory;
+//    private ModelFactory mModelFactory;
     private ModelBase mModel;
     private boolean mIsModelReady = false;
     private boolean mIsServiceRestart = true;
@@ -287,7 +287,7 @@ public class ControlMainBoardService extends Service {
 
     private void initModel(String modeName) {
         MyLogUtil.i(TAG, "kill initModel");
-        mModelFactory = new ModelFactory(this);
+        ModelFactory mModelFactory = new ModelFactory(this);
         mModel = mModelFactory.createModel(modeName);
         mModel.init();
     }

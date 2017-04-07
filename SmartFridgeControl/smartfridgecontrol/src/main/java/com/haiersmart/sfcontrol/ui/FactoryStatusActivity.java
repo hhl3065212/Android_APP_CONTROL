@@ -10,6 +10,7 @@
 package com.haiersmart.sfcontrol.ui;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.ScanResult;
 import android.os.Bundle;
@@ -644,8 +645,8 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
                         SystemCmdUtil.RootCCTCommand("rm -rf /sdcard/haier");//
                         SystemCmdUtil.RootCCTCommand("rm -rf /sdcard/Android");//
                         DeviceUtil.removeWifiNetwork(getApplicationContext());//
-                        SystemCmdUtil.RootCCTCommand("pm clear com.haiersmart.sfnation");//
-                        SystemCmdUtil.runCMD("pm clear " + getPackageName());//
+                        resetFridgeControl();
+                        SystemCmdUtil.RootCCTCommand("pm clear com.haiersmart.sfnation");
                     }
                 }.start();
                 //                popResetPassWin();
@@ -1342,8 +1343,43 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
         }
     }
 
-    private void removeWifiDate(){
+    private void removeWifiDate() {
 
     }
 
+    private void resetFridgeControl() {
+        sendCommandToService(this, ConstantUtil.MODE_HOLIDAY_OFF); //假日关
+        sendCommandToService(this, ConstantUtil.MODE_FREEZE_OFF); //速冻关
+        sendCommandToService(this, ConstantUtil.MODE_COLD_OFF); //速冷关
+        sendCommandToService(this, ConstantUtil.MODE_TIDBIT_OFF); //珍品关
+        sendCommandToService(this, ConstantUtil.MODE_PURIFY_OFF); //净化关
+        sendTemperCmdToService(this, ConstantUtil.MODE_STERILIZE_ON, ConstantUtil.MODE_UV, 0); //杀菌模式
+        sendCommandToService(this, ConstantUtil.REFRIGERATOR_OPEN); //冷藏开启（冷藏室风道开，可以控制冷藏室温度档位）
+        sendCommandToService(this, ConstantUtil.MODE_SMART_ON); //智能开
+        sendBroadcastToService(ConstantUtil.TEMPER_SETCOLD, ConstantUtil.KEY_SET_FRIDGE_LEVEL, 5);     //冷藏区温控
+        sendBroadcastToService(ConstantUtil.TEMPER_SETCUSTOMAREA, ConstantUtil.KEY_SET_COLD_LEVEL, 0); //变温区温控
+        sendBroadcastToService(ConstantUtil.TEMPER_SETFREEZE, ConstantUtil.KEY_SET_FREEZE_LEVEL, -18); //冷冻区温控
+    }
+
+    private void sendBroadcastToService(String action, String key, int value) {
+        Intent intent = new Intent();
+        intent.setAction(ConstantUtil.COMMAND_TO_SERVICE);
+        intent.putExtra(ConstantUtil.KEY_MODE, action);
+        intent.putExtra(key,value);
+        sendBroadcast(intent);
+    }
+
+    private void sendCommandToService(Context context, String action) {
+        Intent intent = new Intent(context, ControlMainBoardService.class);
+        intent.setAction(action);
+        MyLogUtil.v(TAG, "sendCommandToService action=" + action);
+        context.startService(intent);
+    }
+
+    private void sendTemperCmdToService(Context context, String action, String key, int temper) {
+        Intent intent = new Intent(context, ControlMainBoardService.class);
+        intent.setAction(action);
+        intent.putExtra(key, temper);
+        context.startService(intent);
+    }
 }

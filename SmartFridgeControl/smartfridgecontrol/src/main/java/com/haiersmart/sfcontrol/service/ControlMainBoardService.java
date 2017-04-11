@@ -1,7 +1,10 @@
 package com.haiersmart.sfcontrol.service;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -43,7 +46,7 @@ public class ControlMainBoardService extends Service {
     private MainBoardParameters mMBParams;
     private PowerProcessData mProcessData;
     private ControlMainBoardInfo mBoardInfo;
-//    private ModelFactory mModelFactory;
+    //    private ModelFactory mModelFactory;
     private ModelBase mModel;
     private boolean mIsModelReady = false;
     private boolean mIsServiceRestart = true;
@@ -57,7 +60,7 @@ public class ControlMainBoardService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         MyLogUtil.i(TAG, "Bind Service");
-//        return new CmbBinder();
+        //        return new CmbBinder();
         return new ControlServiceImpl();
     }
 
@@ -77,8 +80,36 @@ public class ControlMainBoardService extends Service {
     public void onCreate() {
         super.onCreate();
         initService();
+        registerScreenReceiver();
     }
 
+    private void registerScreenReceiver() {
+        MyLogUtil.d(TAG, "screen register");
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_SCREEN_ON);
+        filter.addAction(Intent.ACTION_SCREEN_OFF);
+        registerReceiver(ScreenReceiver, filter);
+    }
+
+    private void unregisterScreenReceiver() {
+        MyLogUtil.d(TAG, "screen unregister");
+        unregisterReceiver(ScreenReceiver);
+    }
+
+    private BroadcastReceiver ScreenReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (mIsModelReady && (mMBParams.getFridgeType().equals(ConstantUtil.BCD476_MODEL))) {
+                if (Intent.ACTION_SCREEN_ON.equals(intent.getAction())) {
+                    MyLogUtil.d(TAG, "screen on");
+                    mProcessData.sendCmd(EnumBaseName.handleLightMode, 1);
+                } else if (Intent.ACTION_SCREEN_OFF.equals(intent.getAction())) {
+                    MyLogUtil.d(TAG, "screen off");
+                    mProcessData.sendCmd(EnumBaseName.handleLightMode, 0);
+                }
+            }
+        }
+    };
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -91,6 +122,16 @@ public class ControlMainBoardService extends Service {
             MyLogUtil.i(TAG, "onStartCommand handleActions=" + action);
             if (!TextUtils.isEmpty(action)) {
                 switch (action) {
+                    /*case Intent.ACTION_SCREEN_ON:
+                        if (mIsModelReady){
+                            mProcessData.sendCmd(EnumBaseName.handleLightMode,1);
+                        }
+                        break;
+                    case Intent.ACTION_SCREEN_OFF:
+                        if (mIsModelReady){
+                            mProcessData.sendCmd(EnumBaseName.handleLightMode,0);
+                        }
+                        break;*/
                     case ConstantUtil.QUERY_CONTROL_READY://查询service是否准备好
                         MyLogUtil.i(TAG, readyCounts + " sendControlCmdResponse before main board is " + mIsModelReady);
                         readyCounts++;
@@ -100,7 +141,7 @@ public class ControlMainBoardService extends Service {
                         handleQueryData();
                         if (!mIsModelReady) {
                             mIsModelReady = true;
-                            if(mIsBoot){
+                            if (mIsBoot) {
                                 mIsBoot = false;
                                 handleBootEvent();
                             }
@@ -197,7 +238,7 @@ public class ControlMainBoardService extends Service {
                     case ConstantUtil.BOOT_COMPLETED: {
                         MyLogUtil.i(TAG, "boot completed received!");
                         mIsBoot = true;
-                        if(mIsModelReady){
+                        if (mIsModelReady) {
                             handleBootEvent();
                         }
                     }
@@ -252,7 +293,8 @@ public class ControlMainBoardService extends Service {
         stopFreezeOnTime();
         stopSterilize();
         // 停止海尔的控制服务。
-                HaierWifiModule.getInstance().stop();
+        HaierWifiModule.getInstance().stop();
+        unregisterScreenReceiver();
     }
 
     public void initService() {
@@ -294,7 +336,7 @@ public class ControlMainBoardService extends Service {
 
 
     private void handleActions(String action, int... value) {
-        MyLogUtil.d(TAG,"handleActions action:"+action);
+        MyLogUtil.d(TAG, "handleActions action:" + action);
 
         switch (action) {
             case ConstantUtil.MODE_SMART_ON://智能开
@@ -389,34 +431,40 @@ public class ControlMainBoardService extends Service {
                 RemoteUtil.sendQuery();
                 break;
             case ConstantUtil.FRIDGE_LIGHT_ON:
-                mProcessData.sendCmd(EnumBaseName.coldLightMode,1);
+                mProcessData.sendCmd(EnumBaseName.coldLightMode, 1);
                 break;
             case ConstantUtil.FRIDGE_LIGHT_OFF:
-                mProcessData.sendCmd(EnumBaseName.coldLightMode,0);
+                mProcessData.sendCmd(EnumBaseName.coldLightMode, 0);
                 break;
             case ConstantUtil.PIR_ON:
-                mProcessData.sendCmd(EnumBaseName.pirSwitch,1);
+                mProcessData.sendCmd(EnumBaseName.pirSwitch, 1);
                 break;
             case ConstantUtil.PIR_OFF:
-                mProcessData.sendCmd(EnumBaseName.pirSwitch,0);
+                mProcessData.sendCmd(EnumBaseName.pirSwitch, 0);
                 break;
             case ConstantUtil.FRIDGE_TOP_LIGHT_ON:
-                mProcessData.sendCmd(EnumBaseName.fridgeTopLight,1);
+                mProcessData.sendCmd(EnumBaseName.fridgeTopLight, 1);
                 break;
             case ConstantUtil.FRIDGE_TOP_LIGHT_OFF:
-                mProcessData.sendCmd(EnumBaseName.fridgeTopLight,0);
+                mProcessData.sendCmd(EnumBaseName.fridgeTopLight, 0);
                 break;
             case ConstantUtil.FRIDGE_BACK_LIGHT_ON:
-                mProcessData.sendCmd(EnumBaseName.fridgeBackLight,1);
+                mProcessData.sendCmd(EnumBaseName.fridgeBackLight, 1);
                 break;
             case ConstantUtil.FRIDGE_BACK_LIGHT_OFF:
-                mProcessData.sendCmd(EnumBaseName.fridgeBackLight,0);
+                mProcessData.sendCmd(EnumBaseName.fridgeBackLight, 0);
                 break;
             case ConstantUtil.INSIDE_DOOR_ON:
-                mProcessData.sendCmd(EnumBaseName.insideDoor,1);
+                mProcessData.sendCmd(EnumBaseName.insideDoor, 1);
                 break;
             case ConstantUtil.INSIDE_DOOR_OFF:
-                mProcessData.sendCmd(EnumBaseName.insideDoor,0);
+                mProcessData.sendCmd(EnumBaseName.insideDoor, 0);
+                break;
+            case ConstantUtil.HANDLE_LIGHT_ON:
+                mProcessData.sendCmd(EnumBaseName.handleLightMode, 1);
+                break;
+            case ConstantUtil.HANDLE_LIGHT_OFF:
+                mProcessData.sendCmd(EnumBaseName.handleLightMode, 0);
                 break;
             default:
                 break;
@@ -575,8 +623,8 @@ public class ControlMainBoardService extends Service {
     //    public static final long FREEZETIME = 60 * 60;
     private static long coldCount = 0;
     private static long freezeCount = 0;
-    private static final long COLD_OVER_TIME = 24 * 60 * 60 *1000;//ms  24h
-    private static final long FREEZE_OVER_TIME = 3 * 24 * 60 * 60 *1000;//ms 3d
+    private static final long COLD_OVER_TIME = 24 * 60 * 60 * 1000;//ms  24h
+    private static final long FREEZE_OVER_TIME = 3 * 24 * 60 * 60 * 1000;//ms 3d
     private ScheduledExecutorService sExService = Executors.newScheduledThreadPool(2);
     private RunnableFuture<?> sColdOnFuture;
     private RunnableFuture<?> sFreezeOnFuture;
@@ -915,30 +963,30 @@ public class ControlMainBoardService extends Service {
         RemoteUtil.sendQuery();
     }
 
-//    public void sendQuery() {
-//        Intent intent = new Intent();
-//        intent.setAction(ConstantWifiUtil.ACTION_CONTROL);
-//        intent.putExtra(ConstantWifiUtil.KEY_GETSTATE, getQueryResult());
-//        byte[] bytes = mMBParams.getDataBaseToBytes();
-//        if (bytes != null) {
-//            intent.putExtra(ConstantWifiUtil.KEY_GETBYTES, bytes);
-//        }
-//        MyLogUtil.i("printSerialString", PrintUtil.BytesToString(bytes, 16));
-//        intent.putExtra(ConstantWifiUtil.KEY_TYPE_ID, mMBParams.getTypeId());
-//        MyLogUtil.i("printSerialString", mMBParams.getFridgeId());
-//        sendBroadcast(intent);
-//        Log.d(TAG, "send query");
-//    }
-//
-//    private HashMap getQueryResult() {
-//        HashMap<String, String> stateList = new HashMap<>();
-//        FridgeControlEntry fridgeControlEntry = new FridgeControlEntry(EnumBaseName.SterilizeMode.toString());
-//        mDBHandle.getControlDbMgr().queryByName(fridgeControlEntry);
-//        int valueSterilization = fridgeControlEntry.value;
-//        stateList.put(ConstantWifiUtil.QUERY_GOOD_FOOD, "65278");
-//        stateList.put(ConstantWifiUtil.QUERY_UV, "" + valueSterilization);
-//        return stateList;
-//    }
+    //    public void sendQuery() {
+    //        Intent intent = new Intent();
+    //        intent.setAction(ConstantWifiUtil.ACTION_CONTROL);
+    //        intent.putExtra(ConstantWifiUtil.KEY_GETSTATE, getQueryResult());
+    //        byte[] bytes = mMBParams.getDataBaseToBytes();
+    //        if (bytes != null) {
+    //            intent.putExtra(ConstantWifiUtil.KEY_GETBYTES, bytes);
+    //        }
+    //        MyLogUtil.i("printSerialString", PrintUtil.BytesToString(bytes, 16));
+    //        intent.putExtra(ConstantWifiUtil.KEY_TYPE_ID, mMBParams.getTypeId());
+    //        MyLogUtil.i("printSerialString", mMBParams.getFridgeId());
+    //        sendBroadcast(intent);
+    //        Log.d(TAG, "send query");
+    //    }
+    //
+    //    private HashMap getQueryResult() {
+    //        HashMap<String, String> stateList = new HashMap<>();
+    //        FridgeControlEntry fridgeControlEntry = new FridgeControlEntry(EnumBaseName.SterilizeMode.toString());
+    //        mDBHandle.getControlDbMgr().queryByName(fridgeControlEntry);
+    //        int valueSterilization = fridgeControlEntry.value;
+    //        stateList.put(ConstantWifiUtil.QUERY_GOOD_FOOD, "65278");
+    //        stateList.put(ConstantWifiUtil.QUERY_UV, "" + valueSterilization);
+    //        return stateList;
+    //    }
 
     /**
      * 杀菌功能启用这个
@@ -1065,11 +1113,9 @@ public class ControlMainBoardService extends Service {
     }
 
 
-
-
     public void handleDoorEvents() {
         String doorJson = mMBParams.handleDoorEvents();
-        if(doorJson != null) {
+        if (doorJson != null) {
             notifyDoorStatus(doorJson);
             Intent intent = new Intent();
             intent.putExtra(ConstantUtil.DOOR_STATUS, doorJson);
@@ -1081,8 +1127,9 @@ public class ControlMainBoardService extends Service {
 
 
     private ArrayList<ICallback> mCallback = new ArrayList<>();
-    public void notifyShowTemp(String temperJson){
-        for(ICallback iCallback:mCallback){
+
+    public void notifyShowTemp(String temperJson) {
+        for (ICallback iCallback : mCallback) {
             try {
                 iCallback.notifyShowTemp(temperJson);
             } catch (RemoteException e) {
@@ -1090,8 +1137,9 @@ public class ControlMainBoardService extends Service {
             }
         }
     }
-    public void notifyErrorInfo(String errofJson){
-        for(ICallback iCallback:mCallback){
+
+    public void notifyErrorInfo(String errofJson) {
+        for (ICallback iCallback : mCallback) {
             try {
                 iCallback.notifyErrorInfo(errofJson);
             } catch (RemoteException e) {
@@ -1100,8 +1148,8 @@ public class ControlMainBoardService extends Service {
         }
     }
 
-    public void notifyMode(String mode){
-        for(ICallback iCallback:mCallback){
+    public void notifyMode(String mode) {
+        for (ICallback iCallback : mCallback) {
             try {
                 iCallback.notifyMode(mode);
             } catch (RemoteException e) {
@@ -1110,8 +1158,8 @@ public class ControlMainBoardService extends Service {
         }
     }
 
-    public void notifySterilizeRun(String run){
-        for(ICallback iCallback:mCallback){
+    public void notifySterilizeRun(String run) {
+        for (ICallback iCallback : mCallback) {
             try {
                 iCallback.notifySterilizeRun(run);
             } catch (RemoteException e) {
@@ -1119,8 +1167,9 @@ public class ControlMainBoardService extends Service {
             }
         }
     }
-    public void notifyDoorStatus(String doorJson){
-        for(ICallback iCallback:mCallback){
+
+    public void notifyDoorStatus(String doorJson) {
+        for (ICallback iCallback : mCallback) {
             try {
                 iCallback.notifyDoorStatus(doorJson);
             } catch (RemoteException e) {
@@ -1188,13 +1237,13 @@ public class ControlMainBoardService extends Service {
             hashMapRange.put("changeMinValue", mMBParams.getTargetTempRange().getChangeMinValue());
             hashMapRange.put("changeMaxValue", mMBParams.getTargetTempRange().getChangeMaxValue());
             String rangeJson = JSON.toJSONString(hashMapRange);
-            MyLogUtil.i(TAG,"rangeJson:"+rangeJson);
+            MyLogUtil.i(TAG, "rangeJson:" + rangeJson);
             return rangeJson;
         }
 
         @Override
         public boolean getSterilizeRunStatus() throws RemoteException {
-            return (nSterilizeRun==1);
+            return (nSterilizeRun == 1);
         }
 
         @Override
@@ -1226,14 +1275,14 @@ public class ControlMainBoardService extends Service {
         @Override
         public String getShowTemp() throws RemoteException {
             String temperJson = JSON.toJSONString(mModel.getTempEntries());
-            MyLogUtil.i(TAG,"temperJson:"+temperJson);
+            MyLogUtil.i(TAG, "temperJson:" + temperJson);
             return temperJson;
         }
 
         @Override
         public String getModeInfo() throws RemoteException {
             String controlJson = JSON.toJSONString(mModel.getControlEntries());
-            MyLogUtil.i(TAG,"controlJson:"+controlJson);
+            MyLogUtil.i(TAG, "controlJson:" + controlJson);
             return controlJson;
         }
 
@@ -1288,9 +1337,9 @@ public class ControlMainBoardService extends Service {
 
         @Override
         public String setSmartMode(boolean b) throws RemoteException {
-            if(b) {
+            if (b) {
                 mModel.smartOn();
-            }else {
+            } else {
                 mModel.smartOff();
             }
             RemoteUtil.sendQuery();
@@ -1299,9 +1348,9 @@ public class ControlMainBoardService extends Service {
 
         @Override
         public String setHolidayMode(boolean b) throws RemoteException {
-            if(b) {
+            if (b) {
                 mModel.holidayOn();
-            }else {
+            } else {
                 mModel.holidayOff();
             }
             RemoteUtil.sendQuery();
@@ -1310,10 +1359,10 @@ public class ControlMainBoardService extends Service {
 
         @Override
         public String setQuickFreezeMode(boolean b) throws RemoteException {
-            if(b) {
+            if (b) {
                 mModel.freezeOn();
                 startFreezeOnTime(true);
-            }else {
+            } else {
                 stopFreezeOnTime();
                 mModel.freezeOff();
             }
@@ -1323,10 +1372,10 @@ public class ControlMainBoardService extends Service {
 
         @Override
         public String setQuickColdMode(boolean b) throws RemoteException {
-            if(b) {
+            if (b) {
                 mModel.coldOn();
                 startColdOnTime(true);
-            }else {
+            } else {
                 stopColdOnTime();
                 mModel.coldOff();
             }
@@ -1336,9 +1385,9 @@ public class ControlMainBoardService extends Service {
 
         @Override
         public String setFridgeSwitch(boolean b) throws RemoteException {
-            if(b) {
+            if (b) {
                 mModel.refrigeratorOpen();
-            }else {
+            } else {
                 mModel.refrigeratorClose();
             }
             RemoteUtil.sendQuery();
@@ -1354,9 +1403,9 @@ public class ControlMainBoardService extends Service {
 
         @Override
         public String setTidbitMode(boolean b) throws RemoteException {
-            if(b) {
+            if (b) {
                 mModel.tidbitOn();
-            }else {
+            } else {
                 mModel.tidbitOff();
             }
             RemoteUtil.sendQuery();
@@ -1365,9 +1414,9 @@ public class ControlMainBoardService extends Service {
 
         @Override
         public String setPurifyMode(boolean b) throws RemoteException {
-            if(b) {
+            if (b) {
                 mModel.purifyOn();
-            }else {
+            } else {
                 mModel.purifyOff();
             }
             RemoteUtil.sendQuery();
@@ -1376,24 +1425,24 @@ public class ControlMainBoardService extends Service {
 
         @Override
         public void setFridgeLight(boolean b) throws RemoteException {
-            mProcessData.sendCmd(EnumBaseName.coldLightMode,b?1:0);
+            mProcessData.sendCmd(EnumBaseName.coldLightMode, b ? 1 : 0);
         }
 
         @Override
         public void setHandleLight(boolean b) throws RemoteException {
-            mProcessData.sendCmd(EnumBaseName.handleLightMode,b?1:0);
+            mProcessData.sendCmd(EnumBaseName.handleLightMode, b ? 1 : 0);
         }
 
         @Override
         public void setFridgeTopLight(boolean b) throws RemoteException {
-            mProcessData.sendCmd(EnumBaseName.fridgeTopLight,b?1:0);
+            mProcessData.sendCmd(EnumBaseName.fridgeTopLight, b ? 1 : 0);
         }
 
         @Override
         public String setPirSwitch(boolean b) throws RemoteException {
-            if(b) {
+            if (b) {
                 mModel.pirSwitchOn();
-            }else {
+            } else {
                 mModel.pirSwitchOff();
             }
             return getModeInfo();
@@ -1401,12 +1450,12 @@ public class ControlMainBoardService extends Service {
 
         @Override
         public void setFridgeBackLight(boolean b) throws RemoteException {
-            mProcessData.sendCmd(EnumBaseName.fridgeBackLight,b?1:0);
+            mProcessData.sendCmd(EnumBaseName.fridgeBackLight, b ? 1 : 0);
         }
 
         @Override
         public void setInsideDoor(boolean b) throws RemoteException {
-            mProcessData.sendCmd(EnumBaseName.insideDoor,b?1:0);
+            mProcessData.sendCmd(EnumBaseName.insideDoor, b ? 1 : 0);
         }
 
         @Override
@@ -1426,27 +1475,27 @@ public class ControlMainBoardService extends Service {
 
         @Override
         public boolean getSmartMode() throws RemoteException {
-            return mModel.getControlEntryByName(EnumBaseName.smartMode).value==1;
+            return mModel.getControlEntryByName(EnumBaseName.smartMode).value == 1;
         }
 
         @Override
         public boolean getHolidayMode() throws RemoteException {
-            return mModel.getControlEntryByName(EnumBaseName.holidayMode).value==1;
+            return mModel.getControlEntryByName(EnumBaseName.holidayMode).value == 1;
         }
 
         @Override
         public boolean getQuickFreezeMode() throws RemoteException {
-            return mModel.getControlEntryByName(EnumBaseName.quickFreezeMode).value==1;
+            return mModel.getControlEntryByName(EnumBaseName.quickFreezeMode).value == 1;
         }
 
         @Override
         public boolean getQuickColdMode() throws RemoteException {
-            return mModel.getControlEntryByName(EnumBaseName.quickColdMode).value==1;
+            return mModel.getControlEntryByName(EnumBaseName.quickColdMode).value == 1;
         }
 
         @Override
         public boolean getFridgeSwitch() throws RemoteException {
-            return mModel.getControlEntryByName(EnumBaseName.fridgeSwitch).value==1;
+            return mModel.getControlEntryByName(EnumBaseName.fridgeSwitch).value == 1;
         }
 
         @Override
@@ -1456,34 +1505,34 @@ public class ControlMainBoardService extends Service {
 
         @Override
         public boolean getSterilizeSwitch() throws RemoteException {
-            return mModel.getControlEntryByName(EnumBaseName.SterilizeSwitch).value==1;
+            return mModel.getControlEntryByName(EnumBaseName.SterilizeSwitch).value == 1;
         }
 
         @Override
         public boolean getTidbitMode() throws RemoteException {
-            return mModel.getControlEntryByName(EnumBaseName.tidbitMode).value==1;
+            return mModel.getControlEntryByName(EnumBaseName.tidbitMode).value == 1;
         }
 
         @Override
         public boolean getPurifyMode() throws RemoteException {
-            return mModel.getControlEntryByName(EnumBaseName.purifyMode).value==1;
+            return mModel.getControlEntryByName(EnumBaseName.purifyMode).value == 1;
         }
 
         @Override
         public boolean getPirSwitch() throws RemoteException {
-            return mModel.getControlEntryByName(EnumBaseName.pirSwitch).value==1;
+            return mModel.getControlEntryByName(EnumBaseName.pirSwitch).value == 1;
         }
 
         @Override
         public void registerCallback(ICallback cb) throws RemoteException {
-            if(cb != null){
+            if (cb != null) {
                 mCallback.add(cb);
             }
         }
 
         @Override
         public void unregisterCallback(ICallback cb) throws RemoteException {
-            if(cb != null){
+            if (cb != null) {
                 mCallback.remove(cb);
             }
         }

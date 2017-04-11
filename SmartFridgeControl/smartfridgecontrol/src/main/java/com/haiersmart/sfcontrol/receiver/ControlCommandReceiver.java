@@ -24,8 +24,8 @@ public class ControlCommandReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
+        MyLogUtil.i(TAG, "Action=" + action);
         if (action.equals(ConstantUtil.COMMAND_TO_SERVICE)) {
-            MyLogUtil.i(TAG, "Action=" + action);
             String contentAction = intent.getStringExtra(ConstantUtil.KEY_MODE);
             MyLogUtil.i(TAG, "contentAction=" + contentAction);
             if ((contentAction == null) || (contentAction.length() <= 0)) {
@@ -223,7 +223,13 @@ public class ControlCommandReceiver extends BroadcastReceiver {
                     sendCommandToService(context, ConstantWifiUtil.KEY_QUERY);
                 }
             }
-        }
+        }/*else if (action.equals(Intent.ACTION_SCREEN_ON)) {
+            //屏亮通知
+            sendCommandToService(context, Intent.ACTION_SCREEN_ON);
+        }else if (action.equals(Intent.ACTION_SCREEN_OFF)) {
+            //屏灭通知
+            sendCommandToService(context, Intent.ACTION_SCREEN_OFF);
+        }*/
     }
 
     private void sendCommandToService(Context context, String action) {

@@ -34,8 +34,6 @@ import com.haiersmart.sfcontrol.constant.ConstantUtil;
 import com.haiersmart.sfcontrol.constant.EnumBaseName;
 import com.haiersmart.sfcontrol.draw.MyMarketButton;
 import com.haiersmart.sfcontrol.draw.MyTestAudioButton;
-import com.haiersmart.sfcontrol.draw.PopInputListener;
-import com.haiersmart.sfcontrol.draw.PopWindowNormal;
 import com.haiersmart.sfcontrol.service.ControlMainBoardService;
 import com.haiersmart.sfcontrol.service.MainBoardParameters;
 import com.haiersmart.sfcontrol.service.powerctl.PowerSerialOpt;
@@ -1195,37 +1193,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
         }
     }
 
-    private void popResetPassWin() {
-        //        final PopWindowNormalInput normalInput = new PopWindowNormalInput(this, "密码", "提醒！恢复出厂设置后，本地账户信息将被清除。", "请输入恢复出厂设置密码");
-        final PopWindowNormal normalInput = new PopWindowNormal(this,
-                "提醒！", "恢复出厂设置后，本地账户信息，网络连接信息将被清除，冰箱设置恢复默认。");
-        normalInput.showDialog();
-        normalInput.setPopListener(new PopInputListener() {
-            @Override
-            public void onOkClick(String content) {
-                if (true) {//content.equals(PASSWORD)
-                    normalInput.dismiss();
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            super.run();
-                            //                            SystemClock.sleep(1000);
-                            SystemCmdUtil.RootCCTCommand("pm clear com.haiersmart.sfnation");
-                            SystemCmdUtil.runCMD("pm clear " + getPackageName());
-                        }
-                    }.start();
-                } else {
-                    normalInput.setContentText("密码错误！请重新输入。");
-                    //                    normalInput.setmEdittext("");
-                }
-            }
 
-            @Override
-            public void onCancelClick() {
-
-            }
-        });
-    }
 
     private void refreshDebugUI() {
         tvEnvRealTemp.setText((float) mMBParam.getMbdValueByName(EnumBaseName.envRealTemp.toString()) / 10 + "℃");

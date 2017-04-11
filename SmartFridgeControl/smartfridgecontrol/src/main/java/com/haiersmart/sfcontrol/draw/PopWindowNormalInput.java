@@ -10,9 +10,9 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.haiersmart.sfcontrol.R;
@@ -21,7 +21,7 @@ import com.haiersmart.sfcontrol.R;
 public class PopWindowNormalInput extends PopupWindow {
     private Button mBtSure/*,mBtCancel,button_yes*/;
     private TextView contentText,titleText;
-    private EditText mEdittext;
+    private RadioGroup mEdittext;
     private ImageView pop_img_xx ;
 
 //    public final static int OK_CANCEL = 1;
@@ -75,12 +75,11 @@ public class PopWindowNormalInput extends PopupWindow {
 //        button_yes = (Button) mMenuView.findViewById(R.id.button_yes);
         contentText = (TextView) mMenuView.findViewById(R.id.pop_update_content);
         titleText = (TextView) mMenuView.findViewById(R.id.pop_title_pni);
-        mEdittext = (EditText) mMenuView.findViewById(R.id.pop_content_pni_et);
+        mEdittext = (RadioGroup) mMenuView.findViewById(R.id.pop_content_pni_et);
         pop_img_xx = (ImageView) mMenuView.findViewById(R.id.pop_img_xx);
 
         contentText.setText(default_content);
         titleText.setText(default_title);
-        mEdittext.setHint(default_hint);
         pop_img_xx.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -93,10 +92,7 @@ public class PopWindowNormalInput extends PopupWindow {
         mBtSure.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             if(popListener!=null){
-                String input = mEdittext.getText().toString();
-                if(input == null){
-                    input = "";
-                }
+                int input = mEdittext.getCheckedRadioButtonId();
                 popListener.onOkClick(input);
             }
             }
@@ -163,9 +159,7 @@ public class PopWindowNormalInput extends PopupWindow {
                 Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL
                 , 0, 0); // 设置layout在PopupWindow中显示的位置
     }
-    public EditText getEdtitext(){
-        return mEdittext;
-    }
+
     /*public void showButton(int status){
         if((status&OK_CANCEL)==OK_CANCEL){
             mBtSure.setVisibility(View.VISIBLE);
@@ -193,7 +187,5 @@ public class PopWindowNormalInput extends PopupWindow {
         contentText.setText(content);
     }
 
-    public void setmEdittext(String content) {
-        mEdittext.setText(content);
-    }
+
 }

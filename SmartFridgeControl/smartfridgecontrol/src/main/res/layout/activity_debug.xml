@@ -33,6 +33,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="@dimen/tab_margin"
+                android:text="BCD-251WDICU1"
                 android:textSize="@dimen/text_size_40"/>
         </LinearLayout>
 

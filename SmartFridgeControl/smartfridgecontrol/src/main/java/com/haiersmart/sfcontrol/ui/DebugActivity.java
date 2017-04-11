@@ -11,7 +11,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
-import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -23,7 +22,11 @@ import com.haiersmart.sfcontrol.ControlService;
 import com.haiersmart.sfcontrol.R;
 import com.haiersmart.sfcontrol.constant.ConstantUtil;
 import com.haiersmart.sfcontrol.constant.EnumBaseName;
+import com.haiersmart.sfcontrol.database.FridgeInfoDbMgr;
+import com.haiersmart.sfcontrol.database.FridgeInfoEntry;
 import com.haiersmart.sfcontrol.draw.MyTestButton;
+import com.haiersmart.sfcontrol.draw.PopInputListener;
+import com.haiersmart.sfcontrol.draw.PopWindowNormalInput;
 import com.haiersmart.sfcontrol.service.ControlMainBoardService;
 import com.haiersmart.sfcontrol.service.MainBoardParameters;
 import com.haiersmart.sfcontrol.service.configtable.TargetTempRange;
@@ -741,12 +744,7 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                 finish();
                 break;
             case R.id.text_debug_fridge_model:
-                onclickCounts++;
-                if (onclickCounts > 5) {
-                    onclickCounts = 0;
-                    Intent intent = new Intent(Settings.ACTION_SETTINGS);
-                    startActivity(intent);
-                }
+                popResetPassWin();
                 break;
             case R.id.title_debug_status_code:
                 PackageManager manager = getApplicationContext().getPackageManager();
@@ -833,6 +831,53 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                         e.printStackTrace();
                     }
                 }
+            }
+        });
+    }
+
+    private void popResetPassWin() {
+        //        final PopWindowNormalInput normalInput = new PopWindowNormalInput(this, "密码", "提醒！恢复出厂设置后，本地账户信息将被清除。", "请输入恢复出厂设置密码");
+        final PopWindowNormalInput normalInput = new PopWindowNormalInput(this,
+                "提醒！", "未接电控板时，可选择冰箱控制模型！\r\n确定后请重启冰箱！",ConstantUtil.BCD251_MODEL);
+        normalInput.showDialog();
+        normalInput.setPopListener(new PopInputListener() {
+            @Override
+            public void onOkClick(int content) {
+                FridgeInfoDbMgr fridgeInfoDbMgr = FridgeInfoDbMgr.getInstance();
+                FridgeInfoEntry mFridgeInfoEntry = new FridgeInfoEntry();
+                mFridgeInfoEntry.name = "fridgeId";
+                switch (content){
+                    case R.id.pop_content_251:
+                        mFridgeInfoEntry.value = ConstantUtil.BCD251_SN;
+                        fridgeInfoDbMgr.updateValue(mFridgeInfoEntry);
+                        break;
+                    case R.id.pop_content_256:
+                        mFridgeInfoEntry.value = ConstantUtil.BCD256_SN;
+                        fridgeInfoDbMgr.updateValue(mFridgeInfoEntry);
+                        break;
+                    case R.id.pop_content_401:
+                        mFridgeInfoEntry.value = ConstantUtil.BCD401_SN;
+                        fridgeInfoDbMgr.updateValue(mFridgeInfoEntry);
+                        break;
+                    case R.id.pop_content_475:
+                        mFridgeInfoEntry.value = ConstantUtil.BCD476_SN;
+                        fridgeInfoDbMgr.updateValue(mFridgeInfoEntry);
+                        break;
+                    case R.id.pop_content_476:
+                        mFridgeInfoEntry.value = ConstantUtil.BCD476_SN;
+                        fridgeInfoDbMgr.updateValue(mFridgeInfoEntry);
+                        break;
+                    case R.id.pop_content_658:
+                        mFridgeInfoEntry.value = ConstantUtil.BCD658_SN;
+                        fridgeInfoDbMgr.updateValue(mFridgeInfoEntry);
+                        break;
+                }
+                normalInput.dismiss();
+            }
+
+            @Override
+            public void onCancelClick() {
+
             }
         });
     }

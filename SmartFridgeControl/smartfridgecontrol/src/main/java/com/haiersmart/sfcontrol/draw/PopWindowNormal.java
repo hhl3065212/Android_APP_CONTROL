@@ -71,10 +71,7 @@ public class PopWindowNormal extends PopupWindow {
         mBtSure.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             if(popListener!=null){
-                String input = null;
-                if(input == null){
-                    input = "";
-                }
+                int input = 0;
                 popListener.onOkClick(input);
             }
             }

@@ -42,6 +42,7 @@ import java.util.concurrent.ScheduledExecutorService;
 
 public class ControlMainBoardService extends Service {
     static final String TAG = "ControlMainBoardService";
+    private static final int ICALLBACK_MAX_ZIZE = 5;
     private DBOperation mDBHandle;
     private MainBoardParameters mMBParams;
     private PowerProcessData mProcessData;
@@ -161,7 +162,7 @@ public class ControlMainBoardService extends Service {
                         break;
                     case ConstantUtil.TEMPER_SETCOLD://冷藏区温控
                     {
-                        if (mModel != null) {
+                        if (mIsModelReady) {
                             int temperCold = intent.getIntExtra(ConstantUtil.KEY_SET_FRIDGE_LEVEL, 0);
                             MyLogUtil.i(TAG, "onStartCommand TEMPER_SETCOLD temperCold=" + temperCold);
                             if (temperCold < mMBParams.getTargetTempRange().getFridgeMinValue()) {
@@ -181,7 +182,7 @@ public class ControlMainBoardService extends Service {
                     break;
                     case ConstantUtil.TEMPER_SETFREEZE://冷冻区温控
                     {
-                        if (mModel != null) {
+                        if (mIsModelReady) {
                             int temperCold = intent.getIntExtra(ConstantUtil.KEY_SET_FREEZE_LEVEL, 0);
                             if (temperCold < mMBParams.getTargetTempRange().getFreezeMinValue()) {
                                 temperCold = mMBParams.getTargetTempRange().getFreezeMinValue();
@@ -1526,7 +1527,13 @@ public class ControlMainBoardService extends Service {
         @Override
         public void registerCallback(ICallback cb) throws RemoteException {
             if (cb != null) {
+                if(mCallback.size() >= ICALLBACK_MAX_ZIZE){
+                    mCallback.clear();
+                    MyLogUtil.d(TAG,"callback::clear mCallback size = "+mCallback.size());
+                }
                 mCallback.add(cb);
+                MyLogUtil.d(TAG,"callback::add mCallback size = "+mCallback.size()+
+                ",cb :"+cb);
             }
         }
 
@@ -1534,6 +1541,8 @@ public class ControlMainBoardService extends Service {
         public void unregisterCallback(ICallback cb) throws RemoteException {
             if (cb != null) {
                 mCallback.remove(cb);
+                MyLogUtil.d(TAG,"callback::remove mCallback size = "+mCallback.size()+
+                        ",cb :"+cb);
             }
         }
 

@@ -35,7 +35,7 @@ public class FactoryAudioUtil {
     protected static final String TAG = "FactoryAudioUtil";
     private final String AUDIO_RECORDER_FOLDER = "AudioRecorder";
     private final String AUDIO_RECORDER_FILE = "record_temp.amr";
-    private final String AUDIO_PATH = Environment.getExternalStorageDirectory() + "/AudioRecorder";
+    private final String AUDIO_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/AudioRecorder";
     private MediaRecorder mRecorder;
     private MediaPlayer mPlayer;
     private final int MAX_RECORD_TIME = 3000;//ms

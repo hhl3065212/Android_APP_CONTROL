@@ -1190,46 +1190,76 @@ public class ControlMainBoardService extends Service {
 
         @Override
         public String getHardId() throws RemoteException {
+            if (!mIsModelReady) {
+                return "";
+            }
             return mMBParams.getTypeId();
         }
 
         @Override
         public String getHardType() throws RemoteException {
+            if (!mIsModelReady) {
+                return "";
+            }
             return mMBParams.getFridgeType();
+
         }
 
         @Override
         public int getTempFridgeMin() throws RemoteException {
+            if (!mIsModelReady) {
+                return 0;
+            }
             return mMBParams.getTargetTempRange().getFridgeMinValue();
+
         }
 
         @Override
         public int getTempFreezeMin() throws RemoteException {
+            if (!mIsModelReady) {
+                return 0;
+            }
             return mMBParams.getTargetTempRange().getFreezeMinValue();
+
         }
 
         @Override
         public int getTempChangeMin() throws RemoteException {
+            if (!mIsModelReady) {
+                return 0;
+            }
             return mMBParams.getTargetTempRange().getChangeMinValue();
         }
 
         @Override
         public int getTempFridgeMax() throws RemoteException {
+            if (!mIsModelReady) {
+                return 0;
+            }
             return mMBParams.getTargetTempRange().getFridgeMaxValue();
         }
 
         @Override
         public int getTempFreezeMax() throws RemoteException {
+            if (!mIsModelReady) {
+                return 0;
+            }
             return mMBParams.getTargetTempRange().getFreezeMaxValue();
         }
 
         @Override
         public int getTempChangeMax() throws RemoteException {
+            if (!mIsModelReady) {
+                return 0;
+            }
             return mMBParams.getTargetTempRange().getChangeMaxValue();
         }
 
         @Override
         public String getTempRange() throws RemoteException {
+            if (!mIsModelReady) {
+                return "";
+            }
             HashMap<String, Integer> hashMapRange = new HashMap<>();
             hashMapRange.put("fridgeMinValue", mMBParams.getTargetTempRange().getFridgeMinValue());
             hashMapRange.put("fridgeMaxValue", mMBParams.getTargetTempRange().getFridgeMaxValue());
@@ -1244,37 +1274,58 @@ public class ControlMainBoardService extends Service {
 
         @Override
         public boolean getSterilizeRunStatus() throws RemoteException {
+            if (!mIsModelReady) {
+                return false;
+            }
             return (nSterilizeRun == 1);
         }
 
         @Override
         public int getSterilizeRemanTime() throws RemoteException {
+            if (!mIsModelReady) {
+                return 0;
+            }
             return countsSterilizeRun;
         }
 
         @Override
         public String getHardStatusCoder() throws RemoteException {
+            if (!mIsModelReady) {
+                return "";
+            }
             return mMBParams.getFrameDataString();
         }
 
         @Override
         public int getFridgeShowTemp() throws RemoteException {
+            if (!mIsModelReady) {
+                return 0;
+            }
             return mMBParams.getMbsValueByName(EnumBaseName.fridgeShowTemp.name());
         }
 
         @Override
         public int getFreezeShowTemp() throws RemoteException {
+            if (!mIsModelReady) {
+                return 0;
+            }
             return mMBParams.getMbsValueByName(EnumBaseName.freezeShowTemp.name());
         }
 
         @Override
         public int getChangeShowTemp() throws RemoteException {
+            if (!mIsModelReady) {
+                return 0;
+            }
             return mMBParams.getMbsValueByName(EnumBaseName.changeShowTemp.name());
 
         }
 
         @Override
         public String getShowTemp() throws RemoteException {
+            if (!mIsModelReady) {
+                return "";
+            }
             String temperJson = JSON.toJSONString(mModel.getTempEntries());
             MyLogUtil.i(TAG, "temperJson:" + temperJson);
             return temperJson;
@@ -1282,6 +1333,9 @@ public class ControlMainBoardService extends Service {
 
         @Override
         public String getModeInfo() throws RemoteException {
+            if (!mIsModelReady) {
+                return "";
+            }
             String controlJson = JSON.toJSONString(mModel.getControlEntries());
             MyLogUtil.i(TAG, "controlJson:" + controlJson);
             return controlJson;
@@ -1289,6 +1343,9 @@ public class ControlMainBoardService extends Service {
 
         @Override
         public String setFridgeTemp(int temp) throws RemoteException {
+            if (!mIsModelReady) {
+                return "";
+            }
             if (mModel != null) {
                 int temperCold = temp;
                 MyLogUtil.i(TAG, "onStartCommand TEMPER_SETCOLD temperCold=" + temperCold);
@@ -1306,6 +1363,9 @@ public class ControlMainBoardService extends Service {
 
         @Override
         public String setFreezeTemp(int temp) throws RemoteException {
+            if (!mIsModelReady) {
+                return "";
+            }
             if (mModel != null) {
                 int temperCold = temp;
                 if (temperCold < mMBParams.getTargetTempRange().getFreezeMinValue()) {
@@ -1322,6 +1382,9 @@ public class ControlMainBoardService extends Service {
 
         @Override
         public String setChangeTemp(int temp) throws RemoteException {
+            if (!mIsModelReady) {
+                return "";
+            }
             if (mIsModelReady) {
                 int temperCold = temp;
                 if (temperCold < mMBParams.getTargetTempRange().getChangeMinValue()) {
@@ -1338,6 +1401,9 @@ public class ControlMainBoardService extends Service {
 
         @Override
         public String setSmartMode(boolean b) throws RemoteException {
+            if (!mIsModelReady) {
+                return "";
+            }
             if (b) {
                 mModel.smartOn();
             } else {
@@ -1349,6 +1415,9 @@ public class ControlMainBoardService extends Service {
 
         @Override
         public String setHolidayMode(boolean b) throws RemoteException {
+            if (!mIsModelReady) {
+                return "";
+            }
             if (b) {
                 mModel.holidayOn();
             } else {
@@ -1360,6 +1429,9 @@ public class ControlMainBoardService extends Service {
 
         @Override
         public String setQuickFreezeMode(boolean b) throws RemoteException {
+            if (!mIsModelReady) {
+                return "";
+            }
             if (b) {
                 mModel.freezeOn();
                 startFreezeOnTime(true);
@@ -1373,6 +1445,9 @@ public class ControlMainBoardService extends Service {
 
         @Override
         public String setQuickColdMode(boolean b) throws RemoteException {
+            if (!mIsModelReady) {
+                return "";
+            }
             if (b) {
                 mModel.coldOn();
                 startColdOnTime(true);
@@ -1386,6 +1461,9 @@ public class ControlMainBoardService extends Service {
 
         @Override
         public String setFridgeSwitch(boolean b) throws RemoteException {
+            if (!mIsModelReady) {
+                return "";
+            }
             if (b) {
                 mModel.refrigeratorOpen();
             } else {
@@ -1397,6 +1475,9 @@ public class ControlMainBoardService extends Service {
 
         @Override
         public String setSterilizeMode(int step) throws RemoteException {
+            if (!mIsModelReady) {
+                return "";
+            }
             mModel.setSterilizeMode(step);
             RemoteUtil.sendQuery();
             return getModeInfo();
@@ -1404,6 +1485,9 @@ public class ControlMainBoardService extends Service {
 
         @Override
         public String setTidbitMode(boolean b) throws RemoteException {
+            if (!mIsModelReady) {
+                return "";
+            }
             if (b) {
                 mModel.tidbitOn();
             } else {
@@ -1415,6 +1499,9 @@ public class ControlMainBoardService extends Service {
 
         @Override
         public String setPurifyMode(boolean b) throws RemoteException {
+            if (!mIsModelReady) {
+                return "";
+            }
             if (b) {
                 mModel.purifyOn();
             } else {
@@ -1426,21 +1513,33 @@ public class ControlMainBoardService extends Service {
 
         @Override
         public void setFridgeLight(boolean b) throws RemoteException {
+            if (!mIsModelReady) {
+                return;
+            }
             mProcessData.sendCmd(EnumBaseName.coldLightMode, b ? 1 : 0);
         }
 
         @Override
         public void setHandleLight(boolean b) throws RemoteException {
+            if (!mIsModelReady) {
+                return;
+            }
             mProcessData.sendCmd(EnumBaseName.handleLightMode, b ? 1 : 0);
         }
 
         @Override
         public void setFridgeTopLight(boolean b) throws RemoteException {
+            if (!mIsModelReady) {
+                return;
+            }
             mProcessData.sendCmd(EnumBaseName.fridgeTopLight, b ? 1 : 0);
         }
 
         @Override
         public String setPirSwitch(boolean b) throws RemoteException {
+            if (!mIsModelReady) {
+                return "";
+            }
             if (b) {
                 mModel.pirSwitchOn();
             } else {
@@ -1451,98 +1550,149 @@ public class ControlMainBoardService extends Service {
 
         @Override
         public void setFridgeBackLight(boolean b) throws RemoteException {
+            if (!mIsModelReady) {
+                return;
+            }
             mProcessData.sendCmd(EnumBaseName.fridgeBackLight, b ? 1 : 0);
         }
 
         @Override
         public void setInsideDoor(boolean b) throws RemoteException {
+            if (!mIsModelReady) {
+                return;
+            }
             mProcessData.sendCmd(EnumBaseName.insideDoor, b ? 1 : 0);
         }
 
         @Override
         public int getFridgeTargetTemp() throws RemoteException {
+            if (!mIsModelReady) {
+                return 0;
+            }
             return mModel.getControlEntryByName(EnumBaseName.fridgeTargetTemp).value;
         }
 
         @Override
         public int getFreezeTargetTemp() throws RemoteException {
+            if (!mIsModelReady) {
+                return 0;
+            }
             return mModel.getControlEntryByName(EnumBaseName.freezeTargetTemp).value;
         }
 
         @Override
         public int getChangeTargetTemp() throws RemoteException {
+            if (!mIsModelReady) {
+                return 0;
+            }
             return mModel.getControlEntryByName(EnumBaseName.changeTargetTemp).value;
         }
 
         @Override
         public boolean getSmartMode() throws RemoteException {
+            if (!mIsModelReady) {
+                return false;
+            }
             return mModel.getControlEntryByName(EnumBaseName.smartMode).value == 1;
         }
 
         @Override
         public boolean getHolidayMode() throws RemoteException {
+            if (!mIsModelReady) {
+                return false;
+            }
             return mModel.getControlEntryByName(EnumBaseName.holidayMode).value == 1;
         }
 
         @Override
         public boolean getQuickFreezeMode() throws RemoteException {
+            if (!mIsModelReady) {
+                return false;
+            }
             return mModel.getControlEntryByName(EnumBaseName.quickFreezeMode).value == 1;
         }
 
         @Override
         public boolean getQuickColdMode() throws RemoteException {
+            if (!mIsModelReady) {
+                return false;
+            }
             return mModel.getControlEntryByName(EnumBaseName.quickColdMode).value == 1;
         }
 
         @Override
         public boolean getFridgeSwitch() throws RemoteException {
+            if (!mIsModelReady) {
+                return false;
+            }
             return mModel.getControlEntryByName(EnumBaseName.fridgeSwitch).value == 1;
         }
 
         @Override
         public int getSterilizeMode() throws RemoteException {
+            if (!mIsModelReady) {
+                return 0;
+            }
             return mModel.getControlEntryByName(EnumBaseName.SterilizeMode).value;
         }
 
         @Override
         public boolean getSterilizeSwitch() throws RemoteException {
+            if (!mIsModelReady) {
+                return false;
+            }
             return mModel.getControlEntryByName(EnumBaseName.SterilizeSwitch).value == 1;
         }
 
         @Override
         public boolean getTidbitMode() throws RemoteException {
+            if (!mIsModelReady) {
+                return false;
+            }
             return mModel.getControlEntryByName(EnumBaseName.tidbitMode).value == 1;
         }
 
         @Override
         public boolean getPurifyMode() throws RemoteException {
+            if (!mIsModelReady) {
+                return false;
+            }
             return mModel.getControlEntryByName(EnumBaseName.purifyMode).value == 1;
         }
 
         @Override
         public boolean getPirSwitch() throws RemoteException {
+            if (!mIsModelReady) {
+                return false;
+            }
             return mModel.getControlEntryByName(EnumBaseName.pirSwitch).value == 1;
         }
 
         @Override
         public void registerCallback(ICallback cb) throws RemoteException {
+            if (mCallback == null) {
+                return;
+            }
             if (cb != null) {
-                if(mCallback.size() >= ICALLBACK_MAX_ZIZE){
+                if (mCallback.size() >= ICALLBACK_MAX_ZIZE) {
                     mCallback.clear();
-                    MyLogUtil.d(TAG,"callback::clear mCallback size = "+mCallback.size());
+                    MyLogUtil.d(TAG, "callback::clear mCallback size = " + mCallback.size());
                 }
                 mCallback.add(cb);
-                MyLogUtil.d(TAG,"callback::add mCallback size = "+mCallback.size()+
-                ",cb :"+cb);
+                MyLogUtil.d(TAG, "callback::add mCallback size = " + mCallback.size() +
+                        ",cb :" + cb);
             }
         }
 
         @Override
         public void unregisterCallback(ICallback cb) throws RemoteException {
+            if (mCallback == null) {
+                return;
+            }
             if (cb != null) {
                 mCallback.remove(cb);
-                MyLogUtil.d(TAG,"callback::remove mCallback size = "+mCallback.size()+
-                        ",cb :"+cb);
+                MyLogUtil.d(TAG, "callback::remove mCallback size = " + mCallback.size() +
+                        ",cb :" + cb);
             }
         }
 

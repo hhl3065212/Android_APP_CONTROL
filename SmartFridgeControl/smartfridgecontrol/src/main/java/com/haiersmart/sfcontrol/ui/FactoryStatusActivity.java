@@ -518,7 +518,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
     }
 
     private void initDebugView() {
-        if (mFridgeModel.equals(ConstantUtil.BCD476_MODEL)) {
+        if (mFridgeType.equals(ConstantUtil.BCD476_MODEL)) {
             llEnvRealTemp.setVisibility(View.VISIBLE);
             llEnvRealHum.setVisibility(View.VISIBLE);
             llFridgeReal.setVisibility(View.VISIBLE);
@@ -536,7 +536,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             llFreezeLight.setVisibility(View.VISIBLE);
             llHandleLight.setVisibility(View.VISIBLE);
             llTestMode.setVisibility(View.VISIBLE);
-        } else if (mFridgeModel.equals(ConstantUtil.BCD658_MODEL)) {
+        } else if (mFridgeType.equals(ConstantUtil.BCD658_MODEL)) {
             llEnvRealTemp.setVisibility(View.VISIBLE);
             llEnvRealHum.setVisibility(View.VISIBLE);
             llFridgeReal.setVisibility(View.VISIBLE);

@@ -62,9 +62,9 @@ public class SerialData {
         DataLen = len;
         if (DataLen > MAX_BUFF_LEN) {
             MyLogUtil.i(TAG, "ReceiveBuff.length over " + MAX_BUFF_LEN + ",is " + DataLen);
-            DataLen = MAX_BUFF_LEN;
+            DataLen = MAX_BUFF_LEN-1;
         }
-        for (i = 0; i < len; i++) {
+        for (i = 0; i < DataLen; i++) {
             ReceiveBuff[i] = data[i];
         }
         ReceiveBuff[i] = 0;

@@ -80,7 +80,7 @@ public class FactoryAudioUtil {
     }
 
     public void startAudioRecord() {
-        if(mIsPlaying||mIsRecording){
+        if (mIsPlaying || mIsRecording) {
             return;
         }
         mIsRecording = true;
@@ -166,7 +166,7 @@ public class FactoryAudioUtil {
             };
             tAudioRecord.schedule(ttAudioRecord, 30, 30);
         }
-//        tAudioRecord.schedule(ttAudioRecord, 30, 30);
+        //        tAudioRecord.schedule(ttAudioRecord, 30, 30);
     }
 
     private void stopRecordTimes() {
@@ -237,43 +237,48 @@ public class FactoryAudioUtil {
 
 
     public void startAudioPlay(final boolean left, final boolean right) {
-        if(mIsRecording||mIsPlaying){
+        if (mIsRecording || mIsPlaying) {
+            return;
+        }
+        if (!isExistsAudioFile()) {
             return;
         }
         if (mPlayer == null) {
             mPlayer = new MediaPlayer();
         }
         mIsPlaying = true;
-        if (isExistsAudioFile()) {
-            try {
-                mPlayer.setDataSource(getFilename());
-                mPlayer.prepare();
-                mPlayer.setVolume(left ? 1 : 0, right ? 1 : 0);
-                MyLogUtil.i(TAG, "audio lenth is" + mPlayer.getDuration());
-                mPlayer.start();
-            } catch (IllegalArgumentException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (SecurityException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (IllegalStateException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            setStartPlayView(left, right);
-            startPlayTimes(left, right);
-
-            mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mediaPlayer) {
-                    stopAudioPlay(left, right);
-                }
-            });
+        //        if (isExistsAudioFile()) {
+        try {
+            mPlayer.setDataSource(getFilename());
+            mPlayer.prepare();
+            mPlayer.setVolume(left ? 1 : 0, right ? 1 : 0);
+            MyLogUtil.i(TAG, "audio lenth is" + mPlayer.getDuration());
+            mPlayer.start();
+        } catch (IllegalArgumentException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (SecurityException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IllegalStateException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
+        setStartPlayView(left, right);
+        startPlayTimes(left, right);
+
+        mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                stopAudioPlay(left, right);
+            }
+        });
+        //        } else {
+        //            stopAudioPlay(left, right);
+        //        }
     }
 
     private void setStartPlayView(boolean left, boolean right) {
@@ -357,7 +362,7 @@ public class FactoryAudioUtil {
             };
             tAudioPlay.schedule(ttAudioPlay, 30, 30);
         }
-//        tAudioPlay.schedule(ttAudioPlay, 30, 30);
+        //        tAudioPlay.schedule(ttAudioPlay, 30, 30);
     }
 
     private void stopPlayTimes() {

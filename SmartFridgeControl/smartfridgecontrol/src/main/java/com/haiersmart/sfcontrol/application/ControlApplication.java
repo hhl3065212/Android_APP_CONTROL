@@ -6,6 +6,7 @@ import android.content.Intent;
 
 import com.haiersmart.sfcontrol.constant.ConstantUtil;
 import com.haiersmart.sfcontrol.service.ControlMainBoardService;
+import com.haiersmart.sfcontrol.utilslib.CrashHandler;
 import com.haiersmart.sfcontrol.utilslib.MyLogUtil;
 
 /**
@@ -23,6 +24,14 @@ public class ControlApplication extends Application {
         mContext = getApplicationContext();
         mInstance = this;
         MyLogUtil.on(ConstantUtil.DEBUG);
+        // 初始化crash处理器
+        CrashHandler crashHandler = CrashHandler.getInstance();
+        crashHandler.init(mContext, ControlMainBoardService.class, new CrashHandler.AppCrashCallBack() {
+            @Override
+            public void onAppCrashed() {
+                MyLogUtil.e("ControlApplication", "app crash!");
+            }
+        });
 //        MyLogUtil.setLogEnable(ConstantUtil.DEBUG);
         MyLogUtil.i("ControlApplication", "onCreate mContext get ApplicationContext");
         Intent intent = new Intent(this,ControlMainBoardService.class);

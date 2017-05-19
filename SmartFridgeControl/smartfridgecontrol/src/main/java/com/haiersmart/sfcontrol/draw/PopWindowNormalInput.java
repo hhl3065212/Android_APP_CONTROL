@@ -16,6 +16,9 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.haiersmart.sfcontrol.R;
+import com.haiersmart.sfcontrol.constant.ConstantUtil;
+
+import static com.haiersmart.sfcontrol.R.id.pop_content_pni_et;
 
 
 public class PopWindowNormalInput extends PopupWindow {
@@ -71,12 +74,25 @@ public class PopWindowNormalInput extends PopupWindow {
         }
 
         mBtSure = (Button) mMenuView.findViewById(R.id.button_ok);
+
 //        mBtCancel = (Button) mMenuView.findViewById(R.id.button_cancel);
 //        button_yes = (Button) mMenuView.findViewById(R.id.button_yes);
         contentText = (TextView) mMenuView.findViewById(R.id.pop_update_content);
         titleText = (TextView) mMenuView.findViewById(R.id.pop_title_pni);
-        mEdittext = (RadioGroup) mMenuView.findViewById(R.id.pop_content_pni_et);
+        mEdittext = (RadioGroup) mMenuView.findViewById(pop_content_pni_et);
         pop_img_xx = (ImageView) mMenuView.findViewById(R.id.pop_img_xx);
+
+        if(default_hint.equals(ConstantUtil.BCD251_MODEL)){
+            mEdittext.check(R.id.pop_content_251);
+        }else if(default_hint.equals(ConstantUtil.BCD401_MODEL)){
+            mEdittext.check(R.id.pop_content_401);
+        }else if(default_hint.equals(ConstantUtil.BCD256_MODEL)){
+            mEdittext.check(R.id.pop_content_256);
+        }else if(default_hint.equals(ConstantUtil.BCD476_MODEL)){
+            mEdittext.check(R.id.pop_content_476);
+        }else if(default_hint.equals(ConstantUtil.BCD658_MODEL)){
+            mEdittext.check(R.id.pop_content_658);
+        }
 
         contentText.setText(default_content);
         titleText.setText(default_title);

@@ -33,13 +33,14 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="20dp"
-                android:background="@drawable/black_hard_corner_et_bg"
+
                 android:padding="5dp"
                 android:textSize="@dimen/text_size_36">
                 <RadioButton
                     android:id="@+id/pop_content_251"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/black_hard_corner_et_bg"
                     android:textSize="@dimen/text_size_36"
                     android:checked="true"
                     android:text="BCD-251WDICU1"/>
@@ -47,6 +48,7 @@
                     android:id="@+id/pop_content_401"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/black_hard_corner_et_bg"
                     android:layout_marginTop="5dp"
                     android:textSize="@dimen/text_size_36"
                     android:text="BCD-401WDIAU1"/>
@@ -54,27 +56,24 @@
                     android:id="@+id/pop_content_256"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/black_hard_corner_et_bg"
                     android:layout_marginTop="5dp"
                     android:textSize="@dimen/text_size_36"
                     android:text="BCD-256WDICU1"/>
-                <RadioButton
-                    android:id="@+id/pop_content_475"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:textSize="@dimen/text_size_36"
-                    android:text="BCD-475WDIDU1"/>
+
                 <RadioButton
                     android:id="@+id/pop_content_476"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/black_hard_corner_et_bg"
                     android:layout_marginTop="5dp"
                     android:textSize="@dimen/text_size_36"
-                    android:text="BCD-476WDICU1"/>
+                    android:text="BCD-476WDICU1 BCD-475WDIDU1 BCD-476WDIEU1"/>
                 <RadioButton
                     android:id="@+id/pop_content_658"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/black_hard_corner_et_bg"
                     android:layout_marginTop="5dp"
                     android:textSize="@dimen/text_size_36"
                     android:text="BCD-658WDIBU1"/>

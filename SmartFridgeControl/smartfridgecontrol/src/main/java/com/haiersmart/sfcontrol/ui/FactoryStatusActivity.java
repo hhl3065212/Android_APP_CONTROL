@@ -429,6 +429,17 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             rbtMarket.setVisibility(View.VISIBLE);
             rbtDebug.setVisibility(View.VISIBLE);
             mRBtnRFID.setVisibility(View.VISIBLE);
+        }else if (mFridgeType.equals(ConstantUtil.BCD476_RFID_MODEL)) {
+            //            tvFridgeModel.setText(mFridgeModel);
+            rbtVersion.setVisibility(View.VISIBLE);
+            rbtReset.setVisibility(View.VISIBLE);
+            rbtStatus.setVisibility(View.VISIBLE);
+            rbtCamera.setVisibility(View.VISIBLE);
+            rbtTP.setVisibility(View.VISIBLE);
+            rbtAudio.setVisibility(View.VISIBLE);
+            rbtMarket.setVisibility(View.VISIBLE);
+            rbtDebug.setVisibility(View.VISIBLE);
+            mRBtnRFID.setVisibility(View.VISIBLE);
         } else if (mFridgeType.equals(ConstantUtil.BCD658_MODEL)) {
             //            tvFridgeModel.setText(mFridgeModel);
             rbtVersion.setVisibility(View.VISIBLE);
@@ -492,7 +503,17 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             llFreezeFan.setVisibility(View.VISIBLE);
             llFridgeDoor.setVisibility(View.VISIBLE);
             llFreezeDoor.setVisibility(View.VISIBLE);
-        } else if (mFridgeType.equals(ConstantUtil.BCD658_MODEL)) {
+        } else if (mFridgeType.equals(ConstantUtil.BCD476_RFID_MODEL)) {
+            llEnvTemp.setVisibility(View.VISIBLE);
+            llEnvHum.setVisibility(View.VISIBLE);
+            llFridge.setVisibility(View.VISIBLE);
+            llFreeze.setVisibility(View.VISIBLE);
+            llDefrostSensor.setVisibility(View.VISIBLE);
+            llFreezeDefrost.setVisibility(View.VISIBLE);
+            llFreezeFan.setVisibility(View.VISIBLE);
+            llFridgeDoor.setVisibility(View.VISIBLE);
+            llFreezeDoor.setVisibility(View.VISIBLE);
+        }else if (mFridgeType.equals(ConstantUtil.BCD658_MODEL)) {
             llEnvTemp.setVisibility(View.VISIBLE);
             llEnvHum.setVisibility(View.VISIBLE);
             llFridge.setVisibility(View.VISIBLE);
@@ -519,6 +540,24 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
 
     private void initDebugView() {
         if (mFridgeType.equals(ConstantUtil.BCD476_MODEL)) {
+            llEnvRealTemp.setVisibility(View.VISIBLE);
+            llEnvRealHum.setVisibility(View.VISIBLE);
+            llFridgeReal.setVisibility(View.VISIBLE);
+            llFreezeReal.setVisibility(View.VISIBLE);
+            llFreezeDefrostTemp.setVisibility(View.VISIBLE);
+
+            llFreezeFanVol.setVisibility(View.VISIBLE);
+            llPressOneFreq.setVisibility(View.VISIBLE);
+            llFridgeAirDoor.setVisibility(View.VISIBLE);
+
+            llDefrostHeater.setVisibility(View.VISIBLE);
+            llVerticalBridgeHeater.setVisibility(View.VISIBLE);
+
+            llFridgeLight.setVisibility(View.VISIBLE);
+            llFreezeLight.setVisibility(View.VISIBLE);
+            llHandleLight.setVisibility(View.VISIBLE);
+            llTestMode.setVisibility(View.VISIBLE);
+        }else if (mFridgeType.equals(ConstantUtil.BCD476_RFID_MODEL)) {
             llEnvRealTemp.setVisibility(View.VISIBLE);
             llEnvRealHum.setVisibility(View.VISIBLE);
             llFridgeReal.setVisibility(View.VISIBLE);

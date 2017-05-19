@@ -47,6 +47,7 @@ public class ConstantUtil {
     public static final String BCD476_MODEL = "BCD-476WDICU1";
     public static final String BCD480_MODEL = "BCD-480WLDCPU1";
     public static final String BCD475_MODEL = "BCD-475WDIDU1";
+    public static final String BCD476_RFID_MODEL = "BCD-476WDIEU1";
 
     /**
      * fridge typeid

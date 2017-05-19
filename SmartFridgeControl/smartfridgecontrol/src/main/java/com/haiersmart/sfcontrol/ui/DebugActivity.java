@@ -255,15 +255,17 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
             stopWaitTask();
             mModel = mSerialData.getCurrentModel();
             if (mModel.equals(ConstantUtil.BCD251_MODEL)) {
-                tvFridgeModel.setText(mModel);
+                tvFridgeModel.setText(ConstantUtil.BCD251_MODEL);
             } else if (mModel.equals(ConstantUtil.BCD256_MODEL)) {
-                tvFridgeModel.setText(mModel + "/" + mModel + "(S)");
+                tvFridgeModel.setText(ConstantUtil.BCD256_MODEL + "/" + ConstantUtil.BCD256_MODEL + "(S)");
             } else if (mModel.equals(ConstantUtil.BCD401_MODEL)) {
-                tvFridgeModel.setText(mModel + "/" + mModel + "(S)");
-            } else if (mModel.equals(BCD476_MODEL)) {
-                tvFridgeModel.setText(mModel);
-            } else if (mModel.equals(BCD658_MODEL)) {
-                tvFridgeModel.setText(mModel);
+                tvFridgeModel.setText(ConstantUtil.BCD401_MODEL + "/" + ConstantUtil.BCD401_MODEL + "(S)");
+            } else if (mModel.equals(ConstantUtil.BCD476_MODEL)) {
+                tvFridgeModel.setText(ConstantUtil.BCD475_MODEL+" "+
+                        ConstantUtil.BCD476_MODEL+" "+
+                        ConstantUtil.BCD476_RFID_MODEL);
+            } else if (mModel.equals(ConstantUtil.BCD658_MODEL)) {
+                tvFridgeModel.setText(ConstantUtil.BCD658_MODEL);
             }
             setView();
             isready = true;
@@ -838,7 +840,7 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
     private void popResetPassWin() {
         //        final PopWindowNormalInput normalInput = new PopWindowNormalInput(this, "密码", "提醒！恢复出厂设置后，本地账户信息将被清除。", "请输入恢复出厂设置密码");
         final PopWindowNormalInput normalInput = new PopWindowNormalInput(this,
-                "提醒！", "未接电控板时，可选择冰箱控制模型！\r\n确定后请重启冰箱！",ConstantUtil.BCD251_MODEL);
+                "提醒！", "未接电控板时，可选择冰箱控制模型！\r\n确定后请重启冰箱！",mModel);
         normalInput.showDialog();
         normalInput.setPopListener(new PopInputListener() {
             @Override
@@ -857,10 +859,6 @@ public class DebugActivity extends AppCompatActivity implements View.OnClickList
                         break;
                     case R.id.pop_content_401:
                         mFridgeInfoEntry.value = ConstantUtil.BCD401_SN;
-                        fridgeInfoDbMgr.updateValue(mFridgeInfoEntry);
-                        break;
-                    case R.id.pop_content_475:
-                        mFridgeInfoEntry.value = ConstantUtil.BCD476_SN;
                         fridgeInfoDbMgr.updateValue(mFridgeInfoEntry);
                         break;
                     case R.id.pop_content_476:

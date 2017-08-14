@@ -62,7 +62,7 @@ public class SerialData {
         DataLen = len;
         if (DataLen > MAX_BUFF_LEN) {
             MyLogUtil.i(TAG, "ReceiveBuff.length over " + MAX_BUFF_LEN + ",is " + DataLen);
-            DataLen = MAX_BUFF_LEN-1;
+            DataLen = MAX_BUFF_LEN - 1;
         }
         for (i = 0; i < DataLen; i++) {
             ReceiveBuff[i] = data[i];
@@ -168,7 +168,7 @@ public class SerialData {
             MyLogUtil.i(TAG, "fridge mode:658");
             mCurrentModel = ConstantUtil.BCD658_MODEL;
             mMainBoard = new MainBoardSixFiveEight();
-        }else {
+        } else {
             MyLogUtil.i(TAG, "fridge mode:default 251");
             mCurrentModel = ConstantUtil.BCD251_MODEL;
             mMainBoard = new MainBoardTwoFiveOne();
@@ -198,7 +198,11 @@ public class SerialData {
      * @return
      */
     public int getMbcValueByName(String name) {
-        return mMainBoard.getMainBoardControlByName(name);
+        int ret = 0;
+        if (mMainBoard != null) {
+            ret = mMainBoard.getMainBoardControlByName(name);
+        }
+        return ret;
     }
 
     /**
@@ -221,7 +225,11 @@ public class SerialData {
      * @return
      */
     public int getMbsValueByName(String name) {
-        return mMainBoard.getMainBoardStatusByName(name);
+        int ret = 0;
+        if (mMainBoard != null) {
+            ret = mMainBoard.getMainBoardStatusByName(name);
+        }
+        return ret;
     }
 
     /**
@@ -243,7 +251,11 @@ public class SerialData {
      * @return
      */
     public int getMbdValueByName(String name) {
-        return mMainBoard.getMainBoardDebugByName(name);
+        int ret = 0;
+        if (mMainBoard != null) {
+            ret = mMainBoard.getMainBoardDebugByName(name);
+        }
+        return ret;
     }
 
     /**
@@ -277,7 +289,7 @@ public class SerialData {
             case (byte) 0x02: //用户状态帧
                 if (mMainBoard != null) {
                     mMainBoard.updataMainBoardParameters(ReceiveBuff);
-//                    mMainBoard.handleDoorEvents();
+                    //                    mMainBoard.handleDoorEvents();
                 }
                 MyLogUtil.i(TAG, "ProcData status BROADCAST_ACTION_STATUS_BACK");
                 //TODO: write observer mode by self, consider application context maybe make OOM
@@ -364,10 +376,16 @@ public class SerialData {
     }
 
     public void setDoorStauts(boolean b) {
-        mMainBoard.testDoor = b;
+        if (mMainBoard != null) {
+            mMainBoard.testDoor = b;
+        }
     }
 
-    public String handleDoorEvents(){
-        return mMainBoard.handleDoorEvents();
+    public String handleDoorEvents() {
+        String ret = null;
+        if (mMainBoard != null) {
+            return mMainBoard.handleDoorEvents();
+        }
+        return ret;
     }
 }

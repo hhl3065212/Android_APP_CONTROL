@@ -12,8 +12,10 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.haiersmart.sfcontrol.R;
+import com.haiersmart.sfcontrol.utilslib.MyLogUtil;
 
 import java.io.IOException;
+import java.util.List;
 
 public class CameraMipiActivity extends AppCompatActivity implements SurfaceHolder.Callback, View.OnClickListener {
 
@@ -27,8 +29,8 @@ public class CameraMipiActivity extends AppCompatActivity implements SurfaceHold
     private SurfaceHolder mSurfaceHolder;
     private Camera mCamera = null;
     Camera.Parameters mParameters;
-    private int mWidth = 128,mHeight = 80;
-    private int mMultiple = 10;
+    private int mMaxZoom = 0;
+    private int mZoom = 0;
 
 
 
@@ -41,7 +43,7 @@ public class CameraMipiActivity extends AppCompatActivity implements SurfaceHold
         setOnclick();
         mSurfaceHolder = tft_camera_mipi_view.getHolder();
         mSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-        mSurfaceHolder.setFixedSize(1280,800);
+        mSurfaceHolder.setFixedSize(1280,720);
         mSurfaceHolder.addCallback(this);
     }
     private void findView(){
@@ -64,32 +66,42 @@ public class CameraMipiActivity extends AppCompatActivity implements SurfaceHold
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         //获取camera对象
-        mCamera = Camera.open();
-        try {
-            //设置预览监听
-            mCamera.setPreviewDisplay(holder);
-            mParameters = mCamera.getParameters();
+        if(mCamera == null)
+        {
+            mCamera = Camera.open();
+        }
+        if(mCamera != null) {
+            try {
+                //设置预览监听
+                mCamera.setPreviewDisplay(holder);
+                mParameters = mCamera.getParameters();
 
-            if (this.getResources().getConfiguration().orientation
-                    != Configuration.ORIENTATION_LANDSCAPE) {
-                mParameters.set("orientation", "portrait");
-                mCamera.setDisplayOrientation(90);
-                mParameters.setRotation(90);
-            } else {
-                mParameters.set("orientation", "landscape");
-                mCamera.setDisplayOrientation(0);
-                mParameters.setRotation(0);
+                if (this.getResources().getConfiguration().orientation
+                        != Configuration.ORIENTATION_LANDSCAPE) {
+                    mParameters.set("orientation", "portrait");
+                    mCamera.setDisplayOrientation(90);
+                    mParameters.setRotation(90);
+                } else {
+                    mParameters.set("orientation", "landscape");
+                    mCamera.setDisplayOrientation(0);
+                    mParameters.setRotation(0);
+                }
+                List<Camera.Size> supportedPreviewSizes = mParameters.getSupportedPreviewSizes();
+                for(Camera.Size size:supportedPreviewSizes) {
+                    MyLogUtil.i("Camera size:" + size.width+"*"+size.height);
+                }
+                mParameters.setPreviewSize(1920,1080);
+                mMaxZoom = mParameters.getMaxZoom();
+                mCamera.setParameters(mParameters);
+                //启动摄像头预览
+                mCamera.startPreview();
+                //            System.out.println("camera.startpreview");
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                mCamera.release();
+                //            System.out.println("camera.release");
             }
-            mParameters.setPreviewSize(1280,800);
-            mCamera.setParameters(mParameters);
-            //启动摄像头预览
-            mCamera.startPreview();
-            //            System.out.println("camera.startpreview");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            mCamera.release();
-            //            System.out.println("camera.release");
         }
     }
 
@@ -99,10 +111,14 @@ public class CameraMipiActivity extends AppCompatActivity implements SurfaceHold
             //摄像头画面显示在Surface上
             mCamera.setPreviewDisplay(holder);
             mParameters = mCamera.getParameters();
+            mParameters.setPreviewSize(width, height);
             mCamera.setParameters(mParameters);
             mCamera.startPreview();
         } catch (IOException e) {
-            if (mCamera != null) mCamera.release();
+            if (mCamera != null)
+            {
+                mCamera.release();
+            }
             mCamera = null;
         }
 
@@ -120,19 +136,24 @@ public class CameraMipiActivity extends AppCompatActivity implements SurfaceHold
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.btn_camera_mipi_add: {
-                if(mMultiple>5){
-                    mMultiple--;
+            case R.id.btn_camera_mipi_sub: {
+                mZoom = mParameters.getZoom();
+                if(mZoom>0){
+                    mZoom--;
                 }
-                surfaceChanged(mSurfaceHolder,0,mWidth*mMultiple,mHeight*mMultiple);
+                mParameters = mCamera.getParameters();
+                mParameters.setZoom(mZoom);
+                mCamera.setParameters(mParameters);
             }
             break;
-            case R.id.btn_camera_mipi_sub: {
-                if(mMultiple<10){
-                    mMultiple++;
+            case R.id.btn_camera_mipi_add: {
+                mZoom = mParameters.getZoom();
+                if(mZoom<mMaxZoom){
+                    mZoom++;
                 }
-                surfaceChanged(mSurfaceHolder,0,mWidth*mMultiple,mHeight*mMultiple);
-
+                mParameters = mCamera.getParameters();
+                mParameters.setZoom(mZoom);
+                mCamera.setParameters(mParameters);
             }
             break;
             case R.id.btn_camera_mipi_ret: {
@@ -142,6 +163,14 @@ public class CameraMipiActivity extends AppCompatActivity implements SurfaceHold
             default:
                 break;
         }
+    }
+
+    String yuefen(String x,String y){
+        Integer a = Integer.getInteger(x);
+        Integer b = Integer.getInteger(y);
+        Integer max = a>=b?a:b;
+        Integer temp = 2;
+
     }
 
 

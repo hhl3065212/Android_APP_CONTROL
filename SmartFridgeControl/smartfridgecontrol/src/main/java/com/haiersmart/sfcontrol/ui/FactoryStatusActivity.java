@@ -9,10 +9,14 @@
  */
 package com.haiersmart.sfcontrol.ui;
 
+import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraManager;
 import android.net.wifi.ScanResult;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -385,6 +389,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             rbtAudio.setVisibility(View.VISIBLE);
             rbtMarket.setVisibility(View.GONE);
             rbtDebug.setVisibility(View.GONE);
+            mRBtnRFID.setVisibility(View.GONE);
         } else if (mFridgeType.equals(ConstantUtil.BCD401_MODEL)) {
             tvFridgeModel.setText(mFridgeType + "/" + mFridgeType + "(S)");
             rbtVersion.setVisibility(View.VISIBLE);
@@ -408,7 +413,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             rbtDebug.setVisibility(View.GONE);
             mRBtnRFID.setVisibility(View.GONE);
         } else if (mFridgeType.equals(ConstantUtil.BCD475_MODEL)) {
-            //            tvFridgeModel.setText(mFridgeModel);
+            tvFridgeModel.setText(mFridgeType + "/" + mFridgeType + "(Z)");
             rbtVersion.setVisibility(View.VISIBLE);
             rbtReset.setVisibility(View.VISIBLE);
             rbtStatus.setVisibility(View.VISIBLE);
@@ -429,7 +434,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             rbtMarket.setVisibility(View.VISIBLE);
             rbtDebug.setVisibility(View.VISIBLE);
             mRBtnRFID.setVisibility(View.VISIBLE);
-        }else if (mFridgeType.equals(ConstantUtil.BCD476_RFID_MODEL)) {
+        } else if (mFridgeType.equals(ConstantUtil.BCD476_RFID_MODEL)) {
             //            tvFridgeModel.setText(mFridgeModel);
             rbtVersion.setVisibility(View.VISIBLE);
             rbtReset.setVisibility(View.VISIBLE);
@@ -513,7 +518,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             llFreezeFan.setVisibility(View.VISIBLE);
             llFridgeDoor.setVisibility(View.VISIBLE);
             llFreezeDoor.setVisibility(View.VISIBLE);
-        }else if (mFridgeType.equals(ConstantUtil.BCD658_MODEL)) {
+        } else if (mFridgeType.equals(ConstantUtil.BCD658_MODEL)) {
             llEnvTemp.setVisibility(View.VISIBLE);
             llEnvHum.setVisibility(View.VISIBLE);
             llFridge.setVisibility(View.VISIBLE);
@@ -557,7 +562,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             llFreezeLight.setVisibility(View.VISIBLE);
             llHandleLight.setVisibility(View.VISIBLE);
             llTestMode.setVisibility(View.VISIBLE);
-        }else if (mFridgeType.equals(ConstantUtil.BCD476_RFID_MODEL)) {
+        } else if (mFridgeType.equals(ConstantUtil.BCD476_RFID_MODEL)) {
             llEnvRealTemp.setVisibility(View.VISIBLE);
             llEnvRealHum.setVisibility(View.VISIBLE);
             llFridgeReal.setVisibility(View.VISIBLE);
@@ -1233,7 +1238,6 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
     }
 
 
-
     private void refreshDebugUI() {
         tvEnvRealTemp.setText((float) mMBParam.getMbdValueByName(EnumBaseName.envRealTemp.toString()) / 10 + "℃");
         tvFridgeReal.setText((float) mMBParam.getMbdValueByName(EnumBaseName.fridgeRealTemp.toString()) / 10 + "℃");
@@ -1340,7 +1344,25 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
         btnTestMode.setText(getResources().getString(R.string.title_factory_test_mode) + " " + mMBParam.getMbdValueByName(EnumBaseName.testMode.name()));
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void setUsbCameraButtun() {
+        CameraManager cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+        String[] CameraIdList = null;
+        try {
+            CameraIdList = cameraManager.getCameraIdList();
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
+        if (CameraIdList.length == 0) {
+            btnMipiCamera.setText(getString(R.string.text_factory_mipi_camera_none));
+            btnMipiCamera.setEnabled(false);
+            MyLogUtil.i("mCamera is null");
+        } else {
+            btnMipiCamera.setText(getString(R.string.text_factory_mipi_camera));
+            btnMipiCamera.setEnabled(true);
+            MyLogUtil.i("mCamera is exist");
+        }
+
         if (CaptureImageFromUsbCamera.mCheckCameraExist()) {
             btnUsbCamera1.setText(getString(R.string.text_factory_usb_camera));
             btnUsbCamera1.setEnabled(true);
@@ -1372,7 +1394,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
         Intent intent = new Intent();
         intent.setAction(ConstantUtil.COMMAND_TO_SERVICE);
         intent.putExtra(ConstantUtil.KEY_MODE, action);
-        intent.putExtra(key,value);
+        intent.putExtra(key, value);
         sendBroadcast(intent);
     }
 

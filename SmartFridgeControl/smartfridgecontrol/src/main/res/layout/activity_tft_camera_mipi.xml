@@ -10,12 +10,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:gravity="center"
+        android:background="@color/black"
         android:id="@+id/tft_camera_mipi_layout">
 
         <SurfaceView
             android:id="@+id/tft_camera_mipi_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="1280px"
+            android:layout_height="720px"
             android:visibility="visible"/>
 
         <LinearLayout
@@ -36,30 +38,31 @@
                 android:textSize="35sp"
                 android:visibility="visible"/>
 
-            <Button
-                android:id="@+id/btn_camera_mipi_add"
-                android:layout_width="100pt"
-                android:layout_height="40pt"
-                android:layout_marginLeft="100pt"
-                android:text="+"
-                android:textColor="@color/black"
-                android:textSize="35sp"
-                android:visibility="gone"/>
 
-            <Button
-                android:id="@+id/btn_camera_mipi_sub"
-                android:layout_width="100pt"
-                android:layout_height="40pt"
-                android:text="-"
-                android:textColor="@color/black"
-                android:textSize="35sp"
-                android:visibility="gone"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="right"
                 android:orientation="horizontal">
+                <Button
+                    android:id="@+id/btn_camera_mipi_add"
+                    android:layout_width="100pt"
+                    android:layout_height="40pt"
+                    android:layout_marginLeft="100pt"
+                    android:text="+"
+                    android:textColor="@color/black"
+                    android:textSize="35sp"
+                    android:visibility="gone"/>
+
+                <Button
+                    android:id="@+id/btn_camera_mipi_sub"
+                    android:layout_width="100pt"
+                    android:layout_height="40pt"
+                    android:text="-"
+                    android:textColor="@color/black"
+                    android:textSize="35sp"
+                    android:visibility="gone"/>
 
                 <Button
                     android:id="@+id/btn_camera_mipi_ret"

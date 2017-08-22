@@ -686,9 +686,12 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
                         SystemCmdUtil.RootCCTCommand("rm -rf /sdcard/*.png");//清除截图照片
                         SystemCmdUtil.RootCCTCommand("rm -rf /sdcard/haier");//
                         SystemCmdUtil.RootCCTCommand("rm -rf /sdcard/Android");//
+                        SystemCmdUtil.RootCCTCommand("pm clear com.haiersmart.web");//
+                        SystemCmdUtil.RootCCTCommand("pm clear com.haiersmart.shop");//
+                        SystemCmdUtil.RootCCTCommand("pm clear com.haiersmart.user");//
+                        SystemCmdUtil.RootCCTCommand("pm clear com.haiersmart.sfnation");//
                         DeviceUtil.removeWifiNetwork(getApplicationContext());//
-                        resetFridgeControl();
-                        SystemCmdUtil.RootCCTCommand("pm clear com.haiersmart.sfnation");
+                        resetFridgeControl();//
                     }
                 }.start();
                 //                popResetPassWin();
@@ -1354,7 +1357,7 @@ public class FactoryStatusActivity extends AppCompatActivity implements View.OnC
             e.printStackTrace();
         }
         if (CameraIdList.length == 0) {
-            btnMipiCamera.setText(getString(R.string.text_factory_mipi_camera_none));
+            btnMipiCamera.setText(getString(R.string.text_factory_mipi_camera_broken));
             btnMipiCamera.setEnabled(false);
             MyLogUtil.i("mCamera is null");
         } else {

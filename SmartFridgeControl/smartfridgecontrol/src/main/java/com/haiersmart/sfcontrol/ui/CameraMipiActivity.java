@@ -165,13 +165,4 @@ public class CameraMipiActivity extends AppCompatActivity implements SurfaceHold
         }
     }
 
-    String yuefen(String x,String y){
-        Integer a = Integer.getInteger(x);
-        Integer b = Integer.getInteger(y);
-        Integer max = a>=b?a:b;
-        Integer temp = 2;
-
-    }
-
-
 }

@@ -1,0 +1,40 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context="com.holy.demo.ui.VersionFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/w2"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/h10"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/txt_system_version"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/w10"
+            android:gravity="center_vertical"
+            android:text="系统版本：OS_xxxxxx"
+            android:textSize="@dimen/w5"
+            android:textColor="@color/button_text"/>
+        <TextView
+            android:id="@+id/txt_app_version"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/w10"
+            android:gravity="center_vertical"
+            android:text="应用版本：BX_xxxxxx"
+            android:textSize="@dimen/w5"
+            android:textColor="@color/button_text"/>
+        <TextView
+            android:id="@+id/txt_mac"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/w10"
+            android:gravity="center_vertical"
+            android:text="MAC地址：xxxxxx"
+            android:textSize="@dimen/w5"
+            android:textColor="@color/button_text"/>
+    </LinearLayout>
+
+</FrameLayout>

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/back_grey"
+    android:orientation="vertical"
+    android:padding="@dimen/w2"
+    tools:context="com.holy.demo.ui.Main2Activity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/item_shape"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/w2"
+            android:layout_weight="10"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="酒柜型号："
+                android:textColor="@color/button_text"
+                android:textSize="@dimen/w5"/>
+
+            <TextView
+                android:id="@+id/text_cellareate_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/w2"
+                android:text="JC310"
+                android:textColor="@color/button_text"
+                android:textSize="@dimen/w5"/>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_return"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/w1"
+            android:layout_weight="2"
+            android:background="@drawable/button_shape"
+            android:gravity="center"
+            android:text="返回"
+            android:textColor="@color/black"
+            android:textSize="@dimen/w5"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/w1"
+        android:background="@drawable/item_shape"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/w2"
+            android:layout_marginLeft="@dimen/w1"
+            android:layout_marginTop="@dimen/w2"
+            android:layout_weight="2">
+
+            <RadioGroup
+                android:id="@+id/btn_array"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="right">
+
+                <RadioButton
+                    android:id="@+id/btn_version"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/flag_shape_s"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="版本号"
+                    android:textColor="@color/button_text"
+                    android:textSize="@dimen/w5"
+                    android:visibility="visible"/>
+
+
+                <RadioButton
+                    android:id="@+id/btn_factory"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/flag_shape_s"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="恢复出厂"
+                    android:textColor="@color/button_text"
+                    android:textSize="@dimen/w5"
+                    android:visibility="visible"/>
+
+                <RadioButton
+                    android:id="@+id/btn_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/flag_shape_s"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="器件状态"
+                    android:textColor="@color/button_text"
+                    android:textSize="@dimen/w5"
+                    android:visibility="visible"/>
+                <RadioButton
+                    android:id="@+id/btn_camera"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/flag_shape_s"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="摄像头"
+                    android:textColor="@color/button_text"
+                    android:textSize="@dimen/w5"
+                    android:visibility="visible"/>
+            </RadioGroup>
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/fragment_content"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/w1"
+            android:layout_marginRight="@dimen/w1"
+            android:layout_marginTop="@dimen/w1"
+            android:layout_weight="8"
+            android:background="@drawable/flag_shape"
+            android:visibility="gone">
+        </FrameLayout>
+
+        <com.holy.demo.constant.HorizonVerticalViewPager
+            android:id="@+id/viewpager_content"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/w1"
+            android:layout_marginRight="@dimen/w1"
+            android:layout_marginTop="@dimen/w1"
+            android:layout_weight="10"
+            android:background="@drawable/flag_shape"
+            app:isVertical="true">
+        </com.holy.demo.constant.HorizonVerticalViewPager>
+    </LinearLayout>
+
+</LinearLayout>

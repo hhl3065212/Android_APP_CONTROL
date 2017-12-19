@@ -22,24 +22,29 @@ import java.lang.reflect.Field;
 public class ViewBinder {
 
 
-
     public static void bind(Object target, View source) {
         Field[] fields = target.getClass().getDeclaredFields();
         if (fields != null && fields.length > 0) {
             for (Field field : fields) {
-                try {
-                    field.setAccessible(true);
-                    if (field.get(target) != null) {
-                        continue;
-                    }
+                Bind bind = field.getAnnotation(Bind.class);
 
-                    Bind bind = field.getAnnotation(Bind.class);
-                    if (bind != null) {
-                        int viewId = bind.id();
+                if (bind != null) {
+                    int viewId = bind.id();
+                    boolean clickLis = bind.click();
+                    try {
+                        field.setAccessible(true);
+                        if (field.get(target) != null) {
+                            continue;
+                        }
+                        if (clickLis) {
+                            source.findViewById(viewId).setOnClickListener(
+                                    (View.OnClickListener) target);
+                        }
                         field.set(target, source.findViewById(viewId));
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
             }
         }
@@ -49,10 +54,10 @@ public class ViewBinder {
         bind(activity, activity.getWindow().getDecorView());
     }
 
-    public static void bind(View view){
+    public static void bind(View view) {
         Context context = view.getContext();
-        if(context instanceof Activity) {
-            bind((Activity)context);
+        if (context instanceof Activity) {
+            bind((Activity) context);
         } else {
             Log.d("AnnotateUtil.java", "the view don\'t have root view");
         }

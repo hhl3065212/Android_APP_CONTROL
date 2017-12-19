@@ -3,7 +3,6 @@ package com.haiersmart.smartsale;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -18,15 +17,15 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     SerialPort mSerialPort;
 
-    @Bind(id = R.id.btn_open)
+    @Bind(id = R.id.btn_open,click = true)
     private Button btnOpen;
-    @Bind(id = R.id.btn_select)
+    @Bind(id = R.id.btn_select,click = true)
     private Button btnSelect;
-    @Bind(id = R.id.btn_final)
+    @Bind(id = R.id.btn_final,click = true)
     private Button btnFinal;
-    @Bind(id = R.id.btn_pay)
+    @Bind(id = R.id.btn_pay,click = true)
     private Button btnPay;
-    @Bind(id = R.id.button_test)
+    @Bind(id = R.id.button_test,click = true)
     private  Button button_test;
 
 
@@ -34,30 +33,18 @@ public class MainActivity extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ViewBinder.bind(this);
 
-        mSerialPort = new SerialPort("/dev/ttyS1",115200);
-        String mes= "serial port has open";
+//        mSerialPort = new SerialPort("/dev/ttyS1",115200);
+//        String mes= "serial port has open";
 //        try {
 //            mSerialPort.getOutputStream().write(mes.getBytes());
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
-        mSerialPort.write(mes);
-
-
-        ViewBinder.bind(this);
-        setOnClick();
+//        mSerialPort.write(mes);
 
     }
-
-    private void setOnClick(){
-        btnOpen.setOnClickListener(this);
-        btnSelect.setOnClickListener(this);
-        btnFinal.setOnClickListener(this);
-        btnPay.setOnClickListener(this);
-        button_test.setOnClickListener(this);
-    }
-
 
 
     @Override

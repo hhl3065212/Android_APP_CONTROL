@@ -25,4 +25,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Bind {
     int id();
+    boolean click() default false;
 }

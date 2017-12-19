@@ -1,10 +1,13 @@
 package com.haiersmart.smartsale;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import com.haiersmart.library.SerialPort.SerialPort;
 import com.haiersmart.library.Utils.ConvertData;
@@ -13,6 +16,7 @@ import com.haiersmart.library.Utils.ConvertData;
 public class MainActivity extends Activity {
     private final String TAG = getClass().getSimpleName();
     SerialPort mSerialPort;
+    private Button button_test;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +31,13 @@ public class MainActivity extends Activity {
 //        }
         mSerialPort.write(mes);
         mHandler.sendEmptyMessage(0x01);
+        button_test=(Button)findViewById(R.id.button_test);
+        button_test.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, TestActivity.class));
+            }
+        });
     }
 
     Handler mHandler= new Handler(){
@@ -53,4 +64,6 @@ public class MainActivity extends Activity {
         mSerialPort.SerialPortClose();
         mSerialPort = null;
     }
+
+
 }

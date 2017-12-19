@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context="com.holy.demo.ui.CameraFragment">
+
+    <LinearLayout
+        android:id="@+id/linear_camera_f"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/w2"
+        android:gravity="center"
+        android:orientation="vertical">
+        <Button
+            android:id="@+id/btn_camera_show"
+            android:layout_width="@dimen/w30"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_shape"
+            android:gravity="center"
+            android:text="摄像头"
+            android:textColor="@color/button_text"
+            android:textSize="@dimen/w5"/>
+    </LinearLayout>
+
+
+</FrameLayout>

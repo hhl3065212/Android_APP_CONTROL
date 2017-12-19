@@ -39,7 +39,7 @@ public class SerialPort {
     private FileDescriptor mFd;
     private FileInputStream mFileInputStream;
     private FileOutputStream mFileOutputStream;
-    private boolean isReady = false;
+    private static boolean isReady = false;
     private String mSerialPortName = null;
     private int mBaudRate = 115200;
     private Timer mTimer;
@@ -62,10 +62,10 @@ public class SerialPort {
                 isReady = false;
                 Log.e(TAG, "Serial port open failed,Fd is none," + mSerialPortName);
             } else {
-                isReady = true;
                 Log.i(TAG, "Serial port open success,Fd is " + mFd + "," + mSerialPortName);
                 mFileInputStream = new FileInputStream(mFd);
                 mFileOutputStream = new FileOutputStream(mFd);
+                isReady = true;
             }
         }
     }
@@ -122,10 +122,10 @@ public class SerialPort {
         }
 
         if (mFd != null) {
-            isReady = false;
             SerialClose();
             mFd = null;
         }
+        isReady = false;
     }
 
     public void SerialPortReOpen() {
@@ -137,10 +137,10 @@ public class SerialPort {
             isReady = false;
             Log.e(TAG, "Serial port reopen failed,Fd is none," + mSerialPortName);
         } else {
-            isReady = true;
             Log.i(TAG, "Serial port reopen success,Fd is " + mFd + "," + mSerialPortName);
             mFileInputStream = new FileInputStream(mFd);
             mFileOutputStream = new FileOutputStream(mFd);
+            isReady = true;
         }
     }
 

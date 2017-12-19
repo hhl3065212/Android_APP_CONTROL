@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.holy.demo.ui.CameraActivity"
+    android:orientation="vertical">
+    <LinearLayout
+        android:id="@+id/linear_camera"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="-120dp"
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="@dimen/h10"
+            android:layout_height="@dimen/w6"
+            android:background="@drawable/flag_shape"
+            android:gravity="center"
+            android:text="+"
+            android:textColor="@color/button_text"
+            android:textSize="@dimen/w4"/>
+        <Button
+            android:layout_width="@dimen/h10"
+            android:layout_height="@dimen/w6"
+            android:layout_marginLeft="@dimen/w1"
+            android:background="@drawable/flag_shape"
+            android:gravity="center"
+            android:text="-"
+            android:textColor="@color/button_text"
+            android:textSize="@dimen/w4"/>
+        <Button
+            android:id="@+id/btn_camera_return"
+            android:layout_width="@dimen/h10"
+            android:layout_height="@dimen/w6"
+            android:layout_marginLeft="@dimen/w1"
+            android:background="@drawable/flag_shape"
+            android:gravity="center"
+            android:text="返回"
+            android:textColor="@color/button_text"
+            android:textSize="@dimen/w4"/>
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorItemBack">#009999</color>
+    <color name="colorItemBack_down">#006363</color>
+    <color name="colorItemBorder">#ff7400</color>
+    <color name="colorItemBordert">#ffff5400</color>
+
+    <color name="black_overlay">#00000000</color>
+    <color name="black_title">#ffff</color>
+    <color name="back_grey_2">#ffdddddd</color>
+    <color name="back_grey_1">#ffcccccc</color>
+    <color name="back_grey">#ffaeaeae</color>
+    <color name="button_grey">#ffaaaaaa</color>
+    <color name="button_text">#ff535353</color>
+    <color name="black">#000000</color>
+    <color name="black_f">#44000000</color>
+    <color name="white_f">#44ffffff</color>
+</resources>

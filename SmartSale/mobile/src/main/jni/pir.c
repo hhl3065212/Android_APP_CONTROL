@@ -1,6 +1,11 @@
 //
 // Created by tingting on 2017/12/15.
 //
+#include <stdio.h>
+#include <math.h>
+#include <malloc.h>
+#include <sys/ioctl.h>
+#include <fcntl.h>
 #include <termios.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -8,6 +13,9 @@
 #include <fcntl.h>
 #include <string.h>
 #include <jni.h>
+
+
+
 #include "com_haiersmart_smartsale_JniPir.h"
 #include "android/log.h"
 static const char *TAG="PIR";
@@ -22,15 +30,16 @@ enum  PIRCOMMAND {
     CMD_SET_GPIO,
     CMD_MAX
 };
+
 struct UserData{
     int gpio;
     int state;
-} x;
+};
 
+int fd=-1;
 
 JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_add(JNIEnv *env, jobject thiz, jint gpio, jint state) {
     jint ret=-1;
-    int fd=0;
     struct UserData userdata;
     memset(&userdata,0x00, sizeof(struct UserData));
     //strlcpy(userdata.name, "gpio",10);
@@ -38,6 +47,7 @@ JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_add(JNIEnv *env, job
     userdata.state=0;
 
     ret = ioctl(fd, CMD_PROBE_GPIO, &userdata);
+    LOGI("add gpio ret=%d",ret);
     return ret;
 }
 
@@ -45,13 +55,16 @@ JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_add(JNIEnv *env, job
 JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_openGpioDev(JNIEnv *env, jobject thiz){
 
     jint ret=0;
-    int fd=0;
-    fd = open("/sys/devices/leds", O_RDWR);
+   // fd = open("/dev/ttyS1", O_RDWR);
+    fd = open("/dev/pir_gpio", O_RDWR);
     LOGI("fd value = %d ", fd);
     if (fd < 0) {
         LOGE("open pir device failed!");
         ret=-1;
+    } else {
+        LOGI("open pir device success!");
     }
+
     return ret;
 }
 
@@ -59,7 +72,7 @@ JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_openGpioDev(JNIEnv *
 JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_closeGpioDev(JNIEnv *env, jobject thiz){
 
     jint ret=0;
-    int fd=0;
+
     ret = close(fd);
     if (fd < 0) {
         ret=-1;
@@ -72,23 +85,23 @@ JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_closeGpioDev(JNIEnv 
 JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_getGpio(JNIEnv *env, jobject thiz,jint num){
 
     jint ret=-1;
-    int fd=0;
     struct UserData userdata;
+
     memset(&userdata,0x00, sizeof(struct UserData));
     //strlcpy(userdata.name, "gpio",10);
     userdata.gpio=num;
     userdata.state=0;
 
     ret = ioctl(fd, CMD_GET_GPIO, &userdata);
+    LOGI("get gpio ret=%d",ret);
     return ret;
 }
 
 //static jint releaseGpio(JNIEnv *env, jobject thiz,jint num)
 JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_releaseGpio(JNIEnv *env, jobject thiz, jint num){
-
-    int fd=0;
     jint ret=-1;
     struct UserData userdata;
+
     memset(&userdata,0x00, sizeof(struct UserData));
     userdata.gpio=num;
     userdata.state=0;
@@ -98,9 +111,10 @@ JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_releaseGpio(JNIEnv *
 
 //static jint setGpioState(JNIEnv *env, jobject thiz,jint num,jint state)
  JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_setGpioState(JNIEnv *env, jobject thiz, jint num, jint state){
-    int fd=0;
     jint err=-1;
     struct UserData userdata;
+
+
     memset(&userdata,0x00, sizeof(struct UserData));
     userdata.gpio=num;
     userdata.state=state;

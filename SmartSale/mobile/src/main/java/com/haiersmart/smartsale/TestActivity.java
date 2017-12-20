@@ -74,7 +74,7 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
 
         mPirHandler = new JniPir();
         mPirHandler.openGpioDev();
-        initPirGPIO();
+//        initPirGPIO();
     }
 
 
@@ -107,14 +107,14 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void updatePirValue() {
-//        int value = mPirHandler.add(0, 0);
-//        Log.i(TAG, "probe gpio value = "+value);
-//        value = mPirHandler.getGpio(0);
-//        Log.i(TAG, "get gpio value = "+value);
-//        String pirText = "PIR GPIO Value: " + Integer.toString(value);
-//        mTvPir.setText(pirText);
+        int value = mPirHandler.add(227, 0);
+        Log.i(TAG, "probe gpio value = "+value);
+        value = mPirHandler.getGpio(227);
+        Log.i(TAG, "get gpio value = "+value);
+        String pirText = "PIR GPIO Value: " + Integer.toString(value);
+        mTvPir.setText(pirText);
 
-        GetPirGPIOValue();
+//        GetPirGPIOValue();
     }
 
     public void initPirGPIO() {

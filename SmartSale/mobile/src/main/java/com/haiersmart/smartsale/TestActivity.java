@@ -113,7 +113,7 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
         Log.i(TAG, "get gpio value = "+value);
         String pirText = "PIR GPIO Value: " + Integer.toString(value);
         mTvPir.setText(pirText);
-
+        mPirHandler.releaseGpio(227);
 //        GetPirGPIOValue();
     }
 
@@ -150,21 +150,34 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void setDoorValue() {
+
+        mPirHandler.add(263, 0);
         if (mDoorValue == 0) {
             Log.i(TAG, "setDoorValue 1" );
-            gpio_crtl(8, GPIO_A7, 1);
+            mPirHandler.setGpioState(263,1);
             mDoorValue = 1;
         } else {
             Log.i(TAG, "setDoorValue 0" );
-            gpio_crtl(8, GPIO_A7, 0);
+            mPirHandler.setGpioState(263,0);
             mDoorValue = 0;
         }
-        String res = read("sys/class/gpio/gpio263/value");
-        int gpioValue = -1;
-        if (res != null) {
-            gpioValue = Integer.parseInt(res);
-        }
-        Log.i(TAG, "gpioValue = " + gpioValue);
+        mPirHandler.releaseGpio(263);
+
+//        if (mDoorValue == 0) {
+//            Log.i(TAG, "setDoorValue 1" );
+//            gpio_crtl(8, GPIO_A7, 1);
+//            mDoorValue = 1;
+//        } else {
+//            Log.i(TAG, "setDoorValue 0" );
+//            gpio_crtl(8, GPIO_A7, 0);
+//            mDoorValue = 0;
+//        }
+//        String res = read("sys/class/gpio/gpio263/value");
+//        int gpioValue = -1;
+//        if (res != null) {
+//            gpioValue = Integer.parseInt(res);
+//        }
+//        Log.i(TAG, "gpioValue = " + gpioValue);
     }
 
 

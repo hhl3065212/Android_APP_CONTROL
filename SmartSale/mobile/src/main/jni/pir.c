@@ -22,9 +22,9 @@ static const char *TAG="JNI PIR";
 #define LOGE(fmt, args...) __android_log_print(ANDROID_LOG_ERROR, TAG, fmt, ##args)
 
 enum  PIRCOMMAND {
-    CMD_PROBE_GPIO = 0,
+    CMD_SET_GPIO = 0,
     CMD_GET_GPIO = 1,
-    CMD_SET_GPIO = 2,
+    CMD_PROBE_GPIO = 25,
     CMD_RELEASE_GPIO = 5,
     CMD_MAX
 };
@@ -42,7 +42,7 @@ JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_add(JNIEnv *env, job
     memset(&userdata,0x00, sizeof(struct UserData));
     userdata.gpio=gpio;
     userdata.state=0;
-
+    LOGI("JniPir_probe");
     ret = ioctl(fd, CMD_PROBE_GPIO, &userdata);
     if(ret<0){
         LOGE("probeGpioDev ret=%d ",ret);
@@ -55,7 +55,7 @@ JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_add(JNIEnv *env, job
 JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_openGpioDev(JNIEnv *env, jobject thiz){
 
     jint ret=0;
-    fd = open("/dev/pir_gpio", O_RDWR);
+    fd = open("/dev/pir_gpio", O_RDWR|O_SYNC);
     LOGI("fd value = %d ", fd);
     if (fd < 0) {
         LOGE("open pir device failed!");
@@ -120,12 +120,12 @@ JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_releaseGpio(JNIEnv *
  JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_setGpioState(JNIEnv *env, jobject thiz, jint num, jint state){
     jint ret=-1;
     struct UserData userdata;
-    LOGI("setGpioStatet num=%d , state=%d ",num, state);
+   // LOGI("setGpioStatet num=%d , state=%d ",num, state);
 
     memset(&userdata,0x00, sizeof(struct UserData));
     userdata.gpio=num;
     userdata.state=state;
-
+    LOGI("JniPir_setGpioState");
     ret = ioctl(fd, CMD_SET_GPIO, &userdata);
     if(ret<0){
         LOGE("setGpioStatet ret=%d ",ret);

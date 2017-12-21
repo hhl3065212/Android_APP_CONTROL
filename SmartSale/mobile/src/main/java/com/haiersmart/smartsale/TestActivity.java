@@ -14,14 +14,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 
-import static com.haiersmart.smartsale.GPIO.gpio_crtl;
-
 public class TestActivity extends AppCompatActivity implements View.OnClickListener {
     static final String TAG = "TestActivity";
     private TextView mTvPir, mTVDoor;
     private Button mBtnPir, mBtnDoor, mBtnBack;
     private JniPir mPirHandler;
     private int mDoorValue = 0;
+    private int mPirGpioNum = 0;
 
     static final int GPIO_A0 = 0;
     static final int GPIO_A1 = 1;
@@ -72,6 +71,7 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
         mBtnBack = (Button) findViewById(R.id.btn_back);
         mBtnBack.setOnClickListener(this);
 
+        mPirGpioNum = GPIO_B5;//227==>GPIO7_A3, 263==>GPIO8_A7
         mPirHandler = new JniPir();
         mPirHandler.openGpioDev();
 //        initPirGPIO();
@@ -107,13 +107,11 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void updatePirValue() {
-        int value = mPirHandler.add(227, 0);
-        Log.i(TAG, "probe gpio value = "+value);
-        value = mPirHandler.getGpio(227);
+        int value = mPirHandler.getGpio(mPirGpioNum);
         Log.i(TAG, "get gpio value = "+value);
         String pirText = "PIR GPIO Value: " + Integer.toString(value);
         mTvPir.setText(pirText);
-        mPirHandler.releaseGpio(227);
+        mPirHandler.releaseGpio(mPirGpioNum);
 //        GetPirGPIOValue();
     }
 
@@ -151,17 +149,16 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
 
     public void setDoorValue() {
 
-        mPirHandler.add(263, 0);
         if (mDoorValue == 0) {
             Log.i(TAG, "setDoorValue 1" );
-            mPirHandler.setGpioState(263,1);
+            mPirHandler.setGpioState(mPirGpioNum,1);
             mDoorValue = 1;
         } else {
             Log.i(TAG, "setDoorValue 0" );
-            mPirHandler.setGpioState(263,0);
+            mPirHandler.setGpioState(mPirGpioNum,0);
             mDoorValue = 0;
         }
-        mPirHandler.releaseGpio(263);
+        mPirHandler.releaseGpio(mPirGpioNum);//263
 
 //        if (mDoorValue == 0) {
 //            Log.i(TAG, "setDoorValue 1" );

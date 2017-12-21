@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.haiersmart.smartsale.TestActivity">
+    tools:context="com.haiersmart.smartsale.activity.TestActivity">
 
     <LinearLayout
         android:layout_width="wrap_content"

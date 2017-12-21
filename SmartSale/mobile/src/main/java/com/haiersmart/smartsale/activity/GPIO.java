@@ -1,4 +1,4 @@
-package com.haiersmart.smartsale;
+package com.haiersmart.smartsale.activity;
 
 import android.util.Log;
 

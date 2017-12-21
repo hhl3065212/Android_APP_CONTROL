@@ -1,4 +1,4 @@
-package com.haiersmart.smartsale;
+package com.haiersmart.smartsale.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -7,14 +7,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.haiersmart.smartsale.R;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
-
-import static com.haiersmart.smartsale.GPIO.gpio_crtl;
 
 public class TestActivity extends AppCompatActivity implements View.OnClickListener {
     static final String TAG = "TestActivity";
@@ -73,7 +72,13 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
         mBtnBack.setOnClickListener(this);
 
         mPirHandler = new JniPir();
-        mPirHandler.openGpioDev();
+//        String w = "none";
+//        try {
+//            mPirHandler.mFileOutputStream.write(w.getBytes());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        mPirHandler.closeGpioDev();
 //        initPirGPIO();
     }
 
@@ -107,12 +112,19 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void updatePirValue() {
-        int value = mPirHandler.add(227, 0);
-        Log.i(TAG, "probe gpio value = "+value);
-        value = mPirHandler.getGpio(227);
-        Log.i(TAG, "get gpio value = "+value);
-        String pirText = "PIR GPIO Value: " + Integer.toString(value);
-        mTvPir.setText(pirText);
+//        int value = mPirHandler.add(227, 0);
+//        Log.i(TAG, "probe gpio value = "+value);
+//        value = mPirHandler.getGpio(227);
+        byte[] b= new byte[64];
+        int value = 0;
+//        value = mPirHandler.getData(b);
+        value = mPirHandler.getGpio(0);
+        Log.i(TAG, "get gpio value = " + value);
+        if(value > 0) {
+            Log.i(TAG, "get gpio b=" + new String(b, 0, value));
+            String pirText = "PIR GPIO Value: " + new String(b, 0, value);
+            mTvPir.setText(pirText);
+        }
 
 //        GetPirGPIOValue();
     }
@@ -152,11 +164,11 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
     public void setDoorValue() {
         if (mDoorValue == 0) {
             Log.i(TAG, "setDoorValue 1" );
-            gpio_crtl(8, GPIO_A7, 1);
+            GPIO.gpio_crtl(8, GPIO_A7, 1);
             mDoorValue = 1;
         } else {
             Log.i(TAG, "setDoorValue 0" );
-            gpio_crtl(8, GPIO_A7, 0);
+            GPIO.gpio_crtl(8, GPIO_A7, 0);
             mDoorValue = 0;
         }
         String res = read("sys/class/gpio/gpio263/value");

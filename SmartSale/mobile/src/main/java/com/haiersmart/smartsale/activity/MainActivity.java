@@ -1,4 +1,4 @@
-package com.haiersmart.smartsale;
+package com.haiersmart.smartsale.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,6 +10,7 @@ import com.haiersmart.library.MediaPlayer.PlayFixedVoice;
 import com.haiersmart.library.SerialPort.SerialPort;
 import com.haiersmart.library.Utils.Bind;
 import com.haiersmart.library.Utils.ViewBinder;
+import com.haiersmart.smartsale.R;
 
 
 public class MainActivity extends Activity implements View.OnClickListener {

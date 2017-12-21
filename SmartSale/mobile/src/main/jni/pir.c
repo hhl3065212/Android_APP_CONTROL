@@ -52,11 +52,12 @@ JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_add(JNIEnv *env, job
 }
 
 //static jint openGpioDev(JNIEnv *env, jobject thiz)
-JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_openGpioDev(JNIEnv *env, jobject thiz){
+JNIEXPORT jobject JNICALL Java_com_haiersmart_smartsale_JniPir_openGpioDev(JNIEnv *env, jobject thiz){
 
     jint ret=0;
+    jobject mFileDescriptor;
    // fd = open("/dev/ttyS1", O_RDWR);
-    fd = open("/dev/pir_gpio", O_RDWR);
+    fd = open("/sys/class/gpio/gpio263/value", O_RDWR);
     LOGI("fd value = %d ", fd);
     if (fd < 0) {
         LOGE("open pir device failed!");
@@ -65,7 +66,16 @@ JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_openGpioDev(JNIEnv *
         LOGI("open pir device success!");
     }
 
-    return ret;
+    {
+            //new java obj
+            jclass cFileDescriptor = (*env)->FindClass(env, "java/io/FileDescriptor");  //get class
+            jmethodID iFileDescriptor = (*env)->GetMethodID(env, cFileDescriptor, "<init>", "()V"); //construct
+            jfieldID descriptorID = (*env)->GetFieldID(env, cFileDescriptor, "descriptor", "I");
+            mFileDescriptor = (*env)->NewObject(env, cFileDescriptor, iFileDescriptor);
+            (*env)->SetIntField(env, mFileDescriptor, descriptorID, (jint)fd);  //set fd to obj
+        }
+
+        return mFileDescriptor;
 }
 
 //static jint closeGpioDev(JNIEnv *env, jobject thiz)
@@ -91,8 +101,14 @@ JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_getGpio(JNIEnv *env,
     //strlcpy(userdata.name, "gpio",10);
     userdata.gpio=num;
     userdata.state=0;
+    char user[10]={0};
 
-    ret = ioctl(fd, CMD_GET_GPIO, &userdata);
+    //ret = ioctl(fd, CMD_GET_GPIO, &userdata);
+    int len = read(fd,user,10);
+    LOGI("get gpio len=%d",len);
+    if(len >0){
+        LOGI("get gpio user=%s",user);
+    }
     LOGI("get gpio ret=%d",ret);
     return ret;
 }
@@ -119,7 +135,10 @@ JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_releaseGpio(JNIEnv *
     userdata.gpio=num;
     userdata.state=state;
 
-    err = ioctl(fd, CMD_SET_GPIO, &userdata);
+err = ioctl(fd, num);
+
+    //err = ioctl(fd, CMD_SET_GPIO, &userdata);
+
     if(err<0){
         err=-1;
     }

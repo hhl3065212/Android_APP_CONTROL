@@ -20,7 +20,7 @@ JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_add
  * Method:    openGpioDev
  * Signature: ()I
  */
-JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_openGpioDev
+JNIEXPORT jobject JNICALL Java_com_haiersmart_smartsale_JniPir_openGpioDev
   (JNIEnv *, jobject);
 
 /*

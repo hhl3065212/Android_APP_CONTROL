@@ -36,7 +36,7 @@ struct UserData{
 
 int fd=-1;
 
-JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_add(JNIEnv *env, jobject thiz, jint gpio, jint state) {
+JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_activity_JniPir_add(JNIEnv *env, jobject thiz, jint gpio, jint state) {
     jint ret=-1;
     struct UserData userdata;
     memset(&userdata,0x00, sizeof(struct UserData));
@@ -52,7 +52,7 @@ JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_add(JNIEnv *env, job
 }
 
 //static jint openGpioDev(JNIEnv *env, jobject thiz)
-JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_openGpioDev(JNIEnv *env, jobject thiz){
+JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_activity_JniPir_openGpioDev(JNIEnv *env, jobject thiz){
 
     jint ret=0;
     fd = open("/dev/pir_gpio", O_RDWR|O_SYNC);
@@ -68,7 +68,7 @@ JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_openGpioDev(JNIEnv *
 }
 
 //static jint closeGpioDev(JNIEnv *env, jobject thiz)
-JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_closeGpioDev(JNIEnv *env, jobject thiz){
+JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_activity_JniPir_closeGpioDev(JNIEnv *env, jobject thiz){
 
     jint ret=0;
 
@@ -83,7 +83,7 @@ JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_closeGpioDev(JNIEnv 
 
 
 //static jint getGpio(JNIEnv *env, jobject thiz,jint num)
-JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_getGpio(JNIEnv *env, jobject thiz,jint num){
+JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_activity_JniPir_getGpio(JNIEnv *env, jobject thiz,jint num){
 
     jint ret=-1;
     struct UserData userdata;
@@ -101,7 +101,7 @@ JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_getGpio(JNIEnv *env,
 }
 
 //static jint releaseGpio(JNIEnv *env, jobject thiz,jint num)
-JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_releaseGpio(JNIEnv *env, jobject thiz, jint num){
+JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_activity_JniPir_releaseGpio(JNIEnv *env, jobject thiz, jint num){
     jint ret=-1;
     struct UserData userdata;
     memset(&userdata,0x00, sizeof(struct UserData));
@@ -117,7 +117,7 @@ JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_releaseGpio(JNIEnv *
 }
 
 //static jint setGpioState(JNIEnv *env, jobject thiz,jint num,jint state)
- JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_setGpioState(JNIEnv *env, jobject thiz, jint num, jint state){
+ JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_activity_JniPir_setGpioState(JNIEnv *env, jobject thiz, jint num, jint state){
     jint ret=-1;
     struct UserData userdata;
    // LOGI("setGpioStatet num=%d , state=%d ",num, state);

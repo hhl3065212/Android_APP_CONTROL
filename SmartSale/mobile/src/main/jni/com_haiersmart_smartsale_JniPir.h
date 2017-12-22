@@ -2,8 +2,8 @@
 #include <jni.h>
 /* Header for class com_haiersmart_smartsale_JniPir */
 
-#ifndef _Included_com_haiersmart_smartsale_JniPir
-#define _Included_com_haiersmart_smartsale_JniPir
+#ifndef _Included_com_haiersmart_smartsale_activity_JniPir
+#define _Included_com_haiersmart_smartsale_activity_JniPir
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -12,7 +12,7 @@ extern "C" {
  * Method:    add
  * Signature: (II)I
  */
-JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_add
+JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_activity_JniPir_add
   (JNIEnv *, jobject, jint, jint);
 
 /*
@@ -20,7 +20,7 @@ JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_add
  * Method:    openGpioDev
  * Signature: ()I
  */
-JNIEXPORT jobject JNICALL Java_com_haiersmart_smartsale_JniPir_openGpioDev
+JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_activity_JniPir_openGpioDev
   (JNIEnv *, jobject);
 
 /*
@@ -28,7 +28,7 @@ JNIEXPORT jobject JNICALL Java_com_haiersmart_smartsale_JniPir_openGpioDev
  * Method:    closeGpioDev
  * Signature: ()I
  */
-JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_closeGpioDev
+JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_activity_JniPir_closeGpioDev
   (JNIEnv *, jobject);
 
 /*
@@ -36,7 +36,7 @@ JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_closeGpioDev
  * Method:    getGpio
  * Signature: (I)I
  */
-JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_getGpio
+JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_activity_JniPir_getGpio
   (JNIEnv *, jobject, jint);
 
 /*
@@ -44,7 +44,7 @@ JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_getGpio
  * Method:    releaseGpio
  * Signature: (I)I
  */
-JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_releaseGpio
+JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_activity_JniPir_releaseGpio
   (JNIEnv *, jobject, jint);
 
 /*
@@ -52,7 +52,7 @@ JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_releaseGpio
  * Method:    setGpioState
  * Signature: (II)I
  */
-JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_JniPir_setGpioState
+JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_activity_JniPir_setGpioState
   (JNIEnv *, jobject, jint, jint);
 
 #ifdef __cplusplus

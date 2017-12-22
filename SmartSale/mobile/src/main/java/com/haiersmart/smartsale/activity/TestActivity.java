@@ -75,6 +75,7 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
 
         mPirGpioNum = GPIO_B5;//227==>GPIO7_A3, 263==>GPIO8_A7
         mPirHandler = new JniPir();
+        mPirHandler.openGpioDev();
 //        String w = "none";
 //        try {
 //            mPirHandler.mFileOutputStream.write(w.getBytes());

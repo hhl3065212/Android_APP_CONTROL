@@ -20,36 +20,8 @@ public class JniPir {
         System.loadLibrary("native-pir-jni");
     }
 
-    private FileDescriptor mFd;
-    public FileInputStream mFileInputStream;
-    public FileOutputStream mFileOutputStream;
-    public FileReader mFileReader;
-
-
-    public JniPir() {
-        mFd = openGpioDev();
-        Log.i("PIR","mfd="+mFd);
-        if (mFd != null){
-//            mFileInputStream = new FileInputStream(mFd);
-            mFileOutputStream = new FileOutputStream(mFd);
-//            mFileReader = new FileReader(mFd);
-        }
-    }
-
-    public int getData(byte[] b){
-        mFileInputStream = new FileInputStream(mFd);
-        int len = 0;
-        try {
-            len = mFileInputStream.read(b);
-            mFileInputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return len;
-    }
-
     public native int add(int a, int b);
-    public native FileDescriptor openGpioDev();
+    public native int openGpioDev();
     public native int closeGpioDev();
     public native int getGpio(int num);
     public native int releaseGpio(int num);

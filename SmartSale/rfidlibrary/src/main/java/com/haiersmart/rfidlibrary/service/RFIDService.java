@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
-import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -16,17 +15,25 @@ import com.haiersmart.rfidlibrary.AndroidWakeLock;
 import com.haiersmart.rfidlibrary.ConstantUtil;
 import com.pow.api.cls.RfidPower;
 import com.uhf.api.cls.Reader;
+import com.uhf.api.cls.Reader.*;
+
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class RFIDService extends Service {
     static final String TAG = "RFIDService";
     private final int mAntPorts = 16;
-    private final String mDevPath = "/dev/ttyS3";
+    private final String mDevPath = "/dev/ttyUSB0";//"/dev/ttyS3";
     private Reader mReader;
     private ReaderParams mReaderParams;
     private RfidPower mRpower;
@@ -36,9 +43,12 @@ public class RFIDService extends Service {
     private boolean mNeedreconnect;
 
     private Handler handler = new Handler( );
-    public Map<String,Reader.TAGINFO> TagsMap=new LinkedHashMap<String,Reader.TAGINFO>(); //有序
+    public Map<String,Reader.TAGINFO> mTagsMap=new LinkedHashMap<String,Reader.TAGINFO>(); //有序
 
     AndroidWakeLock Awl;
+
+    Timer mReadTimer = null;
+    TimerTask mReadTimerTask;
 
 
     public RFIDService() {
@@ -56,14 +66,15 @@ public class RFIDService extends Service {
     @Override
     public void onCreate() {
 
-        Awl = new AndroidWakeLock((PowerManager) getSystemService(Context.POWER_SERVICE));
-        Awl.WakeLock();
+//        Awl = new AndroidWakeLock((PowerManager) getSystemService(Context.POWER_SERVICE));
+//        Awl.WakeLock();
         mReaderParams = new ReaderParams();
         mReader = new Reader();
         //设置平台选择
         RfidPower.PDATYPE PT = RfidPower.PDATYPE.valueOf(0);//select platform , default none
         mRpower = new RfidPower(PT);
         mNeedreconnect = false;
+        mSpf = new SPconfig(this);
         super.onCreate();
     }
 
@@ -84,34 +95,47 @@ public class RFIDService extends Service {
 
     @Override
     public void onDestroy() {
-        Awl.ReleaseWakeLock();
+//        Awl.ReleaseWakeLock();
         super.onDestroy();
     }
 
-    public int connectRFID() {
-        int res = -1;
+    public void connectRFID() throws Exception {
+        Log.d(TAG,"connectRFID in");
         boolean isPowerUp = mRpower.PowerUp();
         if(!isPowerUp) {
             Log.e(TAG,"RFID Power up failed!");
+            throw new Exception("RFID Power up failed!");
         }
 
         Reader.READER_ERR er = mReader.InitReader_Notype(mDevPath, mAntPorts);
         if(er == Reader.READER_ERR.MT_OK_ERR) {
-            res = 0;
             Log.d(TAG,"RFID InitReader_Notype success!");
         } else {
             Log.e(TAG,"RFID InitReader_Notype failed by reason: " + er);
+            throw new Exception(String.valueOf(er));
         }
 
         er = configProtocol();
+        if(er != Reader.READER_ERR.MT_OK_ERR) {
+            Log.e(TAG,"RFID InitReader_Notype failed by reason: " + er);
+            throw new Exception("RFID configProtocol failed");
+        }
 
         er = configAntPower();
+        if(er != Reader.READER_ERR.MT_OK_ERR) {
+            throw new Exception("RFID configAntPower failed");
+        }
         
         er = configRegion();
+        if(er != Reader.READER_ERR.MT_OK_ERR) {
+            throw new Exception("RFID configRegion failed");
+        }
 
         er = configOther();
-
-        return res;
+        if(er != Reader.READER_ERR.MT_OK_ERR) {
+            throw new Exception("RFID configOther failed");
+        }
+        Log.d(TAG,"connectRFID out");
     }
 
     public void disconnectRFID() {
@@ -146,39 +170,35 @@ public class RFIDService extends Service {
         metaflag |= 0X0008;//fre
         metaflag |= 0X0040;//pro
         mReaderParams.option = (metaflag<<8);
+        clearData();
         if(mNostop) {
             Reader.READER_ERR er = mReader.AsyncStartReading(
                     mReaderParams.uants,
                     mReaderParams.uants.length,
                     mReaderParams.option);
             if (er != Reader.READER_ERR.MT_OK_ERR) {
+                Log.e(TAG, " startRead AsyncStartReading er="  + String.valueOf(er.value())+ ", er:" + er.toString());
                 Toast.makeText(this,
                         ConstantUtil.Constr_nostopreadfailed,
                         Toast.LENGTH_SHORT).show();
                 return;
             }
-            TagsMap.clear();
-            handler.postDelayed(runnable_read, 0);
         }
+        handler.postDelayed(runnable_read, 0);
     }
 
     public void stopRead() {
         if (mNostop) {
-            Log.i(TAG, "LTT stopRead---");
+            Log.d(TAG, " stopRead");
             Reader.READER_ERR er = mReader.AsyncStopReading();
-            Log.i(TAG, "LTT stopRead er=" + er.toString());
             if (er != Reader.READER_ERR.MT_OK_ERR) {
-                Toast.makeText(this,
-                        ConstantUtil.Constr_nostopspreadfailed,
+                Log.e(TAG, " stopRead AsyncStopReading er="  + String.valueOf(er.value())+ ", er:" + er.toString());
+                Toast.makeText(this, ConstantUtil.Constr_nostopspreadfailed,
                         Toast.LENGTH_SHORT).show();
-                Log.i(TAG,"停止读失败");
-                return;
             }
         }
         handler.removeCallbacks(runnable_read);
-        Awl.ReleaseWakeLock();
-        TagsMap.putAll(TagsMap);
-        //TODO: broadcast
+//        Awl.ReleaseWakeLock();
     }
 
     private Runnable runnable_read = new Runnable() {
@@ -216,7 +236,6 @@ public class RFIDService extends Service {
                                     tag[i] = Reader.bytes_Hexstr(tfs.EpcId);
                                     //刷新标签缓存
                                     TagsBufferResh(tag[i], tfs);
-                                    //TODO: broadcast
                                 }
                             } else if (er == Reader.READER_ERR.MT_HARDWARE_ALERT_ERR_BY_TOO_MANY_RESET) {
                                 mNeedreconnect = true;
@@ -228,19 +247,81 @@ public class RFIDService extends Service {
                         }
                     }
                     handler.postDelayed(this, mReaderParams.sleep);
-
+                    try {
+                        notifyTagsChange();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 } else {
-                    Log.e(TAG,"GetTag er:" + String.valueOf(er.value())+ ", er:" + er.toString());
                     if (er == Reader.READER_ERR.MT_HARDWARE_ALERT_ERR_BY_TOO_MANY_RESET) {
+                        Log.e(TAG,"GetTag er:" + String.valueOf(er.value())+ ", er:" + er.toString());
                         mNeedreconnect = true;
                         stopRead();
                     } else {
+//                        if(er != Reader.READER_ERR.MT_OP_INVALID) {
+                            Log.e(TAG,"GetTag er:" + String.valueOf(er.value())+ ", er:" + er.toString());
+//                        }
                         handler.postDelayed(this, mReaderParams.sleep);//continue get tags,ignore errs
                     }
                 }
             }
         }
     };
+    
+    private void notifyTagsChange() throws JSONException {
+
+        List<Reader.TAGINFO> tagList = new ArrayList<>();
+        Iterator<Map.Entry<String,Reader.TAGINFO>> item = mTagsMap.entrySet().iterator();
+        while (item.hasNext()){
+            Map.Entry<String,Reader.TAGINFO> mapInfo = item.next();
+            Reader.TAGINFO info = mapInfo.getValue();
+            tagList.add(info);
+        }
+        JSONArray jsonArray = new JSONArray();
+        for(int i=0; i<tagList.size(); i++) {
+            Reader.TAGINFO tag = tagList.get(i);
+            JSONObject jo = new JSONObject();
+            String epcstr = Reader.bytes_Hexstr(tag.EpcId);
+            jo.put("EpcId", epcstr);
+            jo.put("ReadCnt", tag.ReadCnt);
+            jo.put("AntennaID", String.valueOf(tag.AntennaID));
+            jo.put("RSSI", String.valueOf(tag.RSSI));
+            jo.put("Frequency", String.valueOf(tag.Frequency));
+            jsonArray.put(jo);
+        }
+        String json = jsonArray.toString();
+        Intent intent = new Intent();
+        intent.setAction("com.haiersmart.action.rfid");
+        intent.putExtra("rfidTags", json);
+        sendBroadcast(intent);
+    }
+
+    public void handleReadTime(int microSecond) {
+        if(mReadTimer != null) {
+            mReadTimer.cancel();
+            mReadTimer.purge();
+            mReadTimer = null;
+        }
+
+        mReadTimer = new Timer();
+        mReadTimerTask = new TimerTask() {
+            @Override
+            public void run() {
+                Log.i("LTT mReadTimerTask", "读取时间到");
+              //  updateUIHandler.sendEmptyMessage(2);
+                stopRead();
+                mReadTimer.cancel();
+                mReadTimer.purge();
+                mReadTimer = null;
+            }
+        };
+        mReadTimer.schedule(mReadTimerTask,microSecond);//3000
+
+    }
+
+    private void clearData() {
+        mTagsMap.clear();
+    }
 
     private Reader.READER_ERR configProtocol() {
         mReaderParams = mSpf.ReadReaderParams();
@@ -286,20 +367,21 @@ public class RFIDService extends Service {
         //设置读写器发射功率
         Reader.AntPowerConf apcf = mReader.new AntPowerConf();
         apcf.antcnt= mAntPorts;
-        Log.i("MYINFO", "Connected set apcf.antcnt:"+ mAntPorts);
+        Log.i(TAG, "Connected set apcf.antcnt:"+ mAntPorts);
         for(int i=0;i<apcf.antcnt;i++)
         {
             Reader.AntPower jaap = mReader.new AntPower();
             jaap.antid=i+1;
-            Log.i("MYINFO", "Connected set jaap.antid:"+jaap.antid);
-            jaap.readPower =(short) mReaderParams.rpow[i];
-            Log.i("MYINFO", "Connected set jaap.readPower:"+jaap.readPower);
+           // Log.d(TAG, "Connected set jaap.antid:"+jaap.antid);
+            //jaap.readPower =(short) mReaderParams.rpow[i];
+            jaap.readPower = 2800;
+           // Log.d(TAG, "Connected set jaap.readPower:"+jaap.readPower);
             jaap.writePower=(short) mReaderParams.wpow[i];
-            Log.i("MYINFO", "Connected set jaap.writePower:"+jaap.writePower);
+           // Log.d(TAG, "Connected set jaap.writePower:"+jaap.writePower);
             apcf.Powers[i]=jaap;
         }
         er = mReader.ParamSet(Reader.Mtr_Param.MTR_PARAM_RF_ANTPOWER, apcf);
-        Log.i("MYINFO", "Connected set MTR_PARAM_RF_ANTPOWER:"+er.toString());
+        Log.i(TAG, "Connected set MTR_PARAM_RF_ANTPOWER:"+er.toString());
         return er;
     }
 
@@ -313,7 +395,7 @@ public class RFIDService extends Service {
                 break;
             case 1:
                 rre = Reader.Region_Conf.RG_NA;
-                Log.i("MYINFO", "Connected set Region_Conf.RG_NA");
+                Log.i(TAG, "Connected set Region_Conf.RG_NA");
                 break;
             case 2:
                 rre= Reader.Region_Conf.RG_NONE;
@@ -335,7 +417,7 @@ public class RFIDService extends Service {
         if(rre!= Reader.Region_Conf.RG_NONE)
         {
             er=mReader.ParamSet(Reader.Mtr_Param.MTR_PARAM_FREQUENCY_REGION,rre);
-            Log.i("MYINFO", "Connected set MTR_PARAM_FREQUENCY_REGION:"+er.toString());
+            Log.i(TAG, "Connected set MTR_PARAM_FREQUENCY_REGION:"+er.toString());
         }
         return er;
     }
@@ -419,12 +501,24 @@ public class RFIDService extends Service {
         }
 
         er = configProtocol();
+        if(er != Reader.READER_ERR.MT_OK_ERR) {
+            return false;
+        }
 
         er = configAntPower();
+        if(er != Reader.READER_ERR.MT_OK_ERR) {
+            return false;
+        }
 
         er = configRegion();
+        if(er != Reader.READER_ERR.MT_OK_ERR) {
+            return false;
+        }
 
         er = configOther();
+        if(er != Reader.READER_ERR.MT_OK_ERR) {
+            return false;
+        }
 
         if(er == Reader.READER_ERR.MT_OK_ERR) {
             return true;
@@ -438,13 +532,14 @@ public class RFIDService extends Service {
 
     private void TagsBufferResh(String key,Reader.TAGINFO tfs)
     {
-        if (!TagsMap.containsKey(key)) {
-            TagsMap.put(key, tfs);
+        if (!mTagsMap.containsKey(key)) {
+            mTagsMap.put(key, tfs);
         } else {
-            Reader.TAGINFO tf = TagsMap.get(key);
+            Reader.TAGINFO tf = mTagsMap.get(key);
             tf.ReadCnt += tfs.ReadCnt;
             tf.RSSI = tfs.RSSI;
             tf.Frequency = tfs.Frequency;
+            tf.AntennaID = tfs.AntennaID;
         }
     }
 }

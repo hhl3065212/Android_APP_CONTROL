@@ -28,6 +28,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private Button btnPay;
     @Bind(id = R.id.button_test,click = true)
     private  Button button_test;
+    @Bind(id = R.id.button_rfid, click = true)
+    private Button btnRfid;
 
 
     @Override
@@ -70,6 +72,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 break;
             case R.id.button_test:
                 startActivity(new Intent(MainActivity.this, TestActivity.class));
+                break;
+            case R.id.button_rfid:
+                startActivity(new Intent(MainActivity.this, RfidTestActivity.class));
                 break;
             default:
                 break;

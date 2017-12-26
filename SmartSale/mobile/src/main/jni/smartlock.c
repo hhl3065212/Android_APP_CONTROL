@@ -9,7 +9,7 @@
 #include <assert.h>
 #include "android/log.h"
 
-#define JNIREG_CLASS "com/haiersmart/smartsale/Smartlock" //指定要注册的类
+#define JNIREG_CLASS "com/haiersmart/smartsale/module/Smartlock" //指定要注册的类
 
 static const char *TAG="smartlock";
 #define LOGI(TAG, fmt, args...) __android_log_print(ANDROID_LOG_INFO,  TAG, fmt, ##args)

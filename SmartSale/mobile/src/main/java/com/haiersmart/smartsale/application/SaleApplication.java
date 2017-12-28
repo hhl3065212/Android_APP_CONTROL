@@ -11,8 +11,11 @@ package com.haiersmart.smartsale.application;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.WindowManager;
+
+import com.haiersmart.smartsale.service.HttpService;
 
 /**
  * <p>function: </p>
@@ -57,5 +60,6 @@ public class SaleApplication extends Application{
         sInstance = this;
         mContext = getApplicationContext();
         Log.i(TAG,"Application onCreate");
+        startService(new Intent(mContext,HttpService.class));
     }
 }

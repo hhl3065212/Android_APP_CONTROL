@@ -13,7 +13,7 @@
 #include <fcntl.h>
 #include <string.h>
 #include <jni.h>
-#include "com_haiersmart_smartsale_JniPir.h"
+#include "com_haiersmart_smartsale_activity_JniPir.h"
 #include "android/log.h"
 
 static const char *TAG="JNI PIR";

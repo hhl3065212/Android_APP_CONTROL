@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <!--android:layout_width="2px"-->
+    <View
+
+        android:layout_height="fill_parent"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:background="#B8B8B8"
+        android:visibility="visible" />
+    <!--android:layout_width = "40dp"-->
+    <TextView
+        android:id="@+id/textView_readsort"
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="20"
+        android:gravity="center"
+        android:text="   "
+        android:textColor="#CD3700"
+        android:textSize="20sp" />
+    <!--android:layout_width="10px"-->
+    <View
+
+        android:layout_height="fill_parent"
+        android:layout_width="0dp"
+        android:layout_weight="4"
+        android:background="#B8B8B8"
+        android:visibility="visible" />
+    <!--android:layout_width="220dp"-->
+    <TextView
+        android:id="@+id/textView_readepc"
+
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="110"
+        android:gravity="left"
+        android:text="                        "
+        android:textColor="#000000"
+        android:clickable="true"
+        android:textSize="15sp" />
+    <!--android:layout_width="10px"-->
+    <View
+
+        android:layout_height="fill_parent"
+        android:layout_width="0dp"
+        android:layout_weight="4"
+        android:background="#B8B8B8"
+        android:visibility="visible" />
+    <!--android:layout_width="45dp"-->
+    <TextView
+        android:id="@+id/textView_readcnt"
+
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="25"
+        android:gravity="center"
+        android:text="     "
+        android:textColor="#000000"
+        android:textSize="15sp" />
+    <!--android:layout_width="10px"-->
+    <View
+
+        android:layout_height="fill_parent"
+        android:layout_width="0dp"
+        android:layout_weight="4"
+        android:background="#B8B8B8"
+        android:visibility="visible" />
+
+    <!--android:layout_width="30dp"-->
+    <TextView
+        android:id="@+id/textView_readant"
+
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="15"
+        android:text=" "
+        android:textColor="#000000" />
+    <!--android:layout_width="10px"-->
+    <View
+
+        android:layout_height="fill_parent"
+        android:layout_width="0dp"
+        android:layout_weight="4"
+        android:background="#B8B8B8"
+        android:visibility="visible" />
+
+    <!--android:layout_width="30dp"-->
+    <TextView
+        android:id="@+id/textView_readpro"
+
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="15"
+        android:text="gen2"
+        android:textColor="#000000" />
+    <!--android:layout_width="10px"-->
+    <View
+
+        android:layout_height="fill_parent"
+        android:layout_width="0dp"
+        android:layout_weight="4"
+        android:background="#B8B8B8"
+        android:visibility="visible" />
+
+    <!--android:layout_width="40dp"-->
+    <TextView
+        android:id="@+id/textView_readrssi"
+
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="20"
+
+        android:text="-90"
+        android:textColor="#000000" />
+    <!--android:layout_width="10px"-->
+    <View
+
+        android:layout_height="fill_parent"
+        android:layout_width="0dp"
+        android:layout_weight="4"
+        android:background="#B8B8B8"
+        android:visibility="visible" />
+
+    <!--android:layout_width="60dp"-->
+    <TextView
+        android:id="@+id/textView_readfre"
+
+        android:layout_height="wrap_content"
+        android:text="925250"
+        android:layout_width="0dp"
+        android:layout_weight="30"
+        android:textColor="#000000" />
+    <!--android:layout_width="10px"-->
+    <View
+
+        android:layout_height="fill_parent"
+        android:layout_width="0dp"
+        android:layout_weight="4"
+        android:background="#B8B8B8"
+        android:visibility="visible" />
+
+    <!--android:layout_width="wrap_content"-->
+    <TextView
+        android:id="@+id/textView_reademd"
+
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="30"
+        android:text="                "
+        android:textColor="#000000" />
+    <!--android:layout_width="10px"-->
+    <View
+
+        android:layout_height="fill_parent"
+        android:layout_width="0dp"
+        android:layout_weight="4"
+        android:background="#B8B8B8"
+        android:visibility="visible" />
+</LinearLayout>

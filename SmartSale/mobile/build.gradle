@@ -26,6 +26,9 @@ android {
         }
     }
 
+        compile project(':library')
+        compile project(':rfidlibrary')
+    }
     productFlavors {
     }
 }
@@ -37,4 +40,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
     compile project(':library')
+	compile project(':rfidlibrary')
 }

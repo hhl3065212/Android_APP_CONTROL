@@ -1,2 +1,2 @@
-include ':mobile', ':library', ':userdemo'
+include ':mobile', ':library', ':rfidlibrary', ':userdemo'
 //':wear', ':tv',

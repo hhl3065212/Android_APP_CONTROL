@@ -49,6 +49,8 @@ public class MainActivity extends Activity implements View.OnClickListener, Http
     private EditText etShow;
     @Bind(id = R.id.btn_send,click = true)
     private Button btnSend;
+    @Bind(id = R.id.button_rfid, click = true)
+    private Button btnRfid;
 
     Socket socket = null;
     BufferedReader in = null;
@@ -117,6 +119,9 @@ public class MainActivity extends Activity implements View.OnClickListener, Http
                 if (isBind){
                     httpService.setOnUnlockListener(this);
                 }
+                break;
+            case R.id.button_rfid:
+                startActivity(new Intent(MainActivity.this, RfidTestActivity.class));
                 break;
             default:
                 break;

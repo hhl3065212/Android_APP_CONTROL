@@ -20,10 +20,10 @@ public class JniPir {
         System.loadLibrary("native-pir-jni");
     }
 
-    public native int add(int a, int b);
+    public native int probe(int gipoNum, int lable);
     public native int openGpioDev();
     public native int closeGpioDev();
-    public native int getGpio(int num);
-    public native int releaseGpio(int num);
-    public native int setGpioState(int num,int state);
+    public native int getGpio(int gpioNum);
+    public native int releaseGpio(int gpioNum);
+    public native int setGpioState(int gpioNum,int state);
 }

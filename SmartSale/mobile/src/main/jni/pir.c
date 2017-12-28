@@ -36,7 +36,7 @@ struct UserData{
 
 int fd=-1;
 
-JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_activity_JniPir_add(JNIEnv *env, jobject thiz, jint gpio, jint state) {
+JNIEXPORT jint JNICALL Java_com_haiersmart_smartsale_activity_JniPir_probe(JNIEnv *env, jobject thiz, jint gpio, jint state) {
     jint ret=-1;
     struct UserData userdata;
     memset(&userdata,0x00, sizeof(struct UserData));

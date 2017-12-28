@@ -10,6 +10,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.haiersmart.library.OKHttp.Http;
 import com.haiersmart.library.OKHttp.HttpCallback;
+import com.haiersmart.smartsale.application.SaleApplication;
 import com.haiersmart.smartsale.constant.ConstantUtil;
 
 import java.io.IOException;
@@ -31,12 +32,16 @@ public class HttpService extends Service{
 
         @Override
         public void setOnUnlockListener(UnlockListener listener) {
-            mUnlockListener.add(listener);
+            if(!mUnlockListener.contains(listener)) {
+                mUnlockListener.add(listener);
+            }
         }
 
         @Override
         public void removeOnUnlockListener(UnlockListener listener) {
-            mUnlockListener.remove(listener);
+            if(mUnlockListener.contains(listener)) {
+                mUnlockListener.remove(listener);
+            }
         }
     }
 
@@ -73,7 +78,7 @@ public class HttpService extends Service{
     private void getIsUnlock(){
         String url = "http://192.168.100.232/smartsale/getlock.php";
         final JSONObject json = new JSONObject();
-            json.put("mac",MAC);
+            json.put("mac", SaleApplication.get().getmMac());
 
         Http.post(url, json.toString(), new HttpCallback() {
             @Override
@@ -89,10 +94,10 @@ public class HttpService extends Service{
                 String userid = json.getString("userid");
                 String status = json.getString("status");
                 if (msg.equals("ok")){
-                    if (mac.equals(MAC)){
+                    if (mac.equals(SaleApplication.get().getmMac())){
                         if(status.equals("1")) {
                             Log.i(TAG, "unlock by userid="+userid);
-                            sendBroadcastUnlock();
+                            sendBroadcastUnlock(userid);
                             for (UnlockListener listener:mUnlockListener){
                                 listener.onUnlockListener(userid);
                             }
@@ -106,8 +111,9 @@ public class HttpService extends Service{
         });
     }
 
-    private void sendBroadcastUnlock(){
+    private void sendBroadcastUnlock(String userid){
         Intent intent = new Intent(ConstantUtil.HTTP_BROADCAST);
+        intent.putExtra("userid",userid);
         sendBroadcast(intent);
     }
 }

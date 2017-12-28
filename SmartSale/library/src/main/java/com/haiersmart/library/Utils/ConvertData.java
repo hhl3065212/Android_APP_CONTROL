@@ -95,5 +95,36 @@ public class ConvertData {
         stringBuffer.deleteCharAt(stringBuffer.length() - 1);
         return stringBuffer.toString();
     }
+    /**
+     * 字节数组转换为字符串，主要用于字节数组的显示
+     * @param bytes 输入字节数组
+     * @param form OCT:八进制 DEC:无符号十进制 HEX:十六进制 HEX_0X:带有0x的十六进制
+     * @param type 格式间隔
+     * @return
+     */
+    public static String bytesToString(byte[] bytes, int form, String type) {
+        if(bytes == null){
+            return "";
+        }
+        StringBuilder stringBuffer = new StringBuilder();
+        for (byte tmp : bytes) {
+            if (form == OCT) {
+                stringBuffer.append(String.format("%03o%s", tmp,type));
+            } else if (form == DEC) {
+                stringBuffer.append(String.format("%03d%s", tmp & 0xff,type));
+            } else if (form == HEX) {
+                stringBuffer.append(String.format("%02x%s", tmp,type));
+            } else if (form == HEX_0X) {
+                stringBuffer.append(String.format("0x%02x,", tmp));
+            }
+        }
+        if(stringBuffer.length()==0){
+            return "";
+        }
+        if(type !="") {
+            stringBuffer.deleteCharAt(stringBuffer.length() - 1);
+        }
+        return stringBuffer.toString();
+    }
 
 }

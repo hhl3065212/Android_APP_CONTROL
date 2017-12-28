@@ -372,7 +372,8 @@ public class RFIDService extends Service {
 
         //设置读写器发射功率
         Reader.AntPowerConf apcf = mReader.new AntPowerConf();
-        apcf.antcnt= mAntPorts;
+//        apcf.antcnt= mAntPorts;
+        apcf.antcnt= 5;//setting working annetta count
         Log.i(TAG, "Connected set apcf.antcnt:"+ mAntPorts);
         for(int i=0;i<apcf.antcnt;i++)
         {

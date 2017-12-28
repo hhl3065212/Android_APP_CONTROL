@@ -64,7 +64,9 @@ public class ReaderParams {
         invpro.add("GEN2");
         //uants=new int[1];
         //uants[0]=1;
-        uants=new int[]{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};//Changed by LTT
+      //  uants=new int[]{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};//Changed by LTT
+
+        uants=new int[]{1,2,3,4,5};//Changed by LTT
 
         sleep=0;
         readtime=50;
@@ -72,8 +74,9 @@ public class ReaderParams {
         opro="GEN2";
         checkant=1;
 //        rpow=new int[]{3000,3000,3000,3000,3000,3000,3000,3000,3000,3000,3000,3000,3000,3000,3000,3000};//Changed by LTT
-        rpow=new int[]{3000,3000,3000,3000,3000,0,0,0,0,0,0,0,0,0,0,0};//Changed by LTT
-        wpow=new int[]{2000,2700,2700,2700,2700,2700,2700,2700,2700,2700,2700,2700,2700,2700,2700,2700};//Changed by LTT
+//        wpow=new int[]{2000,2700,2700,2700,2700,2700,2700,2700,2700,2700,2700,2700,2700,2700,2700,2700};//Changed by LTT
+        rpow=new int[]{3000,3000,3000,3000,3000};
+        wpow=new int[]{2000,2700,2700,2700,2700};
         region=1;//north American
         frelen=0;
 //				session=0;

@@ -121,7 +121,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Http
                 }
                 break;
             case R.id.button_rfid:
-                startActivity(new Intent(MainActivity.this, RfidTestActivity.class));
+                startActivity(new Intent(MainActivity.this, SmartlockActivity.class));
                 break;
             default:
                 break;

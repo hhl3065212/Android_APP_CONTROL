@@ -1,9 +1,9 @@
 :: Please set %NDK_PATH% as your NDK path
-set NDK_PATH=D:\Personal\AppData\Local\Android\Sdk\ndk-bundle
+set NDK_PATH=D:\Android\android-ndk-r10e
 
 
 set PATH=%NDK_PATH%;%PATH%
-call ndk-build.cmd APP_ABI=x86,armeabi-v7a APP_BUILD_SCRIPT=./Android.mk NDK_LIBS_OUT=./prebuilt
+call ndk-build.cmd APP_ABI=x86,armeabi-v7a APP_BUILD_SCRIPT=./Android.mk NDK_LIBS_OUT=../libs
 
 set CURRENT_PATH_X86=.\prebuilt\x86\*.so
 set CURRENT_PATH_ARM=.\prebuilt\armeabi-v7a\*.so

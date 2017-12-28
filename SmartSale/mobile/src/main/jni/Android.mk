@@ -27,3 +27,17 @@ LOCAL_LDLIBS    += -llog
 LOCAL_CFLAGS    += -UNDEBUG
 
 include $(BUILD_SHARED_LIBRARY)
+
+include $(CLEAR_VARS)
+
+LOCAL_MODULE    := native-smartlock-jni
+LOCAL_SRC_FILES := smartlock.c
+
+# for logging
+LOCAL_LDLIBS    += -llog
+# for native windows
+#LOCAL_LDLIBS    += -landroid
+
+LOCAL_CFLAGS    += -UNDEBUG
+
+include $(BUILD_SHARED_LIBRARY)

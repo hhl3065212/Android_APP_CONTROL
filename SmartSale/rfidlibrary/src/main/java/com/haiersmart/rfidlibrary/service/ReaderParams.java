@@ -71,7 +71,8 @@ public class ReaderParams {
         optime=1000;
         opro="GEN2";
         checkant=1;
-        rpow=new int[]{3000,3000,3000,3000,3000,3000,3000,3000,3000,3000,3000,3000,3000,3000,3000,3000};//Changed by LTT
+//        rpow=new int[]{3000,3000,3000,3000,3000,3000,3000,3000,3000,3000,3000,3000,3000,3000,3000,3000};//Changed by LTT
+        rpow=new int[]{3000,3000,3000,3000,3000,0,0,0,0,0,0,0,0,0,0,0};//Changed by LTT
         wpow=new int[]{2000,2700,2700,2700,2700,2700,2700,2700,2700,2700,2700,2700,2700,2700,2700,2700};//Changed by LTT
         region=1;//north American
         frelen=0;

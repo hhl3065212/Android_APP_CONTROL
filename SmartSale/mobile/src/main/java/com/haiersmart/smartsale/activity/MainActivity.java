@@ -8,11 +8,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.haiersmart.library.MediaPlayer.PlayFixedVoice;
@@ -20,6 +21,7 @@ import com.haiersmart.library.SerialPort.SerialPort;
 import com.haiersmart.library.Utils.Bind;
 import com.haiersmart.library.Utils.ViewBinder;
 import com.haiersmart.smartsale.R;
+import com.haiersmart.smartsale.application.SaleApplication;
 import com.haiersmart.smartsale.constant.ConstantUtil;
 import com.haiersmart.smartsale.service.HttpService;
 
@@ -45,8 +47,6 @@ public class MainActivity extends Activity implements View.OnClickListener, Http
     private  Button button_test;
     @Bind(id = R.id.tx_show)
     private TextView txShow;
-    @Bind(id = R.id.et_show)
-    private EditText etShow;
     @Bind(id = R.id.btn_send,click = true)
     private Button btnSend;
     @Bind(id = R.id.button_rfid, click = true)
@@ -67,6 +67,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Http
         ViewBinder.bind(this);
         bindService(new Intent(this,HttpService.class),httpConnection,BIND_AUTO_CREATE);
         registerReceiver(ReceiverHttp,new IntentFilter(ConstantUtil.HTTP_BROADCAST));
+        txShow.setText("mac="+ SaleApplication.get().getmMac());
     }
 
     BroadcastReceiver ReceiverHttp = new BroadcastReceiver() {
@@ -74,6 +75,12 @@ public class MainActivity extends Activity implements View.OnClickListener, Http
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             Log.i(TAG,"receiver brodacast action="+action);
+            String userid = intent.getStringExtra("userid");
+            Bundle bundle = new Bundle();
+            bundle.putString("userid",userid);
+            Message message = new Message();
+            message.setData(bundle);
+            handler.sendMessage(message);
         }
     };
 
@@ -121,7 +128,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Http
                 }
                 break;
             case R.id.button_rfid:
-                startActivity(new Intent(MainActivity.this, RfidTestActivity.class));
+                startActivity(new Intent(MainActivity.this, SmartlockActivity.class));
                 break;
             default:
                 break;
@@ -132,5 +139,22 @@ public class MainActivity extends Activity implements View.OnClickListener, Http
     @Override
     public void onUnlockListener(String userid) {
         Log.i(TAG,"unlock Listener message,userid="+userid);
+        Bundle bundle = new Bundle();
+        bundle.putString("userid",userid);
+        Message message = new Message();
+        message.setData(bundle);
+        handler.sendMessage(message);
     }
+
+    Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Bundle bundle = msg.getData();
+            String userid = bundle.getString("userid");
+            StringBuffer buffer = new StringBuffer();
+            buffer.append(userid).append(" ").append("开锁\n").append(txShow.getText().toString());
+            txShow.setText(buffer.toString());
+        }
+    };
 }

@@ -22,4 +22,45 @@ public class RFIDInfoEntry implements Serializable{
 
     public RFIDInfoEntry() {
     }
+    public int getId() {
+        return id;
+    }
+
+    public String getMac() {
+        return mac;
+    }
+
+    public String getUserid() {
+        return userid;
+    }
+
+    public int getCounts() {
+        return counts;
+    }
+
+    public String getEpcid() {
+        return epcid;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setMac(String mac) {
+        this.mac = mac;
+    }
+
+    public void setUserid(String userid) {
+        this.userid = userid;
+    }
+
+    public void setCounts(int counts) {
+        this.counts = counts;
+    }
+
+    public void setEpcid(String epcid) {
+        this.epcid = epcid;
+    }
+
+
 }

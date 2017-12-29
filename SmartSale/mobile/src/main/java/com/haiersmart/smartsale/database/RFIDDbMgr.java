@@ -63,7 +63,7 @@ public class RFIDDbMgr {
             values.put("mac", entry.epcid);
             values.put("userid", entry.userid);
             values.put("counts", entry.counts);
-            values.put("epc", entry.epcid);
+            values.put("epcid", entry.epcid);
             long newRowId = sdb.insert(
                     TABLE_NAME,
                     null,
@@ -72,6 +72,36 @@ public class RFIDDbMgr {
         }
     }
 
+    public void deleteEntry(RFIDInfoEntry entry) {
+        synchronized (mDBLock) {
+            if (entry == null) return;
+            sdb.delete(TABLE_NAME, "userid = ?", new String[]{entry.userid});
+        }
+    }
+
+    public void queryByUserId(RFIDInfoEntry entry) {
+        synchronized (mDBLock) {
+            Cursor c = queryTheCursor();
+            while (c.moveToNext()) {
+                //FridgeControlEntry tmpEntry = new FridgeControlEntry();
+                if(entry.userid.equals(c.getString(c.getColumnIndex("userid")))) {
+                    entry.id = c.getInt(c.getColumnIndex("id"));
+                    entry.mac = c.getString(c.getColumnIndex("mac"));
+                    entry.counts = c.getInt(c.getColumnIndex("counts"));
+                    entry.epcid = c.getString(c.getColumnIndex("epcid"));
+                    break;
+                }
+            }
+            c.close();
+        }
+    }
+
+    public Cursor queryTheCursor() {
+        Cursor c = sdb.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+        return c;
+    }
+
+
     public long insert(JSONObject jsonObject) {
         synchronized (mDBLock) {
             if (jsonObject == null) return -1;
@@ -79,8 +109,10 @@ public class RFIDDbMgr {
             try {
                 values.put("mac", jsonObject.getString("mac"));
                 values.put("userid",jsonObject.getString("userid"));
-                values.put("counts", jsonObject.getInt("counts"));
-                values.put("epc", jsonObject.getString("epc"));
+
+                JSONObject rfidJo = jsonObject.getJSONObject("rfid");
+                values.put("counts", rfidJo.getInt("counts"));
+                values.put("epcid", rfidJo.getString("epcid"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -93,16 +125,25 @@ public class RFIDDbMgr {
     }
 
 
-    public static String getJsonString(JSONObject json, String keyName) {
-        try {
-            if (json==null) {
-                return "";
+
+    public void deleteEntry(JSONObject jsonObject) {
+        synchronized (mDBLock) {
+            if (jsonObject == null) return;
+            try {
+                sdb.delete(TABLE_NAME, "userid = ?", new String[]{jsonObject.getString("userid")});
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-            String s = json.getString(keyName);
-            return (s == null || s.equals("") || s.equals("null")) ? "" : s;
-        } catch (JSONException e) {
-          //  Log.e(e.getMessage());
-            return "";
         }
     }
+
+
+    public void replaceEntry(JSONObject jsonObject) {
+        synchronized (mDBLock) {
+            if (jsonObject == null) return;
+            sdb.delete(TABLE_NAME, null, null);
+            insert(jsonObject);
+        }
+    }
+
 }

@@ -3,6 +3,7 @@ package com.haiersmart.userdemo;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -51,17 +52,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     //显示扫描到的内容
                     txtShow.setVisibility(View.VISIBLE);
                     txtShow.setText("mac="+res);
-                    String url = "http://192.168.100.232/smartsale/unlock.php?mac="+res
+                    String url = "http://192.168.200.11/smartsale/unlock.php?mac="+res
                             +"&userid=12356&now="+System.currentTimeMillis();
                     Http.get(url, new HttpCallback() {
                         @Override
                         public void onFailed(IOException e) {
-
+                            Log.i(TAG,e.toString());
                         }
 
                         @Override
                         public void onSuccess(String body, String response) {
-
+                            Log.i(TAG,body);
                         }
                     });
                     //显示

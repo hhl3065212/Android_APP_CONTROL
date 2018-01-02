@@ -20,13 +20,13 @@ public class ConstantUtil {
     protected final String TAG = "ConstantUtil";
 
     //
-    public static final String URL = "http://192.168.100.232/smartsale/";
+    public static final String URL = "http://192.168.200.11/smartsale/";
     public static final String URL_GETLOCK = "getlock.php";
     public static final String URL_UNLOCK = "unlock.php";
     public static final String URL_PUTDOOR = "putdoor.php";
     public static final String URL_PUTRFID = "putrfid.php";
 
-    public static final String URL_TEST_SERVER = "http://192.168.100.232/smartsale/putrfid.php";
+    public static final String URL_TEST_SERVER = "http://192.168.200.11/smartsale/putrfid.php";
 
     public static final String HTTP_BROADCAST = "com.haiersmart.smartsale.httpservice";
 

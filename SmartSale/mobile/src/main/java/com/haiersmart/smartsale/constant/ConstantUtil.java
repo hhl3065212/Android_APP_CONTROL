@@ -20,9 +20,18 @@ public class ConstantUtil {
     protected final String TAG = "ConstantUtil";
 
     //
-    public static final String URL = "http://wine.haieco.com:80/linkcook/tft/rfid/save";
-    //
-    public static final String URL_TEST = "http://test1.jiuzhidao.com:8080/linkcook/tft/rfid/save";
+    public static final String URL = "http://192.168.100.232/smartsale/";
+    public static final String URL_GETLOCK = "getlock.php";
+    public static final String URL_UNLOCK = "unlock.php";
+    public static final String URL_PUTDOOR = "putdoor.php";
+    public static final String URL_PUTRFID = "putrfid.php";
+
 
     public static final String HTTP_BROADCAST = "com.haiersmart.smartsale.httpservice";
+    public static final String HTTP_KEY_MSG = "msg";
+    public static final String HTTP_KEY_MAC = "mac";
+    public static final String HTTP_KEY_USERID = "userid";
+    public static final String HTTP_KEY_STATUS = "status";
+    public static final String HTTP_KEY_OK = "ok";
+    public static final String HTTP_KEY_ERR = "err";
 }

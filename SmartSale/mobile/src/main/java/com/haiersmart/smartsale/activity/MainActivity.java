@@ -17,7 +17,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.haiersmart.library.MediaPlayer.PlayFixedVoice;
-import com.haiersmart.library.SerialPort.SerialPort;
 import com.haiersmart.library.Utils.Bind;
 import com.haiersmart.library.Utils.ViewBinder;
 import com.haiersmart.smartsale.R;
@@ -25,15 +24,9 @@ import com.haiersmart.smartsale.application.SaleApplication;
 import com.haiersmart.smartsale.constant.ConstantUtil;
 import com.haiersmart.smartsale.service.HttpService;
 
-import java.io.BufferedReader;
-import java.io.PrintWriter;
-import java.net.Socket;
-
 
 public class MainActivity extends Activity implements View.OnClickListener, HttpService.UnlockListener {
     private final String TAG = getClass().getSimpleName();
-
-    SerialPort mSerialPort;
 
     @Bind(id = R.id.btn_open,click = true)
     private Button btnOpen;
@@ -52,13 +45,9 @@ public class MainActivity extends Activity implements View.OnClickListener, Http
     @Bind(id = R.id.button_rfid, click = true)
     private Button btnRfid;
 
-    Socket socket = null;
-    BufferedReader in = null;
-    PrintWriter out = null;
-    private String content = "";
-
     private boolean isBind = false;
     private HttpService.HttpBinder httpService;
+    private UnlockHandler handler = new UnlockHandler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,10 +63,11 @@ public class MainActivity extends Activity implements View.OnClickListener, Http
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            Log.i(TAG,"receiver brodacast action="+action);
-            String userid = intent.getStringExtra("userid");
+            String logi = "receiver brodacast action="+action;
+            Log.i(TAG,logi);
+            String userid = intent.getStringExtra(ConstantUtil.HTTP_KEY_USERID);
             Bundle bundle = new Bundle();
-            bundle.putString("userid",userid);
+            bundle.putString(ConstantUtil.HTTP_KEY_USERID,userid);
             Message message = new Message();
             message.setData(bundle);
             handler.sendMessage(message);
@@ -128,7 +118,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Http
                 }
                 break;
             case R.id.button_rfid:
-                startActivity(new Intent(MainActivity.this, SmartlockActivity.class));
+                startActivity(new Intent(MainActivity.this, RfidTestActivity.class));
                 break;
             default:
                 break;
@@ -140,21 +130,24 @@ public class MainActivity extends Activity implements View.OnClickListener, Http
     public void onUnlockListener(String userid) {
         Log.i(TAG,"unlock Listener message,userid="+userid);
         Bundle bundle = new Bundle();
-        bundle.putString("userid",userid);
+        bundle.putString(ConstantUtil.HTTP_KEY_USERID,userid);
         Message message = new Message();
         message.setData(bundle);
         handler.sendMessage(message);
     }
 
-    Handler handler = new Handler(){
+
+    private int counts = 0;
+    private class UnlockHandler extends Handler{
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             Bundle bundle = msg.getData();
-            String userid = bundle.getString("userid");
+            String userid = bundle.getString(ConstantUtil.HTTP_KEY_USERID);
             StringBuffer buffer = new StringBuffer();
-            buffer.append(userid).append(" ").append("开锁\n").append(txShow.getText().toString());
+            counts++;
+            buffer.append(userid).append("第").append(counts).append("次").append("开锁\n").append("mac="+ SaleApplication.get().getmMac());
             txShow.setText(buffer.toString());
         }
-    };
+    }
 }

@@ -29,6 +29,8 @@ public class ConstantUtil {
     public static final String URL_TEST_SERVER = "http://192.168.200.11/smartsale/putrfid.php";
 
     public static final String HTTP_BROADCAST = "com.haiersmart.smartsale.httpservice";
+    public static final String DOOR_STATE_BROADCAST = "com.haiersmart.smartsale.httpservice";
+
 
     public static final int DB_VERSION = 1;
     public static final String DB_NAME = "smartsale.db";
@@ -39,4 +41,6 @@ public class ConstantUtil {
     public static final String HTTP_KEY_STATUS = "status";
     public static final String HTTP_KEY_OK = "ok";
     public static final String HTTP_KEY_ERR = "err";
+
+    public static final String DOOR_STATE = "state";
 }

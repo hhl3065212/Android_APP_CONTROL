@@ -41,9 +41,14 @@
         <service
             android:name=".service.HttpService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
 
-        <activity android:name=".activity.SmartlockActivity"></activity>
+        <activity android:name=".activity.SmartlockActivity" />
+
+        <service
+            android:name=".service.SmartlockService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

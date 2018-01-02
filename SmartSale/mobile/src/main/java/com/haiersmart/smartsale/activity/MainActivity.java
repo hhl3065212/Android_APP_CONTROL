@@ -44,6 +44,8 @@ public class MainActivity extends Activity implements View.OnClickListener, Http
     private Button btnSend;
     @Bind(id = R.id.button_rfid, click = true)
     private Button btnRfid;
+    @Bind(id = R.id.button_smartlock, click = true)
+    private Button btnSmartlock;
 
     private boolean isBind = false;
     private HttpService.HttpBinder httpService;
@@ -119,6 +121,9 @@ public class MainActivity extends Activity implements View.OnClickListener, Http
                 break;
             case R.id.button_rfid:
                 startActivity(new Intent(MainActivity.this, RfidTestActivity.class));
+                break;
+            case R.id.button_smartlock:
+                startActivity(new Intent(MainActivity.this, SmartlockActivity.class));
                 break;
             default:
                 break;

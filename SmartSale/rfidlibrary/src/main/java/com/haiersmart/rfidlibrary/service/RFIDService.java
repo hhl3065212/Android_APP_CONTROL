@@ -253,7 +253,13 @@ public class RFIDService extends Service {
                         e.printStackTrace();
                     }
                 } else {
-                    if (er == Reader.READER_ERR.MT_HARDWARE_ALERT_ERR_BY_TOO_MANY_RESET) {
+                    if (er == Reader.READER_ERR.MT_HARDWARE_ALERT_ERR_BY_TOO_MANY_RESET ||
+                        er == Reader.READER_ERR.MT_HARDWARE_ALERT_ERR_BY_HIGN_RETURN_LOSS ||
+                        er == Reader.READER_ERR.MT_HARDWARE_ALERT_ERR_BY_HIGN_RETURN_LOSS  ||
+                        er == Reader.READER_ERR.MT_HARDWARE_ALERT_ERR_BY_NO_ANTENNAS ||
+                        er == Reader.READER_ERR.MT_HARDWARE_ALERT_ERR_BY_HIGH_TEMPERATURE ||
+                        er == Reader.READER_ERR.MT_HARDWARE_ALERT_ERR_BY_READER_DOWN ||
+                         er == Reader.READER_ERR.MT_HARDWARE_ALERT_ERR_BY_UNKNOWN_ERR) {
                         Log.e(TAG,"GetTag er:" + String.valueOf(er.value())+ ", er:" + er.toString());
                         mNeedreconnect = true;
                         stopRead();
@@ -366,15 +372,16 @@ public class RFIDService extends Service {
 
         //设置读写器发射功率
         Reader.AntPowerConf apcf = mReader.new AntPowerConf();
-        apcf.antcnt= mAntPorts;
+//        apcf.antcnt= mAntPorts;
+        apcf.antcnt= 5;//setting working annetta count
         Log.i(TAG, "Connected set apcf.antcnt:"+ mAntPorts);
         for(int i=0;i<apcf.antcnt;i++)
         {
             Reader.AntPower jaap = mReader.new AntPower();
             jaap.antid=i+1;
            // Log.d(TAG, "Connected set jaap.antid:"+jaap.antid);
-            //jaap.readPower =(short) mReaderParams.rpow[i];
-            jaap.readPower = 2800;
+            jaap.readPower =(short) mReaderParams.rpow[i];
+//            jaap.readPower = 2800;
            // Log.d(TAG, "Connected set jaap.readPower:"+jaap.readPower);
             jaap.writePower=(short) mReaderParams.wpow[i];
            // Log.d(TAG, "Connected set jaap.writePower:"+jaap.writePower);

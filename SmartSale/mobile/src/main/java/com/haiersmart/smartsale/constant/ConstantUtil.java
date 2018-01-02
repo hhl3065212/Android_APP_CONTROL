@@ -41,4 +41,6 @@ public class ConstantUtil {
     public static final String HTTP_KEY_STATUS = "status";
     public static final String HTTP_KEY_OK = "ok";
     public static final String HTTP_KEY_ERR = "err";
+
+    public static final String DOOR_STATE = "state";
 }

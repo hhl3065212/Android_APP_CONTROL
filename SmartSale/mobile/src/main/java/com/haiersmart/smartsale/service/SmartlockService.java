@@ -3,31 +3,19 @@ package com.haiersmart.smartsale.service;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.PowerManager;
 
 
+import com.haiersmart.smartsale.constant.ConstantUtil;
 import com.haiersmart.smartsale.module.Smartlock;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 public class SmartlockService extends Service {
     private PowerManager.WakeLock mWakeLock = null;
     InputStream mInputStream;
     Smartlock mSmartlock;
-    HandlerThread mHandlerThread;
-    Handler mHandler;
-
-    private class SmartlockThread extends Thread {
-        @Override
-        public void run() {
-            super.run();
-
-        }
-    }
 
     public SmartlockService() {
     }
@@ -38,22 +26,23 @@ public class SmartlockService extends Service {
         mInputStream = mSmartlock.getInputStream();
     }
 
-    public String readSmartlock(InputStream in) {
-        byte[] buf = new byte[1024];
-        StringBuffer sb = new StringBuffer();
-        int len = 0;
-        try {
-            while ((len = in.read(buf)) != -1) {
-                sb.append(new String(buf, 0, len));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return sb.toString();
+    private void closeSmartlock() {
+        mSmartlock = Smartlock.getInstance();
+        mSmartlock.closeSmartLock();
     }
 
-    private String getSmartlockState() {
-        return readSmartlock(mInputStream);
+    public byte getSmartlockState(InputStream in) {
+        byte[] buf = new byte[2];
+        int len = 0;
+        try {
+            if ((len = in.read(buf)) != -1) {
+                return buf[0];
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+        return -1;
     }
 
     private void acquireWakelock() {
@@ -77,16 +66,38 @@ public class SmartlockService extends Service {
     public void onCreate() {
         super.onCreate();
         acquireWakelock();
+        openSmartlock();
+    }
+
+    private void sendBroadcastDoorState(String state) {
+        Intent intent = new Intent(ConstantUtil.DOOR_STATE_BROADCAST);
+        intent.putExtra(ConstantUtil.DOOR_STATE, state);
+        sendBroadcast(intent);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         int ret;
         ret = super.onStartCommand(intent, flags, startId);
-        mHandlerThread = new HandlerThread("sendBeatThread");
-        mHandlerThread.start();
-        mHandler = new Handler(mHandlerThread.getLooper());
-//        mHandler.post(new BeatTask());
+        new Thread() {
+            byte cmd;
+            @Override
+            public void run() {
+                super.run();
+                while (true) {
+                    cmd = getSmartlockState(mInputStream);
+                    if (cmd == '0') {
+                        sendBroadcastDoorState("open");
+                        continue;
+                    }
+                    if (cmd == '1') {
+                        sendBroadcastDoorState("close");
+                        continue;
+                    }
+
+                }
+            }
+        }.start();
         return ret;
     }
 
@@ -100,5 +111,6 @@ public class SmartlockService extends Service {
     public void onDestroy() {
         super.onDestroy();
         releaseWakelock();
+        closeSmartlock();
     }
 }

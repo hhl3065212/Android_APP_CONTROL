@@ -24,6 +24,7 @@ import com.haiersmart.library.Utils.ConvertData;
 import com.haiersmart.smartsale.constant.ConstantUtil;
 import com.haiersmart.smartsale.module.Smartlock;
 import com.haiersmart.smartsale.service.HttpService;
+import com.haiersmart.smartsale.service.SmartlockService;
 
 import java.io.OutputStream;
 import java.net.NetworkInterface;
@@ -107,6 +108,7 @@ public class SaleApplication extends Application {
         Log.i(TAG, "Application onCreate");
         Log.i(TAG, macList.toString());
         startService(new Intent(mContext, HttpService.class));
+        startService(new Intent(mContext, SmartlockService.class));
         registerReceiver(mReceiverHttp, new IntentFilter(ConstantUtil.HTTP_BROADCAST));
     }
 

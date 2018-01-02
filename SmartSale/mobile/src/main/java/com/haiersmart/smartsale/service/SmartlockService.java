@@ -11,6 +11,7 @@ import android.os.PowerManager;
 
 import com.haiersmart.smartsale.module.Smartlock;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 public class SmartlockService extends Service {
@@ -37,8 +38,22 @@ public class SmartlockService extends Service {
         mInputStream = mSmartlock.getInputStream();
     }
 
-    private void getSmartlockState() {
+    public String readSmartlock(InputStream in) {
+        byte[] buf = new byte[1024];
+        StringBuffer sb = new StringBuffer();
+        int len = 0;
+        try {
+            while ((len = in.read(buf)) != -1) {
+                sb.append(new String(buf, 0, len));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return sb.toString();
+    }
 
+    private String getSmartlockState() {
+        return readSmartlock(mInputStream);
     }
 
     private void acquireWakelock() {

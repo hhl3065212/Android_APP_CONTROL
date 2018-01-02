@@ -10,15 +10,22 @@
 package com.haiersmart.smartsale.application;
 
 import android.app.Application;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Bundle;
+import android.os.Message;
 import android.util.ArrayMap;
 import android.util.Log;
 import android.view.WindowManager;
 
 import com.haiersmart.library.Utils.ConvertData;
+import com.haiersmart.smartsale.constant.ConstantUtil;
+import com.haiersmart.smartsale.module.Smartlock;
 import com.haiersmart.smartsale.service.HttpService;
 
+import java.io.OutputStream;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.ArrayList;
@@ -33,15 +40,41 @@ import java.util.Map;
  * Author: Holy.Han
  * modification:
  */
-public class SaleApplication extends Application{
+public class SaleApplication extends Application {
     protected final String TAG = "SaleApplication";
     private static SaleApplication sInstance = null;
     public static Context mContext;
     private WindowManager.LayoutParams wmParams = new WindowManager.LayoutParams();
     private WindowManager wm;
     private static String mMac;
-    private static List<Map<String,String>> macList = new ArrayList<>();
+    private static List<Map<String, String>> macList = new ArrayList<>();
 
+    BroadcastReceiver mReceiverHttp = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            Log.i(TAG, "receiver brodacast action = " + action);
+            unlockSmartlock();
+        }
+    };
+
+    private void unlockSmartlock() {
+        boolean ret;
+        OutputStream outputStream;
+        byte[] openCmd = {'1', '\0'};
+        Smartlock smartlock = Smartlock.getInstance();
+        ret = smartlock.openSmartLock("/dev/smartlock");
+        if (!ret)
+            return;
+        outputStream = smartlock.getOutputStream();
+        if (outputStream == null)
+            return;
+        try {
+            outputStream.write(openCmd);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public static SaleApplication get() {
         if (sInstance == null) {
@@ -71,28 +104,29 @@ public class SaleApplication extends Application{
         sInstance = this;
         mContext = getApplicationContext();
         getMac();
-        Log.i(TAG,"Application onCreate");
-        Log.i(TAG,macList.toString());
-        startService(new Intent(mContext,HttpService.class));
+        Log.i(TAG, "Application onCreate");
+        Log.i(TAG, macList.toString());
+        startService(new Intent(mContext, HttpService.class));
+        registerReceiver(mReceiverHttp, new IntentFilter(ConstantUtil.HTTP_BROADCAST));
     }
 
-    private void getMac(){
+    private void getMac() {
         try {
             List<NetworkInterface> netList = Collections.list(NetworkInterface.getNetworkInterfaces());
-            for (NetworkInterface net:netList){
+            for (NetworkInterface net : netList) {
                 byte[] buf = net.getHardwareAddress();
                 String name = net.getDisplayName();
-                if(buf != null && buf.length>0) {
-                    Map<String,String> map = new ArrayMap<>();
-                    map.put("name",name);
-                    map.put("mac",ConvertData.bytesToString(buf,16,""));
+                if (buf != null && buf.length > 0) {
+                    Map<String, String> map = new ArrayMap<>();
+                    map.put("name", name);
+                    map.put("mac", ConvertData.bytesToString(buf, 16, ""));
                     macList.add(map);
                 }
             }
         } catch (SocketException e) {
             e.printStackTrace();
         }
-        if(macList.size()>0){
+        if (macList.size() > 0) {
             mMac = macList.get(0).get("mac");
         }
     }

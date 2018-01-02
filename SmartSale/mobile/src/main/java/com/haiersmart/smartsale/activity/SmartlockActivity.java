@@ -18,6 +18,7 @@ public class SmartlockActivity extends Activity {
     private void unlockSmartlock() {
         boolean ret;
         OutputStream outputStream;
+        byte[] openCmd = {'1', '\0'};
         Smartlock smartlock = Smartlock.getInstance();
         ret = smartlock.openSmartLock("/dev/smartlock");
         if (!ret)
@@ -26,7 +27,7 @@ public class SmartlockActivity extends Activity {
         if (outputStream == null)
             return;
         try {
-            outputStream.write("1".getBytes());
+            outputStream.write(openCmd);
         } catch (Exception e) {
             e.printStackTrace();
         }

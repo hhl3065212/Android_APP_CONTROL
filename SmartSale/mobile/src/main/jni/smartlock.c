@@ -60,7 +60,7 @@ JNIEXPORT void JNICALL native_close(JNIEnv *env, jobject thiz)
 * Table of methods associated with a single class.
 */
 static JNINativeMethod gMethods[] = {
-    { "nativeOpen",  "(Ljava/lang/String;I)Ljava/lang/Object;", (void*)native_open },
+    { "nativeOpen",  "(Ljava/lang/String;I)Ljava/io/FileDescriptor;", (void*)native_open },
     { "nativeClose", "()V", (void*)native_close }
 };
 

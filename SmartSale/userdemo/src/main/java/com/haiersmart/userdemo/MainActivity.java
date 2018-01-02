@@ -50,8 +50,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     String res = data.getStringExtra("SCAN_RESULT");
                     //显示扫描到的内容
                     txtShow.setVisibility(View.VISIBLE);
-                    txtShow.setText(res);
-                    Http.get(res+"&userid=12356&now="+System.currentTimeMillis(), new HttpCallback() {
+                    txtShow.setText("mac="+res);
+                    String url = "http://192.168.100.232/smartsale/unlock.php?mac="+res
+                            +"&userid=12356&now="+System.currentTimeMillis();
+                    Http.get(url, new HttpCallback() {
                         @Override
                         public void onFailed(IOException e) {
 

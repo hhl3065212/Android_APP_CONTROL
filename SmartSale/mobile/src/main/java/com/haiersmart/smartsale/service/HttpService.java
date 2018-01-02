@@ -17,30 +17,30 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HttpService extends Service {
+public class HttpService extends Service{
     private final String TAG = getClass().getSimpleName();
     private final String MAC = "112233445566";
     private HttpBinder binder;
+    private static boolean isOnBroadcast = true;
 
     private List<UnlockListener> mUnlockListener = new ArrayList<>();
-
     public HttpService() {
 
     }
 
 
-    public class HttpBinder extends Binder implements HttpServiceBind {
+    public class HttpBinder extends Binder implements HttpServiceBind{
 
         @Override
         public void setOnUnlockListener(UnlockListener listener) {
-            if (!mUnlockListener.contains(listener)) {
+            if(!mUnlockListener.contains(listener)) {
                 mUnlockListener.add(listener);
             }
         }
 
         @Override
         public void removeOnUnlockListener(UnlockListener listener) {
-            if (mUnlockListener.contains(listener)) {
+            if(mUnlockListener.contains(listener)) {
                 mUnlockListener.remove(listener);
             }
         }
@@ -50,7 +50,7 @@ public class HttpService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.i(TAG, "HttpService onCreate");
+        Log.i(TAG,"HttpService onCreate");
         binder = new HttpBinder();
         new Thread(getRunnable).start();
     }
@@ -64,10 +64,10 @@ public class HttpService extends Service {
     private Runnable getRunnable = new Runnable() {
         @Override
         public void run() {
-            while (true) {
+            while (true){
                 getIsUnlock();
-                long endTime = System.currentTimeMillis() + 500L;
-                while (System.currentTimeMillis() < endTime) ;
+                long endTime = System.currentTimeMillis()+500L;
+                while (System.currentTimeMillis()<endTime);
             }
         }
     };
@@ -76,11 +76,10 @@ public class HttpService extends Service {
         void onUnlockListener(String userid);
     }
 
-    private void getIsUnlock() {
-        String url = "http://192.168.100.232/smartsale/getlock.php";
+    private void getIsUnlock(){
         final JSONObject json = new JSONObject();
-        json.put("mac", SaleApplication.get().getmMac());
-
+            json.put(ConstantUtil.HTTP_KEY_MAC, SaleApplication.get().getmMac());
+        String url = ConstantUtil.URL+ConstantUtil.URL_GETLOCK;
         Http.post(url, json.toString(), new HttpCallback() {
             @Override
             public void onFailed(IOException e) {
@@ -90,21 +89,19 @@ public class HttpService extends Service {
             @Override
             public void onSuccess(String body, String response) {
                 JSONObject json = JSON.parseObject(body);
-                String msg = json.getString("msg");
-                String mac = json.getString("mac");
-                String userid = json.getString("userid");
-                String status = json.getString("status");
-                if (msg.equals("ok")) {
-                    if (mac.equals(SaleApplication.get().getmMac())) {
-                        if (status.equals("1")) {
-                            Log.i(TAG, "unlock by userid=" + userid);
+                String msg = json.getString(ConstantUtil.HTTP_KEY_MSG);
+                String mac = json.getString(ConstantUtil.HTTP_KEY_MAC);
+                String userid = json.getString(ConstantUtil.HTTP_KEY_USERID);
+                String status = json.getString(ConstantUtil.HTTP_KEY_STATUS);
+                if (msg.equals(ConstantUtil.HTTP_KEY_OK)){
+                    if (mac.equals(SaleApplication.get().getmMac())){
+                        if(status.equals("1")) {
+                            Log.i(TAG, "unlock by userid="+userid);
                             sendBroadcastUnlock(userid);
-                            for (UnlockListener listener : mUnlockListener) {
-                                listener.onUnlockListener(userid);
-                            }
+                            doOnUnlockListener(userid);
                         }
-                    } else {
-                        Log.i(TAG, "Mac is not!");
+                    }else {
+                        Log.i(TAG,"Mac is not!");
                     }
                 }
 
@@ -112,9 +109,20 @@ public class HttpService extends Service {
         });
     }
 
-    private void sendBroadcastUnlock(String userid) {
-        Intent intent = new Intent(ConstantUtil.HTTP_BROADCAST);
-        intent.putExtra("userid", userid);
-        sendBroadcast(intent);
+    private void sendBroadcastUnlock(String userid){
+        if (isOnBroadcast) {
+            Intent intent = new Intent(ConstantUtil.HTTP_BROADCAST);
+            intent.putExtra(ConstantUtil.HTTP_KEY_USERID, userid);
+            sendBroadcast(intent);
+        }
+    }
+    private void doOnUnlockListener(String userid){
+        for (UnlockListener listener:mUnlockListener){
+            listener.onUnlockListener(userid);
+        }
+    }
+
+    public static void setIsOnBroadcast(boolean isOnBroadcast) {
+        HttpService.isOnBroadcast = isOnBroadcast;
     }
 }

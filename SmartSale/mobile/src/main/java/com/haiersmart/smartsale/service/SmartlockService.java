@@ -31,11 +31,11 @@ public class SmartlockService extends Service {
         mSmartlock.closeSmartLock();
     }
 
-    public byte getSmartlockState(InputStream in) {
+    public byte getSmartlockState() {
         byte[] buf = new byte[2];
         int len = 0;
         try {
-            if ((len = in.read(buf)) != -1) {
+            if ((len = mInputStream.read(buf)) != -1) {
                 return buf[0];
             }
         } catch (Exception e) {
@@ -85,7 +85,7 @@ public class SmartlockService extends Service {
             public void run() {
                 super.run();
                 while (true) {
-                    cmd = getSmartlockState(mInputStream);
+                    cmd = getSmartlockState();
                     if (cmd == '0') {
                         sendBroadcastDoorState("open");
                         continue;

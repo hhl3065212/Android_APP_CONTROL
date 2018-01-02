@@ -19,25 +19,36 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.haiersmart.library.OKHttp.Http;
+import com.haiersmart.library.OKHttp.HttpCallback;
 import com.haiersmart.rfidlibrary.service.RFIDService;
 import com.haiersmart.smartsale.R;
+import com.haiersmart.smartsale.database.DBOperation;
 import com.haiersmart.smartsale.function.MyAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import com.alibaba.fastjson.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.haiersmart.smartsale.constant.ConstantUtil.URL_TEST_SERVER;
 
 
 public class RfidTestActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
     private static final String TAG = "RfidTestActivity";
     public static final String BROADCAST_ACTION = "com.haiersmart.action.rfid";
-    Button mBtnConnect,mBtnDisconnect,mBtnStart,mBtnStop,mBtnSort,mBtnBack;
+    Button mBtnConnect,mBtnDisconnect,mBtnStart,mBtnStop,mBtnSort,mBtnUpload,mBtnBack;
+    private TextView mTotalCount;
 
     private ListView mLVData;
     private MyAdapter mListAdapter;
@@ -51,6 +62,8 @@ public class RfidTestActivity extends AppCompatActivity implements View.OnClickL
     MyBroadcastReceiver mBroadcastReceiver;
     private IntentFilter mIntentFilter;
     private String mRfidInfo;
+    private int mUploadTimes;
+    private DBOperation mDBHandle;
 
     private ServiceConnection conn = new ServiceConnection() {
         @Override
@@ -80,8 +93,12 @@ public class RfidTestActivity extends AppCompatActivity implements View.OnClickL
         mBtnStop.setOnClickListener(this);
         mBtnSort=(Button)findViewById(R.id.button_sort);
         mBtnSort.setOnClickListener(this);
+        mBtnUpload = (Button)findViewById(R.id.button_upload);
+        mBtnUpload.setOnClickListener(this);
         mBtnBack=(Button)findViewById(R.id.button_back);
         mBtnBack.setOnClickListener(this);
+
+        mTotalCount = (TextView) findViewById(R.id.textView_readallcnt);
 
         mLVData = (ListView) findViewById(R.id.listView_epclist);
         mLVData.setOnItemClickListener(this);
@@ -101,6 +118,8 @@ public class RfidTestActivity extends AppCompatActivity implements View.OnClickL
         mBroadcastReceiver = new MyBroadcastReceiver();
         mIntentFilter = new IntentFilter();
         mIntentFilter.addAction(BROADCAST_ACTION);
+
+        mDBHandle = DBOperation.getInstance();
 
     }
 
@@ -149,7 +168,15 @@ public class RfidTestActivity extends AppCompatActivity implements View.OnClickL
                 mService.stopRead();
                 break;
             case R.id.button_sort:
-                //
+                sortTags();
+                break;
+            case R.id.button_upload:
+                try {
+                    mUploadTimes = 3;
+                    upload2Network();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 break;
             case R.id.button_back:
                 finish();
@@ -221,7 +248,6 @@ public class RfidTestActivity extends AppCompatActivity implements View.OnClickL
     private Runnable updateUIRunnable = new Runnable() {
         @Override
         public void run() {
-            Log.i(TAG,"updateUIRunnable run");
             try {
                 JSONArray jsonArray = new JSONArray(mRfidInfo);
                 int size = jsonArray.length();
@@ -257,6 +283,7 @@ public class RfidTestActivity extends AppCompatActivity implements View.OnClickL
                     mListMs.add(m);
                 }
                 mListAdapter.notifyDataSetChanged();
+                mTotalCount.setText(String.valueOf(size));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -264,6 +291,82 @@ public class RfidTestActivity extends AppCompatActivity implements View.OnClickL
 
     };
 
+    private void sortTags() {
+        int size  = mListMs.size();
+        if(size>1) {
+            Comparator comp1 = new Comparator< Map<String, String>>() {
 
+                @Override
+                public int compare(Map<String, String> o1, Map<String, String> o2) {
+                    String a = o1.get(mConame[1]);
+                    String b = o2.get(mConame[1]);
+                    int lLength = a.length();
+                    int lRight = b.length();
+                    if(lLength < lRight) {
+                        return -1;
+                    } else if(lLength > lRight) {
+                        return 1;
+                    }
+                    return a.compareTo(b);
+                }
+            };
+
+            Collections.sort(mListMs, comp1);
+            mListAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private void upload2Network() throws JSONException {
+        Log.i(TAG,"upload2Network in");
+
+        JSONObject jsonObject= new JSONObject();
+
+        jsonObject.put("mac", "123456789abc");
+        jsonObject.put("userid", "litingting");
+
+        int size = mListMs.size();
+        JSONArray epcJa= new JSONArray();
+        for(int i=0; i<size; i++) {
+            Map<String, String> map = (Map<String, String>) mListMs.get(i);
+            String epcstr =  map.get(mConame[1]);
+            JSONObject epcJo = new JSONObject();
+            epcJo.put("epc", epcstr);
+            epcJa.put(epcJo);
+        }
+
+        JSONObject rfidJo = new JSONObject();
+        rfidJo.put("counts", size);
+        rfidJo.put("epcid",epcJa);
+
+        jsonObject.put("rfid",rfidJo);
+
+        String jsonNt = jsonObject.toString();
+
+        Http.post( URL_TEST_SERVER, jsonNt, networkResponse );
+        //mDBHandle.getRFIDDbMgr().insert(jsonObject);//TODO
+        Log.i(TAG,"upload2Network out");
+    }
+
+    HttpCallback networkResponse = new HttpCallback() {
+        @Override
+        public void onFailed(IOException e) {
+            Log.i(TAG,"onFailed reason: " + e.toString());
+
+            if(mUploadTimes > 0) {
+                try {
+                    upload2Network();
+                    mUploadTimes--;
+                } catch (JSONException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }
+
+        @Override
+        public void onSuccess(String body, String response) {
+            Log.i(TAG,"onSuccess !!!");
+            mUploadTimes = 3;
+        }
+    };
 
 }

@@ -18,14 +18,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Connect" />
+            android:text="Connect"
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/button_disconnect"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Disconnect" />
+            android:text="Disconnect"
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/button_start"

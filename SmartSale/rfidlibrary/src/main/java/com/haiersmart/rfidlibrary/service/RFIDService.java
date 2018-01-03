@@ -1,8 +1,10 @@
 package com.haiersmart.rfidlibrary.service;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
@@ -47,9 +49,11 @@ public class RFIDService extends Service {
 
     AndroidWakeLock Awl;
 
-    Timer mReadTimer = null;
-    TimerTask mReadTimerTask;
+    private Timer mReadTimer = null;
+    private TimerTask mReadTimerTask;
 
+    private DoorBroadcastReceiver mBroadcastReceiver;
+    private IntentFilter mIntentFilter;
 
     public RFIDService() {
     }
@@ -75,6 +79,15 @@ public class RFIDService extends Service {
         mRpower = new RfidPower(PT);
         mNeedreconnect = false;
         mSpf = new SPconfig(this);
+        try {
+            connectRFID();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        mBroadcastReceiver = new DoorBroadcastReceiver();
+        mIntentFilter = new IntentFilter();
+        mIntentFilter.addAction(ConstantUtil.DOOR_STATE_BROADCAST);
+        registerReceiver(mBroadcastReceiver, mIntentFilter);
         super.onCreate();
     }
 
@@ -96,6 +109,8 @@ public class RFIDService extends Service {
     @Override
     public void onDestroy() {
 //        Awl.ReleaseWakeLock();
+        unregisterReceiver(mBroadcastReceiver);
+        disconnectRFID();
         super.onDestroy();
     }
 
@@ -547,6 +562,22 @@ public class RFIDService extends Service {
             tf.RSSI = tfs.RSSI;
             tf.Frequency = tfs.Frequency;
             tf.AntennaID = tfs.AntennaID;
+        }
+    }
+
+    public class DoorBroadcastReceiver extends BroadcastReceiver{
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (!action.equals(null) && action.length() > 0) {
+                if (action.equals(ConstantUtil.DOOR_STATE_BROADCAST)) {
+                    String state = intent.getStringExtra(ConstantUtil.DOOR_STATE);
+                    if(state.equals("close")) {
+                        startRead();
+                        handleReadTime(3000);
+                    }
+                }
+            }
         }
     }
 }

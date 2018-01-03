@@ -5,6 +5,9 @@ package com.haiersmart.rfidlibrary;
  */
 
 public class ConstantUtil {
+    public static final String DOOR_STATE_BROADCAST = "com.haiersmart.smartsale.doorservice";
+    public static final String DOOR_STATE = "state";
+
     public final static String Constr_READ = "读";
     public final static String Constr_CONNECT = "连接";
     public final static String Constr_INVENTORY = "盘点";

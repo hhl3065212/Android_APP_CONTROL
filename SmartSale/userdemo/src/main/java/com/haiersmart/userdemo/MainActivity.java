@@ -118,28 +118,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                                Log.i(TAG, body);
                                 JSONObject json = JSON.parseObject(body);
                                 JSONObject rfid = json.getJSONObject("rfid");
-                                counts = rfid.getInteger("counts");
-                                JSONArray epcid = rfid.getJSONArray("epcid");
                                 if (list == null) {
                                     list = new ArrayList<>();
                                 }
                                 list.clear();
-                                for (int i = 0; i < epcid.size(); i++) {
-                                    list.add(epcid.getJSONObject(i).getString("epc"));
-                                }
-                                Collections.sort(list, new Comparator<String>() {
-                                    @Override
-                                    public int compare(String o1, String o2) {
-                                        if (o1.length() < o2.length()) {
-                                            return -1;
-                                        } else if (o1.length() > o2.length()) {
-                                            return 1;
-                                        } else {
-                                            return o1.compareTo(o2);
-                                        }
+                                counts = 0;
+                                if(rfid !=null) {
+                                    counts = rfid.getInteger("counts");
+                                    JSONArray epcid = rfid.getJSONArray("epcid");
+                                    for (int i = 0; i < epcid.size(); i++) {
+                                        list.add(epcid.getJSONObject(i).getString("epc"));
                                     }
-                                });
-                                Log.i(TAG, list.toString());
+                                    Collections.sort(list, new Comparator<String>() {
+                                        @Override
+                                        public int compare(String o1, String o2) {
+                                            if (o1.length() < o2.length()) {
+                                                return -1;
+                                            } else if (o1.length() > o2.length()) {
+                                                return 1;
+                                            } else {
+                                                return o1.compareTo(o2);
+                                            }
+                                        }
+                                    });
+                                    Log.i(TAG, list.toString());
+                                }
                                 handler.sendEmptyMessage(0x02);
                             }
                         });

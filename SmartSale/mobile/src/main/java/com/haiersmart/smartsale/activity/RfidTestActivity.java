@@ -25,6 +25,7 @@ import com.haiersmart.library.OKHttp.Http;
 import com.haiersmart.library.OKHttp.HttpCallback;
 import com.haiersmart.rfidlibrary.service.RFIDService;
 import com.haiersmart.smartsale.R;
+import com.haiersmart.smartsale.application.SaleApplication;
 import com.haiersmart.smartsale.database.DBOperation;
 import com.haiersmart.smartsale.function.MyAdapter;
 
@@ -321,7 +322,7 @@ public class RfidTestActivity extends AppCompatActivity implements View.OnClickL
 
         JSONObject jsonObject= new JSONObject();
 
-        jsonObject.put("mac", "123456789abc");
+        jsonObject.put("mac", SaleApplication.get().getmMac());
         jsonObject.put("userid", "litingting");
 
         int size = mListMs.size();

@@ -1,8 +1,10 @@
 package com.haiersmart.rfidlibrary.service;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
@@ -11,11 +13,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 
-import com.haiersmart.rfidlibrary.AndroidWakeLock;
 import com.haiersmart.rfidlibrary.ConstantUtil;
 import com.pow.api.cls.RfidPower;
 import com.uhf.api.cls.Reader;
-import com.uhf.api.cls.Reader.*;
 
 
 import org.json.JSONArray;
@@ -45,11 +45,13 @@ public class RFIDService extends Service {
     private Handler handler = new Handler( );
     public Map<String,Reader.TAGINFO> mTagsMap=new LinkedHashMap<String,Reader.TAGINFO>(); //有序
 
-    AndroidWakeLock Awl;
+    private PowerManager.WakeLock mWakeLock = null;
 
-    Timer mReadTimer = null;
-    TimerTask mReadTimerTask;
+    private Timer mReadTimer = null;
+    private TimerTask mReadTimerTask;
 
+    private DoorBroadcastReceiver mBroadcastReceiver;
+    private IntentFilter mIntentFilter;
 
     public RFIDService() {
     }
@@ -65,9 +67,6 @@ public class RFIDService extends Service {
 
     @Override
     public void onCreate() {
-
-//        Awl = new AndroidWakeLock((PowerManager) getSystemService(Context.POWER_SERVICE));
-//        Awl.WakeLock();
         mReaderParams = new ReaderParams();
         mReader = new Reader();
         //设置平台选择
@@ -75,6 +74,16 @@ public class RFIDService extends Service {
         mRpower = new RfidPower(PT);
         mNeedreconnect = false;
         mSpf = new SPconfig(this);
+        try {
+            connectRFID();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        acquireWakelock();
+        mBroadcastReceiver = new DoorBroadcastReceiver();
+        mIntentFilter = new IntentFilter();
+        mIntentFilter.addAction(ConstantUtil.DOOR_STATE_BROADCAST);
+        registerReceiver(mBroadcastReceiver, mIntentFilter);
         super.onCreate();
     }
 
@@ -95,7 +104,9 @@ public class RFIDService extends Service {
 
     @Override
     public void onDestroy() {
-//        Awl.ReleaseWakeLock();
+        releaseWakelock();
+        unregisterReceiver(mBroadcastReceiver);
+        disconnectRFID();
         super.onDestroy();
     }
 
@@ -273,7 +284,8 @@ public class RFIDService extends Service {
             }
         }
     };
-    
+
+    //update quickly
     private void notifyTagsChange() throws JSONException {
 
         List<Reader.TAGINFO> tagList = new ArrayList<>();
@@ -302,6 +314,38 @@ public class RFIDService extends Service {
         sendBroadcast(intent);
     }
 
+    private void notifyTagsData() {
+        List<Reader.TAGINFO> tagList = new ArrayList<>();
+        Iterator<Map.Entry<String,Reader.TAGINFO>> item = mTagsMap.entrySet().iterator();
+        while (item.hasNext()){
+            Map.Entry<String,Reader.TAGINFO> mapInfo = item.next();
+            Reader.TAGINFO info = mapInfo.getValue();
+            tagList.add(info);
+        }
+
+        try {
+            int size = tagList.size();
+            JSONArray epcJa= new JSONArray();
+            for(int i=0; i<size; i++) {
+                Reader.TAGINFO tag =  tagList.get(i);
+                String epcstr =  tag.EpcId.toString();
+                JSONObject epcJo = new JSONObject();
+                epcJo.put("epc", epcstr);
+                epcJa.put(epcJo);
+            }
+            JSONObject rfidJo = new JSONObject();
+            rfidJo.put("counts", size);
+            rfidJo.put("epcid",epcJa);
+            Intent intent = new Intent();
+            intent.setAction("com.haiersmart.action.rfidnetwork");
+            intent.putExtra("rfidJson", rfidJo.toString());
+            sendBroadcast(intent);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public void handleReadTime(int microSecond) {
         if(mReadTimer != null) {
             mReadTimer.cancel();
@@ -319,6 +363,7 @@ public class RFIDService extends Service {
                 mReadTimer.cancel();
                 mReadTimer.purge();
                 mReadTimer = null;
+                notifyTagsData();
             }
         };
         mReadTimer.schedule(mReadTimerTask,microSecond);//3000
@@ -547,6 +592,39 @@ public class RFIDService extends Service {
             tf.RSSI = tfs.RSSI;
             tf.Frequency = tfs.Frequency;
             tf.AntennaID = tfs.AntennaID;
+        }
+    }
+
+    private void acquireWakelock() {
+        if (mWakeLock == null) {
+            PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+            mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "SmartlockService");
+            if (mWakeLock != null) {
+                mWakeLock.acquire();
+            }
+        }
+    }
+
+    private void releaseWakelock() {
+        if (mWakeLock != null) {
+            mWakeLock.release();
+            mWakeLock = null;
+        }
+    }
+
+    public class DoorBroadcastReceiver extends BroadcastReceiver{
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (!action.equals(null) && action.length() > 0) {
+                if (action.equals(ConstantUtil.DOOR_STATE_BROADCAST)) {
+                    String state = intent.getStringExtra(ConstantUtil.DOOR_STATE);
+                    if(state.equals("close")) {
+                        startRead();
+                        handleReadTime(3000);
+                    }
+                }
+            }
         }
     }
 }

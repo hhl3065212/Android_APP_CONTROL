@@ -21,10 +21,14 @@ import android.util.Log;
 import android.view.WindowManager;
 
 import com.haiersmart.library.Utils.ConvertData;
+import com.haiersmart.rfidlibrary.service.RFIDService;
 import com.haiersmart.smartsale.constant.ConstantUtil;
+import com.haiersmart.smartsale.function.RFIDEventMgr;
 import com.haiersmart.smartsale.module.Smartlock;
 import com.haiersmart.smartsale.service.HttpService;
 import com.haiersmart.smartsale.service.SmartlockService;
+
+import org.json.JSONException;
 
 import java.io.OutputStream;
 import java.net.NetworkInterface;
@@ -49,6 +53,7 @@ public class SaleApplication extends Application {
     private WindowManager wm;
     private static String mMac;
     private static List<Map<String, String>> macList = new ArrayList<>();
+    private RFIDEventMgr mRFIDMgr;
 
     BroadcastReceiver mReceiverHttp = new BroadcastReceiver() {
         @Override
@@ -108,8 +113,12 @@ public class SaleApplication extends Application {
         Log.i(TAG, "Application onCreate");
         Log.i(TAG, macList.toString());
         startService(new Intent(mContext, HttpService.class));
-        startService(new Intent(mContext, SmartlockService.class));
+//        startService(new Intent(mContext, SmartlockService.class));
+        startService(new Intent(mContext,RFIDService.class));
+        mRFIDMgr = new RFIDEventMgr(this);
         registerReceiver(mReceiverHttp, new IntentFilter(ConstantUtil.HTTP_BROADCAST));
+
+        registerReceiver(mReceiverRfid, new IntentFilter(ConstantUtil.RFID_BROADCAST));
     }
 
     private void getMac() {
@@ -140,4 +149,18 @@ public class SaleApplication extends Application {
     public List<Map<String, String>> getMacList() {
         return macList;
     }
+
+    BroadcastReceiver mReceiverRfid = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            Log.i(TAG, "receiver brodacast action = " + action);
+            if(action.equals(intent.getStringExtra(ConstantUtil.RFID_BROADCAST) ))
+                try {
+                    mRFIDMgr.upload2Network("rfidJson");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+        }
+    };
 }

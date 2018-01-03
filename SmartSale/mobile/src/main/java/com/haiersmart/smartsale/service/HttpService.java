@@ -83,7 +83,7 @@ public class HttpService extends Service{
         Http.post(url, json.toString(), new HttpCallback() {
             @Override
             public void onFailed(IOException e) {
-
+                Log.i(TAG,e.toString());
             }
 
             @Override

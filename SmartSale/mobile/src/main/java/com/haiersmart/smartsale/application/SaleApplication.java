@@ -14,8 +14,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Bundle;
-import android.os.Message;
 import android.util.ArrayMap;
 import android.util.Log;
 import android.view.WindowManager;
@@ -26,7 +24,6 @@ import com.haiersmart.smartsale.constant.ConstantUtil;
 import com.haiersmart.smartsale.function.RFIDEventMgr;
 import com.haiersmart.smartsale.module.Smartlock;
 import com.haiersmart.smartsale.service.HttpService;
-import com.haiersmart.smartsale.service.SmartlockService;
 
 import org.json.JSONException;
 
@@ -111,7 +108,6 @@ public class SaleApplication extends Application {
         mContext = getApplicationContext();
         getMac();
         Log.i(TAG, "Application onCreate");
-        Log.i(TAG, macList.toString());
         startService(new Intent(mContext, HttpService.class));
 //        startService(new Intent(mContext, SmartlockService.class));
         startService(new Intent(mContext,RFIDService.class));
@@ -138,7 +134,14 @@ public class SaleApplication extends Application {
             e.printStackTrace();
         }
         if (macList.size() > 0) {
-            mMac = macList.get(0).get("mac");
+            Log.i(TAG,macList.toString());
+            for(Map<String, String> map:macList){
+                if (map.get("name").equals("wlan0")){
+                    mMac = macList.get(0).get("mac");
+                    Log.i(TAG,map.toString());
+                }
+            }
+
         }
     }
 

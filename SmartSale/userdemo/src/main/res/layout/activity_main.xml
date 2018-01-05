@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_margin="20dp"
         android:layout_height="50dp"
-        android:text="11"
+        android:text="mac"
         android:textSize="30dp"
         android:textColor="#000000"
         android:gravity="center"/>

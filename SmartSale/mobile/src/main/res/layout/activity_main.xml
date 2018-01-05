@@ -8,11 +8,13 @@
     android:gravity="center"
     android:orientation="vertical"
     tools:context="com.haiersmart.smartsale.activity.MainActivity">
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
         android:orientation="vertical">
+
         <TextView
             android:id="@+id/tx_show"
             android:layout_width="wrap_content"
@@ -20,6 +22,7 @@
             android:text="Hello World!"
             android:textSize="30dp"/>
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -31,21 +34,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="开门"/>
+
         <Button
             android:id="@+id/btn_select"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="挑选"/>
+
         <Button
             android:id="@+id/btn_final"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="结算"/>
+
         <Button
             android:id="@+id/btn_pay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="支付"/>
+
         <Button
             android:id="@+id/btn_send"
             android:layout_width="wrap_content"
@@ -53,33 +60,30 @@
             android:text="发送"/>
 
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <Button
             android:id="@+id/button_test"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="测试PIR" />
+            android:text="测试PIR"/>
+
         <Button
             android:id="@+id/button_rfid"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="测试RFID" />
+            android:text="测试RFID"/>
 
         <Button
             android:id="@+id/button_smartlock"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="智能锁" />
+            android:text="智能锁"/>
     </LinearLayout>
 
 
-
-
-
-
-
-
-    </LinearLayout>
+</LinearLayout>

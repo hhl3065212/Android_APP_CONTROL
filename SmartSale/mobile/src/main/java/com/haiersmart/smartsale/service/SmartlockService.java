@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.util.Log;
 
 
 import com.haiersmart.smartsale.constant.ConstantUtil;
@@ -13,6 +14,7 @@ import com.haiersmart.smartsale.module.Smartlock;
 import java.io.InputStream;
 
 public class SmartlockService extends Service {
+    private static final String TAG = "SmartlockService";
     private PowerManager.WakeLock mWakeLock = null;
     InputStream mInputStream;
     Smartlock mSmartlock;
@@ -32,6 +34,7 @@ public class SmartlockService extends Service {
     }
 
     public byte getSmartlockState() {
+        Log.i(TAG,"getSmartlockState" );
         byte[] buf = new byte[2];
         int len = 0;
         try {
@@ -70,6 +73,7 @@ public class SmartlockService extends Service {
     }
 
     private void sendBroadcastDoorState(String state) {
+        Log.i(TAG,"sendBroadcastDoorState state=" + state);
         Intent intent = new Intent(ConstantUtil.DOOR_STATE_BROADCAST);
         intent.putExtra(ConstantUtil.DOOR_STATE, state);
         sendBroadcast(intent);

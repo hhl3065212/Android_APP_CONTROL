@@ -52,6 +52,7 @@ public class RFIDService extends Service {
 
     private DoorBroadcastReceiver mBroadcastReceiver;
     private IntentFilter mIntentFilter;
+    private Boolean mIsReading = false;
 
     public RFIDService() {
     }
@@ -183,17 +184,21 @@ public class RFIDService extends Service {
         mReaderParams.option = (metaflag<<8);
         clearData();
         if(mNostop) {
-            Reader.READER_ERR er = mReader.AsyncStartReading(
-                    mReaderParams.uants,
-                    mReaderParams.uants.length,
-                    mReaderParams.option);
-            if (er != Reader.READER_ERR.MT_OK_ERR) {
-                Log.e(TAG, " startRead AsyncStartReading er="  + String.valueOf(er.value())+ ", er:" + er.toString());
-                Toast.makeText(this,
-                        ConstantUtil.Constr_nostopreadfailed,
-                        Toast.LENGTH_SHORT).show();
-                return;
+            if(!mIsReading) {
+                Reader.READER_ERR er = mReader.AsyncStartReading(
+                        mReaderParams.uants,
+                        mReaderParams.uants.length,
+                        mReaderParams.option);
+                mIsReading = true;
+                if (er != Reader.READER_ERR.MT_OK_ERR) {
+                    Log.e(TAG, " startRead AsyncStartReading er="  + String.valueOf(er.value())+ ", er:" + er.toString());
+                    Toast.makeText(this,
+                            ConstantUtil.Constr_nostopreadfailed,
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
             }
+
         }
         handler.postDelayed(runnable_read, 0);
     }
@@ -202,6 +207,7 @@ public class RFIDService extends Service {
         if (mNostop) {
             Log.d(TAG, " stopRead");
             Reader.READER_ERR er = mReader.AsyncStopReading();
+            mIsReading = false;
             if (er != Reader.READER_ERR.MT_OK_ERR) {
                 Log.e(TAG, " stopRead AsyncStopReading er="  + String.valueOf(er.value())+ ", er:" + er.toString());
                 Toast.makeText(this, ConstantUtil.Constr_nostopspreadfailed,
@@ -209,7 +215,6 @@ public class RFIDService extends Service {
             }
         }
         handler.removeCallbacks(runnable_read);
-//        Awl.ReleaseWakeLock();
     }
 
     private Runnable runnable_read = new Runnable() {
@@ -285,6 +290,13 @@ public class RFIDService extends Service {
         }
     };
 
+    private Runnable stopRunnable = new Runnable() {
+        @Override
+        public void run() {
+            stopRead();
+        }
+    };
+
     //update quickly
     private void notifyTagsChange() throws JSONException {
 
@@ -328,7 +340,8 @@ public class RFIDService extends Service {
             JSONArray epcJa= new JSONArray();
             for(int i=0; i<size; i++) {
                 Reader.TAGINFO tag =  tagList.get(i);
-                String epcstr =  tag.EpcId.toString();
+                String epcstr =  Reader.bytes_Hexstr(tag.EpcId);
+                Log.d(TAG, "notifyTagsData size="+ i +", epcstr=" + epcstr);
                 JSONObject epcJo = new JSONObject();
                 epcJo.put("epc", epcstr);
                 epcJa.put(epcJo);
@@ -358,8 +371,7 @@ public class RFIDService extends Service {
             @Override
             public void run() {
                 Log.i("LTT mReadTimerTask", "读取时间到");
-              //  updateUIHandler.sendEmptyMessage(2);
-                stopRead();
+                handler.post(stopRunnable);
                 mReadTimer.cancel();
                 mReadTimer.purge();
                 mReadTimer = null;

@@ -24,6 +24,7 @@ import com.haiersmart.smartsale.constant.ConstantUtil;
 import com.haiersmart.smartsale.function.RFIDEventMgr;
 import com.haiersmart.smartsale.module.Smartlock;
 import com.haiersmart.smartsale.service.HttpService;
+import com.haiersmart.smartsale.service.SmartlockService;
 
 import org.json.JSONException;
 
@@ -109,7 +110,7 @@ public class SaleApplication extends Application {
         getMac();
         Log.i(TAG, "Application onCreate");
         startService(new Intent(mContext, HttpService.class));
-//        startService(new Intent(mContext, SmartlockService.class));
+        startService(new Intent(mContext, SmartlockService.class));
         startService(new Intent(mContext,RFIDService.class));
         mRFIDMgr = new RFIDEventMgr(this);
         registerReceiver(mReceiverHttp, new IntentFilter(ConstantUtil.HTTP_BROADCAST));
@@ -158,9 +159,9 @@ public class SaleApplication extends Application {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             Log.i(TAG, "receiver brodacast action = " + action);
-            if(action.equals(intent.getStringExtra(ConstantUtil.RFID_BROADCAST) ))
+            if(action.equals(ConstantUtil.RFID_BROADCAST))
                 try {
-                    mRFIDMgr.upload2Network("rfidJson");
+                    mRFIDMgr.upload2Network(intent.getStringExtra("rfidJson"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

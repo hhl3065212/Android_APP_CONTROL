@@ -137,7 +137,7 @@ public class SaleApplication extends Application {
             Log.i(TAG,macList.toString());
             for(Map<String, String> map:macList){
                 if (map.get("name").equals("wlan0")){
-                    mMac = macList.get(0).get("mac");
+                    mMac = map.get("mac");
                     Log.i(TAG,map.toString());
                 }
             }

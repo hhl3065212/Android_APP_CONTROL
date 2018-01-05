@@ -365,7 +365,7 @@ public class RfidTestActivity extends AppCompatActivity implements View.OnClickL
 
         @Override
         public void onSuccess(String body, String response) {
-            Log.i(TAG,"onSuccess !!!");
+            Log.i(TAG,"onSuccess !!!, response=" + response);
             mUploadTimes = 3;
         }
     };

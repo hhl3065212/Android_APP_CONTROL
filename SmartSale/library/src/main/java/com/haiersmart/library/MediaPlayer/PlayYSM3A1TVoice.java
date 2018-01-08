@@ -34,11 +34,6 @@ public class PlayYSM3A1TVoice {
     private static final String portName = "/dev/ttyS1";
     private static final int portBaund = 9600;
 
-    public static final int OPEN = 1;
-    public static final int SELECT = 2;
-    public static final int FINAL = 3;
-    public static final int PAY = 4;
-
     private SerialPort serialPort;
     private List<byte[]> sendList = Collections.synchronizedList(new LinkedList<byte[]>());
     private boolean switchRun = true;

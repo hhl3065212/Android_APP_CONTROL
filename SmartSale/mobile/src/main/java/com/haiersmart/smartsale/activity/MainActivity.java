@@ -100,24 +100,22 @@ public class MainActivity extends Activity implements View.OnClickListener, Http
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_open:
-                PlayFixedVoice.playVoice(PlayFixedVoice.OPEN);
+                PlayFixedVoice.playVoice(PlayFixedVoice.WELCOME);
                 break;
             case R.id.btn_select:
-                PlayFixedVoice.playVoice(PlayFixedVoice.SELECT);
+                PlayFixedVoice.playVoice(PlayFixedVoice.UNLOCK);
                 break;
             case R.id.btn_final:
-                PlayFixedVoice.playVoice(PlayFixedVoice.FINAL);
+                PlayFixedVoice.playVoice(PlayFixedVoice.OPEN);
                 break;
             case R.id.btn_pay:
-                PlayFixedVoice.playVoice(PlayFixedVoice.PAY);
+                PlayFixedVoice.playVoice(PlayFixedVoice.CLOSE);
                 break;
             case R.id.button_test:
                 startActivity(new Intent(MainActivity.this, TestActivity.class));
                 break;
             case R.id.btn_send:
-                if (isBind){
-                    httpService.setOnUnlockListener(this);
-                }
+                PlayFixedVoice.playVoice(PlayFixedVoice.PAY);
                 break;
             case R.id.button_rfid:
                 startActivity(new Intent(MainActivity.this, RfidTestActivity.class));

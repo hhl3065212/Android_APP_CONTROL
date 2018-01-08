@@ -3,11 +3,13 @@ package com.haiersmart.smartsale.service;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
 
 
+import com.haiersmart.smartsale.activity.JniPir;
 import com.haiersmart.smartsale.constant.ConstantUtil;
 import com.haiersmart.smartsale.module.Smartlock;
 
@@ -15,9 +17,13 @@ import java.io.InputStream;
 
 public class SmartlockService extends Service {
     private static final String TAG = "SmartlockService";
+    private static final int GPIO_B5 = 13;
     private PowerManager.WakeLock mWakeLock = null;
     InputStream mInputStream;
     Smartlock mSmartlock;
+    private JniPir mPirHandler;
+    private int mPirGpioNum = 0;
+    private Handler mHandler = new Handler( );
 
     public SmartlockService() {
     }
@@ -70,6 +76,12 @@ public class SmartlockService extends Service {
         super.onCreate();
         acquireWakelock();
         openSmartlock();
+        mPirGpioNum = GPIO_B5;//227==>GPIO7_A3, 263==>GPIO8_A7
+        mPirHandler = new JniPir();
+        int res = mPirHandler.openGpioDev();
+        Log.i(TAG,"onCreate pir openGpioDev=" + res);
+        res = mPirHandler.probe(GPIO_B5, 0);
+        Log.i(TAG,"onCreate pir probe=" + res);
     }
 
     private void sendBroadcastDoorState(String state) {
@@ -92,16 +104,14 @@ public class SmartlockService extends Service {
                     cmd = getSmartlockState();
                     if (cmd == '0') {
                         sendBroadcastDoorState("open");
-                        continue;
                     }
                     if (cmd == '1') {
                         sendBroadcastDoorState("close");
-                        continue;
                     }
-
                 }
             }
         }.start();
+        startPirFun();
         return ret;
     }
 
@@ -114,7 +124,58 @@ public class SmartlockService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mPirHandler.releaseGpio(mPirGpioNum);
         releaseWakelock();
         closeSmartlock();
     }
+
+    private int getPirStatus() {
+        int value = mPirHandler.getGpio(mPirGpioNum);
+        Log.i(TAG, "getPirStatus get gpio value = "+value);
+        int res = mPirHandler.releaseGpio(mPirGpioNum);
+//        Log.i(TAG, "getPirStatus releaseGpio res = "+res);
+        return value;
+    }
+
+
+    private void sendBroadcastPirState(int pirValue) {
+        Log.i(TAG,"sendBroadcastDoorState state=" + pirValue);
+        Intent intent = new Intent(ConstantUtil.PIR_STATE_BROADCAST);
+        intent.putExtra(ConstantUtil.PIR_STATE, pirValue);
+        sendBroadcast(intent);
+    }
+
+    public void startPirFun() {
+        Log.i(TAG,"startPirFun" );
+        mHandler.postDelayed(runnable_pir, 2000);
+    }
+
+    private Runnable runnable_pir = new Runnable() {
+
+        @Override
+        public void run() {
+            int pirValue = 0;
+            boolean isFirstTime = true;
+            while (true) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                int curPir = getPirStatus();
+                if(curPir >= 0) {
+                    if(isFirstTime) {
+                        pirValue = curPir;
+                        isFirstTime = false;
+                    } else  {
+                        if(pirValue != curPir ) {
+                            sendBroadcastPirState(pirValue);
+                        }
+                        pirValue = curPir;
+                    }
+                }
+            }
+        }
+    };
+
 }

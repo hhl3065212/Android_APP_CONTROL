@@ -33,6 +33,8 @@ public class ConstantUtil {
 
     public static final String RFID_BROADCAST = "com.haiersmart.action.rfidnetwork";
 
+    public static final String PIR_STATE_BROADCAST = "com.haiersmart.smartsale.pirservice";
+
 
     public static final int DB_VERSION = 1;
     public static final String DB_NAME = "smartsale.db";
@@ -45,4 +47,6 @@ public class ConstantUtil {
     public static final String HTTP_KEY_ERR = "err";
 
     public static final String DOOR_STATE = "state";
+
+    public static final String PIR_STATE = "pirstate";
 }

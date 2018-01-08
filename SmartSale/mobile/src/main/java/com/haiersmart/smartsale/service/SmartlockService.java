@@ -151,7 +151,7 @@ public class SmartlockService extends Service {
             boolean isFirstTime = true;
             while (true) {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

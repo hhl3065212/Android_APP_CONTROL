@@ -33,10 +33,11 @@ public class PlayPromptVoice {
     /**
      * 语音名称
      */
-    private static final String VOICE_OPEN_DOOR = "open.mp3";
-    private static final String VOICE_SELECT = "select.mp3";
-    private static final String VOICE_FINAL_ESTIMATE = "final.mp3";
-    private static final String VOICE_PAY = "pay.mp3";
+    private static final String VOICE_WELCOME = "0001.mp3";
+    private static final String VOICE_UNLOCK = "0002.mp3";
+    private static final String VOICE_OPEN = "0003.mp3";
+    private static final String VOICE_CLOSE = "0004.mp3";
+    private static final String VOICE_PAY = "0005.mp3";
 
     private static final int OPEN = 1;
     private static final int SELECT = 2;
@@ -110,16 +111,19 @@ public class PlayPromptVoice {
 
     public static void playVoice(Context context,int voice){
         switch (voice){
-            case OPEN:
-                playVoice(context,VOICE_OPEN_DOOR);
+            case PlayFixedVoice.WELCOME:
+                playVoice(context,VOICE_WELCOME);
                 break;
-            case SELECT:
-                playVoice(context,VOICE_SELECT);
+            case PlayFixedVoice.UNLOCK:
+                playVoice(context,VOICE_UNLOCK);
                 break;
-            case FINAL:
-                playVoice(context,VOICE_FINAL_ESTIMATE);
+            case PlayFixedVoice.OPEN:
+                playVoice(context,VOICE_OPEN);
                 break;
-            case PAY:
+            case PlayFixedVoice.CLOSE:
+                playVoice(context,VOICE_CLOSE);
+                break;
+            case PlayFixedVoice.PAY:
                 playVoice(context,VOICE_PAY);
                 break;
         }

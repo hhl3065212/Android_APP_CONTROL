@@ -18,6 +18,7 @@ import android.util.ArrayMap;
 import android.util.Log;
 import android.view.WindowManager;
 
+import com.haiersmart.library.MediaPlayer.PlayFixedVoice;
 import com.haiersmart.library.Utils.ConvertData;
 import com.haiersmart.rfidlibrary.service.RFIDService;
 import com.haiersmart.smartsale.constant.ConstantUtil;
@@ -57,7 +58,17 @@ public class SaleApplication extends Application {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             Log.i(TAG, "receiver brodacast action = " + action);
-            unlockSmartlock();
+            if(action.equals(ConstantUtil.HTTP_BROADCAST)) {
+                PlayFixedVoice.playVoice(PlayFixedVoice.UNLOCK);
+                unlockSmartlock();
+            }else if (action.equals(ConstantUtil.DOOR_STATE_BROADCAST)){
+                String door = intent.getStringExtra(ConstantUtil.DOOR_STATE);
+                if(door.equals("open")){
+                    PlayFixedVoice.playVoice(PlayFixedVoice.OPEN);
+                }else if(door.equals("close")){
+                    PlayFixedVoice.playVoice(PlayFixedVoice.CLOSE);
+                }
+            }
         }
     };
 
@@ -112,7 +123,11 @@ public class SaleApplication extends Application {
 //        startService(new Intent(mContext, SmartlockService.class));
         startService(new Intent(mContext,RFIDService.class));
         mRFIDMgr = new RFIDEventMgr(this);
-        registerReceiver(mReceiverHttp, new IntentFilter(ConstantUtil.HTTP_BROADCAST));
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ConstantUtil.HTTP_BROADCAST);
+        filter.addAction(ConstantUtil.DOOR_STATE_BROADCAST);
+        registerReceiver(mReceiverHttp, filter);
 
         registerReceiver(mReceiverRfid, new IntentFilter(ConstantUtil.RFID_BROADCAST));
     }
@@ -137,8 +152,8 @@ public class SaleApplication extends Application {
             Log.i(TAG,macList.toString());
             for(Map<String, String> map:macList){
                 if (map.get("name").equals("wlan0")){
-                    mMac = macList.get(0).get("mac");
-                    Log.i(TAG,map.toString());
+                    mMac = map.get("mac");
+                    Log.i(TAG,"mac="+mMac);
                 }
             }
 

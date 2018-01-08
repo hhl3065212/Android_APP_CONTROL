@@ -18,10 +18,11 @@ public class PlayFixedVoice {
     /**
      * 固定语音的参数，对应不同语音
      */
-    public static final int OPEN = 1;
-    public static final int SELECT = 2;
-    public static final int FINAL = 3;
-    public static final int PAY = 4;
+    public static final int WELCOME = 1;
+    public static final int UNLOCK = 2;
+    public static final int OPEN = 3;
+    public static final int CLOSE = 4;
+    public static final int PAY = 5;
 
     /**
      * 不同不放设备

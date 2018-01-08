@@ -33,31 +33,31 @@
             android:id="@+id/btn_open"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="开门"/>
+            android:text="欢迎"/>
 
         <Button
             android:id="@+id/btn_select"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="挑选"/>
+            android:text="开锁"/>
 
         <Button
             android:id="@+id/btn_final"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="结算"/>
+            android:text="开门"/>
 
         <Button
             android:id="@+id/btn_pay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="支付"/>
+            android:text="关门"/>
 
         <Button
             android:id="@+id/btn_send"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="发送"/>
+            android:text="支付"/>
 
     </LinearLayout>
 

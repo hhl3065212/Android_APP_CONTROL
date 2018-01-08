@@ -120,9 +120,7 @@ public class RFIDService extends Service {
         }
 
         Reader.READER_ERR er = mReader.InitReader_Notype(mDevPath, mAntPorts);
-        if(er == Reader.READER_ERR.MT_OK_ERR) {
-            Log.d(TAG,"RFID InitReader_Notype success!");
-        } else {
+        if(er != Reader.READER_ERR.MT_OK_ERR) {
             Log.e(TAG,"RFID InitReader_Notype failed by reason: " + er);
             throw new Exception(String.valueOf(er));
         }

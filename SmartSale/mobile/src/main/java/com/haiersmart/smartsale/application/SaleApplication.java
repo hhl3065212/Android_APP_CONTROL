@@ -69,6 +69,15 @@ public class SaleApplication extends Application {
                 }else if(door.equals("close")){
                     PlayFixedVoice.playVoice(PlayFixedVoice.CLOSE);
                 }
+            } else if(action.equals(ConstantUtil.PIR_STATE_BROADCAST)) {
+                int pirValue = intent.getExtras().getInt(ConstantUtil.PIR_STATE);
+                Log.i(TAG, "receiver brodacast pirValue = " + pirValue);
+                if(pirValue == 0) {
+                    Log.i(TAG, "receiver brodacast somebody coming, be welcome" );
+                    PlayFixedVoice.playVoice(PlayFixedVoice.WELCOME);
+                } else {
+                    Log.i(TAG, "receiver brodacast somebody leaving, say goodbye" );
+                }
             }
         }
     };
@@ -128,6 +137,7 @@ public class SaleApplication extends Application {
         IntentFilter filter = new IntentFilter();
         filter.addAction(ConstantUtil.HTTP_BROADCAST);
         filter.addAction(ConstantUtil.DOOR_STATE_BROADCAST);
+        filter.addAction(ConstantUtil.PIR_STATE_BROADCAST);
         registerReceiver(mReceiverHttp, filter);
 
         registerReceiver(mReceiverRfid, new IntentFilter(ConstantUtil.RFID_BROADCAST));

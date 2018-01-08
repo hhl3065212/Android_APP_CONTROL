@@ -3,7 +3,6 @@ package com.haiersmart.smartsale.service;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
@@ -23,7 +22,6 @@ public class SmartlockService extends Service {
     Smartlock mSmartlock;
     private JniPir mPirHandler;
     private int mPirGpioNum = 0;
-    private Handler mHandler = new Handler( );
 
     public SmartlockService() {
     }
@@ -111,7 +109,7 @@ public class SmartlockService extends Service {
                 }
             }
         }.start();
-        startPirFun();
+        new Thread(runnable_pir).start();
         return ret;
     }
 
@@ -131,7 +129,7 @@ public class SmartlockService extends Service {
 
     private int getPirStatus() {
         int value = mPirHandler.getGpio(mPirGpioNum);
-        Log.i(TAG, "getPirStatus get gpio value = "+value);
+//        Log.i(TAG, "getPirStatus get gpio value = "+value);
         int res = mPirHandler.releaseGpio(mPirGpioNum);
 //        Log.i(TAG, "getPirStatus releaseGpio res = "+res);
         return value;
@@ -143,11 +141,6 @@ public class SmartlockService extends Service {
         Intent intent = new Intent(ConstantUtil.PIR_STATE_BROADCAST);
         intent.putExtra(ConstantUtil.PIR_STATE, pirValue);
         sendBroadcast(intent);
-    }
-
-    public void startPirFun() {
-        Log.i(TAG,"startPirFun" );
-        mHandler.postDelayed(runnable_pir, 2000);
     }
 
     private Runnable runnable_pir = new Runnable() {
@@ -169,7 +162,7 @@ public class SmartlockService extends Service {
                         isFirstTime = false;
                     } else  {
                         if(pirValue != curPir ) {
-                            sendBroadcastPirState(pirValue);
+                            sendBroadcastPirState(curPir);
                         }
                         pirValue = curPir;
                     }

@@ -25,6 +25,7 @@ import com.haiersmart.smartsale.constant.ConstantUtil;
 import com.haiersmart.smartsale.function.RFIDEventMgr;
 import com.haiersmart.smartsale.module.Smartlock;
 import com.haiersmart.smartsale.service.HttpService;
+import com.haiersmart.smartsale.service.SmartlockService;
 
 import org.json.JSONException;
 
@@ -67,6 +68,15 @@ public class SaleApplication extends Application {
                     PlayFixedVoice.playVoice(PlayFixedVoice.OPEN);
                 }else if(door.equals("close")){
                     PlayFixedVoice.playVoice(PlayFixedVoice.CLOSE);
+                }
+            } else if(action.equals(ConstantUtil.PIR_STATE_BROADCAST)) {
+                int pirValue = intent.getExtras().getInt(ConstantUtil.PIR_STATE);
+                Log.i(TAG, "receiver brodacast pirValue = " + pirValue);
+                if(pirValue == 0) {
+                    Log.i(TAG, "receiver brodacast somebody coming, be welcome" );
+                    PlayFixedVoice.playVoice(PlayFixedVoice.WELCOME);
+                } else {
+                    Log.i(TAG, "receiver brodacast somebody leaving, say goodbye" );
                 }
             }
         }
@@ -120,13 +130,14 @@ public class SaleApplication extends Application {
         getMac();
         Log.i(TAG, "Application onCreate");
         startService(new Intent(mContext, HttpService.class));
-//        startService(new Intent(mContext, SmartlockService.class));
+        startService(new Intent(mContext, SmartlockService.class));
         startService(new Intent(mContext,RFIDService.class));
         mRFIDMgr = new RFIDEventMgr(this);
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(ConstantUtil.HTTP_BROADCAST);
         filter.addAction(ConstantUtil.DOOR_STATE_BROADCAST);
+        filter.addAction(ConstantUtil.PIR_STATE_BROADCAST);
         registerReceiver(mReceiverHttp, filter);
 
         registerReceiver(mReceiverRfid, new IntentFilter(ConstantUtil.RFID_BROADCAST));
@@ -173,9 +184,9 @@ public class SaleApplication extends Application {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             Log.i(TAG, "receiver brodacast action = " + action);
-            if(action.equals(intent.getStringExtra(ConstantUtil.RFID_BROADCAST) ))
+            if(action.equals(ConstantUtil.RFID_BROADCAST))
                 try {
-                    mRFIDMgr.upload2Network("rfidJson");
+                    mRFIDMgr.upload2Network(intent.getStringExtra("rfidJson"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

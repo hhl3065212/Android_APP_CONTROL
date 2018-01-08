@@ -35,7 +35,8 @@ public class RFIDEventMgr {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("mac", mApp.get().getmMac());
         jsonObject.put("userid", "litingting");
-        jsonObject.put("rfid", jsonString);
+        JSONObject rfidJo = new JSONObject(jsonString);
+        jsonObject.put("rfid", rfidJo);
         Http.post( URL_TEST_SERVER, jsonObject.toString(), networkResponse );
     }
 
@@ -56,7 +57,7 @@ public class RFIDEventMgr {
 
         @Override
         public void onSuccess(String body, String response) {
-            Log.i(TAG,"onSuccess !!!");
+            Log.i(TAG,"onSuccess !!!, response=" + response);
             mUploadTimes = 3;
         }
     };

@@ -137,7 +137,7 @@ public class SmartlockService extends Service {
 
 
     private void sendBroadcastPirState(int pirValue) {
-        Log.i(TAG,"sendBroadcastDoorState state=" + pirValue);
+        Log.i(TAG,"sendBroadcastPirState state=" + pirValue);
         Intent intent = new Intent(ConstantUtil.PIR_STATE_BROADCAST);
         intent.putExtra(ConstantUtil.PIR_STATE, pirValue);
         sendBroadcast(intent);

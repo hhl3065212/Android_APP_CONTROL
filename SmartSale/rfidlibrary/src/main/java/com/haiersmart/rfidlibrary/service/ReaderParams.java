@@ -68,6 +68,8 @@ public class ReaderParams {
         uants=new int[]{1,2,3,4,5,6,7,8,9,10};
 //        uants=new int[]{1,2,3,4,5};//Changed by LTT
 
+//        uants=new int[]{1,2,3,4,5};//Changed by LTT
+
         sleep=0;
         readtime=50;
         optime=1000;

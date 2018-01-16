@@ -36,7 +36,7 @@ public class PlayFixedVoice {
     public static final int YSM3A1T = 1;
 
     private static boolean mIsPlay = false;
-    private static final int mDelayTimeMill = 5000;
+    private static final int mDelayTimeMill = 15000;
 
 
     /**

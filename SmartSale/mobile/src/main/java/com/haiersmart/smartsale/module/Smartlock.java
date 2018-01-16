@@ -1,5 +1,7 @@
 package com.haiersmart.smartsale.module;
 
+import android.util.Log;
+
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

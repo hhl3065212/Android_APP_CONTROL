@@ -68,6 +68,7 @@ public class RFIDService extends Service {
 
     @Override
     public void onCreate() {
+        super.onCreate();
         mReaderParams = new ReaderParams();
         mReader = new Reader();
         //设置平台选择
@@ -77,15 +78,14 @@ public class RFIDService extends Service {
         mSpf = new SPconfig(this);
         try {
             connectRFID();
+            mBroadcastReceiver = new DoorBroadcastReceiver();
+            mIntentFilter = new IntentFilter();
+            mIntentFilter.addAction(ConstantUtil.DOOR_STATE_BROADCAST);
+            registerReceiver(mBroadcastReceiver, mIntentFilter);
         } catch (Exception e) {
             e.printStackTrace();
         }
         acquireWakelock();
-        mBroadcastReceiver = new DoorBroadcastReceiver();
-        mIntentFilter = new IntentFilter();
-        mIntentFilter.addAction(ConstantUtil.DOOR_STATE_BROADCAST);
-        registerReceiver(mBroadcastReceiver, mIntentFilter);
-        super.onCreate();
     }
 
     @Override
@@ -428,7 +428,7 @@ public class RFIDService extends Service {
         //设置读写器发射功率
         Reader.AntPowerConf apcf = mReader.new AntPowerConf();
 //        apcf.antcnt= mAntPorts;
-        apcf.antcnt= 5;//setting working annetta count
+        apcf.antcnt= 16;//setting working annetta count
         Log.i(TAG, "Connected set apcf.antcnt:"+ mAntPorts);
         for(int i=0;i<apcf.antcnt;i++)
         {

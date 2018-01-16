@@ -36,6 +36,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     TextView txtCounts;
     @Bind(id = R.id.lv_rfid)
     ListView lvRfid;
+    @Bind(id = R.id.btn_getrfid,click = true)
+    Button btnGetRFID;
 
     private final static int SCANNIN_GREQUEST_CODE = 1;
     private String mac = null;
@@ -43,7 +45,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private GetRfidHandler handler = new GetRfidHandler();
     private int counts = 0;
     private List<String> list;
-    private int getCounts = 10;
+    private final int GET_COUNT =3;
+    private int getCounts = GET_COUNT;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +64,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivityForResult(intent, SCANNIN_GREQUEST_CODE);
                 break;
+            case R.id.btn_getrfid:
+                getCounts = GET_COUNT;
+                handler.sendEmptyMessage(0x01);
+                break;
         }
     }
 
@@ -70,15 +77,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (requestCode) {
             case SCANNIN_GREQUEST_CODE:
                 if (resultCode == RESULT_OK) {
-                    mac = data.getStringExtra("SCAN_RESULT");
+                    String res = data.getStringExtra("SCAN_RESULT");
+                    if (res != null && !res.isEmpty()) {
+                        if (res.length() > 12) {
+                            int len = res.indexOf("=")+1;
+                            mac = res.substring(len, len + 12);
+                        } else {
+                            mac = res;
+                        }
+                    }
                     //显示扫描到的内容
                     if (mac != null && !mac.isEmpty()) {
                         txtShow.setText("mac=" + mac);
-                        getCounts = 10;
-                        handler.sendEmptyMessage(0x01);
+
+//                        handler.sendEmptyMessage(0x01);
                     }
                     String url = "http://192.168.200.11/smartsale/unlock.php?mac=" + mac
                             + "&userid=" + userid + "&now=" + System.currentTimeMillis();
+
                     Http.get(url, new HttpCallback() {
                         @Override
                         public void onFailed(IOException e) {
@@ -115,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                             @Override
                             public void onSuccess(String body, String response) {
-//                                Log.i(TAG, body);
+                                //                                Log.i(TAG, body);
                                 JSONObject json = JSON.parseObject(body);
                                 JSONObject rfid = json.getJSONObject("rfid");
                                 if (list == null) {
@@ -123,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 }
                                 list.clear();
                                 counts = 0;
-                                if(rfid !=null) {
+                                if (rfid != null) {
                                     counts = rfid.getInteger("counts");
                                     JSONArray epcid = rfid.getJSONArray("epcid");
                                     for (int i = 0; i < epcid.size(); i++) {
@@ -152,8 +168,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     txtCounts.setText("RFID数量：" + counts);
                     lvRfid.setAdapter(new ArrayAdapter<String>(MainActivity.this, R.layout.listview_rfid, list));
                     getCounts--;
-                    if(getCounts != 0){
-                        handler.sendEmptyMessageDelayed(0x01,1000);
+                    if (getCounts != 0) {
+                        handler.sendEmptyMessageDelayed(0x01, 1000);
                     }
                     break;
             }

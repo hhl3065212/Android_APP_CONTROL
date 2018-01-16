@@ -17,6 +17,7 @@ import java.util.TimerTask;
 
 public class PlayFixedVoice {
 
+    private static final String TAG = "PlayFixedVoice";
 
     /**
      * 固定语音的参数，对应不同语音
@@ -35,8 +36,19 @@ public class PlayFixedVoice {
     public static final int PROMPT = 0;
     public static final int YSM3A1T = 1;
 
-    private static boolean mIsPlay = false;
-    private static final int mDelayTimeMill = 15000;
+    private static boolean mIsPlayWelcome = false;
+    private static boolean mIsPlayUnlock = false;
+    private static boolean mIsPlayOpen = false;
+    private static boolean mIsPlayClose = false;
+    private static boolean mIsPlayPay = false;
+    private static final int mDelayWelcome = 15000;
+    private static final int mDelayUnlock = 0;
+    private static final int mDelayOpen = 0;
+    private static final int mDelayClose = 0;
+    private static final int mDelayPay = 0;
+
+    private static Timer timer;
+    private static TimerTask task;
 
 
     /**
@@ -47,8 +59,16 @@ public class PlayFixedVoice {
      * @param voice   音频文件 OPEN SELECT FINAL PAY
      */
     public static void playVoice(Context context, int device, int voice) {
-        if (!mIsPlay) {
-            mIsPlay = true;
+        if (voice == WELCOME && !mIsPlayWelcome) {
+            mIsPlayWelcome = true;
+            timerDelay();
+            if (device == PROMPT) {
+                PlayPromptVoice.playVoice(context, voice);
+            } else if (device == YSM3A1T) {
+                PlayYSM3A1TVoice.playVoiceOnce(voice);
+            }
+        } else if (voice != WELCOME) {
+            mIsPlayWelcome = true;
             timerDelay();
             if (device == PROMPT) {
                 PlayPromptVoice.playVoice(context, voice);
@@ -65,8 +85,12 @@ public class PlayFixedVoice {
      * @param voice   音频文件 OPEN SELECT FINAL PAY
      */
     public static void playVoice(Context context, int voice) {
-        if (!mIsPlay) {
-            mIsPlay = true;
+        if (voice == WELCOME && !mIsPlayWelcome) {
+            mIsPlayWelcome = true;
+            timerDelay();
+            PlayPromptVoice.playVoice(context, voice);
+        } else if (voice != WELCOME) {
+            mIsPlayWelcome = true;
             timerDelay();
             PlayPromptVoice.playVoice(context, voice);
         }
@@ -79,8 +103,14 @@ public class PlayFixedVoice {
      * @param voice  音频文件 OPEN SELECT FINAL PAY
      */
     public static void playVoice(int device, int voice) {
-        if (!mIsPlay) {
-            mIsPlay = true;
+        if (voice == WELCOME && !mIsPlayWelcome) {
+            mIsPlayWelcome = true;
+            timerDelay();
+            if (device == YSM3A1T) {
+                PlayYSM3A1TVoice.playVoiceOnce(voice);
+            }
+        } else if (voice != WELCOME) {
+            mIsPlayWelcome = true;
             timerDelay();
             if (device == YSM3A1T) {
                 PlayYSM3A1TVoice.playVoiceOnce(voice);
@@ -94,24 +124,51 @@ public class PlayFixedVoice {
      * @param voice 音频文件 OPEN SELECT FINAL PAY
      */
     public static void playVoice(int voice) {
-        if (!mIsPlay) {
-            mIsPlay = true;
+        if (voice == WELCOME && !mIsPlayWelcome) {
+            mIsPlayWelcome = true;
+            timerDelay();
+            PlayYSM3A1TVoice.playVoiceOnce(voice);
+        } else if (voice != WELCOME) {
+            mIsPlayWelcome = true;
             timerDelay();
             PlayYSM3A1TVoice.playVoiceOnce(voice);
         }
     }
 
     private static void timerDelay() {
-        final Timer timer = new Timer("play voice delay");
+        if(timer != null){
+//            Log.i(TAG,"timer cancel");
+            timer.cancel();
+            timer= null;
+        }
+        if (task != null){
+//            Log.i(TAG,"task cancel");
+            task.cancel();
+            task = null;
+        }
+        if (timer == null) {
+            timer = new Timer("play voice delay");
+//            Log.i(TAG,"timer create");
+        }
+        if(task == null){
+//            Log.i(TAG,"task create");
+            task = new TimerTask() {
+                @Override
+                public void run() {
+//                    Log.i(TAG,"task end");
+                    mIsPlayWelcome = false;
+                    timer.cancel();
+                    timer.purge();
+                    task.cancel();
+                }
+            };
+        }
 
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                mIsPlay = false;
-                timer.cancel();
-                timer.purge();
-            }
-        }, mDelayTimeMill);
+        if (timer !=null && task != null) {
+            timer.schedule(task, mDelayWelcome);
+        }
+//        Log.i(TAG,"timer schedule");
     }
+
 
 }

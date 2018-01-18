@@ -45,7 +45,8 @@
             android:exported="true" />
 
         <activity android:name=".activity.SmartlockActivity" />
-        <activity android:name=".activity.TcpLongActivity" />
+        <activity android:name=".activity.TcpLongActivity"
+                  android:windowSoftInputMode="adjustUnspecified|stateHidden" />
 
         <service
             android:name=".service.SmartlockService"

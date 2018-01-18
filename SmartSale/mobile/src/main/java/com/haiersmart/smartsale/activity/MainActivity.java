@@ -58,7 +58,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Http
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ViewBinder.bind(this);
-        bindService(new Intent(this,HttpService.class),httpConnection,BIND_AUTO_CREATE);
+//        bindService(new Intent(this,HttpService.class),httpConnection,BIND_AUTO_CREATE);
         registerReceiver(ReceiverHttp,new IntentFilter(ConstantUtil.HTTP_BROADCAST));
         txShow.setText("mac="+ SaleApplication.get().getmMac());
     }
@@ -95,6 +95,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Http
     @Override
     protected void onDestroy() {
         super.onDestroy();
+//        unbindService(httpConnection);
         unregisterReceiver(ReceiverHttp);
     }
 

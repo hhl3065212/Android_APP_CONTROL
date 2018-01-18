@@ -26,6 +26,11 @@ public class ConstantUtil {
     public static final String URL_PUTDOOR = "putdoor.php";
     public static final String URL_PUTRFID = "putrfid.php";
 
+//    public static final String HOST = "192.168.100.232";
+    public static final String HOST = "192.168.200.99";
+//    public static final int PORT = 8080;
+    public static final int PORT = 20006;
+
     public static final String URL_TEST_SERVER = "http://192.168.200.11/smartsale/putrfid.php";
 
     public static final String HTTP_BROADCAST = "com.haiersmart.smartsale.httpservice";

@@ -9,6 +9,10 @@
  */
 package com.haiersmart.library.Utils;
 
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+
 /**
  * <p>function: </p>
  * <p>description:  Type conversions between data
@@ -125,6 +129,14 @@ public class ConvertData {
             stringBuffer.deleteCharAt(stringBuffer.length() - 1);
         }
         return stringBuffer.toString();
+    }
+
+    public static void sendMessage(Handler handler,String data) {
+        Bundle bundle = new Bundle();
+        bundle.putString("data", data);
+        Message message = new Message();
+        message.setData(bundle);
+        handler.sendMessage(message);
     }
 
 }

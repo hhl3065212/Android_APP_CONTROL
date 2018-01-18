@@ -3,13 +3,18 @@ package com.haiersmart.smartsale.service;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.haiersmart.library.OKHttp.Http;
 import com.haiersmart.library.OKHttp.HttpCallback;
+import com.haiersmart.library.OKHttp.TcpLong;
+import com.haiersmart.library.Utils.ConvertData;
 import com.haiersmart.smartsale.application.SaleApplication;
 import com.haiersmart.smartsale.constant.ConstantUtil;
 
@@ -22,6 +27,7 @@ public class HttpService extends Service {
     private final String MAC = "112233445566";
     private HttpBinder binder;
     private static boolean isOnBroadcast = true;
+    private TcpLong tcpLong;
 
     private List<UnlockListener> mUnlockListener = new ArrayList<>();
 
@@ -53,7 +59,18 @@ public class HttpService extends Service {
         super.onCreate();
         Log.i(TAG, "HttpService onCreate");
         binder = new HttpBinder();
-        new Thread(getRunnable).start();
+        getThread.start();
+        tcpLongThread.start();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        tcpLongThread.interrupt();
+        getThread.interrupt();
+        if(tcpLong != null){
+            tcpLong.closeSocket();
+        }
     }
 
     @Override
@@ -62,14 +79,41 @@ public class HttpService extends Service {
         return binder;
     }
 
-    private Runnable getRunnable = new Runnable() {
+    private Thread getThread = new Thread() {
         @Override
         public void run() {
-            while (true) {
+            while (!isInterrupted()) {
                 getIsUnlock();
                 long endTime = System.currentTimeMillis() + 500L;
                 while (System.currentTimeMillis() < endTime)
                     ;
+            }
+        }
+    };
+
+    private Thread tcpLongThread  = new Thread() {
+        @Override
+        public void run() {
+            int len = 0;
+            byte[] rev = new byte[1024];
+            tcpLong = new TcpLong(ConstantUtil.HOST, ConstantUtil.PORT);
+            while (!tcpLong.isConnected()) {
+                String init = "aa;01;1;" + SaleApplication.get().getmMac() + ";;;1.1;\0";
+                tcpLong.setSender(init.getBytes());
+            }
+            while (!isInterrupted()) {
+                String init = "aa;00;1;" + SaleApplication.get().getmMac() + ";\0";
+                tcpLong.setSender(init.getBytes());
+                while (tcpLong.isConnected()) {
+                    len = tcpLong.getReceiver(rev);
+                    if (len > 0) {
+                        String data = new String(rev, 0, len);
+                        ConvertData.sendMessage(handlerParseData,data);
+                    } else if (len < 0){
+                        break;
+                    }
+                }
+//                tcpLong.closeSocket();
             }
         }
     };
@@ -128,4 +172,19 @@ public class HttpService extends Service {
     public static void setIsOnBroadcast(boolean isOnBroadcast) {
         HttpService.isOnBroadcast = isOnBroadcast;
     }
+
+    private Handler handlerParseData = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Bundle bundle = msg.getData();
+            String data = bundle.getString("data");
+            Log.i(TAG,"tcp received data:"+data);
+            if (data.contains("aa;02;")){
+                sendBroadcastUnlock("weixin1");
+                doOnUnlockListener("weixin1");
+                tcpLong.setSender("bb;02;00;\0");
+            }
+        }
+    };
 }
